@@ -7,6 +7,7 @@ using VDS.RDF.Parsing;
 namespace Rdf.Tests;
 
 [TestClass]
+[TestCategory("Ontology")]
 public sealed class OntologyTest
 {
     private readonly string fileLocation = $"{Directory.GetCurrentDirectory()}\\..\\..\\..\\..\\Ontology.ttl";
