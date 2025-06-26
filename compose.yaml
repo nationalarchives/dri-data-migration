@@ -1,0 +1,25 @@
+services:
+    graphdb:
+        image: ontotext/graphdb:11.0.1
+        container_name: graphdb
+        ports:
+            - "7200:7200"
+        volumes:
+            - type: volume
+              source: data
+              target: /opt/graphdb/home
+            - type: volume
+              source: import
+              target: /root/graphdb-import
+            - type: bind
+              read_only: true
+              source: ./graphdb.license
+              target: /opt/graphdb/home/conf/graphdb.license
+            - type: bind
+              read_only: true
+              source: ./backup.nq
+              target: /root/graphdb-import/backup.nq
+
+volumes:
+    data:
+    import:
