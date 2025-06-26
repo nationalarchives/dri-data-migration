@@ -1,0 +1,32 @@
+name: Ontology tests
+
+on:
+  push:
+    paths:
+      - Ontology.ttl
+  pull_request:
+    paths:
+      - Ontology.ttl
+
+jobs:
+  test:
+    name: Testing Ontology.ttl
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8
+          include-prerelease: true
+      
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet run --no-restore --project "Rdf.Tests" --filter "TestCategory=Ontology" --configuration Release
