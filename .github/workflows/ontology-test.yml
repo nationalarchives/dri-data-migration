@@ -12,7 +12,7 @@ on:
 
 jobs:
   test:
-    name: Testing Ontology.ttl
+    name: Testing Ontology file
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
