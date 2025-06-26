@@ -3,10 +3,12 @@ name: Ontology tests
 on:
   push:
     paths:
-      - Ontology.ttl
+      - 'Ontology.ttl'
+      - '**/OntologyTest.cs'
   pull_request:
     paths:
-      - Ontology.ttl
+      - 'Ontology.ttl'
+      - '**/OntologyTest.cs'
 
 jobs:
   test:

@@ -10,7 +10,7 @@ namespace Rdf.Tests;
 [TestCategory("Ontology")]
 public sealed class OntologyTest
 {
-    private readonly string fileLocation = $"{Directory.GetCurrentDirectory()}\\..\\..\\..\\..\\Ontology.ttl";
+    private readonly string fileLocation = $"{Directory.GetCurrentDirectory()}/../../../../Ontology.ttl";
 
     [TestMethod("Valid Turtle syntax")]
     public void ValidTurtle() =>
