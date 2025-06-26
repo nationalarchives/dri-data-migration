@@ -1,0 +1,329 @@
+@prefix :<http://example.com/schema/>.
+@prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl:<http://www.w3.org/2002/07/owl#>.
+@prefix xsd:<http://www.w3.org/2001/XMLSchema#>.
+@prefix rico:<https://www.ica.org/standards/RiC/ontology#>.
+
+this:schema a owl:Ontology;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Digital preservation ontology.".
+
+
+# Types
+
+:ExternalThing a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "External thing".
+
+:NamedThing a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Named thing".
+
+:Collection a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:RecordSet;
+	rdfs:label "Collection";
+	rdfs:comment "Group of :Collection or :Asset.".
+
+:Subset a owl:Class;
+	rdfs:subClassOf :Collection;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Subset";
+	rdfs:comment "A :Collection that is part of another :Collection.".
+
+:Asset a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:RecordResource;
+	rdfs:label "Asset";
+	rdfs:comment "A thing describing archived resource.".
+
+:Variation a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:Instantiation;
+	rdfs:label "Variation";
+	rdfs:comment "A variant of an :Asset.".
+
+:Image a owl:Class;
+	rdfs:subClassOf :Variation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Image".
+
+:Document a owl:Class;
+	rdfs:subClassOf :Variation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Document".
+
+:Email a owl:Class;
+	rdfs:subClassOf :Variation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "e-mail".
+
+:DigitalRecord a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Digital record";
+	rdfs:comment "Resource representing an :Asset.".
+
+:Location a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:Place;
+	rdfs:label "Location";
+	rdfs:comment "A location of an :Asset.".
+
+:FileLocation a owl:Class;
+	rdfs:subClassOf :Location;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "File location".
+
+:FormalBody a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:Agent;
+	rdfs:label "Formal body";
+	rdfs:comment "An entity (e.g. government department, public institution) that creates or holds :Asset.".
+
+:Custodianship a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Custodianship";
+	rdfs:comment "An activity of being in possession of an :Asset.".
+
+:PastCustodianship a owl:Class;
+	rdfs:subClassOf :Custodianship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Past custodianship";
+	rdfs:comment "A :Custodianship has ended.".
+
+:AssetCreation a owl:Class;
+	rdfs:subClassOf :Custodianship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:CreationRelation;
+	rdfs:label "Asset creation";
+	rdfs:comment "A relation describing creation of an :Asset by a :FormalBody.".
+
+:AssetRetention a owl:Class;
+	rdfs:subClassOf :Custodianship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:RecordResourceHoldingRelation;
+	rdfs:label "Asset retention";
+	rdfs:comment "A relation describing retention of an :Asset by a :FormalBody.".
+
+:AccessCondition a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Access condition";
+	rdfs:comment "A thing describing type of access to :Asset.".
+
+:Legislation a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Legislation";
+	rdfs:comment "UK legislation.".
+
+:SensitivityReview a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:Activity;
+	rdfs:label "Sensitivity review";
+	rdfs:comment "An outcome of establishing :AccessCondition of the :Asset.".
+
+
+# Object properties
+
+:collectionHasSubset a owl:ObjectProperty;
+	rdfs:domain :Collection;
+	rdfs:range :Subset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Collection has subset".
+
+:subsetHasAsset a owl:ObjectProperty;
+	rdfs:domain :Subset;
+	rdfs:range :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Subset has asset".
+
+:assetHasVariation a owl:ObjectProperty;
+	rdfs:seeAlso rico:hasOrHadInstantiation;
+	rdfs:domain :Asset;
+	rdfs:range :Variation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has variation".
+
+:assetHasAccessCondition a owl:ObjectProperty;
+	rdfs:seeAlso rico:conditionsOfAccess;
+	rdfs:domain :Asset;
+	rdfs:range :AccessCondition;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has access condition".
+
+:variationHasDigitalRecord a owl:ObjectProperty;
+	rdfs:domain :Variation;
+	rdfs:range :DigitalRecord;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation has digital record".
+
+:digitalRecordHasFileLocation a owl:ObjectProperty;
+	rdfs:domain :DigitalRecord;
+	rdfs:range :FileLocation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Digital record has file location".
+
+:assetCreationHasAsset a owl:ObjectProperty;
+	rdfs:seeAlso rico:relationHasSource;
+	rdfs:domain :AssetCreation;
+	rdfs:range :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset creation has asset".
+
+:assetCreationHasFormalBody a owl:ObjectProperty;
+	rdfs:seeAlso rico:relationHasTarget;
+	rdfs:domain :AssetCreation;
+	rdfs:range :FormalBody;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset creation has formal body".
+
+:assetRetentionHasAsset a owl:ObjectProperty;
+	rdfs:seeAlso rico:relationHasTarget;
+	rdfs:domain :AssetRetention;
+	rdfs:range :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset retention has asset".
+
+:assetRetentionHasFormalBody a owl:ObjectProperty;
+	rdfs:seeAlso rico:relationHasSource;
+	rdfs:domain :AssetRetention;
+	rdfs:range :FormalBody;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset retention has formal body".
+
+:sensitivityReviewHasLegislation a owl:ObjectProperty;
+	rdfs:domain :SensitivityReview;
+	rdfs:range :Legislation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review has legislation".
+
+:sensitivityReviewHasAccessCondition a owl:ObjectProperty;
+	rdfs:domain :SensitivityReview;
+	rdfs:range :AccessCondition;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review has access condition".
+
+
+## Data type properties
+
+:externalIdentifier a owl:DatatypeProperty;
+	rdfs:domain :ExternalThing;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "External identifier".
+
+:name a owl:DatatypeProperty;
+	rdfs:domain :NamedThing;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf rdfs:label;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Name".
+
+:collectionName a owl:DatatypeProperty;
+	rdfs:domain :Collection;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :name;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Collection name".
+
+:collectionCode a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :Collection;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Collection code".
+
+:collectionReference a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :Collection;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Collection reference".
+
+:assetDescription a owl:DatatypeProperty;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset description".
+
+:assetReference a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset reference".
+
+:formalBodyName a owl:DatatypeProperty;
+	rdfs:domain :FormalBody;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :name;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Formal body name".
+
+:custodianshipStartDate a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :Custodianship;
+	rdfs:range xsd:date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Custodianship start date".
+
+:custodianshipEndDate a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :PastCustodianship;
+	rdfs:range xsd:date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Custodianship end date".
+
+:digitalRecordName a owl:DatatypeProperty;
+	rdfs:domain :DigitalRecord;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :name;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Digital record name".
+
+:imagePixelHeight a owl:DatatypeProperty;
+	rdfs:domain :Image;
+	rdfs:range xsd:integer;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Image pixel height".
+
+:imagePixelWidth a owl:DatatypeProperty;
+	rdfs:domain :Image;
+	rdfs:range xsd:integer;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Image pixel width".
+
+:numberOfPages a owl:DatatypeProperty;
+	rdfs:domain :Document;
+	rdfs:range xsd:integer;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Number of pages".
+
+:emailSubject a owl:DatatypeProperty;
+	rdfs:domain :Email;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "e-mail subject".
+
+:smbNetworkShare a owl:DatatypeProperty;
+	rdfs:domain :FileLocation;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "SMB network share".
+
+:sensitivityReviewAt a owl:DatatypeProperty;
+	rdfs:domain :SensitivityReview;
+	rdfs:range xsd:dateTime;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review at".
+
+:accessConditionCode a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :AccessCondition;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Access condition code".
+
+:accessConditionName a owl:DatatypeProperty;
+	rdfs:domain :AccessCondition;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :name;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Access condition name".
