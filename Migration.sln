@@ -3,12 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36202.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{84BF4D8C-CDEA-4B4F-B559-B57ECD82ADA1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sql", "Sql\Sql.csproj", "{0EA4933C-96F0-4213-829D-5D786A4B434C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sql.Tests", "Sql.Tests\Sql.Tests.csproj", "{65E47310-A10E-4FE4-83E5-7337953575C0}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
@@ -25,18 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{84BF4D8C-CDEA-4B4F-B559-B57ECD82ADA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{84BF4D8C-CDEA-4B4F-B559-B57ECD82ADA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{84BF4D8C-CDEA-4B4F-B559-B57ECD82ADA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{84BF4D8C-CDEA-4B4F-B559-B57ECD82ADA1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0EA4933C-96F0-4213-829D-5D786A4B434C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0EA4933C-96F0-4213-829D-5D786A4B434C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0EA4933C-96F0-4213-829D-5D786A4B434C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0EA4933C-96F0-4213-829D-5D786A4B434C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{65E47310-A10E-4FE4-83E5-7337953575C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{65E47310-A10E-4FE4-83E5-7337953575C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{65E47310-A10E-4FE4-83E5-7337953575C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{65E47310-A10E-4FE4-83E5-7337953575C0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{50305A28-B2CE-4FE1-BFAE-E7B508B0DDED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{50305A28-B2CE-4FE1-BFAE-E7B508B0DDED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50305A28-B2CE-4FE1-BFAE-E7B508B0DDED}.Release|Any CPU.ActiveCfg = Release|Any CPU
