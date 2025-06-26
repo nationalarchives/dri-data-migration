@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		compose.yaml = compose.yaml
+		.github\dependabot.yml = .github\dependabot.yml
+		.github\workflows\ontology-test.yml = .github\workflows\ontology-test.yml
 		Ontology.ttl = Ontology.ttl
 		README.md = README.md
 	EndProjectSection
