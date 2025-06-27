@@ -131,6 +131,13 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Collection has subset".
 
+:subsetHasCollection a owl:ObjectProperty;
+	owl:inverseOf :collectionHasSubset;
+	rdfs:domain :Subset;
+	rdfs:range :Collection;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Subset has collection".
+
 :subsetHasAsset a owl:ObjectProperty;
 	rdfs:domain :Subset;
 	rdfs:range :Asset;
@@ -184,6 +191,14 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset retention has asset".
 
+:assetHasAssetRetention a owl:ObjectProperty;
+	owl:inverseOf :assetRetentionHasAsset;
+	rdfs:seeAlso rico:relationHasTarget;
+	rdfs:domain :Asset;
+	rdfs:range :AssetRetention;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has asset retention".
+
 :assetRetentionHasFormalBody a owl:ObjectProperty;
 	rdfs:seeAlso rico:relationHasSource;
 	rdfs:domain :AssetRetention;
@@ -231,14 +246,16 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:string;
 	rdfs:subPropertyOf :externalIdentifier;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Collection code".
+	rdfs:label "Collection code";
+	rdfs:comment "Unique reference of the :Collection. It is a top level code.".
 
-:collectionReference a owl:DatatypeProperty, owl:FunctionalProperty;
-	rdfs:domain :Collection;
+:subsetReference a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :Subset;
 	rdfs:range xsd:string;
 	rdfs:subPropertyOf :externalIdentifier;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Collection reference".
+	rdfs:label "Subset reference";
+	rdfs:comment "Unique reference of the :Subset. It is a catalogue reference.".
 
 :assetDescription a owl:DatatypeProperty;
 	rdfs:domain :Asset;
@@ -260,13 +277,13 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Formal body name".
 
-:custodianshipStartDate a owl:DatatypeProperty, owl:FunctionalProperty;
+:custodianshipStartDate a owl:DatatypeProperty;
 	rdfs:domain :Custodianship;
 	rdfs:range xsd:date;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Custodianship start date".
 
-:custodianshipEndDate a owl:DatatypeProperty, owl:FunctionalProperty;
+:custodianshipEndDate a owl:DatatypeProperty;
 	rdfs:domain :PastCustodianship;
 	rdfs:range xsd:date;
 	rdfs:isDefinedBy this:schema;
