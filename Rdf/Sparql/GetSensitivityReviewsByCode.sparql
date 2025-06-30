@@ -1,0 +1,44 @@
+﻿prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix prov:  <http://www.w3.org/ns/prov#>
+prefix dri: <http://nationalarchives.gov.uk/terms/dri#> 
+prefix dcterms: <http://purl.org/dc/terms/>
+prefix ex: <http://example.com/schema/>
+
+construct {
+    ?closure ex:sensitivityReviewHasAsset ?asset;
+        ex:sensitivityReviewAt ?exemptionAsserted;
+    	ex:sensitivityReviewScheduledDate ?reviewDate;
+    	ex:sensitivityReviewAssetName ?titleAlternative;
+    	ex:sensitivityReviewHasPastSensitivityReview ?previous;
+    	ex:sensitivityReviewHasLegislation ?exemptionCode;
+        ex:sensitivityReviewHasSensitivityReviewRestriction [
+            ex:sensitivityReviewRestrictionCalculationStartDate ?startDate;
+			ex:sensitivityReviewRestrictionDuration ?closurePeriod;
+        	ex:sensitivityReviewRestrictionDescription ?reasonForChange
+        ];
+        ex:sensitivityReviewHasAccessCondition [
+            ex:accessConditionCode ?closureType
+        ].
+}
+where {
+    {
+        select * where {
+            ?closure prov:specializationOf ?asset;
+                dri:closureType ?closureType.
+            ?asset rdfs:label ?label;
+            	(dri:isPartOfSeries/rdfs:label)|(dri:directory*/rdfs:label) "FCO 82".
+            optional { ?closure dri:closurePeriod ?closurePeriod }
+            optional { ?closure dri:startDate ?startDate }
+            optional { ?closure dri:exemptionAsserted ?exemptionAsserted }
+            optional { ?closure dri:reviewDate ?reviewDate }
+            optional { ?closure dri:exemptionCode ?exemptionCode }
+            optional { ?closure dri:titleAlternative ?titleAlternative }
+            optional { ?closure prov:wasRevisionOf ?previous }
+            optional {
+                ?closure prov:qualifiedInfluence/prov:influencer/rdfs:label ?reasonForChange
+            }
+        }
+        order by ?label
+        limit @limit offset @offset
+    }
+}

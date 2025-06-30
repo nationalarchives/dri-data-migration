@@ -1,0 +1,31 @@
+﻿prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix dri: <http://nationalarchives.gov.uk/terms/dri#> 
+prefix dcterms: <http://purl.org/dc/terms/>
+prefix ex: <http://example.com/schema/>
+
+construct {
+    ?a ex:assetReference ?reference;
+    	ex:assetHasVariation [
+            ex:variationHasDigitalRecord [
+                ex:digitalRecordName ?label
+            ]
+    	];
+    	ex:assetHasAssetRetention [
+    		ex:custodianshipStartDate ?created
+    	].
+} where {
+    {
+        select * where {
+            ?d a dri:File;
+                dri:directory*/rdfs:label @code;
+                dri:directory/rdfs:label ?directory; #:TODO??? ?directory
+                rdfs:label ?label.
+            ?a dri:file ?d;
+                dcterms:created ?created;
+                dri:parent ?parent.
+            ?parent rdfs:label ?reference.
+        }
+        order by ?label
+        limit @limit offset @offset
+    }
+}

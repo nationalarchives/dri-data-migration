@@ -1,0 +1,19 @@
+﻿prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix dri: <http://nationalarchives.gov.uk/terms/dri#>
+prefix ex: <http://example.com/schema/>
+
+construct {
+    ?s ex:subsetReference ?reference;
+    	ex:subsetHasCollection ?parent.
+} where {
+    {
+        select * where {
+            ?s a dri:DeliverableUnit;
+                dri:isPartOfSeries/rdfs:label @series;
+                rdfs:label ?reference.
+            optional { ?s dri:parent ?parent }
+        }
+        order by ?reference
+        limit @limit offset @offset
+    }
+}

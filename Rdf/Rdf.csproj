@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+	<LangVersion>latest</LangVersion>
+	<Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Sparql\GetAccessConditions.sparql" />
+    <EmbeddedResource Include="Sparql\GetSensitivityReviewsByCode.sparql" />
+    <EmbeddedResource Include="Sparql\GetAssetsByCode.sparql" />
+    <EmbeddedResource Include="Sparql\GetSubsetsByCollectionCode.sparql" />
+  </ItemGroup>
+
+</Project>
