@@ -111,6 +111,12 @@ this:schema a owl:Ontology;
 	rdfs:label "Access condition";
 	rdfs:comment "A thing describing type of access to :Asset.".
 
+:SensitivityReviewRestriction a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:Rule;
+	rdfs:label "Sensitivity review restriction";
+	rdfs:comment "Details of restrictions applied to na :Asset which are an outcome of a :SensitivityReview.".
+
 :Legislation a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Legislation";
@@ -120,7 +126,13 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:seeAlso rico:Activity;
 	rdfs:label "Sensitivity review";
-	rdfs:comment "An outcome of establishing :AccessCondition of the :Asset.".
+	rdfs:comment "An activity performed on :Asset to establish whenever an :Asset is open to public or kept private.".
+
+:PastSensitivityReview a owl:Class;
+	rdfs:subClassOf :SensitivityReview;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:Activity;
+	rdfs:label "Past sensitivity review".
 
 
 # Object properties
@@ -151,12 +163,11 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has variation".
 
-:assetHasAccessCondition a owl:ObjectProperty;
-	rdfs:seeAlso rico:conditionsOfAccess;
+:assetHasSensitivityReview a owl:ObjectProperty;
 	rdfs:domain :Asset;
-	rdfs:range :AccessCondition;
+	rdfs:range :SensitivityReview;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset has access condition".
+	rdfs:label "Asset has sensitivity review".
 
 :variationHasDigitalRecord a owl:ObjectProperty;
 	rdfs:domain :Variation;
@@ -218,6 +229,18 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Sensitivity review has access condition".
 
+:sensitivityReviewHasSensitivityReviewRestriction a owl:ObjectProperty;
+	rdfs:domain :SensitivityReview;
+	rdfs:range :SensitivityReviewRestriction;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review has sensitivity review restriction".
+
+:sensitivityReviewHasPastSensitivityReview a owl:ObjectProperty;
+	rdfs:domain :SensitivityReview;
+	rdfs:range :PastSensitivityReview;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review has past sensitivity review".
+
 
 ## Data type properties
 
@@ -256,6 +279,12 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Subset reference";
 	rdfs:comment "Unique reference of the :Subset. It is a catalogue reference.".
+
+:assetName a owl:DatatypeProperty;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset name".
 
 :assetDescription a owl:DatatypeProperty;
 	rdfs:domain :Asset;
@@ -332,6 +361,20 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Sensitivity review at".
 
+:sensitivityReviewAssetName a owl:DatatypeProperty;
+	rdfs:domain :SensitivityReview;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :name;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review asset name";
+	rdfs:comment ":SensitivityReview may result in a new name of an :Asset to mask sensitive information.".
+
+:sensitivityReviewScheduledDate a owl:DatatypeProperty;
+	rdfs:domain :SensitivityReview;
+	rdfs:range xsd:date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review scheduled date".
+
 :accessConditionCode a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :AccessCondition;
 	rdfs:range xsd:string;
@@ -345,3 +388,28 @@ this:schema a owl:Ontology;
 	rdfs:subPropertyOf :name;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Access condition name".
+
+:sensitivityReviewRestrictionDescription a owl:DatatypeProperty;
+	rdfs:domain :SensitivityReviewRestriction;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review restriction description".
+
+
+:sensitivityReviewRestrictionCalculationStartDate a owl:DatatypeProperty;
+	rdfs:domain :SensitivityReviewRestriction;
+	rdfs:range xsd:date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review restriction calculation start date".
+
+:sensitivityReviewRestrictionDuration a owl:DatatypeProperty;
+	rdfs:domain :SensitivityReviewRestriction;
+	rdfs:range xsd:duration;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review restriction duration".
+
+:sensitivityReviewRestrictionEndYear a owl:DatatypeProperty;
+	rdfs:domain :SensitivityReviewRestriction;
+	rdfs:range xsd:gYear;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review restriction end year".
