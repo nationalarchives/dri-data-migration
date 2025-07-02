@@ -5,11 +5,16 @@ prefix dcterms: <http://purl.org/dc/terms/>
 prefix ex: <http://example.com/schema/>
 
 construct {
-    ?closure ex:sensitivityReviewHasAsset ?asset;
+    ?closure ex:sensitivityReviewHasAsset [
+            ex:assetReference ?assetReference
+    	];
+        ex:sensitivityReviewDriId ?identifier;
         ex:sensitivityReviewAt ?exemptionAsserted;
-    	ex:sensitivityReviewScheduledDate ?reviewDate;
+    	ex:sensitivityReviewScheduledDate ?sensitivityReviewScheduledDate;
     	ex:sensitivityReviewAssetName ?titleAlternative;
-    	ex:sensitivityReviewHasPastSensitivityReview ?previous;
+    	ex:sensitivityReviewHasPastSensitivityReview [
+			ex:sensitivityReviewDriId ?previous
+        ];
     	ex:sensitivityReviewHasLegislation ?exemptionCode;
         ex:sensitivityReviewHasSensitivityReviewRestriction [
             ex:sensitivityReviewRestrictionCalculationStartDate ?startDate;
@@ -23,20 +28,24 @@ construct {
 where {
     {
         select * where {
+            bind(@code as ?code)
             ?closure prov:specializationOf ?asset;
+                dcterms:identifier ?identifier;
                 dri:closureType ?closureType.
-            ?asset rdfs:label ?label;
-            	(dri:isPartOfSeries/rdfs:label)|(dri:directory*/rdfs:label) "FCO 82".
+            ?asset rdfs:label ?assetReference;
+            	(dri:isPartOfSeries/rdfs:label)|(dri:directory*/rdfs:label) ?code.
             optional { ?closure dri:closurePeriod ?closurePeriod }
             optional { ?closure dri:startDate ?startDate }
             optional { ?closure dri:exemptionAsserted ?exemptionAsserted }
             optional { ?closure dri:reviewDate ?reviewDate }
+            optional { ?closure dri:retentionReconsiderDate ?retentionReconsiderDate }
             optional { ?closure dri:exemptionCode ?exemptionCode }
             optional { ?closure dri:titleAlternative ?titleAlternative }
-            optional { ?closure prov:wasRevisionOf ?previous }
+            optional { ?closure prov:wasRevisionOf/dcterms:identifier ?previous }
             optional {
                 ?closure prov:qualifiedInfluence/prov:influencer/rdfs:label ?reasonForChange
             }
+            bind(coalesce(?reviewDate, ?retentionReconsiderDate) as ?sensitivityReviewScheduledDate)
         }
         order by ?label
         limit @limit offset @offset

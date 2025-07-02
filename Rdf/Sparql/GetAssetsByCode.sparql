@@ -4,28 +4,24 @@ prefix dcterms: <http://purl.org/dc/terms/>
 prefix ex: <http://example.com/schema/>
 
 construct {
-    ?a ex:assetReference ?reference;
-    	ex:assetHasVariation [
-            ex:variationHasDigitalRecord [
-                ex:digitalRecordName ?label
-            ]
+    [] ex:assetReference ?reference;
+        ex:assetHasSubset [
+            ex:subsetReference ?subset
     	];
     	ex:assetHasAssetRetention [
     		ex:custodianshipStartDate ?created
     	].
 } where {
     {
-        select * where {
-            ?d a dri:File;
-                dri:directory*/rdfs:label @code;
-                dri:directory/rdfs:label ?directory; #:TODO??? ?directory
-                rdfs:label ?label.
-            ?a dri:file ?d;
+        select distinct ?reference ?subset ?created where {
+            ?a dri:parent/rdfs:label ?subset;
                 dcterms:created ?created;
                 dri:parent ?parent.
-            ?parent rdfs:label ?reference.
+            ?parent rdfs:label ?reference;
+            	dri:isPartOfSeries/rdfs:label @code.
+            filter exists { ?a dri:file ?f }
         }
-        order by ?label
+        order by ?reference
         limit @limit offset @offset
     }
 }

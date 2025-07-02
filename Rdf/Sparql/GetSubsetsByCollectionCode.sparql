@@ -3,15 +3,17 @@ prefix dri: <http://nationalarchives.gov.uk/terms/dri#>
 prefix ex: <http://example.com/schema/>
 
 construct {
-    ?s ex:subsetReference ?reference;
-    	ex:subsetHasCollection ?parent.
+    ?subset ex:subsetReference ?reference;
+    	ex:subsetHasCollection [
+            ex:subsetReference ?parentReference
+    ].
 } where {
     {
         select * where {
-            ?s a dri:DeliverableUnit;
+            ?subset a dri:DeliverableUnit;
                 dri:isPartOfSeries/rdfs:label @series;
                 rdfs:label ?reference.
-            optional { ?s dri:parent ?parent }
+            optional { ?subset dri:parent/rdfs:label ?parentReference }
         }
         order by ?reference
         limit @limit offset @offset
