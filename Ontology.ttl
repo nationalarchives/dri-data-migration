@@ -24,17 +24,18 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:seeAlso rico:RecordSet;
 	rdfs:label "Collection";
-	rdfs:comment "Group of :Collection or :Asset.".
+	rdfs:comment "Group of :Subset.".
 
 :Subset a owl:Class;
 	rdfs:subClassOf :Collection;
 	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:RecordSet;
 	rdfs:label "Subset";
-	rdfs:comment "A :Collection that is part of another :Collection.".
+	rdfs:comment "Group of :Subset or :Asset.".
 
 :Asset a owl:Class;
 	rdfs:isDefinedBy this:schema;
-	rdfs:seeAlso rico:RecordResource;
+	rdfs:seeAlso rico:Record;
 	rdfs:label "Asset";
 	rdfs:comment "A thing describing archived resource.".
 
@@ -156,12 +157,27 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Subset has asset".
 
+:assetHasSubset a owl:ObjectProperty;
+	owl:inverseOf :subsetHasAsset;
+	rdfs:domain :Asset;
+	rdfs:range :Subset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has subset".
+
 :assetHasVariation a owl:ObjectProperty;
 	rdfs:seeAlso rico:hasOrHadInstantiation;
 	rdfs:domain :Asset;
 	rdfs:range :Variation;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has variation".
+
+:variationHasAsset a owl:ObjectProperty;
+	rdfs:inverseOf :assetHasVariation;
+	rdfs:seeAlso rico:isOrWasInstantiationOf;
+	rdfs:domain :Variation;
+	rdfs:range :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation has asset".
 
 :assetHasSensitivityReview a owl:ObjectProperty;
 	rdfs:domain :Asset;
@@ -240,6 +256,13 @@ this:schema a owl:Ontology;
 	rdfs:range :PastSensitivityReview;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Sensitivity review has past sensitivity review".
+
+:sensitivityReviewHasAsset a owl:ObjectProperty;
+	rdfs:inverseOf :assetHasSensitivityReview;
+	rdfs:domain :SensitivityReview;
+	rdfs:range :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review has asset".
 
 
 ## Data type properties
@@ -374,6 +397,13 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:date;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Sensitivity review scheduled date".
+
+:sensitivityReviewDriId a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :SensitivityReview;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review DRI Id".
 
 :accessConditionCode a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :AccessCondition;
