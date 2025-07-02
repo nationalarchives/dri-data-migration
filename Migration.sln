@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution 
 		.github\workflows\ontology-test.yml = .github\workflows\ontology-test.yml
 		Ontology.ttl = Ontology.ttl
 		README.md = README.md
+		staging.http = staging.http
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rdf.Tests", "Rdf.Tests\Rdf.Tests.csproj", "{50305A28-B2CE-4FE1-BFAE-E7B508B0DDED}"
