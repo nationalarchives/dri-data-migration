@@ -7,9 +7,7 @@ construct {
     ?d ex:variationHasAsset [
 	 	    ex:assetReference ?assetReference
     	];
-    	ex:variationHasDigitalRecord [
-            ex:digitalRecordName ?label
-    	].
+    	ex:variationName ?label.
 } where {
     {
         select * where {

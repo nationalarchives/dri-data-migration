@@ -4,7 +4,7 @@ prefix ex: <http://example.com/schema/>
 
 construct {
     ?subset ex:subsetReference ?reference;
-    	ex:subsetHasCollection [
+    	ex:subsetHasBroaderSubset [
             ex:subsetReference ?parentReference
     ].
 } where {
@@ -13,7 +13,9 @@ construct {
             ?subset a dri:DeliverableUnit;
                 dri:isPartOfSeries/rdfs:label @series;
                 rdfs:label ?reference.
-            optional { ?subset dri:parent/rdfs:label ?parentReference }
+            optional { ?subset dri:parent/rdfs:label ?parent }
+            optional { ?subset dri:hasDirectory/rdfs:label ?directory }
+            bind(coalesce(?parent, ?directory) as ?parentReference)
         }
         order by ?reference
         limit @limit offset @offset
