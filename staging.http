@@ -50,17 +50,27 @@ Content-Type: text/turtle
         ]
     ].
 
-### Collections
+### SameAs check
 POST {{endpoint}}
 Content-Type: application/sparql-query
 Accept: text/turtle
 
-prefix ex: <http://example.com/schema/>
+prefix owl: <http://www.w3.org/2002/07/owl#>
 
 construct {
-    ?s ex:collectionCode ?code.
+    ?s owl:sameAs ?s2.
 } where {
-    ?s ex:collectionCode ?code.
+    ?s owl:sameAs ?s2.
+}
+
+### Access conditions count
+POST {{endpoint}}
+Content-Type: application/sparql-query
+
+prefix ex: <http://example.com/schema/>
+
+select (count(?s) as ?x) where {
+    ?s ex:accessConditionCode ?code.
 }
 
 ### Access conditions
@@ -81,7 +91,6 @@ construct {
 ### Subsets count
 POST {{endpoint}}
 Content-Type: application/sparql-query
-#Accept: text/turtle
 
 prefix ex: <http://example.com/schema/>
 
@@ -92,7 +101,6 @@ select (count(distinct ?subsetReference) as ?x) where {
 ### Assets count
 POST {{endpoint}}
 Content-Type: application/sparql-query
-#Accept: text/turtle
 
 prefix ex: <http://example.com/schema/>
 
@@ -103,18 +111,16 @@ select (count(?assetReference) as ?x) where {
 ### Variations count
 POST {{endpoint}}
 Content-Type: application/sparql-query
-#Accept: text/turtle
 
 prefix ex: <http://example.com/schema/>
 
 select (count(?variation) as ?x) where {
-    ?variation ex:variationHasDigitalRecord ?variationHasDigitalRecord.
+    ?variation ex:variationName ?variationName.
 }
 
-### Sensitivity reviews
+### Sensitivity reviews count
 POST {{endpoint}}
 Content-Type: application/sparql-query
-#Accept: text/turtle
 
 prefix ex: <http://example.com/schema/>
 
