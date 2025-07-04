@@ -160,7 +160,7 @@ this:schema a owl:Ontology;
 	rdfs:label "Asset has variation".
 
 :variationHasAsset a owl:ObjectProperty;
-	rdfs:inverseOf :assetHasVariation;
+	owl:inverseOf :assetHasVariation;
 	rdfs:seeAlso rico:isOrWasInstantiationOf;
 	rdfs:domain :Variation;
 	rdfs:range :Asset;
@@ -240,7 +240,7 @@ this:schema a owl:Ontology;
 	rdfs:label "Asset has sensitivity review".
 
 :sensitivityReviewHasAsset a owl:ObjectProperty;
-	rdfs:inverseOf :assetHasSensitivityReview;
+	owl:inverseOf :assetHasSensitivityReview;
 	rdfs:domain :SensitivityReview;
 	rdfs:range :Asset;
 	rdfs:isDefinedBy this:schema;
@@ -253,7 +253,7 @@ this:schema a owl:Ontology;
 	rdfs:label "Variation has Sensitivity review".
 
 :sensitivityReviewHasVariation a owl:ObjectProperty;
-	rdfs:inverseOf :variationHasSensitivityReview;
+	owl:inverseOf :variationHasSensitivityReview;
 	rdfs:domain :SensitivityReview;
 	rdfs:range :Variation;
 	rdfs:isDefinedBy this:schema;
@@ -266,7 +266,7 @@ this:schema a owl:Ontology;
 	rdfs:label "Sensitivity review has subset".
 
 :subsetHasSensitivityReview a owl:ObjectProperty;
-	rdfs:inverseOf :sensitivityReviewHasSubset;
+	owl:inverseOf :sensitivityReviewHasSubset;
 	rdfs:domain :Subset;
 	rdfs:range :SensitivityReview;
 	rdfs:isDefinedBy this:schema;
