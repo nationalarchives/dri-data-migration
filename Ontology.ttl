@@ -20,14 +20,7 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Named thing".
 
-:Collection a owl:Class;
-	rdfs:isDefinedBy this:schema;
-	rdfs:seeAlso rico:RecordSet;
-	rdfs:label "Collection";
-	rdfs:comment "Group of :Subset.".
-
 :Subset a owl:Class;
-	rdfs:subClassOf :Collection;
 	rdfs:isDefinedBy this:schema;
 	rdfs:seeAlso rico:RecordSet;
 	rdfs:label "Subset";
@@ -59,11 +52,6 @@ this:schema a owl:Ontology;
 	rdfs:subClassOf :Variation;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "e-mail".
-
-:DigitalRecord a owl:Class;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Digital record";
-	rdfs:comment "Resource representing an :Asset.".
 
 :Location a owl:Class;
 	rdfs:isDefinedBy this:schema;
@@ -138,18 +126,18 @@ this:schema a owl:Ontology;
 
 # Object properties
 
-:collectionHasSubset a owl:ObjectProperty;
-	rdfs:domain :Collection;
+:subsetHasBroaderSubset a owl:ObjectProperty;
+	rdfs:domain :Subset;
 	rdfs:range :Subset;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Collection has subset".
+	rdfs:label "Subset has broader subset".
 
-:subsetHasCollection a owl:ObjectProperty;
-	owl:inverseOf :collectionHasSubset;
+:subsetHasNarrowerSubset a owl:ObjectProperty;
+	owl:inverseOf :subsetHasBroaderSubset;
 	rdfs:domain :Subset;
-	rdfs:range :Collection;
+	rdfs:range :Subset;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Subset has collection".
+	rdfs:label "Subset has narrower subset".
 
 :subsetHasAsset a owl:ObjectProperty;
 	rdfs:domain :Subset;
@@ -179,23 +167,11 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation has asset".
 
-:assetHasSensitivityReview a owl:ObjectProperty;
-	rdfs:domain :Asset;
-	rdfs:range :SensitivityReview;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset has sensitivity review".
-
-:variationHasDigitalRecord a owl:ObjectProperty;
+:variationHasFileLocation a owl:ObjectProperty;
 	rdfs:domain :Variation;
-	rdfs:range :DigitalRecord;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Variation has digital record".
-
-:digitalRecordHasFileLocation a owl:ObjectProperty;
-	rdfs:domain :DigitalRecord;
 	rdfs:range :FileLocation;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Digital record has file location".
+	rdfs:label "Variation has file location".
 
 :assetCreationHasAsset a owl:ObjectProperty;
 	rdfs:seeAlso rico:relationHasSource;
@@ -257,6 +233,12 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Sensitivity review has past sensitivity review".
 
+:assetHasSensitivityReview a owl:ObjectProperty;
+	rdfs:domain :Asset;
+	rdfs:range :SensitivityReview;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has sensitivity review".
+
 :sensitivityReviewHasAsset a owl:ObjectProperty;
 	rdfs:inverseOf :assetHasSensitivityReview;
 	rdfs:domain :SensitivityReview;
@@ -264,6 +246,31 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Sensitivity review has asset".
 
+:variationHasSensitivityReview a owl:ObjectProperty;
+	rdfs:domain :Variation;
+	rdfs:range :SensitivityReview;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation has Sensitivity review".
+
+:sensitivityReviewHasVariation a owl:ObjectProperty;
+	rdfs:inverseOf :variationHasSensitivityReview;
+	rdfs:domain :SensitivityReview;
+	rdfs:range :Variation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review has variation".
+
+:sensitivityReviewHasSubset a owl:ObjectProperty;
+	rdfs:domain :SensitivityReview;
+	rdfs:range :Subset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review has subset".
+
+:subsetHasSensitivityReview a owl:ObjectProperty;
+	rdfs:inverseOf :sensitivityReviewHasSubset;
+	rdfs:domain :Subset;
+	rdfs:range :SensitivityReview;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Subset has sensitivity review".
 
 ## Data type properties
 
@@ -280,20 +287,12 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Name".
 
-:collectionName a owl:DatatypeProperty;
-	rdfs:domain :Collection;
+:subsetName a owl:DatatypeProperty;
+	rdfs:domain :Subset;
 	rdfs:range xsd:string;
 	rdfs:subPropertyOf :name;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Collection name".
-
-:collectionCode a owl:DatatypeProperty, owl:FunctionalProperty;
-	rdfs:domain :Collection;
-	rdfs:range xsd:string;
-	rdfs:subPropertyOf :externalIdentifier;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Collection code";
-	rdfs:comment "Unique reference of the :Collection. It is a top level code.".
+	rdfs:label "Subset name".
 
 :subsetReference a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :Subset;
@@ -341,12 +340,12 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Custodianship end date".
 
-:digitalRecordName a owl:DatatypeProperty;
-	rdfs:domain :DigitalRecord;
+:variationName a owl:DatatypeProperty;
+	rdfs:domain :Variation;
 	rdfs:range xsd:string;
 	rdfs:subPropertyOf :name;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Digital record name".
+	rdfs:label "Variation name".
 
 :imagePixelHeight a owl:DatatypeProperty;
 	rdfs:domain :Image;
@@ -424,7 +423,6 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Sensitivity review restriction description".
-
 
 :sensitivityReviewRestrictionCalculationStartDate a owl:DatatypeProperty;
 	rdfs:domain :SensitivityReviewRestriction;
