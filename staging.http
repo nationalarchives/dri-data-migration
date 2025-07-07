@@ -98,6 +98,16 @@ select (count(distinct ?subsetReference) as ?x) where {
     ?subset ex:subsetReference ?subsetReference.
 }
 
+### Subsets
+POST {{endpoint}}
+Content-Type: application/sparql-query
+
+prefix ex: <http://example.com/schema/>
+
+select ?subsetReference where {
+    ?subset ex:subsetReference ?subsetReference.
+} order by ?subsetReference
+
 ### Assets count
 POST {{endpoint}}
 Content-Type: application/sparql-query

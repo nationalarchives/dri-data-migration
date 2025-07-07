@@ -15,7 +15,6 @@ construct {
             ?d a dri:File;
                 dri:directory*/rdfs:label ?code;
                 ^dri:file/dri:parent/rdfs:label ?assetReference;
-#TODO:???       dri:directory/rdfs:label ?directory;
                 rdfs:label ?label.
         }
         order by ?assetReference

@@ -1,9 +1,10 @@
 ﻿prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 prefix dri: <http://nationalarchives.gov.uk/terms/dri#>
+prefix dcterms: <http://purl.org/dc/terms/>
 prefix ex: <http://example.com/schema/>
 
-select ?code where {
+select distinct ?code where {
     ?s a dri:DeliverableUnit;
-    	dri:hasDirectory/rdfs:label ?code.
+        dri:hasDirectory/rdfs:label ?code.
     filter not exists { ?s dri:parent/rdfs:label ?parent }
 }

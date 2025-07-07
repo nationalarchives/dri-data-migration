@@ -81,19 +81,19 @@ this:schema a owl:Ontology;
 	rdfs:label "Past custodianship";
 	rdfs:comment "A :Custodianship has ended.".
 
-:AssetCreation a owl:Class;
+:Creation a owl:Class;
 	rdfs:subClassOf :Custodianship;
 	rdfs:isDefinedBy this:schema;
 	rdfs:seeAlso rico:CreationRelation;
-	rdfs:label "Asset creation";
-	rdfs:comment "A relation describing creation of an :Asset by a :FormalBody.".
+	rdfs:label "Creation";
+	rdfs:comment "A relation describing creation of a thing by a :FormalBody.".
 
-:AssetRetention a owl:Class;
+:Retention a owl:Class;
 	rdfs:subClassOf :Custodianship;
 	rdfs:isDefinedBy this:schema;
 	rdfs:seeAlso rico:RecordResourceHoldingRelation;
-	rdfs:label "Asset retention";
-	rdfs:comment "A relation describing retention of an :Asset by a :FormalBody.".
+	rdfs:label "Retention";
+	rdfs:comment "A relation describing retention of a thing by a :FormalBody.".
 
 :AccessCondition a owl:Class;
 	rdfs:isDefinedBy this:schema;
@@ -173,41 +173,61 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation has file location".
 
-:assetCreationHasAsset a owl:ObjectProperty;
+:creationHasAsset a owl:ObjectProperty;
 	rdfs:seeAlso rico:relationHasSource;
-	rdfs:domain :AssetCreation;
+	rdfs:domain :Creation;
 	rdfs:range :Asset;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset creation has asset".
+	rdfs:label "Creation has asset".
 
-:assetCreationHasFormalBody a owl:ObjectProperty;
+:creationHasSubset a owl:ObjectProperty;
+	rdfs:seeAlso rico:relationHasSource;
+	rdfs:domain :Creation;
+	rdfs:range :Subset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Creation has subset".
+
+:creationHasFormalBody a owl:ObjectProperty;
 	rdfs:seeAlso rico:relationHasTarget;
-	rdfs:domain :AssetCreation;
+	rdfs:domain :Creation;
 	rdfs:range :FormalBody;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset creation has formal body".
+	rdfs:label "Creation has formal body".
 
-:assetRetentionHasAsset a owl:ObjectProperty;
+:retentionHasSubset a owl:ObjectProperty;
 	rdfs:seeAlso rico:relationHasTarget;
-	rdfs:domain :AssetRetention;
+	rdfs:domain :Retention;
+	rdfs:range :Subset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Retention has subset".
+
+:subsetHasRetention a owl:ObjectProperty;
+	owl:inverseOf :retentionHasSubset;
+	rdfs:domain :Subset;
+	rdfs:range :Retention;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Subset has retention".
+
+:retentionHasAsset a owl:ObjectProperty;
+	rdfs:seeAlso rico:relationHasTarget;
+	rdfs:domain :Retention;
 	rdfs:range :Asset;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset retention has asset".
+	rdfs:label "Retention has asset".
 
-:assetHasAssetRetention a owl:ObjectProperty;
-	owl:inverseOf :assetRetentionHasAsset;
-	rdfs:seeAlso rico:relationHasTarget;
+:assetHasRetention a owl:ObjectProperty;
+	owl:inverseOf :retentionHasAsset;
 	rdfs:domain :Asset;
-	rdfs:range :AssetRetention;
+	rdfs:range :Retention;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset has asset retention".
+	rdfs:label "Asset has retention".
 
-:assetRetentionHasFormalBody a owl:ObjectProperty;
+:retentionHasFormalBody a owl:ObjectProperty;
 	rdfs:seeAlso rico:relationHasSource;
-	rdfs:domain :AssetRetention;
+	rdfs:domain :Retention;
 	rdfs:range :FormalBody;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset retention has formal body".
+	rdfs:label "Retention has formal body".
 
 :sensitivityReviewHasLegislation a owl:ObjectProperty;
 	rdfs:domain :SensitivityReview;
@@ -328,17 +348,23 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Formal body name".
 
-:custodianshipStartDate a owl:DatatypeProperty;
+:custodianshipStartAt a owl:DatatypeProperty;
 	rdfs:domain :Custodianship;
-	rdfs:range xsd:date;
+	rdfs:range xsd:dateTime;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Custodianship start date".
+	rdfs:label "Custodianship start at".
 
 :custodianshipEndDate a owl:DatatypeProperty;
 	rdfs:domain :PastCustodianship;
 	rdfs:range xsd:date;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Custodianship end date".
+
+:importLocation a owl:DatatypeProperty;
+	rdfs:domain :Retention;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Import location".
 
 :variationName a owl:DatatypeProperty;
 	rdfs:domain :Variation;
