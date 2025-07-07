@@ -8,7 +8,7 @@ construct {
     ?closure ex:x-type ?type;
             ex:x-reference ?reference;
         ex:sensitivityReviewDriId ?identifier;
-        ex:sensitivityReviewAt ?exemptionAsserted;
+        ex:sensitivityReviewDate ?exemptionAsserted;
     	ex:sensitivityReviewScheduledDate ?sensitivityReviewScheduledDate;
     	ex:sensitivityReviewAssetName ?titleAlternative;
     	ex:sensitivityReviewHasPastSensitivityReview [

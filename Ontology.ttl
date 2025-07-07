@@ -377,11 +377,11 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "SMB network share".
 
-:sensitivityReviewAt a owl:DatatypeProperty;
+:sensitivityReviewDate a owl:DatatypeProperty;
 	rdfs:domain :SensitivityReview;
-	rdfs:range xsd:dateTime;
+	rdfs:range xsd:date;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Sensitivity review at".
+	rdfs:label "Sensitivity review date".
 
 :sensitivityReviewAssetName a owl:DatatypeProperty;
 	rdfs:domain :SensitivityReview;
