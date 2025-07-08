@@ -1,0 +1,52 @@
+﻿using System;
+using VDS.RDF;
+
+namespace Api;
+
+public static class Vocabulary
+{
+    public static readonly Uri Namespace = new("http://example.com/schema/");
+
+    public static readonly IUriNode Subset = new UriNode(new(Namespace, "Subset"));
+    public static readonly IUriNode SubsetName = new UriNode(new(Namespace, "subsetName"));
+    public static readonly IUriNode SubsetReference = new UriNode(new(Namespace, "subsetReference"));
+    public static readonly IUriNode SubsetHasBroaderSubset = new UriNode(new(Namespace, "subsetHasBroaderSubset"));
+    public static readonly IUriNode SubsetHasNarrowerSubset = new UriNode(new(Namespace, "subsetHasNarrowerSubset"));
+    public static readonly IUriNode SubsetHasAsset = new UriNode(new(Namespace, "subsetHasAsset"));
+    public static readonly IUriNode SubsetHasSensitivityReview = new UriNode(new(Namespace, "subsetHasSensitivityReview"));
+    public static readonly IUriNode SubsetHasRetention = new UriNode(new(Namespace, "subsetHasRetention"));
+
+    public static readonly IUriNode Asset = new UriNode(new(Namespace, "Asset"));
+    public static readonly IUriNode AssetReference = new UriNode(new(Namespace, "assetReference"));
+    public static readonly IUriNode AssetName = new UriNode(new(Namespace, "assetName"));
+    public static readonly IUriNode AssetHasSubset = new UriNode(new(Namespace, "assetHasSubset"));
+    public static readonly IUriNode AssetHasVariation = new UriNode(new(Namespace, "assetHasVariation"));
+    public static readonly IUriNode AssetHasRetention = new UriNode(new(Namespace, "assetHasRetention"));
+    public static readonly IUriNode AssetHasSensitivityReview = new UriNode(new(Namespace, "assetHasSensitivityReview"));
+
+    public static readonly IUriNode Variation = new UriNode(new(Namespace, "Variation"));
+    public static readonly IUriNode VariationHasAsset = new UriNode(new(Namespace, "variationHasAsset"));
+    public static readonly IUriNode VariationName = new UriNode(new(Namespace, "variationName"));
+    public static readonly IUriNode VariationHasSensitivityReview = new UriNode(new(Namespace, "variationHasSensitivityReview"));
+
+    public static readonly IUriNode CustodianshipStartAt = new UriNode(new(Namespace, "custodianshipStartAt"));
+    public static readonly IUriNode ImportLocation = new UriNode(new(Namespace, "importLocation"));
+
+    public static readonly IUriNode SensitivityReview = new UriNode(new(Namespace, "SensitivityReview"));
+    public static readonly IUriNode SensitivityReviewDriId = new UriNode(new(Namespace, "sensitivityReviewDriId"));
+    public static readonly IUriNode SensitivityReviewHasAsset = new UriNode(new(Namespace, "sensitivityReviewHasAsset"));
+    public static readonly IUriNode SensitivityReviewHasSubset = new UriNode(new(Namespace, "sensitivityReviewHasSubset"));
+    public static readonly IUriNode SensitivityReviewHasVariation = new UriNode(new(Namespace, "sensitivityReviewHasVariation"));
+    public static readonly IUriNode SensitivityReviewDate = new UriNode(new(Namespace, "sensitivityReviewDate"));
+    public static readonly IUriNode SensitivityReviewScheduledDate = new UriNode(new(Namespace, "sensitivityReviewScheduledDate"));
+    public static readonly IUriNode SensitivityReviewAssetName = new UriNode(new(Namespace, "sensitivityReviewAssetName"));
+    public static readonly IUriNode SensitivityReviewHasPastSensitivityReview = new UriNode(new(Namespace, "sensitivityReviewHasPastSensitivityReview"));
+    public static readonly IUriNode SensitivityReviewHasLegislation = new UriNode(new(Namespace, "sensitivityReviewHasLegislation"));
+    public static readonly IUriNode SensitivityReviewHasSensitivityReviewRestriction = new UriNode(new(Namespace, "sensitivityReviewHasSensitivityReviewRestriction"));
+    public static readonly IUriNode SensitivityReviewRestrictionCalculationStartDate = new UriNode(new(Namespace, "sensitivityReviewRestrictionCalculationStartDate"));
+    public static readonly IUriNode SensitivityReviewRestrictionDuration = new UriNode(new(Namespace, "sensitivityReviewRestrictionDuration"));
+    public static readonly IUriNode SensitivityReviewRestrictionDescription = new UriNode(new(Namespace, "sensitivityReviewRestrictionDescription"));
+    public static readonly IUriNode SensitivityReviewHasAccessCondition = new UriNode(new(Namespace, "sensitivityReviewHasAccessCondition"));
+    public static readonly IUriNode AccessConditionCode = new UriNode(new(Namespace, "accessConditionCode"));
+    public static readonly IUriNode AccessConditionName = new UriNode(new(Namespace, "accessConditionName"));
+}
