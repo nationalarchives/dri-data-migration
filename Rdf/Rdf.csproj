@@ -7,10 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Sparql\GetVariationsByCode.sparql" />
+    <EmbeddedResource Include="Sparql\GetBroadestSubsets.sparql" />
     <EmbeddedResource Include="Sparql\GetAccessConditions.sparql" />
     <EmbeddedResource Include="Sparql\GetSensitivityReviewsByCode.sparql" />
     <EmbeddedResource Include="Sparql\GetAssetsByCode.sparql" />
-    <EmbeddedResource Include="Sparql\GetSubsetsByCollectionCode.sparql" />
+    <EmbeddedResource Include="Sparql\GetSubsetsByCode.sparql" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dotNetRdf" Version="3.3.2" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Api\Api.csproj" />
+  </ItemGroup>	
 
 </Project>
