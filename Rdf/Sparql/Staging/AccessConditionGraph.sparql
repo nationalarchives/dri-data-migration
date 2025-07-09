@@ -1,0 +1,10 @@
+﻿prefix ex: <http://example.com/schema/>
+
+construct {
+    ?s ex:accessConditionCode ?accessConditionCode;
+        ex:accessConditionName ?accessConditionName.
+} where {
+    bind(@id as ?accessConditionCode)
+    ?s ex:accessConditionCode ?accessConditionCode.
+    optional { ?s ex:accessConditionName ?accessConditionName }
+}

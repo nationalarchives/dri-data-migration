@@ -15,8 +15,9 @@ construct {
 } where {
     {
         select * where {
+            bind(@id as ?series)
             ?subset a dri:DeliverableUnit;
-                dri:isPartOfSeries/rdfs:label @series;
+                dri:isPartOfSeries/rdfs:label ?series;
                 dcterms:created ?created;
                 rdfs:label ?reference.
             optional { ?subset dri:parent/rdfs:label ?parent }

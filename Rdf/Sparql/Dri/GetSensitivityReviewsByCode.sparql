@@ -7,10 +7,11 @@ prefix ex: <http://example.com/schema/>
 construct {
     ?closure ex:x-type ?type;
             ex:x-reference ?reference;
-        ex:sensitivityReviewDriId ?identifier;
+        ex:sensitivityReviewDriId ?closure;
         ex:sensitivityReviewDate ?exemptionAsserted;
     	ex:sensitivityReviewScheduledDate ?sensitivityReviewScheduledDate;
-    	ex:sensitivityReviewAssetName ?titleAlternative;
+    	ex:sensitivityReviewSensitiveName ?titleAlternative;
+    	ex:sensitivityReviewSensitiveDescription ?descriptionAlternative;
     	ex:sensitivityReviewHasPastSensitivityReview [
 			ex:sensitivityReviewDriId ?previous
         ];
@@ -27,9 +28,8 @@ construct {
 where {
     {
         select * where {
-            bind(@code as ?code)
+            bind(@id as ?code)
             ?closure prov:specializationOf ?asset;
-                dcterms:identifier ?identifier;
                 dri:closureType ?closureType.
             ?asset a ?type;
                 rdfs:label ?reference;
@@ -41,6 +41,7 @@ where {
             optional { ?closure dri:retentionReconsiderDate ?retentionReconsiderDate }
             optional { ?closure dri:exemptionCode ?exemptionCode }
             optional { ?closure dri:titleAlternative ?titleAlternative }
+            optional { ?closure dri:alternative ?descriptionAlternative }
             optional { ?closure prov:wasRevisionOf/dcterms:identifier ?previous }
             optional {
                 ?closure prov:qualifiedInfluence/prov:influencer/rdfs:label ?reasonForChange

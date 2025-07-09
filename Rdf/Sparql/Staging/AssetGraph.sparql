@@ -1,0 +1,18 @@
+﻿prefix ex: <http://example.com/schema/>
+
+construct {
+    ?asset ex:assetReference ?reference;
+        ex:assetHasSubset ?subset;
+        ex:assetHasRetention ?retention.
+    ?retention ex:custodianshipStartAt ?created;
+        ex:importLocation ?importLocation.
+} where {
+    bind(@id as ?reference)
+    ?asset ex:assetReference ?reference.
+    optional { ?asset ex:assetHasSubset ?subset }
+    optional {
+        ?asset ex:assetHasRetention ?retention;
+            ex:custodianshipStartAt ?created.
+        optional { ?retention ex:importLocation ?importLocation }
+    }
+}

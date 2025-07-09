@@ -1,0 +1,67 @@
+﻿prefix ex: <http://example.com/schema/>
+
+select ?t ?subsetReference ?importLocation ?accessConditionName ?sensitivityReviewDate
+    ?sensitivityReviewScheduledDate ?sensitivityReviewSensitiveName ?sensitivityReviewSensitiveDescription
+    ?sensitivityReviewHasLegislation ?sensitivityReviewRestrictionCalculationStartDate
+    ?sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionDescription where {
+    bind(@id as ?id)
+    ?subset ex:subsetHasBroaderSubset*/ex:subsetReference ?id.
+    filter(?t in (ex:Subset, ex:Variation))
+    {
+        select * where {
+            {
+                ?s a ?t;
+                    ex:subsetReference ?subsetReference;
+                    ex:subsetHasRetention/ex:importLocation ?importLocation.
+                optional {
+                    ?s ex:subsetHasSensitivityReview ?sr.
+                    optional { 
+                        ?sr ex:sensitivityReviewHasAccessCondition ?ac.
+                        ?ac ex:accessConditionName ?accessConditionName.
+                    }
+                    optional { ?sr ex:sensitivityReviewDate ?sensitivityReviewDate }
+                    optional { ?sr ex:sensitivityReviewScheduledDate ?sensitivityReviewScheduledDate }
+                    optional { ?sr ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName }
+                    optional { ?sr ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription }
+                    optional { ?sr ex:sensitivityReviewHasLegislation ?sensitivityReviewHasLegislation }
+                    optional { 
+                        ?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
+                        optional { ?restriction ex:sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionCalculationStartDate }
+                        optional { ?restriction ex:sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionDuration }
+                        optional { ?restriction ex:sensitivityReviewRestrictionDescription ?sensitivityReviewRestrictionDescription }
+                    }
+                    filter not exists { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?sr }
+                }
+                bind(?s as ?subset)
+            }
+            union
+            {
+                ?s a ?t;
+                    ex:variationName ?name;
+                    ex:variationHasAsset ?asset.
+                ?asset ex:assetHasRetention/ex:importLocation ?importFolder;
+        	        ex:assetHasSubset ?subset.
+                bind(concat(?importFolder,'/',?name) as ?importLocation)
+                optional {
+                    ?s ex:variationHasSensitivityReview ?sr.
+                    optional { 
+                        ?sr ex:sensitivityReviewHasAccessCondition ?ac.
+                        ?ac ex:accessConditionName ?accessConditionName.
+                    }
+                    optional { ?sr ex:sensitivityReviewDate ?sensitivityReviewDate }
+                    optional { ?sr ex:sensitivityReviewScheduledDate ?sensitivityReviewScheduledDate }
+                    optional { ?sr ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName }
+                    optional { ?sr ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription }
+                    optional { ?sr ex:sensitivityReviewHasLegislation ?sensitivityReviewHasLegislation }
+                    optional { 
+                        ?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
+                        optional { ?restriction ex:sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionCalculationStartDate }
+                        optional { ?restriction ex:sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionDuration }
+                        optional { ?restriction ex:sensitivityReviewRestrictionDescription ?sensitivityReviewRestrictionDescription }
+                    }
+                    filter not exists { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?sr }
+                }
+            }
+        }
+    }
+}

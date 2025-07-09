@@ -1,0 +1,12 @@
+﻿prefix ex: <http://example.com/schema/>
+
+construct {
+    ?variation ex:variationDriId ?variationDriId;
+        ex:variationHasAsset ?asset;
+        ex:variationName ?variationName.
+} where {
+    bind(@id as ?variationDriId)
+    ?variation ex:variationDriId ?variationDriId;
+        ex:variationHasAsset ?asset;
+        ex:variationName ?variationName.
+}

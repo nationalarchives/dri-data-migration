@@ -1,0 +1,38 @@
+﻿prefix ex: <http://example.com/schema/>
+
+construct {
+    ?sr ex:sensitivityReviewDriId ?sensitivityReviewDriId;
+        ex:sensitivityReviewHasAsset ?asset;
+        ex:sensitivityReviewHasVariation ?variation;
+        ex:sensitivityReviewHasAccessCondition ?accessCondition;
+        ex:sensitivityReviewDate ?sensitivityReviewDate;
+        ex:sensitivityReviewScheduledDate ?sensitivityReviewScheduledDate;
+        ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName;
+        ex:sensitivityReviewHasPastSensitivityReview ?pastSensitivityReview;
+        ex:sensitivityReviewHasLegislation ?legislation;
+        ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
+    ?restriction ex:sensitivityReviewRestrictionCalculationStartDate ?startDate;
+        	ex:sensitivityReviewRestrictionDuration ?closurePeriod;
+            ex:sensitivityReviewRestrictionDescription ?reasonForChange.
+} where {
+    bind(@id as ?sensitivityReviewDriId)
+    ?sr ex:sensitivityReviewDriId ?sensitivityReviewDriId.
+    optional { ?sr ex:sensitivityReviewHasAsset ?asset }
+    optional { ?sr ex:sensitivityReviewHasVariation ?variation }
+    optional { 
+        ?sr ex:sensitivityReviewHasAccessCondition ?accessCondition.
+        ?accessCondition ex:accessConditionCode ?accessConditionCode;
+            ex:accessConditionName ?accessConditionName.
+    }
+    optional { ?sr ex:sensitivityReviewDate ?sensitivityReviewDate }
+    optional { ?sr ex:sensitivityReviewScheduledDate ?sensitivityReviewScheduledDate }
+    optional { ?sr ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName }
+    optional { ?sr ex:sensitivityReviewHasPastSensitivityReview ?pastSensitivityReview }
+    optional { ?sr ex:sensitivityReviewHasLegislation ?legislation }
+    optional { 
+        ?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
+        optional { ?restriction ex:sensitivityReviewRestrictionCalculationStartDate ?startDate }
+        optional { ?restriction ex:sensitivityReviewRestrictionDuration ?closurePeriod }
+        optional { ?restriction ex:sensitivityReviewRestrictionDescription ?reasonForChange }
+    }
+}

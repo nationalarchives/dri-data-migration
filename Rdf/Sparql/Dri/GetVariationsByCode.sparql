@@ -4,14 +4,15 @@ prefix dcterms: <http://purl.org/dc/terms/>
 prefix ex: <http://example.com/schema/>
 
 construct {
-    ?d ex:variationHasAsset [
+    ?d ex:variationDriId ?d;
+        ex:variationHasAsset [
 	 	    ex:assetReference ?assetReference
     	];
     	ex:variationName ?label.
 } where {
     {
         select * where {
-            bind(@code as ?code)
+            bind(@id as ?code)
             ?d a dri:File;
                 dri:directory*/rdfs:label ?code;
                 ^dri:file/dri:parent/rdfs:label ?assetReference;

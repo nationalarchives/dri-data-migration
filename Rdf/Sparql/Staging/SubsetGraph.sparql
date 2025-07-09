@@ -1,0 +1,22 @@
+﻿prefix ex: <http://example.com/schema/>
+
+construct {
+    ?subset ex:subsetReference ?subsetReference;
+        ex:subsetHasBroaderSubset ?broaderSubset;
+        ex:subsetHasRetention ?retention.
+    ?collection ex:subsetReference ?parentSubsetReference.
+    ?retention ex:custodianshipStartAt ?created;
+        ex:importLocation ?importLocation.
+} where {
+    bind(@id as ?subsetReference)
+    ?subset ex:subsetReference ?subsetReference.
+    optional { 
+        ?subset ex:subsetHasBroaderSubset ?broaderSubset.
+        ?broaderSubset ex:subsetReference ?parentSubsetReference.
+    }
+    optional {
+        ?subset ex:subsetHasRetention ?retention;
+            ex:importLocation ?importLocation.
+        optional { ?retention ex:custodianshipStartAt ?created }
+    }
+}
