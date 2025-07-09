@@ -126,40 +126,40 @@ this:schema a owl:Ontology;
 
 # Object properties
 
-:subsetHasBroaderSubset a owl:ObjectProperty;
+:subsetHasBroaderSubset a owl:ObjectProperty, owl:FunctionalProperty;
 	rdfs:domain :Subset;
 	rdfs:range :Subset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Subset has broader subset".
 
-:subsetHasNarrowerSubset a owl:ObjectProperty;
+:subsetHasNarrowerSubset a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	owl:inverseOf :subsetHasBroaderSubset;
 	rdfs:domain :Subset;
 	rdfs:range :Subset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Subset has narrower subset".
 
-:subsetHasAsset a owl:ObjectProperty;
+:subsetHasAsset a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	rdfs:domain :Subset;
 	rdfs:range :Asset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Subset has asset".
 
-:assetHasSubset a owl:ObjectProperty;
+:assetHasSubset a owl:ObjectProperty, owl:FunctionalProperty;
 	owl:inverseOf :subsetHasAsset;
 	rdfs:domain :Asset;
 	rdfs:range :Subset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has subset".
 
-:assetHasVariation a owl:ObjectProperty;
+:assetHasVariation a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	rdfs:seeAlso rico:hasOrHadInstantiation;
 	rdfs:domain :Asset;
 	rdfs:range :Variation;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has variation".
 
-:variationHasAsset a owl:ObjectProperty;
+:variationHasAsset a owl:ObjectProperty, owl:FunctionalProperty;
 	owl:inverseOf :assetHasVariation;
 	rdfs:seeAlso rico:isOrWasInstantiationOf;
 	rdfs:domain :Variation;
@@ -167,20 +167,20 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation has asset".
 
-:variationHasFileLocation a owl:ObjectProperty;
+:variationHasFileLocation a owl:ObjectProperty, owl:FunctionalProperty;
 	rdfs:domain :Variation;
 	rdfs:range :FileLocation;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation has file location".
 
-:creationHasAsset a owl:ObjectProperty;
+:creationHasAsset a owl:ObjectProperty, owl:FunctionalProperty;
 	rdfs:seeAlso rico:relationHasSource;
 	rdfs:domain :Creation;
 	rdfs:range :Asset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Creation has asset".
 
-:creationHasSubset a owl:ObjectProperty;
+:creationHasSubset a owl:ObjectProperty, owl:FunctionalProperty;
 	rdfs:seeAlso rico:relationHasSource;
 	rdfs:domain :Creation;
 	rdfs:range :Subset;
@@ -194,28 +194,28 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Creation has formal body".
 
-:retentionHasSubset a owl:ObjectProperty;
+:retentionHasSubset a owl:ObjectProperty, owl:FunctionalProperty;
 	rdfs:seeAlso rico:relationHasTarget;
 	rdfs:domain :Retention;
 	rdfs:range :Subset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Retention has subset".
 
-:subsetHasRetention a owl:ObjectProperty;
+:subsetHasRetention a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	owl:inverseOf :retentionHasSubset;
 	rdfs:domain :Subset;
 	rdfs:range :Retention;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Subset has retention".
 
-:retentionHasAsset a owl:ObjectProperty;
+:retentionHasAsset a owl:ObjectProperty, owl:FunctionalProperty;
 	rdfs:seeAlso rico:relationHasTarget;
 	rdfs:domain :Retention;
 	rdfs:range :Asset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Retention has asset".
 
-:assetHasRetention a owl:ObjectProperty;
+:assetHasRetention a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	owl:inverseOf :retentionHasAsset;
 	rdfs:domain :Asset;
 	rdfs:range :Retention;
@@ -241,51 +241,51 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Sensitivity review has access condition".
 
-:sensitivityReviewHasSensitivityReviewRestriction a owl:ObjectProperty;
+:sensitivityReviewHasSensitivityReviewRestriction a owl:ObjectProperty, owl:FunctionalProperty;
 	rdfs:domain :SensitivityReview;
 	rdfs:range :SensitivityReviewRestriction;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Sensitivity review has sensitivity review restriction".
 
-:sensitivityReviewHasPastSensitivityReview a owl:ObjectProperty;
+:sensitivityReviewHasPastSensitivityReview a owl:ObjectProperty, owl:FunctionalProperty;
 	rdfs:domain :SensitivityReview;
 	rdfs:range :PastSensitivityReview;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Sensitivity review has past sensitivity review".
 
-:assetHasSensitivityReview a owl:ObjectProperty;
+:assetHasSensitivityReview a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	rdfs:domain :Asset;
 	rdfs:range :SensitivityReview;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has sensitivity review".
 
-:sensitivityReviewHasAsset a owl:ObjectProperty;
+:sensitivityReviewHasAsset a owl:ObjectProperty, owl:FunctionalProperty;
 	owl:inverseOf :assetHasSensitivityReview;
 	rdfs:domain :SensitivityReview;
 	rdfs:range :Asset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Sensitivity review has asset".
 
-:variationHasSensitivityReview a owl:ObjectProperty;
+:variationHasSensitivityReview a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	rdfs:domain :Variation;
 	rdfs:range :SensitivityReview;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation has Sensitivity review".
 
-:sensitivityReviewHasVariation a owl:ObjectProperty;
+:sensitivityReviewHasVariation a owl:ObjectProperty, owl:FunctionalProperty;
 	owl:inverseOf :variationHasSensitivityReview;
 	rdfs:domain :SensitivityReview;
 	rdfs:range :Variation;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Sensitivity review has variation".
 
-:sensitivityReviewHasSubset a owl:ObjectProperty;
+:sensitivityReviewHasSubset a owl:ObjectProperty, owl:FunctionalProperty;
 	rdfs:domain :SensitivityReview;
 	rdfs:range :Subset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Sensitivity review has subset".
 
-:subsetHasSensitivityReview a owl:ObjectProperty;
+:subsetHasSensitivityReview a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	owl:inverseOf :sensitivityReviewHasSubset;
 	rdfs:domain :Subset;
 	rdfs:range :SensitivityReview;
@@ -366,6 +366,13 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Import location".
 
+:variationDriId a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :Variation;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation DRI Id".
+
 :variationName a owl:DatatypeProperty;
 	rdfs:domain :Variation;
 	rdfs:range xsd:string;
@@ -409,13 +416,21 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Sensitivity review date".
 
-:sensitivityReviewAssetName a owl:DatatypeProperty;
+:sensitivityReviewSensitiveName a owl:DatatypeProperty;
 	rdfs:domain :SensitivityReview;
 	rdfs:range xsd:string;
 	rdfs:subPropertyOf :name;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Sensitivity review asset name";
-	rdfs:comment ":SensitivityReview may result in a new name of an :Asset to mask sensitive information.".
+	rdfs:label "Sensitivity review sensitive name";
+	rdfs:comment ":SensitivityReview may result in a new name of a thing to mask sensitive information.".
+
+:sensitivityReviewSensitiveDescription a owl:DatatypeProperty;
+	rdfs:domain :SensitivityReview;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :name;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review sensitive description";
+	rdfs:comment ":SensitivityReview may result in a new description of a thing to mask sensitive information.".
 
 :sensitivityReviewScheduledDate a owl:DatatypeProperty;
 	rdfs:domain :SensitivityReview;

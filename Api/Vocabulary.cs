@@ -26,6 +26,7 @@ public static class Vocabulary
 
     public static readonly IUriNode Variation = new UriNode(new(Namespace, "Variation"));
     public static readonly IUriNode VariationHasAsset = new UriNode(new(Namespace, "variationHasAsset"));
+    public static readonly IUriNode VariationDriId = new UriNode(new(Namespace, "variationDriId"));
     public static readonly IUriNode VariationName = new UriNode(new(Namespace, "variationName"));
     public static readonly IUriNode VariationHasSensitivityReview = new UriNode(new(Namespace, "variationHasSensitivityReview"));
 
@@ -39,7 +40,8 @@ public static class Vocabulary
     public static readonly IUriNode SensitivityReviewHasVariation = new UriNode(new(Namespace, "sensitivityReviewHasVariation"));
     public static readonly IUriNode SensitivityReviewDate = new UriNode(new(Namespace, "sensitivityReviewDate"));
     public static readonly IUriNode SensitivityReviewScheduledDate = new UriNode(new(Namespace, "sensitivityReviewScheduledDate"));
-    public static readonly IUriNode SensitivityReviewAssetName = new UriNode(new(Namespace, "sensitivityReviewAssetName"));
+    public static readonly IUriNode SensitivityReviewSensitiveName = new UriNode(new(Namespace, "sensitivityReviewSensitiveName"));
+    public static readonly IUriNode SensitivityReviewSensitiveDescription = new UriNode(new(Namespace, "sensitivityReviewSensitiveDescription"));
     public static readonly IUriNode SensitivityReviewHasPastSensitivityReview = new UriNode(new(Namespace, "sensitivityReviewHasPastSensitivityReview"));
     public static readonly IUriNode SensitivityReviewHasLegislation = new UriNode(new(Namespace, "sensitivityReviewHasLegislation"));
     public static readonly IUriNode SensitivityReviewHasSensitivityReviewRestriction = new UriNode(new(Namespace, "sensitivityReviewHasSensitivityReviewRestriction"));
