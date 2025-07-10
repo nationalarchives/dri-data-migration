@@ -16,16 +16,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="8.4.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-    <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" Version="1.7.3" />
-	<PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="17.14.2" />
-    <PackageReference Include="MSTest" Version="3.9.3" />
-	<PackageReference Include="dotNetRdf" Version="3.4.0" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
+	<PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
+    <PackageReference Include="MSTest" />
+	<PackageReference Include="dotNetRdf" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Rdf\Rdf.csproj" />
+    <ProjectReference Include="..\..\Orchestration\Orchestration.csproj" />
+    <ProjectReference Include="..\..\Rdf\Rdf.csproj" />
   </ItemGroup>
 
   <ItemGroup>
