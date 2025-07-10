@@ -7,12 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Sparql\GetVariationsByCode.sparql" />
-    <EmbeddedResource Include="Sparql\GetBroadestSubsets.sparql" />
-    <EmbeddedResource Include="Sparql\GetAccessConditions.sparql" />
-    <EmbeddedResource Include="Sparql\GetSensitivityReviewsByCode.sparql" />
-    <EmbeddedResource Include="Sparql\GetAssetsByCode.sparql" />
-    <EmbeddedResource Include="Sparql\GetSubsetsByCode.sparql" />
+    <EmbeddedResource Include="Sparql\Dri\GetVariationsByCode.sparql" />
+    <EmbeddedResource Include="Sparql\Dri\GetBroadestSubsets.sparql" />
+    <EmbeddedResource Include="Sparql\Dri\GetAccessConditions.sparql" />
+    <EmbeddedResource Include="Sparql\Dri\GetSensitivityReviewsByCode.sparql" />
+    <EmbeddedResource Include="Sparql\Dri\GetAssetsByCode.sparql" />
+    <EmbeddedResource Include="Sparql\Dri\GetSubsetsByCode.sparql" />
+    <EmbeddedResource Include="Sparql\Staging\ReconciliationResultSet.sparql" />
+    <EmbeddedResource Include="Sparql\Staging\VariationGraph.sparql" />
+    <EmbeddedResource Include="Sparql\Staging\SubsetGraph.sparql" />
+    <EmbeddedResource Include="Sparql\Staging\SensitivityReviewGraph.sparql" />
+    <EmbeddedResource Include="Sparql\Staging\AssetGraph.sparql" />
+    <EmbeddedResource Include="Sparql\Staging\AccessConditionGraph.sparql" />
   </ItemGroup>
 
   <ItemGroup>
