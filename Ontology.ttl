@@ -126,13 +126,13 @@ this:schema a owl:Ontology;
 
 # Object properties
 
-:subsetHasBroaderSubset a owl:ObjectProperty, owl:FunctionalProperty;
+:subsetHasBroaderSubset a owl:ObjectProperty;
 	rdfs:domain :Subset;
 	rdfs:range :Subset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Subset has broader subset".
 
-:subsetHasNarrowerSubset a owl:ObjectProperty, owl:InverseFunctionalProperty;
+:subsetHasNarrowerSubset a owl:ObjectProperty;
 	owl:inverseOf :subsetHasBroaderSubset;
 	rdfs:domain :Subset;
 	rdfs:range :Subset;
@@ -201,7 +201,7 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Retention has subset".
 
-:subsetHasRetention a owl:ObjectProperty, owl:InverseFunctionalProperty;
+:subsetHasRetention a owl:ObjectProperty, owl:FunctionalProperty;
 	owl:inverseOf :retentionHasSubset;
 	rdfs:domain :Subset;
 	rdfs:range :Retention;
@@ -215,7 +215,7 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Retention has asset".
 
-:assetHasRetention a owl:ObjectProperty, owl:InverseFunctionalProperty;
+:assetHasRetention a owl:ObjectProperty, owl:FunctionalProperty;
 	owl:inverseOf :retentionHasAsset;
 	rdfs:domain :Asset;
 	rdfs:range :Retention;
