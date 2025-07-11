@@ -6,33 +6,55 @@ construct {
         ex:sensitivityReviewHasVariation ?variation;
         ex:sensitivityReviewHasAccessCondition ?accessCondition;
         ex:sensitivityReviewDate ?sensitivityReviewDate;
-        ex:sensitivityReviewScheduledDate ?sensitivityReviewScheduledDate;
         ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName;
+        ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription;
         ex:sensitivityReviewHasPastSensitivityReview ?pastSensitivityReview;
-        ex:sensitivityReviewHasLegislation ?legislation;
         ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
-    ?restriction ex:sensitivityReviewRestrictionCalculationStartDate ?startDate;
-        	ex:sensitivityReviewRestrictionDuration ?closurePeriod;
-            ex:sensitivityReviewRestrictionDescription ?reasonForChange.
+    ?pastSensitivityReview ex:sensitivityReviewDriId ?pastSensitivityReviewDriId.
+    ?restriction ex:sensitivityReviewRestrictionReviewDate ?sensitivityReviewRestrictionReviewDate;
+        ex:sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionCalculationStartDate;
+        ex:sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionDuration;
+        ex:sensitivityReviewRestrictionEndYear ?sensitivityReviewRestrictionEndYear;
+        ex:sensitivityReviewRestrictionDescription ?sensitivityReviewRestrictionDescription;
+        ex:sensitivityReviewRestrictionHasLegislation ?legislation;
+        ex:sensitivityReviewRestrictionHasRetentionRestriction ?retentionRestriction.
+    ?retentionRestriction ex:retentionInstrumentNumber ?retentionInstrumentNumber;
+        ex:retentionInstrumentSignedDate ?retentionInstrumentSignedDate;
+        ex:retentionRestrictionReviewDate ?retentionRestrictionReviewDate;
+        ex:retentionRestrictionHasGroundForRetention ?retentionRestrictionHasGroundForRetention;
+        ex:retentionRestrictionHasRetention ?retention.
+    ?asset ex:assetHasRetention ?retention.
+    ?subset ex:subsetHasRetention ?retention.
 } where {
     bind(@id as ?sensitivityReviewDriId)
     ?sr ex:sensitivityReviewDriId ?sensitivityReviewDriId.
     optional { ?sr ex:sensitivityReviewHasAsset ?asset }
     optional { ?sr ex:sensitivityReviewHasVariation ?variation }
-    optional { 
-        ?sr ex:sensitivityReviewHasAccessCondition ?accessCondition.
-        ?accessCondition ex:accessConditionCode ?accessConditionCode;
-            ex:accessConditionName ?accessConditionName.
-    }
+    optional { ?sr ex:sensitivityReviewHasAccessCondition ?accessCondition }
     optional { ?sr ex:sensitivityReviewDate ?sensitivityReviewDate }
-    optional { ?sr ex:sensitivityReviewScheduledDate ?sensitivityReviewScheduledDate }
     optional { ?sr ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName }
-    optional { ?sr ex:sensitivityReviewHasPastSensitivityReview ?pastSensitivityReview }
-    optional { ?sr ex:sensitivityReviewHasLegislation ?legislation }
+    optional { ?sr ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription }
+    optional {
+        ?sr ex:sensitivityReviewHasPastSensitivityReview ?pastSensitivityReview;
+            ex:sensitivityReviewDriId ?pastSensitivityReviewDriId.
+    }
     optional { 
-        ?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
-        optional { ?restriction ex:sensitivityReviewRestrictionCalculationStartDate ?startDate }
-        optional { ?restriction ex:sensitivityReviewRestrictionDuration ?closurePeriod }
-        optional { ?restriction ex:sensitivityReviewRestrictionDescription ?reasonForChange }
+        ?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction;
+            ex:sensitivityReviewRestrictionHasRetentionRestriction ?retentionRestriction.
+        optional { ?restriction ex:sensitivityReviewRestrictionReviewDate ?sensitivityReviewRestrictionReviewDate }
+        optional { ?restriction ex:sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionCalculationStartDate }
+        optional { ?restriction ex:sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionDuration }
+        optional { ?restriction ex:sensitivityReviewRestrictionEndYear ?sensitivityReviewRestrictionEndYear }
+        optional { ?restriction ex:sensitivityReviewRestrictionDescription ?sensitivityReviewRestrictionDescription }
+        optional { ?restriction ex:sensitivityReviewRestrictionHasLegislation ?legislation }
+        optional { ?retentionRestriction ex:retentionInstrumentNumber ?retentionInstrumentNumber }
+        optional { ?retentionRestriction ex:retentionInstrumentSignedDate ?retentionInstrumentSignedDate }
+        optional { ?retentionRestriction ex:retentionRestrictionReviewDate ?retentionRestrictionReviewDate }
+        optional { ?retentionRestriction ex:retentionRestrictionHasGroundForRetention ?retentionRestrictionHasGroundForRetention }
+        optional {
+            ?retentionRestriction ex:retentionRestrictionHasRetention ?retention.
+            optional { ?asset ex:assetHasRetention ?retention }
+            optional { ?subset ex:subsetHasRetention ?retention }
+        }
     }
 }

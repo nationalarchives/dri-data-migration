@@ -39,16 +39,32 @@ public static class Vocabulary
     public static readonly IUriNode SensitivityReviewHasSubset = new UriNode(new(Namespace, "sensitivityReviewHasSubset"));
     public static readonly IUriNode SensitivityReviewHasVariation = new UriNode(new(Namespace, "sensitivityReviewHasVariation"));
     public static readonly IUriNode SensitivityReviewDate = new UriNode(new(Namespace, "sensitivityReviewDate"));
-    public static readonly IUriNode SensitivityReviewScheduledDate = new UriNode(new(Namespace, "sensitivityReviewScheduledDate"));
     public static readonly IUriNode SensitivityReviewSensitiveName = new UriNode(new(Namespace, "sensitivityReviewSensitiveName"));
     public static readonly IUriNode SensitivityReviewSensitiveDescription = new UriNode(new(Namespace, "sensitivityReviewSensitiveDescription"));
     public static readonly IUriNode SensitivityReviewHasPastSensitivityReview = new UriNode(new(Namespace, "sensitivityReviewHasPastSensitivityReview"));
-    public static readonly IUriNode SensitivityReviewHasLegislation = new UriNode(new(Namespace, "sensitivityReviewHasLegislation"));
     public static readonly IUriNode SensitivityReviewHasSensitivityReviewRestriction = new UriNode(new(Namespace, "sensitivityReviewHasSensitivityReviewRestriction"));
+    public static readonly IUriNode SensitivityReviewHasAccessCondition = new UriNode(new(Namespace, "sensitivityReviewHasAccessCondition"));
+
     public static readonly IUriNode SensitivityReviewRestrictionCalculationStartDate = new UriNode(new(Namespace, "sensitivityReviewRestrictionCalculationStartDate"));
     public static readonly IUriNode SensitivityReviewRestrictionDuration = new UriNode(new(Namespace, "sensitivityReviewRestrictionDuration"));
+    public static readonly IUriNode SensitivityReviewRestrictionEndYear = new UriNode(new(Namespace, "sensitivityReviewRestrictionEndYear"));
     public static readonly IUriNode SensitivityReviewRestrictionDescription = new UriNode(new(Namespace, "sensitivityReviewRestrictionDescription"));
-    public static readonly IUriNode SensitivityReviewHasAccessCondition = new UriNode(new(Namespace, "sensitivityReviewHasAccessCondition"));
+    public static readonly IUriNode SensitivityReviewRestrictionReviewDate = new UriNode(new(Namespace, "sensitivityReviewRestrictionReviewDate"));
+    public static readonly IUriNode SensitivityReviewRestrictionHasLegislation = new UriNode(new(Namespace, "sensitivityReviewRestrictionHasLegislation"));
+    public static readonly IUriNode SensitivityReviewRestrictionHasRetentionRestriction = new UriNode(new(Namespace, "sensitivityReviewRestrictionHasRetentionRestriction"));
+
+    public static readonly IUriNode LegislationHasUkLegislation = new UriNode(new(Namespace, "legislationHasUkLegislation"));
+    public static readonly IUriNode LegislationSectionReference = new UriNode(new(Namespace, "legislationSectionReference"));
+
     public static readonly IUriNode AccessConditionCode = new UriNode(new(Namespace, "accessConditionCode"));
     public static readonly IUriNode AccessConditionName = new UriNode(new(Namespace, "accessConditionName"));
+    
+    public static readonly IUriNode RetentionRestrictionHasGroundForRetention = new UriNode(new(Namespace, "retentionRestrictionHasGroundForRetention"));
+    public static readonly IUriNode RetentionRestrictionHasRetention = new UriNode(new(Namespace, "retentionRestrictionHasRetention"));
+    public static readonly IUriNode RetentionInstrumentNumber = new UriNode(new(Namespace, "retentionInstrumentNumber"));
+    public static readonly IUriNode RetentionInstrumentSignedDate = new UriNode(new(Namespace, "retentionInstrumentSignedDate"));
+    public static readonly IUriNode RetentionRestrictionReviewDate = new UriNode(new(Namespace, "retentionRestrictionReviewDate"));
+
+    public static readonly IUriNode GroundForRetentionCode = new UriNode(new(Namespace, "groundForRetentionCode"));
+    public static readonly IUriNode GroundForRetentionDescription = new UriNode(new(Namespace, "groundForRetentionDescription"));
 }

@@ -5,8 +5,7 @@ construct {
         ex:subsetHasBroaderSubset ?broaderSubset;
         ex:subsetHasRetention ?retention.
     ?collection ex:subsetReference ?parentSubsetReference.
-    ?retention ex:custodianshipStartAt ?created;
-        ex:importLocation ?importLocation.
+    ?retention ex:importLocation ?importLocation.
 } where {
     bind(@id as ?subsetReference)
     ?subset ex:subsetReference ?subsetReference.
@@ -15,8 +14,7 @@ construct {
         ?broaderSubset ex:subsetReference ?parentSubsetReference.
     }
     optional {
-        ?subset ex:subsetHasRetention ?retention;
-            ex:importLocation ?importLocation.
-        optional { ?retention ex:custodianshipStartAt ?created }
+        ?subset ex:subsetHasRetention ?retention.
+        optional { ?retention ex:importLocation ?importLocation }
     }
 }

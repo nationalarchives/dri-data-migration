@@ -57,7 +57,7 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:seeAlso rico:Place;
 	rdfs:label "Location";
-	rdfs:comment "A location of an :Asset.".
+	rdfs:comment "A location of a thing.".
 
 :FileLocation a owl:Class;
 	rdfs:subClassOf :Location;
@@ -68,12 +68,12 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:seeAlso rico:Agent;
 	rdfs:label "Formal body";
-	rdfs:comment "An entity (e.g. government department, public institution) that creates or holds :Asset.".
+	rdfs:comment "An entity (e.g. government department, public institution) that creates or holds a thing.".
 
 :Custodianship a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Custodianship";
-	rdfs:comment "An activity of being in possession of an :Asset.".
+	rdfs:comment "An activity of being in possession of a thing.".
 
 :PastCustodianship a owl:Class;
 	rdfs:subClassOf :Custodianship;
@@ -98,18 +98,33 @@ this:schema a owl:Ontology;
 :AccessCondition a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Access condition";
-	rdfs:comment "A thing describing type of access to :Asset.".
+	rdfs:comment "A thing describing type of access.".
 
 :SensitivityReviewRestriction a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:seeAlso rico:Rule;
 	rdfs:label "Sensitivity review restriction";
-	rdfs:comment "Details of restrictions applied to na :Asset which are an outcome of a :SensitivityReview.".
+	rdfs:comment "Details of restrictions applied to a thing which are an outcome of a :SensitivityReview.".
+
+:RetentionRestriction a owl:Class;
+	rdfs:subClassOf :SensitivityReviewRestriction;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:Rule;
+	rdfs:label "Retention restriction";
+	rdfs:comment "Type of :SensitivityReviewRestriction resulting in retention of a thing.".
+
+:GroundForRetention a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Ground for retention";
+	rdfs:comment "Justification of retention (details: https://cdn.nationalarchives.gov.uk/documents/information-management/retention.pdf) as per application to the Advisory Council (https://www.nationalarchives.gov.uk/about/our-role/advisory-council/).".
 
 :Legislation a owl:Class;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Legislation";
-	rdfs:comment "UK legislation.".
+	rdfs:label "Legislation".
+
+:UkLegislation a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "UK legislation (provided by https://www.legislation.gov.uk/)".
 
 :SensitivityReview a owl:Class;
 	rdfs:isDefinedBy this:schema;
@@ -229,12 +244,6 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Retention has formal body".
 
-:sensitivityReviewHasLegislation a owl:ObjectProperty;
-	rdfs:domain :SensitivityReview;
-	rdfs:range :Legislation;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Sensitivity review has legislation".
-
 :sensitivityReviewHasAccessCondition a owl:ObjectProperty;
 	rdfs:domain :SensitivityReview;
 	rdfs:range :AccessCondition;
@@ -291,6 +300,51 @@ this:schema a owl:Ontology;
 	rdfs:range :SensitivityReview;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Subset has sensitivity review".
+	
+:sensitivityReviewRestrictionHasLegislation a owl:ObjectProperty;
+	rdfs:domain :SensitivityReviewRestriction;
+	rdfs:range :Legislation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review restriction has legislation".
+
+:sensitivityReviewRestrictionHasRetentionRestriction a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:domain :SensitivityReviewRestriction;
+	rdfs:range :RetentionRestriction;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review restriction has retention restriction".
+
+:retentionRestrictionHasSensitivityReviewRestriction a owl:ObjectProperty, owl:FunctionalProperty;
+	owl:inverseOf :sensitivityReviewRestrictionHasRetentionRestriction;
+	rdfs:domain :RetentionRestriction;
+	rdfs:range :SensitivityReviewRestriction;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Retention restriction has sensitivity review restriction".
+
+:retentionRestrictionHasGroundForRetention a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:domain :RetentionRestriction;
+	rdfs:range :GroundForRetention;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Retention restriction has ground for retention".
+
+:legislationHasUkLegislation a owl:ObjectProperty;
+	rdfs:domain :Legislation;
+	rdfs:range :UkLegislation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Legislation has UK legislation".
+
+:retentionHasRetentionRestriction a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:domain :Retention;
+	rdfs:range :RetentionRestriction;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Retention has retention restriction".
+
+:retentionRestrictionHasRetention a owl:ObjectProperty, owl:FunctionalProperty;
+	owl:inverseOf :retentionHasRetentionRestriction;
+	rdfs:domain :RetentionRestriction;
+	rdfs:range :Retention;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Retention restriction has retention".
+
 
 ## Data type properties
 
@@ -432,12 +486,6 @@ this:schema a owl:Ontology;
 	rdfs:label "Sensitivity review sensitive description";
 	rdfs:comment ":SensitivityReview may result in a new description of a thing to mask sensitive information.".
 
-:sensitivityReviewScheduledDate a owl:DatatypeProperty;
-	rdfs:domain :SensitivityReview;
-	rdfs:range xsd:date;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Sensitivity review scheduled date".
-
 :sensitivityReviewDriId a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :SensitivityReview;
 	rdfs:range xsd:string;
@@ -463,7 +511,8 @@ this:schema a owl:Ontology;
 	rdfs:domain :SensitivityReviewRestriction;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Sensitivity review restriction description".
+	rdfs:label "Sensitivity review restriction description";
+	rdfs:comment "Provides text justification for applying restriction.".
 
 :sensitivityReviewRestrictionCalculationStartDate a owl:DatatypeProperty;
 	rdfs:domain :SensitivityReviewRestriction;
@@ -482,3 +531,48 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:gYear;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Sensitivity review restriction end year".
+
+:sensitivityReviewRestrictionReviewDate a owl:DatatypeProperty;
+	rdfs:domain :SensitivityReviewRestriction;
+	rdfs:range xsd:date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review restriction review date".
+
+:legislationSectionReference a owl:DatatypeProperty;
+	rdfs:domain :Legislation;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Legislation section reference".
+
+:groundForRetentionCode a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :GroundForRetention;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Ground for retention code".
+
+:groundForRetentionDescription a owl:DatatypeProperty;
+	rdfs:domain :GroundForRetention;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Ground for retention description".
+
+:retentionInstrumentNumber a owl:DatatypeProperty;
+	rdfs:domain :RetentionRestriction;
+	rdfs:range xsd:integer;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Retention instrument number";
+	rdfs:comment "Retention Instrument approved by the Secretary of State for Digital, Culture, Media and Sport.".
+
+:retentionInstrumentSignedDate a owl:DatatypeProperty;
+	rdfs:domain :RetentionRestriction;
+	rdfs:range xsd:date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Retention instrument signed date".
+
+:retentionRestrictionReviewDate a owl:DatatypeProperty;
+	rdfs:domain :RetentionRestriction;
+	rdfs:subPropertyOf :sensitivityReviewRestrictionReviewDate;
+	rdfs:range xsd:date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Retention review date".

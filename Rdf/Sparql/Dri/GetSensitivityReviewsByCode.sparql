@@ -6,20 +6,29 @@ prefix ex: <http://example.com/schema/>
 
 construct {
     ?closure ex:x-type ?type;
-            ex:x-reference ?reference;
+        ex:x-id ?record;
+        ex:x-reference ?reference;
         ex:sensitivityReviewDriId ?closure;
         ex:sensitivityReviewDate ?exemptionAsserted;
-    	ex:sensitivityReviewScheduledDate ?sensitivityReviewScheduledDate;
     	ex:sensitivityReviewSensitiveName ?titleAlternative;
     	ex:sensitivityReviewSensitiveDescription ?descriptionAlternative;
-    	ex:sensitivityReviewHasPastSensitivityReview [
-			ex:sensitivityReviewDriId ?previous
-        ];
-    	ex:sensitivityReviewHasLegislation ?exemptionCode;
-        ex:sensitivityReviewHasSensitivityReviewRestriction [
+    	ex:sensitivityReviewHasPastSensitivityReview ?previous;
+    	ex:sensitivityReviewHasSensitivityReviewRestriction [
+            ex:sensitivityReviewRestrictionReviewDate ?reviewDate;
             ex:sensitivityReviewRestrictionCalculationStartDate ?startDate;
 			ex:sensitivityReviewRestrictionDuration ?closurePeriod;
-        	ex:sensitivityReviewRestrictionDescription ?reasonForChange
+        	ex:sensitivityReviewRestrictionDescription ?reasonForChange;
+        	ex:sensitivityReviewRestrictionHasRetentionRestriction [
+         	 	ex:retentionInstrumentNumber ?rINumber;
+            	ex:retentionInstrumentSignedDate ?rISignedDate;
+            	ex:retentionRestrictionReviewDate ?retentionReconsiderDate;
+            	ex:retentionRestrictionHasGroundForRetention [
+                    ex:groundForRetentionCode ?retentionJustification
+            	]
+        	];
+            ex:sensitivityReviewRestrictionHasLegislation [
+                ex:legislationHasUkLegislation ?exemptionCode
+            ]
         ];
         ex:sensitivityReviewHasAccessCondition [
             ex:accessConditionCode ?closureType
@@ -29,9 +38,9 @@ where {
     {
         select * where {
             bind(@id as ?code)
-            ?closure prov:specializationOf ?asset;
+            ?closure prov:specializationOf ?record;
                 dri:closureType ?closureType.
-            ?asset a ?type;
+            ?record a ?type;
                 rdfs:label ?reference;
             	(dri:isPartOfSeries/rdfs:label)|(dri:directory*/rdfs:label) ?code.
             optional { ?closure dri:closurePeriod ?closurePeriod }
@@ -39,14 +48,19 @@ where {
             optional { ?closure dri:exemptionAsserted ?exemptionAsserted }
             optional { ?closure dri:reviewDate ?reviewDate }
             optional { ?closure dri:retentionReconsiderDate ?retentionReconsiderDate }
-            optional { ?closure dri:exemptionCode ?exemptionCode }
+            optional { 
+                ?closure dri:exemptionCode ?exemptionCode.
+                ?exemptionCode rdfs:label ?legislationSectionReference.
+            }
             optional { ?closure dri:titleAlternative ?titleAlternative }
             optional { ?closure dri:alternative ?descriptionAlternative }
-            optional { ?closure prov:wasRevisionOf/dcterms:identifier ?previous }
+            optional { ?closure prov:wasRevisionOf ?previous }
             optional {
                 ?closure prov:qualifiedInfluence/prov:influencer/rdfs:label ?reasonForChange
             }
-            bind(coalesce(?reviewDate, ?retentionReconsiderDate) as ?sensitivityReviewScheduledDate)
+            optional { ?closure dri:rINumber ?rINumber }
+                ?closure dri:rISignedDate ?rISignedDate.
+    		    ?closure dri:retentionJustification ?retentionJustification 
         }
         order by ?label
         limit @limit offset @offset

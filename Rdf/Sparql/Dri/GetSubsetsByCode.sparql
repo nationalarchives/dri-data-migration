@@ -9,7 +9,6 @@ construct {
             ex:subsetReference ?parentReference
         ];
         ex:subsetHasRetention [
-    		ex:custodianshipStartAt ?created;
             ex:importLocation ?directory
     	].
 } where {
@@ -18,7 +17,6 @@ construct {
             bind(@id as ?series)
             ?subset a dri:DeliverableUnit;
                 dri:isPartOfSeries/rdfs:label ?series;
-                dcterms:created ?created;
                 rdfs:label ?reference.
             optional { ?subset dri:parent/rdfs:label ?parent }
             optional { ?subset dri:hasDirectory/rdfs:label ?directory }

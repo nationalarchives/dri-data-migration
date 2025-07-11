@@ -7,12 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Sparql\Dri\GetGroundForRetentions.sparql" />
+    <EmbeddedResource Include="Sparql\Dri\GetLegislations.sparql" />
     <EmbeddedResource Include="Sparql\Dri\GetVariationsByCode.sparql" />
     <EmbeddedResource Include="Sparql\Dri\GetBroadestSubsets.sparql" />
     <EmbeddedResource Include="Sparql\Dri\GetAccessConditions.sparql" />
     <EmbeddedResource Include="Sparql\Dri\GetSensitivityReviewsByCode.sparql" />
     <EmbeddedResource Include="Sparql\Dri\GetAssetsByCode.sparql" />
     <EmbeddedResource Include="Sparql\Dri\GetSubsetsByCode.sparql" />
+    <EmbeddedResource Include="Sparql\Staging\GroundForRetentionGraph.sparql" />
+    <EmbeddedResource Include="Sparql\Staging\LegislationGraph.sparql" />
     <EmbeddedResource Include="Sparql\Staging\ReconciliationResultSet.sparql" />
     <EmbeddedResource Include="Sparql\Staging\VariationGraph.sparql" />
     <EmbeddedResource Include="Sparql\Staging\SubsetGraph.sparql" />

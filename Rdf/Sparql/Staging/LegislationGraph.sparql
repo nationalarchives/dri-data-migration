@@ -1,0 +1,10 @@
+﻿prefix ex: <http://example.com/schema/>
+
+construct {
+    ?s ex:legislationHasUkLegislation ?legislationHasUkLegislation;
+        ex:legislationSectionReference ?legislationSectionReference.
+} where {
+    bind(uri(@id) as ?legislationHasUkLegislation)
+    ?s ex:legislationHasUkLegislation ?legislationHasUkLegislation.
+    optional { ?s ex:legislationSectionReference ?legislationSectionReference }
+}
