@@ -59,8 +59,8 @@ where {
                 ?closure prov:qualifiedInfluence/prov:influencer/rdfs:label ?reasonForChange
             }
             optional { ?closure dri:rINumber ?rINumber }
-                ?closure dri:rISignedDate ?rISignedDate.
-    		    ?closure dri:retentionJustification ?retentionJustification 
+            optional { ?closure dri:rISignedDate ?rISignedDate }
+    		optional { ?closure dri:retentionJustification ?retentionJustification }
         }
         order by ?label
         limit @limit offset @offset
