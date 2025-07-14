@@ -4,7 +4,7 @@ construct {
     ?subset ex:subsetReference ?subsetReference;
         ex:subsetHasBroaderSubset ?broaderSubset;
         ex:subsetHasRetention ?retention.
-    ?collection ex:subsetReference ?parentSubsetReference.
+    ?broaderSubset ex:subsetReference ?parentSubsetReference.
     ?retention ex:importLocation ?importLocation.
 } where {
     bind(@id as ?subsetReference)
