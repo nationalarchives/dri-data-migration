@@ -1,67 +1,83 @@
 ﻿prefix ex: <http://example.com/schema/>
 
-select ?t ?subsetReference ?importLocation ?accessConditionName ?sensitivityReviewDate
-    ?sensitivityReviewScheduledDate ?sensitivityReviewSensitiveName ?sensitivityReviewSensitiveDescription
-    ?sensitivityReviewHasLegislation ?sensitivityReviewRestrictionCalculationStartDate
-    ?sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionDescription where {
+select ?s ?t ?importLocation ?variationName ?accessConditionName ?retentionType
+	?sensitivityReviewDate ?sensitivityReviewSensitiveName ?isPublicName ?isPublicDescription
+	?sensitivityReviewSensitiveDescription ?sensitivityReviewRestrictionReviewDate
+	?sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionDuration
+	?sensitivityReviewRestrictionEndYear (group_concat(?lsr; separator=',') as ?legislationSectionReference)
+	?retentionRestrictionReviewDate ?retentionInstrumentNumber ?retentionInstrumentSignedDate ?groundForRetentionCode
+where {
     bind(@id as ?id)
     ?subset ex:subsetHasBroaderSubset*/ex:subsetReference ?id.
+	bind(!bound(?sensitivityReviewSensitiveName) as ?isPublicName)
+	bind(!bound(?sensitivityReviewSensitiveDescription) as ?isPublicDescription)
     filter(?t in (ex:Subset, ex:Variation))
-    {
-        select * where {
-            {
-                ?s a ?t;
-                    ex:subsetReference ?subsetReference;
-                    ex:subsetHasRetention/ex:importLocation ?importLocation.
-                optional {
-                    ?s ex:subsetHasSensitivityReview ?sr.
-                    optional { 
-                        ?sr ex:sensitivityReviewHasAccessCondition ?ac.
-                        ?ac ex:accessConditionName ?accessConditionName.
-                    }
-                    optional { ?sr ex:sensitivityReviewDate ?sensitivityReviewDate }
-                    optional { ?sr ex:sensitivityReviewScheduledDate ?sensitivityReviewScheduledDate }
-                    optional { ?sr ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName }
-                    optional { ?sr ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription }
-                    optional { ?sr ex:sensitivityReviewHasLegislation ?sensitivityReviewHasLegislation }
-                    optional { 
-                        ?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
-                        optional { ?restriction ex:sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionCalculationStartDate }
-                        optional { ?restriction ex:sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionDuration }
-                        optional { ?restriction ex:sensitivityReviewRestrictionDescription ?sensitivityReviewRestrictionDescription }
-                    }
-                    filter not exists { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?sr }
-                }
-                bind(?s as ?subset)
+	optional { 
+		?sr ex:sensitivityReviewHasAccessCondition ?ac.
+		?ac ex:accessConditionName ?accessConditionName.
+		bind(?accessConditionName as ?retentionType)
+	}
+	optional { ?sr ex:sensitivityReviewDate ?sensitivityReviewDate }
+	optional { ?sr ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName }
+	optional { ?sr ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription }
+	optional {
+		?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
+		optional { ?restriction ex:sensitivityReviewRestrictionReviewDate ?sensitivityReviewRestrictionReviewDate }
+		optional { ?restriction ex:sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionCalculationStartDate }
+		optional { ?restriction ex:sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionDuration }
+		optional { ?restriction ex:sensitivityReviewRestrictionEndYear ?sensitivityReviewRestrictionEndYear }
+		optional {
+			?restriction ex:sensitivityReviewRestrictionHasLegislation ?legislation.
+			?legislation ex:legislationHasUkLegislation ?legislationHasUkLegislation.
+            optional { ?legislation ex:legislationSectionReference ?lsr }
+		}
+		optional {
+			?restriction ex:sensitivityReviewRestrictionHasRetentionRestriction ?retentionRestriction.
+			optional { ?retentionRestriction ex:retentionRestrictionReviewDate ?retentionRestrictionReviewDate }
+			optional { ?retentionRestriction ex:retentionInstrumentNumber ?retentionInstrumentNumber }
+			optional { ?retentionRestriction ex:retentionInstrumentSignedDate ?retentionInstrumentSignedDate }
+			optional {
+                ?retentionRestriction ex:retentionRestrictionHasGroundForRetention ?retentionRestrictionHasGroundForRetention.
+                ?retentionRestrictionHasGroundForRetention ex:groundForRetentionCode ?groundForRetentionCode.
             }
-            union
-            {
-                ?s a ?t;
-                    ex:variationName ?name;
-                    ex:variationHasAsset ?asset.
-                ?asset ex:assetHasRetention/ex:importLocation ?importFolder;
-        	        ex:assetHasSubset ?subset.
-                bind(concat(?importFolder,'/',?name) as ?importLocation)
-                optional {
-                    ?s ex:variationHasSensitivityReview ?sr.
-                    optional { 
-                        ?sr ex:sensitivityReviewHasAccessCondition ?ac.
-                        ?ac ex:accessConditionName ?accessConditionName.
-                    }
-                    optional { ?sr ex:sensitivityReviewDate ?sensitivityReviewDate }
-                    optional { ?sr ex:sensitivityReviewScheduledDate ?sensitivityReviewScheduledDate }
-                    optional { ?sr ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName }
-                    optional { ?sr ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription }
-                    optional { ?sr ex:sensitivityReviewHasLegislation ?sensitivityReviewHasLegislation }
-                    optional { 
-                        ?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
-                        optional { ?restriction ex:sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionCalculationStartDate }
-                        optional { ?restriction ex:sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionDuration }
-                        optional { ?restriction ex:sensitivityReviewRestrictionDescription ?sensitivityReviewRestrictionDescription }
-                    }
-                    filter not exists { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?sr }
-                }
-            }
-        }
-    }
+		}
+	}
+	{
+		select * where {
+			{
+				?s a ?t;
+					ex:subsetReference ?subsetReference;
+					ex:subsetHasRetention/ex:importLocation ?importLocation.
+				optional {
+					?s ex:subsetHasSensitivityReview ?subsetHasSensitivityReview.
+					filter not exists { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?subsetHasSensitivityReview }
+				}
+				bind(?s as ?subset)
+				bind(?importLocation as ?variationName)
+                bind(coalesce(?subsetHasSensitivityReview, bnode()) as ?sr)
+			}
+			union
+			{
+				?s a ?t;
+					ex:variationName ?variationName;
+					ex:variationHasAsset ?asset.
+				?asset ex:assetHasRetention/ex:importLocation ?importFolder;
+					ex:assetHasSubset ?subset.
+				optional {
+					?s ex:variationHasSensitivityReview ?variationHasSensitivityReview
+					filter not exists { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?variationHasSensitivityReview }
+				}
+                bind(concat(?importFolder, '/', ?variationName) as ?importLocation)
+                bind(coalesce(?variationHasSensitivityReview, bnode()) as ?sr)
+			}
+		}
+	}
 }
+group by ?s ?t ?importLocation ?variationName ?accessConditionName ?retentionType
+	?sensitivityReviewDate ?sensitivityReviewSensitiveName ?isPublicName ?isPublicDescription
+	?sensitivityReviewSensitiveDescription ?sensitivityReviewRestrictionReviewDate
+	?sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionDuration
+	?sensitivityReviewRestrictionEndYear
+	?retentionRestrictionReviewDate ?retentionInstrumentNumber ?retentionInstrumentSignedDate ?groundForRetentionCode
+order by ?importLocation
+limit @limit offset @offset
