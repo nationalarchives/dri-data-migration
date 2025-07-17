@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    paths-ignore:
+      - 'Ontology.ttl'
+      - '**/OntologyTest.cs'
+  pull_request:
+    paths-ignore:
+      - 'Ontology.ttl'
+      - '**/OntologyTest.cs'
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Test Orchestration
+        run: |
+            cd Tests
+            dotnet run --no-restore --project "Orchestration.Tests" --configuration Release
