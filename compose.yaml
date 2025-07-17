@@ -2,6 +2,11 @@ services:
     graphdb:
         image: ontotext/graphdb:11.0.1
         container_name: graphdb
+        environment:
+            GDB_HEAP_SIZE: "5G"
+            GDB_JAVA_OPTS: "-Dgraphdb.page.cache.size=512M -Dgraphdb.query.memory.threshold=512M -XX:+UseParallelGC"
+        #command:
+        #    - "-s"
         ports:
             - "7200:7200"
         volumes:
@@ -11,10 +16,16 @@ services:
             - type: volume
               source: import
               target: /root/graphdb-import
+            #Workbench mode
             - type: bind
               read_only: true
               source: ./graphdb.license
               target: /opt/graphdb/home/conf/graphdb.license
+            #Server mode
+            - type: bind
+              read_only: true
+              source: ./graphdb.license
+              target: /opt/graphdb/dist/conf/graphdb.license
             - type: bind
               read_only: true
               source: ./backup.nq
