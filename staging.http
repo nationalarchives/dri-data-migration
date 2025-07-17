@@ -21,7 +21,7 @@ Content-Type: text/turtle
 
             # Inference and Validation
             graphdb:ruleset "owl-max-optimized" ;
-            graphdb:disable-sameAs "true" ;
+            graphdb:disable-sameAs "false" ;
             graphdb:check-for-inconsistencies "false" ;
 
             # Indexing
@@ -88,6 +88,56 @@ construct {
       ex:accessConditionName ?accessConditionName.
 }
 
+### Legislation count
+POST {{endpoint}}
+Content-Type: application/sparql-query
+
+prefix ex: <http://example.com/schema/>
+
+select (count(?s) as ?x) where {
+    ?s ex:legislationHasUkLegislation ?legislationHasUkLegislation.
+}
+
+### Legislations
+POST {{endpoint}}
+Content-Type: application/sparql-query
+Accept: text/turtle
+
+prefix ex: <http://example.com/schema/>
+
+construct {
+    ?s ex:legislationHasUkLegislation ?legislationHasUkLegislation;
+      ex:legislationSectionReference ?legislationSectionReference.
+} where {
+    ?s ex:legislationHasUkLegislation ?legislationHasUkLegislation.
+    optional { ?s ex:legislationSectionReference ?legislationSectionReference }
+}
+
+### Ground for retention count
+POST {{endpoint}}
+Content-Type: application/sparql-query
+
+prefix ex: <http://example.com/schema/>
+
+select (count(?s) as ?x) where {
+    ?s ex:groundForRetentionCode ?groundForRetentionCode.
+}
+
+### Grounds for retention
+POST {{endpoint}}
+Content-Type: application/sparql-query
+Accept: text/turtle
+
+prefix ex: <http://example.com/schema/>
+
+construct {
+    ?s ex:groundForRetentionCode ?groundForRetentionCode;
+      ex:groundForRetentionDescription ?groundForRetentionDescription.
+} where {
+    ?s ex:groundForRetentionCode ?groundForRetentionCode.
+    optional { ?s ex:groundForRetentionDescription ?groundForRetentionDescription }
+}
+
 ### Subsets count
 POST {{endpoint}}
 Content-Type: application/sparql-query
@@ -134,6 +184,6 @@ Content-Type: application/sparql-query
 
 prefix ex: <http://example.com/schema/>
 
-select (count(?sr) as ?x) where {
+select (count(?id) as ?x) where {
     ?sr ex:sensitivityReviewDriId ?id.
 }
