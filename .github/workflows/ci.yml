@@ -33,3 +33,8 @@ jobs:
         run: |
             cd Tests
             dotnet run --no-restore --project "Orchestration.Tests" --configuration Release
+
+      - name: Test Rdf
+        run: |
+            cd Tests
+            dotnet run --no-restore --project "Rdf.Tests" --filter "TestCategory!=Ontology" --configuration Release
