@@ -3,10 +3,10 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="dotNetRdf" Version="3.3.2" />
-    <PackageVersion Include="dotNetRdf.Core" Version="3.3.2" />
+    <PackageVersion Include="dotNetRdf" Version="3.4.0" />
+    <PackageVersion Include="dotNetRdf.Core" Version="3.4.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.7" />
     <PackageVersion Include="Microsoft.Data.SqlClient" Version="6.0.2" />
   </ItemGroup>
 </Project>
