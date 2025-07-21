@@ -1,48 +1,52 @@
 ﻿using Api;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
 using VDS.RDF;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query;
 
 namespace Rdf;
 
-public class DriExport(HttpClient httpClient, IOptions<DriSettings> options)
+public class DriExport
 {
-    private readonly Assembly currentAssembly = typeof(DriExport).Assembly;
-    private readonly string baseName = $"{typeof(DriExport).Namespace}.Sparql.Dri";
-    private readonly SparqlQueryClient client = new(httpClient, new Uri(options.Value.SparqlConnectionString));
+    private readonly ISparqlClient sparqlClient;
+    private readonly EmbeddedSparqlResource embedded;
+
+    public DriExport(ISparqlClient sparqlClient)
+    {
+        this.sparqlClient = sparqlClient;
+
+        var currentAssembly = typeof(DriExport).Assembly;
+        var baseName = $"{typeof(DriExport).Namespace}.Sparql.Dri";
+        embedded = new(currentAssembly, baseName);
+    }
 
     public async Task<IEnumerable<DriSubset>> GetBroadestSubsets()
     {
-        var sparql = SparqlResource.GetEmbeddedSparql(currentAssembly, baseName, nameof(GetBroadestSubsets));
+        var sparql = embedded.GetSparql(nameof(GetBroadestSubsets));
 
-        var result = await client.QueryWithResultSetAsync(sparql);
+        var result = await sparqlClient.GetResultSetAsync(sparql);
 
         return result.Results.Select(s => new DriSubset(
-            s.Value("code").AsValuedNode().AsString(), s.Value("code").AsValuedNode().AsString(), null));
+            s.Value("directory").AsValuedNode().AsString(), s.Value("directory").AsValuedNode().AsString(), null));
     }
 
     public async Task<IEnumerable<DriAccessCondition>> GetAccessConditions()
     {
-        var sparql = SparqlResource.GetEmbeddedSparql(currentAssembly, baseName, nameof(GetAccessConditions));
+        var sparql = embedded.GetSparql(nameof(GetAccessConditions));
 
-        var result = await client.QueryWithResultSetAsync(sparql);
+        var result = await sparqlClient.GetResultSetAsync(sparql);
 
         return result.Results.Select(s => new DriAccessCondition(
-            GetUriFragment(s.Value("c") as IUriNode)!, s.Value("label").AsValuedNode().AsString()));
+            (s.Value("s") as IUriNode)!.Uri, s.Value("label").AsValuedNode().AsString()));
     }
 
     public async Task<IEnumerable<DriLegislation>> GetLegislations()
     {
-        var sparql = SparqlResource.GetEmbeddedSparql(currentAssembly, baseName, nameof(GetLegislations));
+        var sparql = embedded.GetSparql(nameof(GetLegislations));
 
-        var result = await client.QueryWithResultSetAsync(sparql);
+        var result = await sparqlClient.GetResultSetAsync(sparql);
 
         return result.Results.Select(s => new DriLegislation(
             (s.Value("legislation") as IUriNode)!.Uri, s.HasValue("label") ? s.Value("label")?.AsValuedNode().AsString() : null));
@@ -50,9 +54,9 @@ public class DriExport(HttpClient httpClient, IOptions<DriSettings> options)
 
     public async Task<IEnumerable<DriGroundForRetention>> GetGroundForRetentions()
     {
-        var sparql = SparqlResource.GetEmbeddedSparql(currentAssembly, baseName, nameof(GetGroundForRetentions));
+        var sparql = embedded.GetSparql(nameof(GetGroundForRetentions));
 
-        var result = await client.QueryWithResultSetAsync(sparql);
+        var result = await sparqlClient.GetResultSetAsync(sparql);
 
         return result.Results.Select(s => new DriGroundForRetention(
             s.Value("label").AsValuedNode().AsString(), s.Value("comment").AsValuedNode().AsString()));
@@ -60,9 +64,9 @@ public class DriExport(HttpClient httpClient, IOptions<DriSettings> options)
 
     public async Task<IEnumerable<DriSubset>> GetSubsetsByCode(string code, int pageSize, int offset)
     {
-        var sparql = SparqlResource.GetEmbeddedSparql(currentAssembly, baseName, nameof(GetSubsetsByCode));
-        var graph = await GraphResource.GetGraph(client, sparql, new Dictionary<string, object>
-        { 
+        var sparql = embedded.GetSparql(nameof(GetSubsetsByCode));
+        var graph = await sparqlClient.GetGraphAsync(sparql, new Dictionary<string, object>
+        {
             { "id", code },
             { "limit", pageSize },
             { "offset", offset}
@@ -75,8 +79,8 @@ public class DriExport(HttpClient httpClient, IOptions<DriSettings> options)
 
     public async Task<IEnumerable<DriAsset>> GetAssetsByCode(string code, int pageSize, int offset)
     {
-        var sparql = SparqlResource.GetEmbeddedSparql(currentAssembly, baseName, nameof(GetAssetsByCode));
-        var graph = await GraphResource.GetGraph(client, sparql, new Dictionary<string, object>
+        var sparql = embedded.GetSparql(nameof(GetAssetsByCode));
+        var graph = await sparqlClient.GetGraphAsync(sparql, new Dictionary<string, object>
         {
             { "id", code },
             { "limit", pageSize },
@@ -90,8 +94,8 @@ public class DriExport(HttpClient httpClient, IOptions<DriSettings> options)
 
     public async Task<IEnumerable<DriVariation>> GetVariationsByCode(string code, int pageSize, int offset)
     {
-        var sparql = SparqlResource.GetEmbeddedSparql(currentAssembly, baseName, nameof(GetVariationsByCode));
-        var graph = await GraphResource.GetGraph(client, sparql, new Dictionary<string, object>
+        var sparql = embedded.GetSparql(nameof(GetVariationsByCode));
+        var graph = await sparqlClient.GetGraphAsync(sparql, new Dictionary<string, object>
         {
             { "id", code },
             { "limit", pageSize },
@@ -105,8 +109,8 @@ public class DriExport(HttpClient httpClient, IOptions<DriSettings> options)
 
     public async Task<IEnumerable<DriSensitivityReview>> GetSensitivityReviewsByCode(string code, int pageSize, int offset)
     {
-        var sparql = SparqlResource.GetEmbeddedSparql(currentAssembly, baseName, nameof(GetSensitivityReviewsByCode));
-        var graph = await GraphResource.GetGraph(client, sparql, new Dictionary<string, object>
+        var sparql = embedded.GetSparql(nameof(GetSensitivityReviewsByCode));
+        var graph = await sparqlClient.GetGraphAsync(sparql, new Dictionary<string, object>
         {
             { "id", code },
             { "limit", pageSize },
@@ -148,15 +152,15 @@ public class DriExport(HttpClient httpClient, IOptions<DriSettings> options)
         var legislation = graph.GetTriplesWithSubjectPredicate(restriction, Vocabulary.SensitivityReviewRestrictionHasLegislation).SingleOrDefault().Object as IBlankNode;
         var legislations = graph.GetTriplesWithSubjectPredicate(legislation, Vocabulary.LegislationHasUkLegislation).Select(t => (t.Object as IUriNode)!.Uri);
 
-        var targetReference = (targetType!.Uri.Fragment == "#DeliverableUnit") ? reference.AsValuedNode().AsString() : null;
+        //var targetReference = (targetType!.Uri.Fragment == "#DeliverableUnit") ? reference.AsValuedNode().AsString() : null;
 
-        return new DriSensitivityReview(id!.Uri.ToString(), targetReference, targetId!.Uri,
-            GetUriFragment(accessCode)!, legislations, reviewDate?.AsValuedNode().AsDateTimeOffset(),
-            past?.Uri.ToString(), sensitiveName?.AsValuedNode().AsString(), sensitiveDescription?.AsValuedNode().AsString(),
+        return new DriSensitivityReview(id!.Uri, reference.AsValuedNode().AsString(), targetId!.Uri, targetType!.Uri,
+            accessCode!.Uri, legislations, reviewDate?.AsValuedNode().AsDateTimeOffset(),
+            past?.Uri, sensitiveName?.AsValuedNode().AsString(), sensitiveDescription?.AsValuedNode().AsString(),
             date?.AsValuedNode().AsDateTimeOffset(), startDate?.AsValuedNode().AsDateTimeOffset(),
             duration?.AsValuedNode().AsInteger(), description?.AsValuedNode().AsString(),
             instrumentNumber?.AsValuedNode().AsInteger(), instrumentSignedDate?.AsValuedNode().AsDateTimeOffset(),
-            restrictionReviewDate?.AsValuedNode().AsDateTimeOffset(), GetUriFragment(groundCode));
+            restrictionReviewDate?.AsValuedNode().AsDateTimeOffset(), groundCode?.Uri);
     }
 
     private static DriVariation VariationBySubject(IGraph graph, IUriNode subject)
@@ -166,7 +170,7 @@ public class DriExport(HttpClient httpClient, IOptions<DriSettings> options)
         var assetReference = graph.GetTriplesWithSubjectPredicate(asset, Vocabulary.AssetReference).SingleOrDefault().Object as ILiteralNode;
         var name = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.VariationName).SingleOrDefault().Object as ILiteralNode;
 
-        return new DriVariation(id!.Uri.ToString(), name.AsValuedNode().AsString(), assetReference.AsValuedNode().AsString());
+        return new DriVariation(id!.Uri, name.AsValuedNode().AsString(), assetReference.AsValuedNode().AsString());
     }
 
     private static DriAsset AssetBySubject(IGraph graph, IBlankNode subject)
@@ -185,16 +189,14 @@ public class DriExport(HttpClient httpClient, IOptions<DriSettings> options)
         var reference = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SubsetReference).SingleOrDefault().Object as ILiteralNode;
         var retention = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SubsetHasRetention).SingleOrDefault().Object as IBlankNode;
         var directory = graph.GetTriplesWithSubjectPredicate(retention, Vocabulary.ImportLocation).SingleOrDefault().Object as ILiteralNode;
-        var collection = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SubsetHasBroaderSubset).SingleOrDefault()?.Object as IBlankNode;
+        var broader = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SubsetHasBroaderSubset).SingleOrDefault()?.Object as IBlankNode;
         ILiteralNode? parent = null;
-        if (collection is not null)
+        if (broader is not null)
         {
-            parent = graph.GetTriplesWithSubjectPredicate(collection, Vocabulary.SubsetReference).SingleOrDefault()?.Object as ILiteralNode;
+            parent = graph.GetTriplesWithSubjectPredicate(broader, Vocabulary.SubsetReference).SingleOrDefault()?.Object as ILiteralNode;
         }
 
         return new DriSubset(reference!.AsValuedNode().AsString(), directory.AsValuedNode().AsString(),
             parent?.AsValuedNode().AsString());
     }
-
-    private static string? GetUriFragment(IUriNode? node) => node?.Uri.Fragment.Substring(1);
 }

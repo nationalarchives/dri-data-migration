@@ -2,4 +2,4 @@
 
 namespace Api;
 
-public record DriLegislation(Uri Link, string? Section) : DriRecord(Link.ToString());
+public record DriLegislation(Uri Link, string? Section = null) : DriRecord(Link.ToString());

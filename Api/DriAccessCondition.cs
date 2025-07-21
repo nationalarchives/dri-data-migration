@@ -1,4 +1,6 @@
-﻿namespace Api;
+﻿using System;
 
-public record DriAccessCondition(string Code, string Name)
-    : DriRecord(Code);
+namespace Api;
+
+public record DriAccessCondition(Uri Link, string Name)
+    : DriRecord(Link.ToString());

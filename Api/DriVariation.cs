@@ -1,4 +1,6 @@
-﻿namespace Api;
+﻿using System;
 
-public record DriVariation(string Id, string VariationName, string AssetReference)
-    : DriRecord(Id);
+namespace Api;
+
+public record DriVariation(Uri Link, string VariationName, string AssetReference)
+    : DriRecord(Link.ToString());
