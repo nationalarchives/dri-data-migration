@@ -8,12 +8,14 @@ using VDS.RDF.Nodes;
 namespace Rdf.Tests;
 
 [TestClass]
-public class DriExportGraphTest : BaseDriExportTest
+public class DriExportGraphTest
 {
+    private Mock<ISparqlClient> sparqlClient;
+
     [TestInitialize]
     public void TestInitialize()
     {
-        Initialize();
+        sparqlClient = new Mock<ISparqlClient>();
     }
 
     public static string DisplayName(MethodInfo _, object[] data) => data[data.Length - 1].ToString()!;

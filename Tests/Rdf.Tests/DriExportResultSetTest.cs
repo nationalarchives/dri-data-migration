@@ -8,12 +8,14 @@ using VDS.RDF.Query;
 namespace Rdf.Tests;
 
 [TestClass]
-public class DriExportResultSetTest : BaseDriExportTest
+public class DriExportResultSetTest
 {
+    private Mock<ISparqlClient> sparqlClient;
+
     [TestInitialize]
     public void TestInitialize()
     {
-        Initialize();
+        sparqlClient = new Mock<ISparqlClient>();
     }
 
     public static string DisplayName(MethodInfo _, object[] data) => data[data.Length - 1].ToString()!;
