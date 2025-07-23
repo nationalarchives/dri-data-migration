@@ -152,8 +152,6 @@ public class DriExport
         var legislation = graph.GetTriplesWithSubjectPredicate(restriction, Vocabulary.SensitivityReviewRestrictionHasLegislation).SingleOrDefault().Object as IBlankNode;
         var legislations = graph.GetTriplesWithSubjectPredicate(legislation, Vocabulary.LegislationHasUkLegislation).Select(t => (t.Object as IUriNode)!.Uri);
 
-        //var targetReference = (targetType!.Uri.Fragment == "#DeliverableUnit") ? reference.AsValuedNode().AsString() : null;
-
         return new DriSensitivityReview(id!.Uri, reference.AsValuedNode().AsString(), targetId!.Uri, targetType!.Uri,
             accessCode!.Uri, legislations, reviewDate?.AsValuedNode().AsDateTimeOffset(),
             past?.Uri, sensitiveName?.AsValuedNode().AsString(), sensitiveDescription?.AsValuedNode().AsString(),

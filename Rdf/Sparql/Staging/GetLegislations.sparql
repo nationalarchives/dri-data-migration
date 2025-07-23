@@ -1,0 +1,7 @@
+﻿prefix ex: <http://example.com/schema/>
+            
+construct {
+    ?s ex:legislationHasUkLegislation ?legislationHasUkLegislation.
+} where {
+    ?s ex:legislationHasUkLegislation ?legislationHasUkLegislation.
+}

@@ -2,7 +2,7 @@
 prefix dri: <http://nationalarchives.gov.uk/terms/dri#> 
 
 select ?label ?comment where {
-    ?c a dri:RetentionJustificationType;
+    ?s a dri:RetentionJustificationType;
         rdfs:comment ?comment;
     	rdfs:label ?label.
 }

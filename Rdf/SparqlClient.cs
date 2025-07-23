@@ -44,7 +44,7 @@ public class SparqlClient(HttpClient httpClient, Uri connectionString) : ISparql
         return graph.Triples.SubjectNodes.Cast<IUriNode>().FirstOrDefault();
     }
 
-    public async Task<Dictionary<string, IUriNode>> GetDictionary(string sparql)
+    public async Task<Dictionary<string, IUriNode>> GetDictionaryAsync(string sparql)
     {
         var graph = await GetGraphAsync(sparql, []);
 

@@ -1,0 +1,8 @@
+﻿prefix ex: <http://example.com/schema/>
+            
+construct {
+    ?s ex:variationDriId ?variationDriId.
+} where {
+    bind(@id as ?variationDriId)
+    ?s ex:variationDriId ?variationDriId.
+}

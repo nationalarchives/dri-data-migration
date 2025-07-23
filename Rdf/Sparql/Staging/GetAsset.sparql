@@ -1,0 +1,8 @@
+﻿prefix ex: <http://example.com/schema/>
+            
+construct {
+    ?s ex:assetReference ?assetReference.
+} where {
+    bind(@id as ?assetReference)
+    ?s ex:assetReference ?assetReference.
+}

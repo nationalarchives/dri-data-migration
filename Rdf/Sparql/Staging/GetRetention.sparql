@@ -1,0 +1,16 @@
+﻿prefix ex: <http://example.com/schema/>
+            
+construct {
+    ?retention ex:importLocation ?importLocation
+} where {
+    bind(uri(@id) as ?target)
+    {
+        ?target ex:assetHasRetention ?retention.
+        ?retention ex:importLocation ?importLocation.
+    }
+    union
+    {
+        ?target ex:subsetHasRetention ?retention.
+        ?retention ex:importLocation ?importLocation.
+    }
+}

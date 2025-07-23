@@ -11,6 +11,6 @@ public interface ISparqlClient
     Task<IGraph> GetGraphAsync(string sparql, object id);
     Task<SparqlResultSet> GetResultSetAsync(string sparql);
     Task<IUriNode?> GetSubjectAsync(string sparql, object id);
-    Task<Dictionary<string, IUriNode>> GetDictionary(string sparql);
+    Task<Dictionary<string, IUriNode>> GetDictionaryAsync(string sparql);
     Task ApplyDiffAsync(GraphDiffReport diffReport);
 }

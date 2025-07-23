@@ -1,0 +1,7 @@
+﻿prefix ex: <http://example.com/schema/>
+            
+construct {
+    ?s ex:groundForRetentionCode ?groundForRetentionCode.
+} where {
+    ?s ex:groundForRetentionCode ?groundForRetentionCode.
+}

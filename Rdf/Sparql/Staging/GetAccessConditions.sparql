@@ -1,0 +1,7 @@
+﻿prefix ex: <http://example.com/schema/>
+            
+construct {
+    ?s ex:accessConditionCode ?accessConditionCode.
+} where {
+    ?s ex:accessConditionCode ?accessConditionCode.
+}
