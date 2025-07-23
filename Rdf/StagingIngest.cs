@@ -90,10 +90,11 @@ public abstract class StagingIngest<T>
     {
         var info = ToCacheFetchInfo(kind, key);
         //TODO: handle null
-        return await cache.GetOrCreateAsync(info.Key, entry =>
+        return await cache.GetOrCreateAsync(info.Key, async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromHours(1);
-            return sparqlClient.GetSubjectAsync(info.Sparql, info.Key) ?? Task.FromResult(NewId);
+            var subject = await sparqlClient.GetSubjectAsync(info.Sparql, info.Key);
+            return subject is null ? NewId : subject;
         });
     }
 
