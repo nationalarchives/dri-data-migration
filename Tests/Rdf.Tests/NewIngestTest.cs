@@ -55,9 +55,21 @@ public class NewIngestTest : BaseIngestTest
         [
             async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new SubsetIngest(cache, client, logger)
                 .Set([subset]),
-            (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) => SetupSubsetFetchOrNew(cache, parentSubsetRef, parentSubsetNode),
+            (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) => SetupFetchOrNewSubset(cache, parentSubsetRef, parentSubsetNode),
             5,
             "subset"
+        ],
+        [
+            async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new SubsetIngest(cache, client, logger)
+                .Set([subset]),
+            (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) =>
+            {
+                var notFound = (object?)null;
+                cache.Setup(c => c.TryGetValue(It.Is<object>(m => m.Equals($"subset-parentSubsetRef")), out notFound)).Returns(false);
+                SetupFetchSubset(cache, client, parentSubsetRef, (object?)(IUriNode)null);
+            },
+            5,
+            "subset with not present parent subset"
         ],
         [
             async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new AssetIngest(cache, client, logger)
@@ -79,7 +91,7 @@ public class NewIngestTest : BaseIngestTest
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) =>
             {
                 SetupFetchAccessCondition(client, accessConditionRef.Fragment.Substring(1), accessConditionNode);
-                SetupSensitivityReviewFetchOrNew(cache, previousSrRef.ToString(), previousSrNode);
+                SetupFetchOrNewSensitivityReview(cache, previousSrRef.ToString(), previousSrNode);
                 SetupFetchLegislation(client, legislationRef.ToString(), legislationNode);
                 SetupFetchVariation(cache, client, variationRef.ToString(), variationNode);
                 SetupFetchGroundForRetention(client, groundForRetentionRef.Fragment.Substring(1), groundForRetentionNode);
@@ -93,7 +105,7 @@ public class NewIngestTest : BaseIngestTest
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) =>
             {
                 SetupFetchAccessCondition(client, accessConditionRef.Fragment.Substring(1), accessConditionNode);
-                SetupSensitivityReviewFetchOrNew(cache, previousSrRef.ToString(), previousSrNode);
+                SetupFetchOrNewSensitivityReview(cache, previousSrRef.ToString(), previousSrNode);
                 SetupFetchLegislation(client, legislationRef.ToString(), legislationNode);
                 SetupFetchAsset(cache, client, assetRef, assetNode);
                 SetupFetchRetention(cache, client, (assetNode as IUriNode)!.Uri.ToString(), retentionNode);
@@ -108,7 +120,7 @@ public class NewIngestTest : BaseIngestTest
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) =>
             {
                 SetupFetchAccessCondition(client, accessConditionRef.Fragment.Substring(1), accessConditionNode);
-                SetupSensitivityReviewFetchOrNew(cache, previousSrRef.ToString(), previousSrNode);
+                SetupFetchOrNewSensitivityReview(cache, previousSrRef.ToString(), previousSrNode);
                 SetupFetchLegislation(client, legislationRef.ToString(), legislationNode);
                 SetupFetchSubset(cache, client, subsetRef, subsetNode);
                 SetupFetchRetention(cache, client, (subsetNode as IUriNode)!.Uri.ToString(), retentionNode);
@@ -123,7 +135,7 @@ public class NewIngestTest : BaseIngestTest
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) =>
             {
                 SetupFetchAccessCondition(client, accessConditionRef2.Fragment.Substring(1), accessConditionNode2);
-                SetupSensitivityReviewFetchOrNew(cache, previousSrRef.ToString(), previousSrNode);
+                SetupFetchOrNewSensitivityReview(cache, previousSrRef.ToString(), previousSrNode);
                 SetupFetchLegislation(client, legislationRef.ToString(), legislationNode);
                 SetupFetchVariation(cache, client, variationRef.ToString(), variationNode);
                 SetupFetchGroundForRetention(client, groundForRetentionRef.Fragment.Substring(1), groundForRetentionNode);

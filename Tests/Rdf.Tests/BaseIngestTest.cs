@@ -51,10 +51,10 @@ public class BaseIngestTest
         logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger(nameof(BaseIngestTest));
     }
 
-    internal static void SetupSubsetFetchOrNew(Mock<IMemoryCache> cache, string reference, object? node) =>
+    internal static void SetupFetchOrNewSubset(Mock<IMemoryCache> cache, string reference, object? node) =>
         SetupFetchOrNew(cache, "subset", reference, node);
     
-    internal static void SetupSensitivityReviewFetchOrNew(Mock<IMemoryCache> cache, string reference, object? node) =>
+    internal static void SetupFetchOrNewSensitivityReview(Mock<IMemoryCache> cache, string reference, object? node) =>
         SetupFetchOrNew(cache, "sensititvity-review", reference, node);
 
     internal static void SetupFetchSubset(Mock<IMemoryCache> cache, Mock<ISparqlClient> client, string reference, object? node) =>
