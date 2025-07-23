@@ -8,12 +8,12 @@ public class StagingReconciliationParser(IStagingReconciliationClient reconcilia
     private const string folder = "folder";
     private const string file = "file";
 
-    public async Task<IEnumerable<Dictionary<ReconciliationFieldNames, object>>> ParseAsync()
+    public async Task<IEnumerable<Dictionary<ReconciliationFieldName, object>>> ParseAsync()
     {
         int offset = 0;
         int pageSize = 1000;
-        IEnumerable<Dictionary<ReconciliationFieldNames, object>> page;
-        var rows = new List<Dictionary<ReconciliationFieldNames, object>>();
+        IEnumerable<Dictionary<ReconciliationFieldName, object>> page;
+        var rows = new List<Dictionary<ReconciliationFieldName, object>>();
         do
         {
             page = await reconciliationClient.FetchAsync(code, pageSize, offset);
@@ -26,18 +26,18 @@ public class StagingReconciliationParser(IStagingReconciliationClient reconcilia
         return rows;
     }
 
-    private Dictionary<ReconciliationFieldNames, object> Adjust(Dictionary<ReconciliationFieldNames, object> row) =>
+    private Dictionary<ReconciliationFieldName, object> Adjust(Dictionary<ReconciliationFieldName, object> row) =>
         row.Select(cell =>
             cell.Key switch
             {
-                ReconciliationFieldNames.FileFolder => new(cell.Key, ToFileFolder(cell.Value as Uri)),
-                ReconciliationFieldNames.ImportLocation => new(cell.Key, ToImportLocation(row[ReconciliationFieldNames.FileFolder] as Uri, cell.Value as string)),
-                ReconciliationFieldNames.VariationName => new(cell.Key, ToVariationName(row[ReconciliationFieldNames.FileFolder] as Uri, cell.Value as string)),
-                ReconciliationFieldNames.AccessConditionName => new(cell.Key, ToAccessConditon(cell.Value as string)),
-                ReconciliationFieldNames.SensitivityReviewDuration => new(cell.Key, ToYearDuration(row, cell.Value as string)),
-                ReconciliationFieldNames.LegislationSectionReference => new(cell.Key, ToLegislationReferences(cell.Value as string)),
-                ReconciliationFieldNames.SensitivityReviewEndYear => new(cell.Key, null),
-                ReconciliationFieldNames.RetentionType => new(cell.Key, ToRetentionType(cell.Value as string)),
+                ReconciliationFieldName.FileFolder => new(cell.Key, ToFileFolder(cell.Value as Uri)),
+                ReconciliationFieldName.ImportLocation => new(cell.Key, ToImportLocation(row[ReconciliationFieldName.FileFolder] as Uri, cell.Value as string)),
+                ReconciliationFieldName.VariationName => new(cell.Key, ToVariationName(row[ReconciliationFieldName.FileFolder] as Uri, cell.Value as string)),
+                ReconciliationFieldName.AccessConditionName => new(cell.Key, ToAccessConditon(cell.Value as string)),
+                ReconciliationFieldName.SensitivityReviewDuration => new(cell.Key, ToYearDuration(row, cell.Value as string)),
+                ReconciliationFieldName.LegislationSectionReference => new(cell.Key, ToLegislationReferences(cell.Value as string)),
+                ReconciliationFieldName.SensitivityReviewEndYear => new(cell.Key, null),
+                ReconciliationFieldName.RetentionType => new(cell.Key, ToRetentionType(cell.Value as string)),
                 _ => cell
             })
             .Where(kv => kv.Value is not null)
@@ -63,8 +63,8 @@ public class StagingReconciliationParser(IStagingReconciliationClient reconcilia
 
     private static string? ToAccessConditon(string? accessConditionName) => accessConditionName?.Replace(' ', '_');
 
-    private static int? ToYearDuration(Dictionary<ReconciliationFieldNames, object> row, string? duration) =>
-        row.TryGetValue(ReconciliationFieldNames.SensitivityReviewEndYear, out var endYear) && endYear is not null ? (int)endYear :
+    private static int? ToYearDuration(Dictionary<ReconciliationFieldName, object> row, string? duration) =>
+        row.TryGetValue(ReconciliationFieldName.SensitivityReviewEndYear, out var endYear) && endYear is not null ? (int)endYear :
             duration is null ? null : XsdDurationYear(duration);
 
     private static int XsdDurationYear(string duration) => (int)Math.Floor(System.Xml.XmlConvert.ToTimeSpan(duration).TotalDays / 365);

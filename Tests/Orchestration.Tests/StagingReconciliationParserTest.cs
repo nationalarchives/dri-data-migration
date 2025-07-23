@@ -9,8 +9,8 @@ public sealed class StagingReconciliationParserTest
 {
     [TestMethod("Parses staging reconciliation output")]
     [DynamicData(nameof(ParsingData))]
-    public async Task Parsing(IEnumerable<Dictionary<ReconciliationFieldNames, object>> output,
-        IEnumerable<Dictionary<ReconciliationFieldNames, object>> expected,
+    public async Task Parsing(IEnumerable<Dictionary<ReconciliationFieldName, object>> output,
+        IEnumerable<Dictionary<ReconciliationFieldName, object>> expected,
         string because)
     {
         var client = new Mock<IStagingReconciliationClient>();
@@ -31,11 +31,11 @@ public sealed class StagingReconciliationParserTest
 
     public static IEnumerable<object[]> PaxxrsingData => [
         [
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
                 new()
                 {
-                    {  ReconciliationFieldNames.FileFolder, Vocabulary.Subset.Uri }
+                    {  ReconciliationFieldName.FileFolder, Vocabulary.Subset.Uri }
                 }
             }
         ]
@@ -43,241 +43,241 @@ public sealed class StagingReconciliationParserTest
 
     public static IEnumerable<object[]> ParsingData => [
         [
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { { ReconciliationFieldNames.FileFolder, Vocabulary.Subset.Uri } }
+                new() { { ReconciliationFieldName.FileFolder, Vocabulary.Subset.Uri } }
             },
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { { ReconciliationFieldNames.FileFolder, "folder" } }
+                new() { { ReconciliationFieldName.FileFolder, "folder" } }
             },
             "Subset type translates to folder"
         ],
         [
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { { ReconciliationFieldNames.FileFolder, Vocabulary.Variation.Uri } }
+                new() { { ReconciliationFieldName.FileFolder, Vocabulary.Variation.Uri } }
             },
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { { ReconciliationFieldNames.FileFolder, "file" } }
+                new() { { ReconciliationFieldName.FileFolder, "file" } }
             },
             "Variation type translates to file"
         ],
         [
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
                 new()
                 {
-                    { ReconciliationFieldNames.FileFolder, Vocabulary.Variation.Uri },
-                    { ReconciliationFieldNames.ImportLocation, $"{code}/{folderName}/{fileName}" }
+                    { ReconciliationFieldName.FileFolder, Vocabulary.Variation.Uri },
+                    { ReconciliationFieldName.ImportLocation, $"{code}/{folderName}/{fileName}" }
                 }
             },
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
                 new()
                 {
-                    { ReconciliationFieldNames.FileFolder, "file" },
-                    { ReconciliationFieldNames.ImportLocation, $"{prefix}/{folderName}/{fileName}" }
+                    { ReconciliationFieldName.FileFolder, "file" },
+                    { ReconciliationFieldName.ImportLocation, $"{prefix}/{folderName}/{fileName}" }
                 }
             },
             "file location value is translated"
         ],
         [
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
                 new()
                 {
-                    { ReconciliationFieldNames.FileFolder, Vocabulary.Subset.Uri },
-                    { ReconciliationFieldNames.ImportLocation, $"{code}/{folderName}" }
+                    { ReconciliationFieldName.FileFolder, Vocabulary.Subset.Uri },
+                    { ReconciliationFieldName.ImportLocation, $"{code}/{folderName}" }
                 }
             },
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
                 new()
                 {
-                    { ReconciliationFieldNames.FileFolder, "folder" },
-                    { ReconciliationFieldNames.ImportLocation, $"{prefix}/{folderName}/" }
+                    { ReconciliationFieldName.FileFolder, "folder" },
+                    { ReconciliationFieldName.ImportLocation, $"{prefix}/{folderName}/" }
                 }
             },
             "folder location value is translated and ends with forward slash"
         ],
         [
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
                 new()
                 {
-                    { ReconciliationFieldNames.FileFolder, Vocabulary.Subset.Uri },
-                    { ReconciliationFieldNames.VariationName, $"{code}/{folderName}" }
+                    { ReconciliationFieldName.FileFolder, Vocabulary.Subset.Uri },
+                    { ReconciliationFieldName.VariationName, $"{code}/{folderName}" }
                 }
             },
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
                 new()
                 {
-                    { ReconciliationFieldNames.FileFolder, "folder" },
-                    { ReconciliationFieldNames.VariationName, $"{folderName}" }
+                    { ReconciliationFieldName.FileFolder, "folder" },
+                    { ReconciliationFieldName.VariationName, $"{folderName}" }
                 }
             },
             "name of the folder is translated"
         ],
         [
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
                 new()
                 {
-                    { ReconciliationFieldNames.FileFolder, Vocabulary.Variation.Uri },
-                    { ReconciliationFieldNames.VariationName, fileName }
+                    { ReconciliationFieldName.FileFolder, Vocabulary.Variation.Uri },
+                    { ReconciliationFieldName.VariationName, fileName }
                 }
             },
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
                 new()
                 {
-                    {  ReconciliationFieldNames.FileFolder, "file" },
-                    {  ReconciliationFieldNames.VariationName, fileName }
+                    {  ReconciliationFieldName.FileFolder, "file" },
+                    {  ReconciliationFieldName.VariationName, fileName }
                 }
             },
             "name of the file remains as is"
         ],
         [
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { { ReconciliationFieldNames.AccessConditionName, "access condition" } }
+                new() { { ReconciliationFieldName.AccessConditionName, "access condition" } }
             },
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { { ReconciliationFieldNames.AccessConditionName, "access_condition" } }
+                new() { { ReconciliationFieldName.AccessConditionName, "access_condition" } }
             },
             "replaces whitespaces with underscore in access condition value"
         ],
         [
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { { ReconciliationFieldNames.SensitivityReviewDuration, "P15Y" } }
+                new() { { ReconciliationFieldName.SensitivityReviewDuration, "P15Y" } }
             },
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { { ReconciliationFieldNames.SensitivityReviewDuration, 15 } }
+                new() { { ReconciliationFieldName.SensitivityReviewDuration, 15 } }
             },
             "duration value is converted to numer of years"
         ],
         [
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
                 new()
                 {
-                    { ReconciliationFieldNames.SensitivityReviewDuration, "P15Y" },
-                    { ReconciliationFieldNames.SensitivityReviewEndYear, 2020 }
+                    { ReconciliationFieldName.SensitivityReviewDuration, "P15Y" },
+                    { ReconciliationFieldName.SensitivityReviewEndYear, 2020 }
                 }
             },
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { { ReconciliationFieldNames.SensitivityReviewDuration, 2020 } }
+                new() { { ReconciliationFieldName.SensitivityReviewDuration, 2020 } }
             },
             "end year value takes precedence over duration"
         ],
         [
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { {  ReconciliationFieldNames.LegislationSectionReference, null } }
+                new() { {  ReconciliationFieldName.LegislationSectionReference, null } }
             },
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { {  ReconciliationFieldNames.LegislationSectionReference, new string[]{ "open" } } }
+                new() { {  ReconciliationFieldName.LegislationSectionReference, new string[]{ "open" } } }
             },
             "legislation value null becomes open"
         ],
         [
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { { ReconciliationFieldNames.LegislationSectionReference, string.Empty } }
+                new() { { ReconciliationFieldName.LegislationSectionReference, string.Empty } }
             },
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { { ReconciliationFieldNames.LegislationSectionReference, new string[]{ "open" } } }
+                new() { { ReconciliationFieldName.LegislationSectionReference, new string[]{ "open" } } }
             },
             "empty legislation value becomes open"
         ],
         [
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { { ReconciliationFieldNames.LegislationSectionReference, "a,b,c" } }
+                new() { { ReconciliationFieldName.LegislationSectionReference, "a,b,c" } }
             },
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { { ReconciliationFieldNames.LegislationSectionReference, new string[]{ "a","b","c" } } }
+                new() { { ReconciliationFieldName.LegislationSectionReference, new string[]{ "a","b","c" } } }
             },
             "legislation value is transformed into array"
         ],
         [
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { { ReconciliationFieldNames.RetentionType, "retained by department under section 3.4" } }
+                new() { { ReconciliationFieldName.RetentionType, "retained by department under section 3.4" } }
             },
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { { ReconciliationFieldNames.RetentionType, "retained_under_3.4" } }
+                new() { { ReconciliationFieldName.RetentionType, "retained_under_3.4" } }
             },
             "retention type value (...under 3.4) is transformed into specific value"
         ],
         [
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { { ReconciliationFieldNames.RetentionType, "abc retained def" } }
+                new() { { ReconciliationFieldName.RetentionType, "abc retained def" } }
             },
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { { ReconciliationFieldNames.RetentionType, "abc_retained_def" } }
+                new() { { ReconciliationFieldName.RetentionType, "abc_retained_def" } }
             },
             "replaces whitespaces with underscore in retention type value when contains text 'retained'"
         ],
         [
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { { ReconciliationFieldNames.RetentionType, "abc def" } }
+                new() { { ReconciliationFieldName.RetentionType, "abc def" } }
             },
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
-                new() { { ReconciliationFieldNames.RetentionType, "abc def" } }
+                new() { { ReconciliationFieldName.RetentionType, "abc def" } }
             },
             "retention type value remains as is when does not contain text 'retained'"
         ],
         [
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
                 new()
                 { 
-                    { ReconciliationFieldNames.GroundForRetentionCode, noChange },
-                    { ReconciliationFieldNames.Id, noChange },
-                    { ReconciliationFieldNames.IsPublicDescription, noChange },
-                    { ReconciliationFieldNames.IsPublicName, noChange },
-                    { ReconciliationFieldNames.RetentionInstrumentNumber, noChange },
-                    { ReconciliationFieldNames.RetentionInstrumentSignedDate, noChange },
-                    { ReconciliationFieldNames.RetentionReviewDate, noChange },
-                    { ReconciliationFieldNames.SensitivityReviewDate, noChange },
-                    { ReconciliationFieldNames.SensitivityReviewRestrictionCalculationStartDate, noChange },
-                    { ReconciliationFieldNames.SensitivityReviewRestrictionReviewDate, noChange },
-                    { ReconciliationFieldNames.SensitivityReviewSensitiveDescription, noChange },
-                    { ReconciliationFieldNames.SensitivityReviewSensitiveName, noChange }
+                    { ReconciliationFieldName.GroundForRetentionCode, noChange },
+                    { ReconciliationFieldName.Id, noChange },
+                    { ReconciliationFieldName.IsPublicDescription, noChange },
+                    { ReconciliationFieldName.IsPublicName, noChange },
+                    { ReconciliationFieldName.RetentionInstrumentNumber, noChange },
+                    { ReconciliationFieldName.RetentionInstrumentSignedDate, noChange },
+                    { ReconciliationFieldName.RetentionReviewDate, noChange },
+                    { ReconciliationFieldName.SensitivityReviewDate, noChange },
+                    { ReconciliationFieldName.SensitivityReviewRestrictionCalculationStartDate, noChange },
+                    { ReconciliationFieldName.SensitivityReviewRestrictionReviewDate, noChange },
+                    { ReconciliationFieldName.SensitivityReviewSensitiveDescription, noChange },
+                    { ReconciliationFieldName.SensitivityReviewSensitiveName, noChange }
                 }
             },
-            new List<Dictionary<ReconciliationFieldNames, object>>
+            new List<Dictionary<ReconciliationFieldName, object>>
             {
                 new()
                 {
-                    { ReconciliationFieldNames.GroundForRetentionCode, noChange },
-                    { ReconciliationFieldNames.Id, noChange },
-                    { ReconciliationFieldNames.IsPublicDescription, noChange },
-                    { ReconciliationFieldNames.IsPublicName, noChange },
-                    { ReconciliationFieldNames.RetentionInstrumentNumber, noChange },
-                    { ReconciliationFieldNames.RetentionInstrumentSignedDate, noChange },
-                    { ReconciliationFieldNames.RetentionReviewDate, noChange },
-                    { ReconciliationFieldNames.SensitivityReviewDate, noChange },
-                    { ReconciliationFieldNames.SensitivityReviewRestrictionCalculationStartDate, noChange },
-                    { ReconciliationFieldNames.SensitivityReviewRestrictionReviewDate, noChange },
-                    { ReconciliationFieldNames.SensitivityReviewSensitiveDescription, noChange },
-                    { ReconciliationFieldNames.SensitivityReviewSensitiveName, noChange }
+                    { ReconciliationFieldName.GroundForRetentionCode, noChange },
+                    { ReconciliationFieldName.Id, noChange },
+                    { ReconciliationFieldName.IsPublicDescription, noChange },
+                    { ReconciliationFieldName.IsPublicName, noChange },
+                    { ReconciliationFieldName.RetentionInstrumentNumber, noChange },
+                    { ReconciliationFieldName.RetentionInstrumentSignedDate, noChange },
+                    { ReconciliationFieldName.RetentionReviewDate, noChange },
+                    { ReconciliationFieldName.SensitivityReviewDate, noChange },
+                    { ReconciliationFieldName.SensitivityReviewRestrictionCalculationStartDate, noChange },
+                    { ReconciliationFieldName.SensitivityReviewRestrictionReviewDate, noChange },
+                    { ReconciliationFieldName.SensitivityReviewSensitiveDescription, noChange },
+                    { ReconciliationFieldName.SensitivityReviewSensitiveName, noChange }
                 }
             },
             "these are pass-through values"

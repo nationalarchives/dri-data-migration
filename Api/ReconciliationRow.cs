@@ -2,4 +2,4 @@
 
 namespace Api;
 
-public record ReconciliationRow(ReconciliationFieldNames Field, Func<string?, object?> Conversion);
+public record ReconciliationRow(ReconciliationFieldName Field, Func<string?, object?> Conversion);

@@ -6,7 +6,7 @@ namespace Orchestration;
 
 public partial class PreservicaExportParser(string fileLocation, Dictionary<string, ReconciliationRow> Map)
 {
-    public IEnumerable<Dictionary<ReconciliationFieldNames, object>?> Parse()
+    public IEnumerable<Dictionary<ReconciliationFieldName, object>?> Parse()
     {
         using (var csv = new Microsoft.VisualBasic.FileIO.TextFieldParser(fileLocation))
         {
@@ -26,7 +26,7 @@ public partial class PreservicaExportParser(string fileLocation, Dictionary<stri
                     continue;
                 }
                 yield return Map.Where(kv => headers!.Contains(kv.Key))
-                    .Select(kv => new KeyValuePair<ReconciliationFieldNames, object?>(kv.Value.Field, kv.Value.Conversion(line[headers!.IndexOf(kv.Key)])))
+                    .Select(kv => new KeyValuePair<ReconciliationFieldName, object?>(kv.Value.Field, kv.Value.Conversion(line[headers!.IndexOf(kv.Key)])))
                     .Where(kv => kv.Value is not null)
                     .ToDictionary(kv => kv.Key, kv => kv.Value!);
             }

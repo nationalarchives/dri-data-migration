@@ -46,7 +46,6 @@ where {
 		select * where {
 			{
 				?s a ?t;
-					ex:subsetReference ?subsetReference;
 					ex:subsetHasRetention/ex:importLocation ?importLocation.
 				optional {
 					?s ex:subsetHasSensitivityReview ?subsetHasSensitivityReview.

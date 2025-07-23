@@ -11,10 +11,10 @@ using VDS.RDF.Update;
 
 namespace Rdf;
 
-public class SparqlClient(HttpClient httpClient, Uri connectionString) : ISparqlClient
+public class SparqlClient(HttpClient httpClient, Uri queryConnectionString, Uri updateConnectionString) : ISparqlClient
 {
-    private readonly SparqlQueryClient client = new(httpClient, connectionString);
-    private readonly SparqlUpdateClient updateClient = new(httpClient, connectionString);
+    private readonly SparqlQueryClient client = new(httpClient, queryConnectionString);
+    private readonly SparqlUpdateClient updateClient = new(httpClient, updateConnectionString);
 
     public async Task<IGraph> GetGraphAsync(string sparql, Dictionary<string, object> parameters)
     {

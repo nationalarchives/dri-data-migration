@@ -5,5 +5,5 @@ namespace Api;
 
 public interface IStagingReconciliationClient
 {
-    Task<IEnumerable<Dictionary<ReconciliationFieldNames, object>>> FetchAsync(string code, int pageSize, int offset);
+    Task<IEnumerable<Dictionary<ReconciliationFieldName, object>>> FetchAsync(string code, int pageSize, int offset);
 }

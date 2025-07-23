@@ -4,9 +4,9 @@ namespace Orchestration;
 
 public static class ReconciliationEqualityComparer
 {
-    public static IEnumerable<ReconciliationFieldNames> Check(Dictionary<ReconciliationFieldNames, object?> preservica, Dictionary<ReconciliationFieldNames, object?> staging)
+    public static IEnumerable<ReconciliationFieldName> Check(Dictionary<ReconciliationFieldName, object?> preservica, Dictionary<ReconciliationFieldName, object?> staging)
     {
-        var difference = new List<ReconciliationFieldNames>();
+        var difference = new List<ReconciliationFieldName>();
 
         foreach (var field in preservica.Keys)
         {

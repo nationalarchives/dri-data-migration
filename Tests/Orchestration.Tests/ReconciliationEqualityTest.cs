@@ -15,9 +15,9 @@ public sealed class ReconciliationEqualityComparerTest
 
     [TestMethod("Difference logic")]
     [DynamicData(nameof(CheckEqualityData))]
-    public void EqualityChecking(Dictionary<ReconciliationFieldNames, object?> preservica,
-        Dictionary<ReconciliationFieldNames, object?> staging,
-        List<ReconciliationFieldNames> expected,
+    public void EqualityChecking(Dictionary<ReconciliationFieldName, object?> preservica,
+        Dictionary<ReconciliationFieldName, object?> staging,
+        List<ReconciliationFieldName> expected,
         string because)
     {
         var difference = ReconciliationEqualityComparer.Check(preservica, staging);
@@ -27,150 +27,150 @@ public sealed class ReconciliationEqualityComparerTest
 
     public static IEnumerable<object[]> CheckEqualityData => [
         [
-            new Dictionary<ReconciliationFieldNames, object?>
+            new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, sameVariationName },
-                { ReconciliationFieldNames.LegislationSectionReference, sameLegislation },
-                { ReconciliationFieldNames.RetentionReviewDate, sameReviewDate }
+                { ReconciliationFieldName.VariationName, sameVariationName },
+                { ReconciliationFieldName.LegislationSectionReference, sameLegislation },
+                { ReconciliationFieldName.RetentionReviewDate, sameReviewDate }
             },
-                new Dictionary<ReconciliationFieldNames, object?>
+                new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, sameVariationName },
-                { ReconciliationFieldNames.LegislationSectionReference, sameLegislation },
-                { ReconciliationFieldNames.RetentionReviewDate, sameReviewDate }
+                { ReconciliationFieldName.VariationName, sameVariationName },
+                { ReconciliationFieldName.LegislationSectionReference, sameLegislation },
+                { ReconciliationFieldName.RetentionReviewDate, sameReviewDate }
             },
-            new List<ReconciliationFieldNames>(),
+            new List<ReconciliationFieldName>(),
             "are equal"
         ],
         [
-            new Dictionary<ReconciliationFieldNames, object?>
+            new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, sameVariationName },
-                { ReconciliationFieldNames.LegislationSectionReference, sameLegislation },
-                { ReconciliationFieldNames.RetentionReviewDate, sameReviewDate }
+                { ReconciliationFieldName.VariationName, sameVariationName },
+                { ReconciliationFieldName.LegislationSectionReference, sameLegislation },
+                { ReconciliationFieldName.RetentionReviewDate, sameReviewDate }
             },
-                new Dictionary<ReconciliationFieldNames, object?>
+                new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, sameVariationName },
-                { ReconciliationFieldNames.LegislationSectionReference, sameLegislation },
-                { ReconciliationFieldNames.RetentionReviewDate, sameReviewDate },
-                { ReconciliationFieldNames.ImportLocation, Guid.NewGuid().ToString() }
+                { ReconciliationFieldName.VariationName, sameVariationName },
+                { ReconciliationFieldName.LegislationSectionReference, sameLegislation },
+                { ReconciliationFieldName.RetentionReviewDate, sameReviewDate },
+                { ReconciliationFieldName.ImportLocation, Guid.NewGuid().ToString() }
             },
-            new List<ReconciliationFieldNames>(),
+            new List<ReconciliationFieldName>(),
             "contains all fields and values are equal"
         ],
         [
-            new Dictionary<ReconciliationFieldNames, object?>
+            new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, sameVariationName },
-                { ReconciliationFieldNames.RetentionReviewDate, sameReviewDate }
+                { ReconciliationFieldName.VariationName, sameVariationName },
+                { ReconciliationFieldName.RetentionReviewDate, sameReviewDate }
             },
-                new Dictionary<ReconciliationFieldNames, object?>
+                new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, differentVariationName },
-                { ReconciliationFieldNames.RetentionReviewDate, sameReviewDate }
+                { ReconciliationFieldName.VariationName, differentVariationName },
+                { ReconciliationFieldName.RetentionReviewDate, sameReviewDate }
             },
-            new List<ReconciliationFieldNames>(){ ReconciliationFieldNames.VariationName },
+            new List<ReconciliationFieldName>(){ ReconciliationFieldName.VariationName },
             "variation name is different"
         ],
         [
-            new Dictionary<ReconciliationFieldNames, object?>
+            new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, sameVariationName },
-                { ReconciliationFieldNames.RetentionReviewDate, sameReviewDate }
+                { ReconciliationFieldName.VariationName, sameVariationName },
+                { ReconciliationFieldName.RetentionReviewDate, sameReviewDate }
             },
-                new Dictionary<ReconciliationFieldNames, object?>
+                new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, sameVariationName },
-                { ReconciliationFieldNames.RetentionReviewDate, differentReviewDate }
+                { ReconciliationFieldName.VariationName, sameVariationName },
+                { ReconciliationFieldName.RetentionReviewDate, differentReviewDate }
             },
-            new List<ReconciliationFieldNames>(){ ReconciliationFieldNames.RetentionReviewDate },
+            new List<ReconciliationFieldName>(){ ReconciliationFieldName.RetentionReviewDate },
             "review date is different"
         ],
         [
-            new Dictionary<ReconciliationFieldNames, object?>
+            new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, sameVariationName },
-                { ReconciliationFieldNames.LegislationSectionReference, sameLegislation }
+                { ReconciliationFieldName.VariationName, sameVariationName },
+                { ReconciliationFieldName.LegislationSectionReference, sameLegislation }
             },
-                new Dictionary<ReconciliationFieldNames, object?>
+                new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, differentVariationName },
-                { ReconciliationFieldNames.LegislationSectionReference, differentLegislation }
+                { ReconciliationFieldName.VariationName, differentVariationName },
+                { ReconciliationFieldName.LegislationSectionReference, differentLegislation }
             },
-            new List<ReconciliationFieldNames>(){ ReconciliationFieldNames.VariationName, ReconciliationFieldNames.LegislationSectionReference },
+            new List<ReconciliationFieldName>(){ ReconciliationFieldName.VariationName, ReconciliationFieldName.LegislationSectionReference },
             "variation name and legislation are different"
         ],
         [
-            new Dictionary<ReconciliationFieldNames, object?>
+            new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, sameVariationName },
+                { ReconciliationFieldName.VariationName, sameVariationName },
             },
-                new Dictionary<ReconciliationFieldNames, object?>
+                new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.LegislationSectionReference, sameLegislation }
+                { ReconciliationFieldName.LegislationSectionReference, sameLegislation }
             },
-            new List<ReconciliationFieldNames>(){ ReconciliationFieldNames.VariationName },
+            new List<ReconciliationFieldName>(){ ReconciliationFieldName.VariationName },
             "variation name is missing"
         ],
         [
-            new Dictionary<ReconciliationFieldNames, object?>
+            new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, sameVariationName },
+                { ReconciliationFieldName.VariationName, sameVariationName },
             },
-                new Dictionary<ReconciliationFieldNames, object?>
+                new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, null }
+                { ReconciliationFieldName.VariationName, null }
             },
-            new List<ReconciliationFieldNames>(){ ReconciliationFieldNames.VariationName },
+            new List<ReconciliationFieldName>(){ ReconciliationFieldName.VariationName },
             "variation name is null"
         ],
         [
-            new Dictionary<ReconciliationFieldNames, object?>
+            new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.LegislationSectionReference, sameLegislation },
+                { ReconciliationFieldName.LegislationSectionReference, sameLegislation },
             },
-                new Dictionary<ReconciliationFieldNames, object?>
+                new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, new string[] { null } }
+                { ReconciliationFieldName.VariationName, new string[] { null } }
             },
-            new List<ReconciliationFieldNames>(){ ReconciliationFieldNames.LegislationSectionReference },
+            new List<ReconciliationFieldName>(){ ReconciliationFieldName.LegislationSectionReference },
             "legislation item is null"
         ],
         [
-            new Dictionary<ReconciliationFieldNames, object?>
+            new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, null },
+                { ReconciliationFieldName.VariationName, null },
             },
-                new Dictionary<ReconciliationFieldNames, object?>
+                new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, null }
+                { ReconciliationFieldName.VariationName, null }
             },
-            new List<ReconciliationFieldNames>(){ },
+            new List<ReconciliationFieldName>(){ },
             "variation name is null"
         ],
         [
-            new Dictionary<ReconciliationFieldNames, object?>
+            new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, null },
+                { ReconciliationFieldName.VariationName, null },
             },
-                new Dictionary<ReconciliationFieldNames, object?>
+                new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, sameVariationName }
+                { ReconciliationFieldName.VariationName, sameVariationName }
             },
-            new List<ReconciliationFieldNames>(){ ReconciliationFieldNames.VariationName },
+            new List<ReconciliationFieldName>(){ ReconciliationFieldName.VariationName },
             "variation name is not null"
         ],
         [
-            new Dictionary<ReconciliationFieldNames, object?>
+            new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.LegislationSectionReference, new string[]{ null } },
+                { ReconciliationFieldName.LegislationSectionReference, new string[]{ null } },
             },
-                new Dictionary<ReconciliationFieldNames, object?>
+                new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.LegislationSectionReference, sameLegislation }
+                { ReconciliationFieldName.LegislationSectionReference, sameLegislation }
             },
-            new List<ReconciliationFieldNames>(){ ReconciliationFieldNames.LegislationSectionReference },
+            new List<ReconciliationFieldName>(){ ReconciliationFieldName.LegislationSectionReference },
             "legislation name is not null"
         ]
     ];

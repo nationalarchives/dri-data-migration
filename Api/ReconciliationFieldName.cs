@@ -1,6 +1,6 @@
 ﻿namespace Api;
 
-public enum ReconciliationFieldNames
+public enum ReconciliationFieldName
 {
     Id,
     ImportLocation,

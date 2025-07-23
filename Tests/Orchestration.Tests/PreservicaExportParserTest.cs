@@ -26,7 +26,7 @@ public sealed class PreservicaExportParserTest
     
     [TestMethod("Parses CSV")]
     [DynamicData(nameof(CsvParsingData))]
-    public void CsvParsing(int rowNumber, Dictionary<ReconciliationFieldNames, object> expected)
+    public void CsvParsing(int rowNumber, Dictionary<ReconciliationFieldName, object> expected)
     {
         var parser = new PreservicaExportParser("../../../Csv/input.csv", csvParsingMap);
         var row = parser.Parse().ElementAt(rowNumber);
@@ -36,45 +36,45 @@ public sealed class PreservicaExportParserTest
 
     private readonly Dictionary<string, ReconciliationRow> csvParsingMap = new()
         {
-            { "text", new (ReconciliationFieldNames.VariationName, PreservicaExportParser.ToText) },
-            { "location", new(ReconciliationFieldNames.ImportLocation, PreservicaExportParser.ToLocation) },
-            { "textlist", new(ReconciliationFieldNames.LegislationSectionReference, PreservicaExportParser.ToTextList) },
-            { "date", new(ReconciliationFieldNames.RetentionReviewDate, PreservicaExportParser.ToDate) },
-            { "int", new(ReconciliationFieldNames.RetentionInstrumentNumber, PreservicaExportParser.ToInt) },
-            { "bool", new(ReconciliationFieldNames.IsPublicDescription, PreservicaExportParser.ToBool) }
+            { "text", new (ReconciliationFieldName.VariationName, PreservicaExportParser.ToText) },
+            { "location", new(ReconciliationFieldName.ImportLocation, PreservicaExportParser.ToLocation) },
+            { "textlist", new(ReconciliationFieldName.LegislationSectionReference, PreservicaExportParser.ToTextList) },
+            { "date", new(ReconciliationFieldName.RetentionReviewDate, PreservicaExportParser.ToDate) },
+            { "int", new(ReconciliationFieldName.RetentionInstrumentNumber, PreservicaExportParser.ToInt) },
+            { "bool", new(ReconciliationFieldName.IsPublicDescription, PreservicaExportParser.ToBool) }
         };
 
     public static IEnumerable<object[]> CsvParsingData => [
         [
             0,
-            new Dictionary<ReconciliationFieldNames, object>
+            new Dictionary<ReconciliationFieldName, object>
             {
-                { ReconciliationFieldNames.VariationName, "Text1" },
-                { ReconciliationFieldNames.ImportLocation, "file://test location 1" },
-                { ReconciliationFieldNames.LegislationSectionReference, new string[] { "Item1", "Item2" } },
-                { ReconciliationFieldNames.RetentionReviewDate, DateTimeOffset.Parse("2000-01-01") },
-                { ReconciliationFieldNames.RetentionInstrumentNumber, 10 },
-                { ReconciliationFieldNames.IsPublicDescription, false }
+                { ReconciliationFieldName.VariationName, "Text1" },
+                { ReconciliationFieldName.ImportLocation, "file://test location 1" },
+                { ReconciliationFieldName.LegislationSectionReference, new string[] { "Item1", "Item2" } },
+                { ReconciliationFieldName.RetentionReviewDate, DateTimeOffset.Parse("2000-01-01") },
+                { ReconciliationFieldName.RetentionInstrumentNumber, 10 },
+                { ReconciliationFieldName.IsPublicDescription, false }
             }
         ],
         [
             1,
-            new Dictionary<ReconciliationFieldNames, object?>
+            new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, "Text2" },
-                { ReconciliationFieldNames.ImportLocation, "file://test-location-2" },
-                { ReconciliationFieldNames.LegislationSectionReference, new string[] { "Item3" } },
-                { ReconciliationFieldNames.RetentionReviewDate, DateTimeOffset.Parse("2000-01-01") },
-                { ReconciliationFieldNames.IsPublicDescription, true }
+                { ReconciliationFieldName.VariationName, "Text2" },
+                { ReconciliationFieldName.ImportLocation, "file://test-location-2" },
+                { ReconciliationFieldName.LegislationSectionReference, new string[] { "Item3" } },
+                { ReconciliationFieldName.RetentionReviewDate, DateTimeOffset.Parse("2000-01-01") },
+                { ReconciliationFieldName.IsPublicDescription, true }
             }
         ],
         [
             2,
-            new Dictionary<ReconciliationFieldNames, object?>
+            new Dictionary<ReconciliationFieldName, object?>
             {
-                { ReconciliationFieldNames.VariationName, "Text3" },
-                { ReconciliationFieldNames.RetentionReviewDate, DateTimeOffset.Parse("2000-01-01+06:00") },
-                { ReconciliationFieldNames.RetentionInstrumentNumber, 0 }
+                { ReconciliationFieldName.VariationName, "Text3" },
+                { ReconciliationFieldName.RetentionReviewDate, DateTimeOffset.Parse("2000-01-01+06:00") },
+                { ReconciliationFieldName.RetentionInstrumentNumber, 0 }
             }
         ]
     ];
