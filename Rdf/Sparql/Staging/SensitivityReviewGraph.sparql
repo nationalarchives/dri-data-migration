@@ -20,7 +20,7 @@ construct {
         ex:sensitivityReviewRestrictionHasLegislation ?legislation;
         ex:sensitivityReviewRestrictionHasRetentionRestriction ?retentionRestriction.
     ?retentionRestriction ex:retentionInstrumentNumber ?retentionInstrumentNumber;
-        ex:retentionInstrumentSignedDate ?retentionInstrumentSignedDate;
+        ex:retentionInstrumentSignatureDate ?retentionInstrumentSignatureDate;
         ex:retentionRestrictionReviewDate ?retentionRestrictionReviewDate;
         ex:retentionRestrictionHasGroundForRetention ?retentionRestrictionHasGroundForRetention;
         ex:retentionRestrictionHasRetention ?retention.
@@ -51,7 +51,7 @@ construct {
         optional {
             ?restriction ex:sensitivityReviewRestrictionHasRetentionRestriction ?retentionRestriction.
             optional { ?retentionRestriction ex:retentionInstrumentNumber ?retentionInstrumentNumber }
-            optional { ?retentionRestriction ex:retentionInstrumentSignedDate ?retentionInstrumentSignedDate }
+            optional { ?retentionRestriction ex:retentionInstrumentSignatureDate ?retentionInstrumentSignatureDate }
             optional { ?retentionRestriction ex:retentionRestrictionReviewDate ?retentionRestrictionReviewDate }
             optional { ?retentionRestriction ex:retentionRestrictionHasGroundForRetention ?retentionRestrictionHasGroundForRetention }
             optional {

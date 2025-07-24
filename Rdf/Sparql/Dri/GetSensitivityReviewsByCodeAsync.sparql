@@ -20,7 +20,7 @@ construct {
         	ex:sensitivityReviewRestrictionDescription ?reasonForChange;
         	ex:sensitivityReviewRestrictionHasRetentionRestriction [
          	 	ex:retentionInstrumentNumber ?rINumber;
-            	ex:retentionInstrumentSignedDate ?rISignedDate;
+            	ex:retentionInstrumentSignatureDate ?rISignedDate;
             	ex:retentionRestrictionReviewDate ?retentionReconsiderDate;
             	ex:retentionRestrictionHasGroundForRetention [
                     ex:groundForRetentionCode ?retentionJustification

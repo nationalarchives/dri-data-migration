@@ -53,7 +53,7 @@ public class StagingReconciliationClient(ISparqlClient sparqlClient) : IStagingR
         { Vocabulary.LegislationSectionReference.Uri.Segments.Last(), new(ReconciliationFieldName.LegislationSectionReference, ToText) },
         { Vocabulary.RetentionRestrictionReviewDate.Uri.Segments.Last(), new(ReconciliationFieldName.RetentionReviewDate, ToDateTime) },
         { Vocabulary.RetentionInstrumentNumber.Uri.Segments.Last(), new(ReconciliationFieldName.RetentionInstrumentNumber, ToInt) },
-        { Vocabulary.RetentionInstrumentSignedDate.Uri.Segments.Last(), new(ReconciliationFieldName.RetentionInstrumentSignedDate, ToDateTime) },
+        { Vocabulary.RetentionInstrumentSignatureDate.Uri.Segments.Last(), new(ReconciliationFieldName.RetentionInstrumentSignatureDate, ToDateTime) },
         { Vocabulary.GroundForRetentionCode.Uri.Segments.Last(), new(ReconciliationFieldName.GroundForRetentionCode, ToText) }
     };
 

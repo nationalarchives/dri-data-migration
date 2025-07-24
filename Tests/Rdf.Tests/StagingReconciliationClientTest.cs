@@ -55,7 +55,7 @@ public class StagingReconciliationClientTest
             { ReconciliationFieldName.LegislationSectionReference, "Legislation section" },
             { ReconciliationFieldName.RetentionReviewDate, DateTimeOffset.UtcNow.AddDays(-4) },
             { ReconciliationFieldName.RetentionInstrumentNumber, 2 },
-            { ReconciliationFieldName.RetentionInstrumentSignedDate, DateTimeOffset.UtcNow.AddDays(-5) },
+            { ReconciliationFieldName.RetentionInstrumentSignatureDate, DateTimeOffset.UtcNow.AddDays(-5) },
             { ReconciliationFieldName.GroundForRetentionCode, "Ground for retention code" }
         };
 
@@ -79,7 +79,7 @@ public class StagingReconciliationClientTest
             { ReconciliationFieldName.LegislationSectionReference, null },
             { ReconciliationFieldName.RetentionReviewDate, null },
             { ReconciliationFieldName.RetentionInstrumentNumber, null },
-            { ReconciliationFieldName.RetentionInstrumentSignedDate, null },
+            { ReconciliationFieldName.RetentionInstrumentSignatureDate, null },
             { ReconciliationFieldName.GroundForRetentionCode, null }
         };
 
@@ -112,7 +112,7 @@ public class StagingReconciliationClientTest
             new(Vocabulary.LegislationSectionReference.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.LegislationSectionReference, out var v13) && v13 is not null ? new LiteralNode(v13 as string) : null),
             new(Vocabulary.RetentionRestrictionReviewDate.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.RetentionReviewDate, out var v14) && v14 is not null ? new DateNode((DateTimeOffset)v14) : null),
             new(Vocabulary.RetentionInstrumentNumber.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.RetentionInstrumentNumber, out var v15) && v15 is not null ? new LongNode((int)v15) : null),
-            new(Vocabulary.RetentionInstrumentSignedDate.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.RetentionInstrumentSignedDate, out var v16) && v16 is not null ? new DateNode((DateTimeOffset)v16) : null),
+            new(Vocabulary.RetentionInstrumentSignatureDate.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.RetentionInstrumentSignatureDate, out var v16) && v16 is not null ? new DateNode((DateTimeOffset)v16) : null),
             new(Vocabulary.GroundForRetentionCode.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.GroundForRetentionCode, out var v17) && v17 is not null ? new LiteralNode(v17 as string) : null)
         ]);
 

@@ -208,7 +208,7 @@ public class DriExportGraphTest
         }
         if (dri.InstrumentSignedDate is not null)
         {
-            graph.Assert(retentionRestriction, Vocabulary.RetentionInstrumentSignedDate, new DateNode(dri.InstrumentSignedDate.Value));
+            graph.Assert(retentionRestriction, Vocabulary.RetentionInstrumentSignatureDate, new DateNode(dri.InstrumentSignedDate.Value));
         }
         if (dri.RestrictionReviewDate is not null)
         {

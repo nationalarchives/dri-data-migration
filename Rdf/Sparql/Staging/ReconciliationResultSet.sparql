@@ -5,7 +5,7 @@ select ?s ?t ?importLocation ?variationName ?accessConditionName ?retentionType
 	?sensitivityReviewSensitiveDescription ?sensitivityReviewRestrictionReviewDate
 	?sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionDuration
 	?sensitivityReviewRestrictionEndYear (group_concat(?lsr; separator=',') as ?legislationSectionReference)
-	?retentionRestrictionReviewDate ?retentionInstrumentNumber ?retentionInstrumentSignedDate ?groundForRetentionCode
+	?retentionRestrictionReviewDate ?retentionInstrumentNumber ?retentionInstrumentSignatureDate ?groundForRetentionCode
 where {
     bind(@id as ?id)
     ?subset ex:subsetHasBroaderSubset*/ex:subsetReference ?id.
@@ -35,7 +35,7 @@ where {
 			?restriction ex:sensitivityReviewRestrictionHasRetentionRestriction ?retentionRestriction.
 			optional { ?retentionRestriction ex:retentionRestrictionReviewDate ?retentionRestrictionReviewDate }
 			optional { ?retentionRestriction ex:retentionInstrumentNumber ?retentionInstrumentNumber }
-			optional { ?retentionRestriction ex:retentionInstrumentSignedDate ?retentionInstrumentSignedDate }
+			optional { ?retentionRestriction ex:retentionInstrumentSignatureDate ?retentionInstrumentSignatureDate }
 			optional {
                 ?retentionRestriction ex:retentionRestrictionHasGroundForRetention ?retentionRestrictionHasGroundForRetention.
                 ?retentionRestrictionHasGroundForRetention ex:groundForRetentionCode ?groundForRetentionCode.
@@ -77,6 +77,6 @@ group by ?s ?t ?importLocation ?variationName ?accessConditionName ?retentionTyp
 	?sensitivityReviewSensitiveDescription ?sensitivityReviewRestrictionReviewDate
 	?sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionDuration
 	?sensitivityReviewRestrictionEndYear
-	?retentionRestrictionReviewDate ?retentionInstrumentNumber ?retentionInstrumentSignedDate ?groundForRetentionCode
+	?retentionRestrictionReviewDate ?retentionInstrumentNumber ?retentionInstrumentSignatureDate ?groundForRetentionCode
 order by ?importLocation
 limit @limit offset @offset

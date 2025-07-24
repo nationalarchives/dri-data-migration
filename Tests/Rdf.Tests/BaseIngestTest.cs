@@ -254,7 +254,7 @@ public class BaseIngestTest
         }
         graph.Assert(restriction, Vocabulary.SensitivityReviewRestrictionHasRetentionRestriction, retentionRestriction);
         graph.Assert(retentionRestriction, Vocabulary.RetentionInstrumentNumber, new LongNode(dri.InstrumentNumber!.Value));
-        graph.Assert(retentionRestriction, Vocabulary.RetentionInstrumentSignedDate, new DateNode(dri.InstrumentSignedDate!.Value));
+        graph.Assert(retentionRestriction, Vocabulary.RetentionInstrumentSignatureDate, new DateNode(dri.InstrumentSignedDate!.Value));
         graph.Assert(retentionRestriction, Vocabulary.RetentionRestrictionReviewDate, new DateNode(dri.RestrictionReviewDate!.Value));
         if (dri.GroundForRetention!.ToString() == groundForRetentionRef.ToString())
         {

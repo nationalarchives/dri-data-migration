@@ -21,7 +21,7 @@ public static class PreservicaExportMap
             { "W", new(ReconciliationFieldName.RetentionType, PreservicaExportParser.ToText)},
             { "X", new(ReconciliationFieldName.RetentionReviewDate, PreservicaExportParser.ToDate)},
             { "Y", new(ReconciliationFieldName.RetentionInstrumentNumber, PreservicaExportParser.ToInt)},
-            { "Z", new(ReconciliationFieldName.RetentionInstrumentSignedDate, PreservicaExportParser.ToDate)},
+            { "Z", new(ReconciliationFieldName.RetentionInstrumentSignatureDate, PreservicaExportParser.ToDate)},
             { "AA", new(ReconciliationFieldName.GroundForRetentionCode, PreservicaExportParser.ToText)}
         };
 

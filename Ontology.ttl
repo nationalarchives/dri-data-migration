@@ -564,11 +564,11 @@ this:schema a owl:Ontology;
 	rdfs:label "Retention instrument number";
 	rdfs:comment "Retention Instrument approved by the Secretary of State for Digital, Culture, Media and Sport.".
 
-:retentionInstrumentSignedDate a owl:DatatypeProperty;
+:retentionInstrumentSignatureDate a owl:DatatypeProperty;
 	rdfs:domain :RetentionRestriction;
 	rdfs:range xsd:date;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Retention instrument signed date".
+	rdfs:label "Retention instrument signature date".
 
 :retentionRestrictionReviewDate a owl:DatatypeProperty;
 	rdfs:domain :RetentionRestriction;

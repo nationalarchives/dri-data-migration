@@ -154,7 +154,7 @@ public class DriExport : IDriExport
         var description = graph.GetTriplesWithSubjectPredicate(restriction, Vocabulary.SensitivityReviewRestrictionDescription).SingleOrDefault()?.Object as ILiteralNode;
         var retentionRestriction = graph.GetTriplesWithSubjectPredicate(restriction, Vocabulary.SensitivityReviewRestrictionHasRetentionRestriction).SingleOrDefault()?.Object as IBlankNode;
         var instrumentNumber = graph.GetTriplesWithSubjectPredicate(retentionRestriction, Vocabulary.RetentionInstrumentNumber).SingleOrDefault()?.Object as ILiteralNode;
-        var instrumentSignedDate = graph.GetTriplesWithSubjectPredicate(retentionRestriction, Vocabulary.RetentionInstrumentSignedDate).SingleOrDefault()?.Object as ILiteralNode;
+        var instrumentSignedDate = graph.GetTriplesWithSubjectPredicate(retentionRestriction, Vocabulary.RetentionInstrumentSignatureDate).SingleOrDefault()?.Object as ILiteralNode;
         var restrictionReviewDate = graph.GetTriplesWithSubjectPredicate(retentionRestriction, Vocabulary.RetentionRestrictionReviewDate).SingleOrDefault()?.Object as ILiteralNode;
         var ground = graph.GetTriplesWithSubjectPredicate(retentionRestriction, Vocabulary.RetentionRestrictionHasGroundForRetention).SingleOrDefault()?.Object as IBlankNode;
         var groundCode = graph.GetTriplesWithSubjectPredicate(ground, Vocabulary.GroundForRetentionCode).SingleOrDefault()?.Object as IUriNode;

@@ -139,7 +139,7 @@ public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlCli
         }
         if (dri.InstrumentSignedDate.HasValue)
         {
-            graph.Assert(retentionRestriction, Vocabulary.RetentionInstrumentSignedDate, new DateNode(dri.InstrumentSignedDate.Value));
+            graph.Assert(retentionRestriction, Vocabulary.RetentionInstrumentSignatureDate, new DateNode(dri.InstrumentSignedDate.Value));
         }
         if (dri.RestrictionReviewDate.HasValue)
         {

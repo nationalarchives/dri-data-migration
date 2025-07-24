@@ -20,6 +20,6 @@ public enum ReconciliationFieldName
     RetentionType,
     RetentionReviewDate,
     RetentionInstrumentNumber,
-    RetentionInstrumentSignedDate,
+    RetentionInstrumentSignatureDate,
     GroundForRetentionCode
 }
