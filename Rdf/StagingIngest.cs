@@ -41,8 +41,9 @@ public abstract class StagingIngest<T> : IStagingIngest<T> where T : IDriRecord
         retentionSparql = embedded.GetSparql("GetRetention");
     }
 
-    public async Task SetAsync(IEnumerable<T> dri)
+    public async Task<int> SetAsync(IEnumerable<T> dri)
     {
+        int total = 0;
         foreach (var item in dri)
         {
             var existing = await sparqlClient.GetGraphAsync(graphSparql, new Dictionary<string, object> { { "id", item.Id } });
@@ -54,8 +55,10 @@ public abstract class StagingIngest<T> : IStagingIngest<T> where T : IDriRecord
             }
 
             await sparqlClient.ApplyDiffAsync(diff);
+            total++;
             logger.RecordUpdated(item.Id);
         }
+        return total;
     }
 
     private CacheFetchInfo? ToCacheFetchInfo(CacheEntityKind kind, string key) => kind switch
