@@ -9,8 +9,7 @@ using VDS.RDF;
 
 namespace Rdf;
 
-public abstract class StagingIngest<T>
-    where T : DriRecord
+public abstract class StagingIngest<T> : IStagingIngest<T> where T : IDriRecord
 {
     private readonly IMemoryCache cache;
     internal readonly ISparqlClient sparqlClient;
@@ -42,7 +41,7 @@ public abstract class StagingIngest<T>
         retentionSparql = embedded.GetSparql("GetRetention");
     }
 
-    public async Task Set(IEnumerable<T> dri)
+    public async Task SetAsync(IEnumerable<T> dri)
     {
         foreach (var item in dri)
         {

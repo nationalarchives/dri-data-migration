@@ -12,7 +12,14 @@ public class BaseIngestTest
 {
     internal Mock<ISparqlClient> sparqlClient;
     internal Mock<IMemoryCache> cache;
-    internal ILogger logger;
+
+    internal static ILogger<AccessConditionIngest> loggerAc = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<AccessConditionIngest>();
+    internal static ILogger<LegislationIngest> loggerLeg = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<LegislationIngest>();
+    internal static ILogger<GroundForRetentionIngest> loggerGfr = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<GroundForRetentionIngest>();
+    internal static ILogger<SubsetIngest> loggerSub = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<SubsetIngest>();
+    internal static ILogger<AssetIngest> loggerAss = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<AssetIngest>();
+    internal static ILogger<VariationIngest> loggerVar = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<VariationIngest>();
+    internal static ILogger<SensitivityReviewIngest> loggerSr = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<SensitivityReviewIngest>();
 
     internal const string parentSubsetRef = "Parent subset 1";
     internal const string subsetRef = "Subset 1";
@@ -43,17 +50,16 @@ public class BaseIngestTest
     internal static readonly Uri previousSrRef2 = new("http://example.com/previoussr2");
     internal static object? previousSrNode = new UriNode(new("http://example.com/previous-sr-1"));
     private static readonly object? previousSrNode2 = new UriNode(new("http://example.com/previous-sr-2"));
-    
+
     internal void Initialize()
     {
         sparqlClient = new Mock<ISparqlClient>();
         cache = new Mock<IMemoryCache>();
-        logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger(nameof(BaseIngestTest));
     }
 
     internal static void SetupFetchOrNewSubset(Mock<IMemoryCache> cache, string reference, object? node) =>
         SetupFetchOrNew(cache, "subset", reference, node);
-    
+
     internal static void SetupFetchOrNewSensitivityReview(Mock<IMemoryCache> cache, string reference, object? node) =>
         SetupFetchOrNew(cache, "sensititvity-review", reference, node);
 
@@ -93,7 +99,7 @@ public class BaseIngestTest
 
     private static void SetupFetchDictionary(Mock<ISparqlClient> client, string match, string key, IUriNode value) =>
         client.Setup(s => s.GetDictionaryAsync(It.Is<string>(m => m.Contains(match))))
-            .Returns(Task.FromResult(new Dictionary<string, IUriNode>{ { key, value } }));
+            .Returns(Task.FromResult(new Dictionary<string, IUriNode> { { key, value } }));
 
     internal static readonly DriAccessCondition accessCondition = new(new Uri("http://example.com/ac#ac1"), "Access Condition 1");
     internal static readonly DriGroundForRetention groundForRetention = new("Code 1", "Ground for retention 1");

@@ -7,17 +7,19 @@ using VDS.RDF;
 
 namespace Rdf;
 
-public class GroundForRetentionIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger logger)
+public class GroundForRetentionIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<GroundForRetentionIngest> logger)
     : StagingIngest<DriGroundForRetention>(cache, sparqlClient, logger, "GroundForRetentionGraph")
 {
     internal override async Task<Graph> BuildAsync(IGraph existing, DriGroundForRetention dri)
     {
+        logger.BuildingRecord(dri.Id);
         var code = new LiteralNode(dri.Code);
         var id = existing.GetTriplesWithPredicateObject(Vocabulary.GroundForRetentionCode, code).FirstOrDefault()?.Subject ?? NewId;
 
         var graph = new Graph();
         graph.Assert(id, Vocabulary.GroundForRetentionCode, code);
         graph.Assert(id, Vocabulary.GroundForRetentionDescription, new LiteralNode(dri.Description));
+        logger.RecordBuilt(dri.Id);
 
         return graph;
     }

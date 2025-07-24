@@ -1,4 +1,5 @@
 ﻿using Api;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +9,15 @@ using VDS.RDF.Nodes;
 
 namespace Rdf;
 
-public class DriExport
+public class DriExport : IDriExport
 {
+    private readonly ILogger<DriExport> logger;
     private readonly ISparqlClient sparqlClient;
     private readonly EmbeddedSparqlResource embedded;
 
-    public DriExport(ISparqlClient sparqlClient)
+    public DriExport(ILogger<DriExport> logger, ISparqlClient sparqlClient)
     {
+        this.logger = logger;
         this.sparqlClient = sparqlClient;
 
         var currentAssembly = typeof(DriExport).Assembly;
@@ -22,9 +25,10 @@ public class DriExport
         embedded = new(currentAssembly, baseName);
     }
 
-    public async Task<IEnumerable<DriSubset>> GetBroadestSubsets()
+    public async Task<IEnumerable<DriSubset>> GetBroadestSubsetsAsync()
     {
-        var sparql = embedded.GetSparql(nameof(GetBroadestSubsets));
+        logger.GetBroadestSubsets();
+        var sparql = embedded.GetSparql(nameof(GetBroadestSubsetsAsync));
 
         var result = await sparqlClient.GetResultSetAsync(sparql);
 
@@ -32,9 +36,10 @@ public class DriExport
             s.Value("directory").AsValuedNode().AsString(), s.Value("directory").AsValuedNode().AsString(), null));
     }
 
-    public async Task<IEnumerable<DriAccessCondition>> GetAccessConditions()
+    public async Task<IEnumerable<DriAccessCondition>> GetAccessConditionsAsync()
     {
-        var sparql = embedded.GetSparql(nameof(GetAccessConditions));
+        logger.GetAccessConditions();
+        var sparql = embedded.GetSparql(nameof(GetAccessConditionsAsync));
 
         var result = await sparqlClient.GetResultSetAsync(sparql);
 
@@ -42,9 +47,10 @@ public class DriExport
             (s.Value("s") as IUriNode)!.Uri, s.Value("label").AsValuedNode().AsString()));
     }
 
-    public async Task<IEnumerable<DriLegislation>> GetLegislations()
+    public async Task<IEnumerable<DriLegislation>> GetLegislationsAsync()
     {
-        var sparql = embedded.GetSparql(nameof(GetLegislations));
+        logger.GetLegislations();
+        var sparql = embedded.GetSparql(nameof(GetLegislationsAsync));
 
         var result = await sparqlClient.GetResultSetAsync(sparql);
 
@@ -52,9 +58,10 @@ public class DriExport
             (s.Value("legislation") as IUriNode)!.Uri, s.HasValue("label") ? s.Value("label")?.AsValuedNode().AsString() : null));
     }
 
-    public async Task<IEnumerable<DriGroundForRetention>> GetGroundForRetentions()
+    public async Task<IEnumerable<DriGroundForRetention>> GetGroundsForRetentionAsync()
     {
-        var sparql = embedded.GetSparql(nameof(GetGroundForRetentions));
+        logger.GetGroundsForRetention();
+        var sparql = embedded.GetSparql(nameof(GetGroundsForRetentionAsync));
 
         var result = await sparqlClient.GetResultSetAsync(sparql);
 
@@ -62,9 +69,10 @@ public class DriExport
             s.Value("label").AsValuedNode().AsString(), s.Value("comment").AsValuedNode().AsString()));
     }
 
-    public async Task<IEnumerable<DriSubset>> GetSubsetsByCode(string code, int pageSize, int offset)
+    public async Task<IEnumerable<DriSubset>> GetSubsetsByCodeAsync(string code, int pageSize, int offset)
     {
-        var sparql = embedded.GetSparql(nameof(GetSubsetsByCode));
+        logger.GetSubsetsByCode(offset);
+        var sparql = embedded.GetSparql(nameof(GetSubsetsByCodeAsync));
         var graph = await sparqlClient.GetGraphAsync(sparql, new Dictionary<string, object>
         {
             { "id", code },
@@ -77,9 +85,10 @@ public class DriExport
             .Select(s => SusbsetBySubject(graph, s));
     }
 
-    public async Task<IEnumerable<DriAsset>> GetAssetsByCode(string code, int pageSize, int offset)
+    public async Task<IEnumerable<DriAsset>> GetAssetsByCodeAsync(string code, int pageSize, int offset)
     {
-        var sparql = embedded.GetSparql(nameof(GetAssetsByCode));
+        logger.GetAssetsByCode(offset);
+        var sparql = embedded.GetSparql(nameof(GetAssetsByCodeAsync));
         var graph = await sparqlClient.GetGraphAsync(sparql, new Dictionary<string, object>
         {
             { "id", code },
@@ -92,9 +101,10 @@ public class DriExport
             .Select(s => AssetBySubject(graph, s!));
     }
 
-    public async Task<IEnumerable<DriVariation>> GetVariationsByCode(string code, int pageSize, int offset)
+    public async Task<IEnumerable<DriVariation>> GetVariationsByCodeAsync(string code, int pageSize, int offset)
     {
-        var sparql = embedded.GetSparql(nameof(GetVariationsByCode));
+        logger.GetVariationsByCode(offset);
+        var sparql = embedded.GetSparql(nameof(GetVariationsByCodeAsync));
         var graph = await sparqlClient.GetGraphAsync(sparql, new Dictionary<string, object>
         {
             { "id", code },
@@ -107,9 +117,10 @@ public class DriExport
             .Select(s => VariationBySubject(graph, s!));
     }
 
-    public async Task<IEnumerable<DriSensitivityReview>> GetSensitivityReviewsByCode(string code, int pageSize, int offset)
+    public async Task<IEnumerable<DriSensitivityReview>> GetSensitivityReviewsByCodeAsync(string code, int pageSize, int offset)
     {
-        var sparql = embedded.GetSparql(nameof(GetSensitivityReviewsByCode));
+        logger.GetSensitivityReviewsByCode(offset);
+        var sparql = embedded.GetSparql(nameof(GetSensitivityReviewsByCodeAsync));
         var graph = await sparqlClient.GetGraphAsync(sparql, new Dictionary<string, object>
         {
             { "id", code },

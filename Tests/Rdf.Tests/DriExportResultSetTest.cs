@@ -1,5 +1,6 @@
 using Api;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System.Reflection;
 using VDS.RDF;
@@ -11,11 +12,13 @@ namespace Rdf.Tests;
 public class DriExportResultSetTest
 {
     private Mock<ISparqlClient> sparqlClient;
+    internal ILogger<DriExport> logger;
 
     [TestInitialize]
     public void TestInitialize()
     {
         sparqlClient = new Mock<ISparqlClient>();
+        logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<DriExport>();
     }
 
     public static string DisplayName(MethodInfo _, object[] data) => data[data.Length - 1].ToString()!;
@@ -29,7 +32,7 @@ public class DriExportResultSetTest
         sparqlClient.Setup(c => c.GetResultSetAsync(It.IsAny<string>()))
             .ReturnsAsync(data);
 
-        var exporter = new DriExport(sparqlClient.Object);
+        var exporter = new DriExport(logger, sparqlClient.Object);
         var result = await getData(exporter);
 
         result.Should().ContainSingle().And.BeEquivalentTo([expected]);
@@ -44,31 +47,31 @@ public class DriExportResultSetTest
     public static IEnumerable<object[]> ReadsResultSetsData => [
         [
             BuildBroadest(broadestSubset),
-            async (DriExport exporter) => await exporter.GetBroadestSubsets(),
+            async (DriExport exporter) => await exporter.GetBroadestSubsetsAsync(),
             broadestSubset,
             "broadest subset"
         ],
         [
             Build(accessCondition),
-            async (DriExport exporter) => await exporter.GetAccessConditions(),
+            async (DriExport exporter) => await exporter.GetAccessConditionsAsync(),
             accessCondition,
             "access condition"
         ],
         [
             Build(legislation),
-            async (DriExport exporter) => await exporter.GetLegislations(),
+            async (DriExport exporter) => await exporter.GetLegislationsAsync(),
             legislation,
             "legislation"
         ],
         [
             Build(missingSectionLegislation),
-            async (DriExport exporter) => await exporter.GetLegislations(),
+            async (DriExport exporter) => await exporter.GetLegislationsAsync(),
             missingSectionLegislation,
             "legislation without section"
         ],
         [
             Build(groundForRetention),
-            async (DriExport exporter) => await exporter.GetGroundForRetentions(),
+            async (DriExport exporter) => await exporter.GetGroundsForRetentionAsync(),
             groundForRetention,
             "ground for retention"
         ]

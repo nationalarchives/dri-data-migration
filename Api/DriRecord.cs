@@ -1,3 +1,3 @@
 ﻿namespace Api;
 
-public abstract record DriRecord(string Id);
+public abstract record DriRecord(string Id) : IDriRecord;

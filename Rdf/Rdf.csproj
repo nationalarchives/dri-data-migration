@@ -7,14 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Sparql\Dri\GetGroundForRetentions.sparql" />
-    <EmbeddedResource Include="Sparql\Dri\GetLegislations.sparql" />
-    <EmbeddedResource Include="Sparql\Dri\GetVariationsByCode.sparql" />
-    <EmbeddedResource Include="Sparql\Dri\GetBroadestSubsets.sparql" />
-    <EmbeddedResource Include="Sparql\Dri\GetAccessConditions.sparql" />
-    <EmbeddedResource Include="Sparql\Dri\GetSensitivityReviewsByCode.sparql" />
-    <EmbeddedResource Include="Sparql\Dri\GetAssetsByCode.sparql" />
-    <EmbeddedResource Include="Sparql\Dri\GetSubsetsByCode.sparql" />
+    <EmbeddedResource Include="Sparql\Dri\GetGroundsForRetentionAsync.sparql" />
+    <EmbeddedResource Include="Sparql\Dri\GetLegislationsAsync.sparql" />
+    <EmbeddedResource Include="Sparql\Dri\GetVariationsByCodeAsync.sparql" />
+    <EmbeddedResource Include="Sparql\Dri\GetBroadestSubsetsAsync.sparql" />
+    <EmbeddedResource Include="Sparql\Dri\GetAccessConditionsAsync.sparql" />
+    <EmbeddedResource Include="Sparql\Dri\GetSensitivityReviewsByCodeAsync.sparql" />
+    <EmbeddedResource Include="Sparql\Dri\GetAssetsByCodeAsync.sparql" />
+    <EmbeddedResource Include="Sparql\Dri\GetSubsetsByCodeAsync.sparql" />
     <EmbeddedResource Include="Sparql\Staging\GetGroundsForRetention.sparql" />
     <EmbeddedResource Include="Sparql\Staging\GetLegislations.sparql" />
     <EmbeddedResource Include="Sparql\Staging\GetAccessConditions.sparql" />

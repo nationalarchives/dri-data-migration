@@ -1,6 +1,5 @@
 using Api;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 using Moq;
 using System.Reflection;
 using VDS.RDF;
@@ -17,14 +16,14 @@ public class NewIngestTest : BaseIngestTest
 
     [TestMethod("Performs update when there is a new record")]
     [DynamicData(nameof(ChangeIngestData), DynamicDataDisplayName = nameof(DisplayName))]
-    public async Task ChangeIngest(Func<IMemoryCache, ISparqlClient, ILogger, Task> ingest,
+    public async Task ChangeIngest(Func<IMemoryCache, ISparqlClient, Task> ingest,
          Action<Mock<ISparqlClient>, Mock<IMemoryCache>> additionalSetup, int addedCount, string _)
     {
         sparqlClient.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>()))
             .ReturnsAsync(new Graph());
         additionalSetup(sparqlClient, cache);
 
-        await ingest(cache.Object, sparqlClient.Object, logger);
+        await ingest(cache.Object, sparqlClient.Object);
 
         sparqlClient.Verify(c => c.ApplyDiffAsync(It.Is<GraphDiffReport>(r =>
             r.AddedTriples.Count() == addedCount && !r.RemovedTriples.Any())));
@@ -32,36 +31,36 @@ public class NewIngestTest : BaseIngestTest
 
     public static IEnumerable<object[]> ChangeIngestData => [
         [
-            async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new AccessConditionIngest(cache, client, logger)
-                .Set([accessCondition]),
+            async (IMemoryCache cache, ISparqlClient client) => await new AccessConditionIngest(cache, client, loggerAc)
+                .SetAsync([accessCondition]),
             NoopSetup(),
             2,
             "access condition"
         ],
         [
-            async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new GroundForRetentionIngest(cache, client, logger)
-                .Set([groundForRetention]),
+            async (IMemoryCache cache, ISparqlClient client) => await new GroundForRetentionIngest(cache, client, loggerGfr)
+                .SetAsync([groundForRetention]),
             NoopSetup(),
             2,
             "ground for retention"
         ],
         [
-            async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new LegislationIngest(cache, client, logger)
-                .Set([legislation]),
+            async (IMemoryCache cache, ISparqlClient client) => await new LegislationIngest(cache, client, loggerLeg)
+                .SetAsync([legislation]),
             NoopSetup(),
             2,
             "legislation"
         ],
         [
-            async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new SubsetIngest(cache, client, logger)
-                .Set([subset]),
+            async (IMemoryCache cache, ISparqlClient client) => await new SubsetIngest(cache, client, loggerSub)
+                .SetAsync([subset]),
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) => SetupFetchOrNewSubset(cache, parentSubsetRef, parentSubsetNode),
             5,
             "subset"
         ],
         [
-            async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new SubsetIngest(cache, client, logger)
-                .Set([subset]),
+            async (IMemoryCache cache, ISparqlClient client) => await new SubsetIngest(cache, client, loggerSub)
+                .SetAsync([subset]),
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) =>
             {
                 var notFound = (object?)null;
@@ -72,22 +71,22 @@ public class NewIngestTest : BaseIngestTest
             "subset with not present parent subset"
         ],
         [
-            async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new AssetIngest(cache, client, logger)
-                .Set([asset]),
+            async (IMemoryCache cache, ISparqlClient client) => await new AssetIngest(cache, client, loggerAss)
+                .SetAsync([asset]),
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) => SetupFetchSubset(cache, client, subsetRef, subsetNode),
             4,
             "asset"
         ],
         [
-            async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new VariationIngest(cache, client, logger)
-                .Set([variation]),
+            async (IMemoryCache cache, ISparqlClient client) => await new VariationIngest(cache, client, loggerVar)
+                .SetAsync([variation]),
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) => SetupFetchAsset(cache, client, assetRef, assetNode),
             3,
             "variation"
         ],
         [
-            async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new SensitivityReviewIngest(cache, client, logger)
-                .Set([sr]),
+            async (IMemoryCache cache, ISparqlClient client) => await new SensitivityReviewIngest(cache, client, loggerSr)
+                .SetAsync([sr]),
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) =>
             {
                 SetupFetchAccessCondition(client, accessConditionRef.Fragment.Substring(1), accessConditionNode);
@@ -100,8 +99,8 @@ public class NewIngestTest : BaseIngestTest
             "sensitivity review"
         ],
         [
-            async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new SensitivityReviewIngest(cache, client, logger)
-                .Set([sr with { TargetType = new("http://example.com/target-type#DeliverableUnit"), TargetReference = assetRef }]),
+            async (IMemoryCache cache, ISparqlClient client) => await new SensitivityReviewIngest(cache, client, loggerSr)
+                .SetAsync([sr with { TargetType = new("http://example.com/target-type#DeliverableUnit"), TargetReference = assetRef }]),
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) =>
             {
                 SetupFetchAccessCondition(client, accessConditionRef.Fragment.Substring(1), accessConditionNode);
@@ -115,8 +114,8 @@ public class NewIngestTest : BaseIngestTest
             "sensitivity review with asset"
         ],
         [
-            async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new SensitivityReviewIngest(cache, client, logger)
-                .Set([sr with { TargetType = new("http://example.com/target-type#DeliverableUnit"), TargetReference = subsetRef }]),
+            async (IMemoryCache cache, ISparqlClient client) => await new SensitivityReviewIngest(cache, client, loggerSr)
+                .SetAsync([sr with { TargetType = new("http://example.com/target-type#DeliverableUnit"), TargetReference = subsetRef }]),
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) =>
             {
                 SetupFetchAccessCondition(client, accessConditionRef.Fragment.Substring(1), accessConditionNode);
@@ -130,8 +129,8 @@ public class NewIngestTest : BaseIngestTest
             "sensitivity review with subset"
         ],
         [
-            async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new SensitivityReviewIngest(cache, client, logger)
-                .Set([sr with { AccessCondition = accessConditionRef2, RestrictionDuration = 2020 }]),
+            async (IMemoryCache cache, ISparqlClient client) => await new SensitivityReviewIngest(cache, client, loggerSr)
+                .SetAsync([sr with { AccessCondition = accessConditionRef2, RestrictionDuration = 2020 }]),
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) =>
             {
                 SetupFetchAccessCondition(client, accessConditionRef2.Fragment.Substring(1), accessConditionNode2);

@@ -11,7 +11,7 @@ using VDS.RDF.Parsing;
 
 namespace Rdf;
 
-public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger logger)
+public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<SensitivityReviewIngest> logger)
     : StagingIngest<DriSensitivityReview>(cache, sparqlClient, logger, "SensitivityReviewGraph")
 {
     private Dictionary<string, IUriNode>? accessConditions = null;
@@ -20,6 +20,7 @@ public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlCli
 
     internal override async Task<Graph> BuildAsync(IGraph existing, DriSensitivityReview dri)
     {
+        logger.BuildingRecord(dri.Id);
         accessConditions ??= await sparqlClient.GetDictionaryAsync(embedded.GetSparql("GetAccessConditions"));
         legislations ??= await sparqlClient.GetDictionaryAsync(embedded.GetSparql("GetLegislations"));
         grounds ??= await sparqlClient.GetDictionaryAsync(embedded.GetSparql("GetGroundsForRetention"));
@@ -29,14 +30,11 @@ public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlCli
         var retentionRestriction = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewRestrictionHasRetentionRestriction).FirstOrDefault()?.Object ?? NewId;
 
         var graph = new Graph();
-
         await AddSensitivityReview(graph, id, dri);
-
         AddRestriction(graph, id, restriction, dri);
-
         await AddTargetAssociation(graph, id, dri);
-
         await AddRetentionRestriction(graph, id, restriction, retentionRestriction, dri);
+        logger.RecordBuilt(dri.Id);
 
         return graph;
     }

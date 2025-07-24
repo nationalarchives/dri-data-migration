@@ -1,5 +1,6 @@
 using Api;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System.Reflection;
 using VDS.RDF;
@@ -11,11 +12,13 @@ namespace Rdf.Tests;
 public class DriExportGraphTest
 {
     private Mock<ISparqlClient> sparqlClient;
+    internal ILogger<DriExport> logger;
 
     [TestInitialize]
     public void TestInitialize()
     {
         sparqlClient = new Mock<ISparqlClient>();
+        logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<DriExport>();
     }
 
     public static string DisplayName(MethodInfo _, object[] data) => data[data.Length - 1].ToString()!;
@@ -28,7 +31,7 @@ public class DriExportGraphTest
         sparqlClient.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>()))
             .ReturnsAsync(data);
 
-        var exporter = new DriExport(sparqlClient.Object);
+        var exporter = new DriExport(logger, sparqlClient.Object);
         var result = await getData(exporter);
 
         result.Should().ContainSingle().And.BeEquivalentTo([expected]);
@@ -47,49 +50,49 @@ public class DriExportGraphTest
     public static IEnumerable<object[]> ReadsGraphData => [
         [
             Build(subset),
-            async (DriExport exporter) => await exporter.GetSubsetsByCode(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
+            async (DriExport exporter) => await exporter.GetSubsetsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
             subset,
             "subset"
         ],
         [
             Build(noParentSubset),
-            async (DriExport exporter) => await exporter.GetSubsetsByCode(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
+            async (DriExport exporter) => await exporter.GetSubsetsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
             noParentSubset,
             "subset without parent"
         ],
         [
             Build(asset),
-            async (DriExport exporter) => await exporter.GetAssetsByCode(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
+            async (DriExport exporter) => await exporter.GetAssetsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
             asset,
             "asset"
         ],
         [
             Build(variation),
-            async (DriExport exporter) => await exporter.GetVariationsByCode(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
+            async (DriExport exporter) => await exporter.GetVariationsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
             variation,
             "variation"
         ],
         [
             Build(variation),
-            async (DriExport exporter) => await exporter.GetVariationsByCode(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
+            async (DriExport exporter) => await exporter.GetVariationsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
             variation,
             "variation"
         ],
         [
             Build(minimalSr),
-            async (DriExport exporter) => await exporter.GetSensitivityReviewsByCode(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
+            async (DriExport exporter) => await exporter.GetSensitivityReviewsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
             minimalSr,
             "minimal sensitivity review"
         ],
         [
             Build(multipleLegislationsSr),
-            async (DriExport exporter) => await exporter.GetSensitivityReviewsByCode(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
+            async (DriExport exporter) => await exporter.GetSensitivityReviewsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
             multipleLegislationsSr,
             "sensitivity review with multiple legislations"
         ],
         [
             Build(allFieldsSr),
-            async (DriExport exporter) => await exporter.GetSensitivityReviewsByCode(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
+            async (DriExport exporter) => await exporter.GetSensitivityReviewsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
             allFieldsSr,
             "sensitivity review with all fields"
         ]

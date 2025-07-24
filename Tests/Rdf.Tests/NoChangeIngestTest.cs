@@ -18,13 +18,13 @@ public class NoChangeIngestTest : BaseIngestTest
     [TestMethod("Doesn't ingest when there is no change")]
     [DynamicData(nameof(NoChangeNoIngestData), DynamicDataDisplayName = nameof(DisplayName))]
     public async Task NoChangeNoIngest(string id, IGraph existing, Action<Mock<ISparqlClient>, Mock<IMemoryCache>> additionalSetup,
-        Func<IMemoryCache, ISparqlClient, ILogger, Task> ingest, string _)
+        Func<IMemoryCache, ISparqlClient, Task> ingest, string _)
     {
         sparqlClient.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.Is<Dictionary<string, object>>(d => d["id"].ToString() == id)))
             .ReturnsAsync(existing);
         additionalSetup(sparqlClient, cache);
 
-        await ingest(cache.Object, sparqlClient.Object, logger);
+        await ingest(cache.Object, sparqlClient.Object);
 
         sparqlClient.Verify(c => c.ApplyDiffAsync(It.IsAny<GraphDiffReport>()), Times.Never());
     }
@@ -34,42 +34,42 @@ public class NoChangeIngestTest : BaseIngestTest
             accessCondition.Id,
             Build(accessCondition),
             NoopSetup(),
-            async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new AccessConditionIngest(cache, client, logger).Set([accessCondition]),
+            async (IMemoryCache cache, ISparqlClient client) => await new AccessConditionIngest(cache, client, loggerAc).SetAsync([accessCondition]),
             "access condition"
         ],
         [
             groundForRetention.Id,
             Build(groundForRetention),
             NoopSetup(),
-            async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new GroundForRetentionIngest(cache, client, logger).Set([groundForRetention]),
+            async (IMemoryCache cache, ISparqlClient client) => await new GroundForRetentionIngest(cache, client, loggerGfr).SetAsync([groundForRetention]),
             "ground for retention"
         ],
         [
             legislation.Id,
             Build(legislation),
             NoopSetup(),
-            async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new LegislationIngest(cache, client, logger).Set([legislation]),
+            async (IMemoryCache cache, ISparqlClient client) => await new LegislationIngest(cache, client, loggerLeg).SetAsync([legislation]),
             "legislation"
         ],
         [
             subset.Id,
             Build(subset),
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) => SetupFetchOrNewSubset(cache, parentSubsetRef, parentSubsetNode),
-            async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new SubsetIngest(cache, client, logger).Set([subset]),
+            async (IMemoryCache cache, ISparqlClient client) => await new SubsetIngest(cache, client, loggerSub).SetAsync([subset]),
             "subset"
         ],
         [
             asset.Id,
             Build(asset),
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) => SetupFetchSubset(cache, client, subsetRef, subsetNode),
-            async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new AssetIngest(cache, client, logger).Set([asset]),
+            async (IMemoryCache cache, ISparqlClient client) => await new AssetIngest(cache, client, loggerAss).SetAsync([asset]),
             "asset"
         ],
         [
             variation.Id,
             Build(variation),
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) => SetupFetchAsset(cache, client, assetRef, assetNode),
-            async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new VariationIngest(cache, client, logger).Set([variation]),
+            async (IMemoryCache cache, ISparqlClient client) => await new VariationIngest(cache, client, loggerVar).SetAsync([variation]),
             "variation"
         ],
         [
@@ -83,7 +83,7 @@ public class NoChangeIngestTest : BaseIngestTest
                 SetupFetchVariation(cache, client, variationRef.ToString(), variationNode);
                 SetupFetchGroundForRetention(client, groundForRetentionRef.Fragment.Substring(1), groundForRetentionNode);
             },
-            async (IMemoryCache cache, ISparqlClient client, ILogger logger) => await new SensitivityReviewIngest(cache, client, logger).Set([sr]),
+            async (IMemoryCache cache, ISparqlClient client) => await new SensitivityReviewIngest(cache, client, loggerSr).SetAsync([sr]),
             "sensitivity review"
         ]
     ];
