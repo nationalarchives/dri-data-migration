@@ -9,19 +9,19 @@ using VDS.RDF.Nodes;
 
 namespace Rdf;
 
-public class DriExport : IDriExport
+public class DriExporter : IDriExporter
 {
-    private readonly ILogger<DriExport> logger;
+    private readonly ILogger<DriExporter> logger;
     private readonly ISparqlClientReadOnly sparqlClient;
     private readonly EmbeddedSparqlResource embedded;
 
-    public DriExport(ILogger<DriExport> logger, ISparqlClientReadOnly sparqlClient)
+    public DriExporter(ILogger<DriExporter> logger, ISparqlClientReadOnly sparqlClient)
     {
         this.logger = logger;
         this.sparqlClient = sparqlClient;
 
-        var currentAssembly = typeof(DriExport).Assembly;
-        var baseName = $"{typeof(DriExport).Namespace}.Sparql.Dri";
+        var currentAssembly = typeof(DriExporter).Assembly;
+        var baseName = $"{typeof(DriExporter).Namespace}.Sparql.Dri";
         embedded = new(currentAssembly, baseName);
     }
 

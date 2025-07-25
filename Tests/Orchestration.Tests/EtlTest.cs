@@ -22,7 +22,7 @@ public sealed class EtlTest
             .And.Satisfy<FakeLogRecord>(r => r.StructuredState.Should().ContainSingle(s => s.Value == "1"));
     }
 
-    record SetupInfo<T, T1>(FakeLogger<T> Logger, IDriExport DriExport, IStagingIngest<T1> Ingest)
+    record SetupInfo<T, T1>(FakeLogger<T> Logger, IDriExporter DriExport, IStagingIngest<T1> Ingest)
         where T : IEtl
         where T1: IDriRecord;
 
@@ -30,7 +30,7 @@ public sealed class EtlTest
     {
         static SetupInfo<EtlAccessCondition, DriAccessCondition> SetupAc()
         {
-            Mock<IDriExport> driExport = new();
+            Mock<IDriExporter> driExport = new();
             FakeLogger<EtlAccessCondition> logger = new();
             Mock<IStagingIngest<DriAccessCondition>> ingest = new();
             var dri = new DriAccessCondition(new("http://example.com/access-condition"), "Access condition name");
@@ -42,7 +42,7 @@ public sealed class EtlTest
 
         static SetupInfo<EtlLegislation, DriLegislation> SetupLeg()
         {
-            Mock<IDriExport> driExport = new();
+            Mock<IDriExporter> driExport = new();
             FakeLogger<EtlLegislation> logger = new();
             Mock<IStagingIngest<DriLegislation>> ingest = new();
             var dri = new DriLegislation(new("http://example.com/legislation"), "Legislation section");
@@ -54,7 +54,7 @@ public sealed class EtlTest
 
         static SetupInfo<EtlGroundForRetention, DriGroundForRetention> SetupGfr()
         {
-            Mock<IDriExport> driExport = new();
+            Mock<IDriExporter> driExport = new();
             FakeLogger<EtlGroundForRetention> logger = new();
             Mock<IStagingIngest<DriGroundForRetention>> ingest = new();
             var dri = new DriGroundForRetention("Ground for retention", "GFR description");
@@ -66,7 +66,7 @@ public sealed class EtlTest
 
         static SetupInfo<EtlSubset, DriSubset> SetupSub()
         {
-            Mock<IDriExport> driExport = new();
+            Mock<IDriExporter> driExport = new();
             FakeLogger<EtlSubset> logger = new();
             Mock<IStagingIngest<DriSubset>> ingest = new();
             var dri = new DriSubset("Subset", "Subset directory");
@@ -78,7 +78,7 @@ public sealed class EtlTest
 
         static SetupInfo<EtlAsset, DriAsset> SetupAss()
         {
-            Mock<IDriExport> driExport = new();
+            Mock<IDriExporter> driExport = new();
             FakeLogger<EtlAsset> logger = new();
             Mock<IStagingIngest<DriAsset>> ingest = new();
             var dri = new DriAsset("Asset", "Asset directory", "Subset");
@@ -90,7 +90,7 @@ public sealed class EtlTest
 
         static SetupInfo<EtlVariation, DriVariation> SetupVar()
         {
-            Mock<IDriExport> driExport = new();
+            Mock<IDriExporter> driExport = new();
             FakeLogger<EtlVariation> logger = new();
             Mock<IStagingIngest<DriVariation>> ingest = new();
             var dri = new DriVariation(new("http://example.com/variation"), "Variation name", "Asset");
@@ -102,7 +102,7 @@ public sealed class EtlTest
 
         static SetupInfo<EtlSensitivityReview, DriSensitivityReview> SetupSr()
         {
-            Mock<IDriExport> driExport = new();
+            Mock<IDriExporter> driExport = new();
             FakeLogger<EtlSensitivityReview> logger = new();
             Mock<IStagingIngest<DriSensitivityReview>> ingest = new();
             var dri = new DriSensitivityReview(new("http://example.com/variation"), "Reference",
@@ -171,6 +171,6 @@ public sealed class EtlTest
 
 
 
-    static Expression<Func<IDriExport, Task<IEnumerable<DriAccessCondition>>>> GetAccessConditionsAsync() => x => x.GetAccessConditionsAsync();
+    static Expression<Func<IDriExporter, Task<IEnumerable<DriAccessCondition>>>> GetAccessConditionsAsync() => x => x.GetAccessConditionsAsync();
 
 }

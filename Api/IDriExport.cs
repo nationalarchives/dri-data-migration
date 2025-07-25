@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Api;
 
-public interface IDriExport
+public interface IDriExporter
 {
     Task<IEnumerable<DriAccessCondition>> GetAccessConditionsAsync();
     Task<IEnumerable<DriAsset>> GetAssetsByCodeAsync(string code, int pageSize, int offset);

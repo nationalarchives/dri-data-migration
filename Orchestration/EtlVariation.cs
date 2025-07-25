@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Orchestration;
 
-public class EtlVariation(ILogger<EtlVariation> logger, IDriExport driExport,
+public class EtlVariation(ILogger<EtlVariation> logger, IDriExporter driExport,
     IStagingIngest<DriVariation> ingest) : IEtl
 {
     public async Task RunAsync(string code, int limit)

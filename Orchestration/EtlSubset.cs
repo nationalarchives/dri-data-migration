@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Orchestration;
 
-public class EtlSubset(ILogger<EtlSubset> logger, IDriExport driExport,
+public class EtlSubset(ILogger<EtlSubset> logger, IDriExporter driExport,
     IStagingIngest<DriSubset> ingest) : IEtl
 {
     public async Task RunAsync(string code, int limit)

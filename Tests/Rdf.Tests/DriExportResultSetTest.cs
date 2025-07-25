@@ -12,13 +12,13 @@ namespace Rdf.Tests;
 public class DriExportResultSetTest
 {
     private Mock<ISparqlClient> sparqlClient;
-    internal ILogger<DriExport> logger;
+    internal ILogger<DriExporter> logger;
 
     [TestInitialize]
     public void TestInitialize()
     {
         sparqlClient = new Mock<ISparqlClient>();
-        logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<DriExport>();
+        logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<DriExporter>();
     }
 
     public static string DisplayName(MethodInfo _, object[] data) => data[data.Length - 1].ToString()!;
@@ -26,13 +26,13 @@ public class DriExportResultSetTest
     [TestMethod("Reads sets")]
     [DynamicData(nameof(ReadsResultSetsData), DynamicDataDisplayName = nameof(DisplayName))]
     public async Task ReadsResultSets<T>(SparqlResultSet data,
-        Func<DriExport, Task<IEnumerable<T>>> getData,
+        Func<DriExporter, Task<IEnumerable<T>>> getData,
         T expected, string _) where T : IDriRecord
     {
         sparqlClient.Setup(c => c.GetResultSetAsync(It.IsAny<string>()))
             .ReturnsAsync(data);
 
-        var exporter = new DriExport(logger, sparqlClient.Object);
+        var exporter = new DriExporter(logger, sparqlClient.Object);
         var result = await getData(exporter);
 
         result.Should().ContainSingle().And.BeEquivalentTo([expected]);
@@ -47,31 +47,31 @@ public class DriExportResultSetTest
     public static IEnumerable<object[]> ReadsResultSetsData => [
         [
             BuildBroadest(broadestSubset),
-            async (DriExport exporter) => await exporter.GetBroadestSubsetsAsync(),
+            async (DriExporter exporter) => await exporter.GetBroadestSubsetsAsync(),
             broadestSubset,
             "broadest subset"
         ],
         [
             Build(accessCondition),
-            async (DriExport exporter) => await exporter.GetAccessConditionsAsync(),
+            async (DriExporter exporter) => await exporter.GetAccessConditionsAsync(),
             accessCondition,
             "access condition"
         ],
         [
             Build(legislation),
-            async (DriExport exporter) => await exporter.GetLegislationsAsync(),
+            async (DriExporter exporter) => await exporter.GetLegislationsAsync(),
             legislation,
             "legislation"
         ],
         [
             Build(missingSectionLegislation),
-            async (DriExport exporter) => await exporter.GetLegislationsAsync(),
+            async (DriExporter exporter) => await exporter.GetLegislationsAsync(),
             missingSectionLegislation,
             "legislation without section"
         ],
         [
             Build(groundForRetention),
-            async (DriExport exporter) => await exporter.GetGroundsForRetentionAsync(),
+            async (DriExporter exporter) => await exporter.GetGroundsForRetentionAsync(),
             groundForRetention,
             "ground for retention"
         ]

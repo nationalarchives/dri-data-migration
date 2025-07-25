@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Orchestration;
 
-public class EtlSensitivityReview(ILogger<EtlSensitivityReview> logger, IDriExport driExport,
+public class EtlSensitivityReview(ILogger<EtlSensitivityReview> logger, IDriExporter driExport,
     IStagingIngest<DriSensitivityReview> ingest) : IEtl
 {
     public async Task RunAsync(string code, int limit)

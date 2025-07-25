@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Orchestration;
 
-public class EtlGroundForRetention(ILogger<EtlGroundForRetention> logger, IDriExport driExport,
+public class EtlGroundForRetention(ILogger<EtlGroundForRetention> logger, IDriExporter driExport,
     IStagingIngest<DriGroundForRetention> ingest) : IEtl
 {
     public async Task RunAsync(string code, int limit)

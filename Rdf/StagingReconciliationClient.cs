@@ -14,8 +14,8 @@ public class StagingReconciliationClient(ISparqlClient sparqlClient) : IStagingR
 {
     public async Task<IEnumerable<Dictionary<ReconciliationFieldName, object>>> FetchAsync(string code, int pageSize, int offset)
     {
-        var currentAssembly = typeof(DriExport).Assembly;
-        var baseName = $"{typeof(DriExport).Namespace}.Sparql.Staging";
+        var currentAssembly = typeof(DriExporter).Assembly;
+        var baseName = $"{typeof(DriExporter).Namespace}.Sparql.Staging";
         var recordsByCodeSparql = new EmbeddedSparqlResource(currentAssembly, baseName).GetSparql("ReconciliationResultSet");
 
         var sparql = new SparqlParameterizedString(recordsByCodeSparql);
