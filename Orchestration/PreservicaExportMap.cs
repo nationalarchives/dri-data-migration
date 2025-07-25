@@ -4,7 +4,22 @@ namespace Orchestration;
 
 public static class PreservicaExportMap
 {
-    public static Dictionary<string, ReconciliationRow> Full => new()
+    public enum MapType
+    {
+        Full,
+        Metadata,
+        Closure
+    }
+
+    internal static Dictionary<string, ReconciliationRow>? GetMap(MapType mapType) => mapType switch
+    {
+        MapType.Full => Full,
+        MapType.Metadata => Metadata,
+        MapType.Closure => Closure,
+        _ => null
+    };
+
+    internal static Dictionary<string, ReconciliationRow> Full => new()
         {
             { "A", new(ReconciliationFieldName.ImportLocation, PreservicaExportParser.ToLocation) },
             { "B", new(ReconciliationFieldName.VariationName, PreservicaExportParser.ToText)},
@@ -25,14 +40,14 @@ public static class PreservicaExportMap
             { "AA", new(ReconciliationFieldName.GroundForRetentionCode, PreservicaExportParser.ToText)}
         };
 
-    public static Dictionary<string, ReconciliationRow> Metadata => new()
+    internal static Dictionary<string, ReconciliationRow> Metadata => new()
         {
             { "identifier", new(ReconciliationFieldName.ImportLocation, PreservicaExportParser.ToLocation) },
             { "file_name", new(ReconciliationFieldName.VariationName, PreservicaExportParser.ToText)},
             { "folder", new(ReconciliationFieldName.FileFolder, PreservicaExportParser.ToText)}
         };
 
-    public static Dictionary<string, ReconciliationRow> Closure => new()
+    internal static Dictionary<string, ReconciliationRow> Closure => new()
         {
             { "A", new(ReconciliationFieldName.ImportLocation, PreservicaExportParser.ToLocation) },
             { "C", new(ReconciliationFieldName.AccessConditionName, PreservicaExportParser.ToText)},

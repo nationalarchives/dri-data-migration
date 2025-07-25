@@ -2,9 +2,9 @@
 
 namespace Orchestration;
 
-public static class ReconciliationEqualityComparer
+internal static class ReconciliationEqualityComparer
 {
-    public static IEnumerable<ReconciliationFieldName> Check(Dictionary<ReconciliationFieldName, object?> preservica, Dictionary<ReconciliationFieldName, object?> staging)
+    internal static IEnumerable<ReconciliationFieldName> Check(Dictionary<ReconciliationFieldName, object?> preservica, Dictionary<ReconciliationFieldName, object?> staging)
     {
         var difference = new List<ReconciliationFieldName>();
 

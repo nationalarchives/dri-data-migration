@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Api;
+using Microsoft.Extensions.Logging;
 
 namespace Orchestration;
 
@@ -51,4 +52,19 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 16, Level = LogLevel.Information, Message = "Migration finished")]
     internal static partial void MigrationFinished(this ILogger logger);
+
+    [LoggerMessage(EventId = 17, Level = LogLevel.Information, Message = "Started `{mapType}` reconciliation against `{fileLocation}`")]
+    internal static partial void ReconciliationStarted(this ILogger logger, PreservicaExportMap.MapType mapType, string fileLocation);
+
+    [LoggerMessage(EventId = 18, Level = LogLevel.Information, Message = "Finished `{mapType}` reconciliation")]
+    internal static partial void ReconciliationFinished(this ILogger logger, PreservicaExportMap.MapType mapType);
+
+    [LoggerMessage(EventId = 19, Level = LogLevel.Warning, Message = "`{id}` not found in the staging database")]
+    internal static partial void ReconciliationNotFound(this ILogger logger, string id);
+
+    [LoggerMessage(EventId = 20, Level = LogLevel.Warning, Message = "`{id}` fields[{diffs}] are different in the staging database")]
+    internal static partial void ReconciliationDiff(this ILogger logger, string id, IEnumerable<ReconciliationFieldName> diffs);
+
+    [LoggerMessage(EventId = 21, Level = LogLevel.Warning, Message = "Additional `{id}` in the staging database")]
+    internal static partial void ReconciliationAdditional(this ILogger logger, string id);
 }

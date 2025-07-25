@@ -2,36 +2,35 @@
 
 namespace Orchestration;
 
-public class StagingReconciliationParser(IStagingReconciliationClient reconciliationClient, string code, string filePrefix)
+internal class StagingReconciliationParser(IStagingReconciliationClient reconciliationClient)
 {
     private const string folder = "folder";
     private const string file = "file";
 
-    public async Task<IEnumerable<Dictionary<ReconciliationFieldName, object>>> ParseAsync()
+    internal async Task<IEnumerable<Dictionary<ReconciliationFieldName, object>>> ParseAsync(string code, string filePrefix, int limit)
     {
         int offset = 0;
-        int pageSize = 1000;
         IEnumerable<Dictionary<ReconciliationFieldName, object>> page;
         var rows = new List<Dictionary<ReconciliationFieldName, object>>();
         do
         {
-            page = await reconciliationClient.FetchAsync(code, pageSize, offset);
-            offset += pageSize;
+            page = await reconciliationClient.FetchAsync(code, limit, offset);
+            offset += limit;
 
-            rows.AddRange(page.Select(Adjust));
+            rows.AddRange(page.Select(r=>Adjust(r, code, filePrefix)));
 
-        } while (page.Any() && page.Count() == pageSize);
+        } while (page.Any() && page.Count() == limit);
 
         return rows;
     }
 
-    private Dictionary<ReconciliationFieldName, object> Adjust(Dictionary<ReconciliationFieldName, object> row) =>
+    private Dictionary<ReconciliationFieldName, object> Adjust(Dictionary<ReconciliationFieldName, object> row, string code, string filePrefix) =>
         row.Select(cell =>
             cell.Key switch
             {
                 ReconciliationFieldName.FileFolder => new(cell.Key, ToFileFolder(cell.Value as Uri)),
-                ReconciliationFieldName.ImportLocation => new(cell.Key, ToImportLocation(row[ReconciliationFieldName.FileFolder] as Uri, cell.Value as string)),
-                ReconciliationFieldName.VariationName => new(cell.Key, ToVariationName(row[ReconciliationFieldName.FileFolder] as Uri, cell.Value as string)),
+                ReconciliationFieldName.ImportLocation => new(cell.Key, ToImportLocation(row, cell.Value as string, code, filePrefix)),
+                ReconciliationFieldName.VariationName => new(cell.Key, ToVariationName(row, cell.Value as string)),
                 ReconciliationFieldName.AccessConditionName => new(cell.Key, ToAccessConditon(cell.Value as string)),
                 ReconciliationFieldName.SensitivityReviewDuration => new(cell.Key, ToYearDuration(row, cell.Value as string)),
                 ReconciliationFieldName.LegislationSectionReference => new(cell.Key, ToLegislationReferences(cell.Value as string)),
@@ -46,19 +45,30 @@ public class StagingReconciliationParser(IStagingReconciliationClient reconcilia
         subject == Vocabulary.Subset.Uri ? folder :
             subject == Vocabulary.Variation.Uri ? file : null;
 
-    private string? ToImportLocation(Uri? fileFolder, string? importLocation)
+    private string? ToImportLocation(Dictionary<ReconciliationFieldName, object> row, string? importLocation, string code, string filePrefix)
     {
-        var replaced = importLocation?.Replace(code, filePrefix);
-        if (replaced is not null && fileFolder == Vocabulary.Subset.Uri && replaced.Last() != '/')
+        if (row.TryGetValue(ReconciliationFieldName.FileFolder, out var fileFolder))
         {
-            replaced = $"{replaced}/";
-        }
+            var replaced = importLocation?.Replace(code, filePrefix);
+            if (replaced is not null && fileFolder == Vocabulary.Subset.Uri && replaced.Last() != '/')
+            {
+                replaced = $"{replaced}/";
+            }
 
-        return replaced;
+            return replaced;
+        }
+        return null;
     }
 
-    private static string? ToVariationName(Uri? fileFolder, string? variationName) =>
-        fileFolder is not null && fileFolder == Vocabulary.Subset.Uri ? variationName?.Split('/').Last() : variationName;
+    private static string? ToVariationName(Dictionary<ReconciliationFieldName, object> row, string? variationName)
+    {
+        if (row.TryGetValue(ReconciliationFieldName.FileFolder, out var fileFolder))
+        {
+            return fileFolder is not null && fileFolder == Vocabulary.Subset.Uri ?
+                variationName?.Split('/').Last() : variationName;
+        }
+        return null;
+    }
 
     private static string? ToAccessConditon(string? accessConditionName) => accessConditionName?.Replace(' ', '_');
 

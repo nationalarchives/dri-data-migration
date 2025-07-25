@@ -4,9 +4,9 @@ using System.Web;
 
 namespace Orchestration;
 
-public partial class PreservicaExportParser(string fileLocation, Dictionary<string, ReconciliationRow> Map)
+internal partial class PreservicaExportParser(string fileLocation, Dictionary<string, ReconciliationRow> Map)
 {
-    public IEnumerable<Dictionary<ReconciliationFieldName, object>?> Parse()
+    internal IEnumerable<Dictionary<ReconciliationFieldName, object>?> Parse()
     {
         using (var csv = new Microsoft.VisualBasic.FileIO.TextFieldParser(fileLocation))
         {
@@ -33,10 +33,10 @@ public partial class PreservicaExportParser(string fileLocation, Dictionary<stri
         }
     }
 
-    public static readonly Func<string?, string?> ToText = txt => txt;
-    public static readonly Func<string?, string?> ToLocation = txt => string.IsNullOrWhiteSpace(txt) ? null : HttpUtility.UrlDecode(txt);
-    public static readonly Func<string?, object?> ToTextList = txt => string.IsNullOrWhiteSpace(txt) ? null : txt.Split(',', StringSplitOptions.RemoveEmptyEntries);
-    public static readonly Func<string?, object?> ToDate = txt => DateTimeOffset.TryParse(txt, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var v) ? v : null; //TODO: Test offset
-    public static readonly Func<string?, object?> ToInt = txt => int.TryParse(txt, out int v) ? v : null;
-    public static readonly Func<string?, object?> ToBool = txt => string.IsNullOrWhiteSpace(txt) ? null : txt.Equals("TRUE") ? true : txt.Equals("FALSE") ? false : null;
+    internal static readonly Func<string?, string?> ToText = txt => txt;
+    internal static readonly Func<string?, string?> ToLocation = txt => string.IsNullOrWhiteSpace(txt) ? null : HttpUtility.UrlDecode(txt);
+    internal static readonly Func<string?, object?> ToTextList = txt => string.IsNullOrWhiteSpace(txt) ? null : txt.Split(',', StringSplitOptions.RemoveEmptyEntries);
+    internal static readonly Func<string?, object?> ToDate = txt => DateTimeOffset.TryParse(txt, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var v) ? v : null; //TODO: Test offset
+    internal static readonly Func<string?, object?> ToInt = txt => int.TryParse(txt, out int v) ? v : null;
+    internal static readonly Func<string?, object?> ToBool = txt => string.IsNullOrWhiteSpace(txt) ? null : txt.Equals("TRUE") ? true : txt.Equals("FALSE") ? false : null;
 }

@@ -2,7 +2,6 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Testing;
 using Moq;
-using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Orchestration.Tests;
@@ -24,7 +23,7 @@ public sealed class EtlTest
 
     record SetupInfo<T, T1>(FakeLogger<T> Logger, IDriExporter DriExport, IStagingIngest<T1> Ingest)
         where T : IEtl
-        where T1: IDriRecord;
+        where T1 : IDriRecord;
 
     public static IEnumerable<object[]> RunsData()
     {
@@ -168,9 +167,4 @@ public sealed class EtlTest
             ]
         ];
     }
-
-
-
-    static Expression<Func<IDriExporter, Task<IEnumerable<DriAccessCondition>>>> GetAccessConditionsAsync() => x => x.GetAccessConditionsAsync();
-
 }

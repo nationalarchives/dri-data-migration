@@ -10,7 +10,7 @@ using VDS.RDF.Query;
 
 namespace Rdf;
 
-public class StagingReconciliationClient(ISparqlClient sparqlClient) : IStagingReconciliationClient
+public class StagingReconciliationClient(ISparqlClientReadOnly sparqlClient) : IStagingReconciliationClient
 {
     public async Task<IEnumerable<Dictionary<ReconciliationFieldName, object>>> FetchAsync(string code, int pageSize, int offset)
     {
