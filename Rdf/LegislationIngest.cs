@@ -8,7 +8,7 @@ using VDS.RDF;
 namespace Rdf;
 
 public class LegislationIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<LegislationIngest> logger)
-    : StagingIngest<DriLegislation>(cache, sparqlClient, logger, "LegislationGraph")
+    : BaseStagingIngest<DriLegislation>(cache, sparqlClient, logger, "LegislationGraph")
 {
     internal override async Task<Graph> BuildAsync(IGraph existing, DriLegislation dri)
     {

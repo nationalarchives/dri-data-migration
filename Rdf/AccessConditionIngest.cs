@@ -8,7 +8,7 @@ using VDS.RDF;
 namespace Rdf;
 
 public class AccessConditionIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<AccessConditionIngest> logger)
-    : StagingIngest<DriAccessCondition>(cache, sparqlClient, logger, "AccessConditionGraph")
+    : BaseStagingIngest<DriAccessCondition>(cache, sparqlClient, logger, "AccessConditionGraph")
 {
     internal override async Task<Graph> BuildAsync(IGraph existing, DriAccessCondition dri)
     {
@@ -23,5 +23,4 @@ public class AccessConditionIngest(IMemoryCache cache, ISparqlClient sparqlClien
 
         return graph;
     }
-
 }

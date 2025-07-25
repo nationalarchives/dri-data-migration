@@ -8,7 +8,7 @@ using VDS.RDF;
 namespace Rdf;
 
 public class GroundForRetentionIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<GroundForRetentionIngest> logger)
-    : StagingIngest<DriGroundForRetention>(cache, sparqlClient, logger, "GroundForRetentionGraph")
+    : BaseStagingIngest<DriGroundForRetention>(cache, sparqlClient, logger, "GroundForRetentionGraph")
 {
     internal override async Task<Graph> BuildAsync(IGraph existing, DriGroundForRetention dri)
     {

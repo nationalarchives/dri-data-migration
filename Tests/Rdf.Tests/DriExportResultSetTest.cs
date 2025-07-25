@@ -27,7 +27,7 @@ public class DriExportResultSetTest
     [DynamicData(nameof(ReadsResultSetsData), DynamicDataDisplayName = nameof(DisplayName))]
     public async Task ReadsResultSets<T>(SparqlResultSet data,
         Func<DriExport, Task<IEnumerable<T>>> getData,
-        T expected, string _) where T : DriRecord
+        T expected, string _) where T : IDriRecord
     {
         sparqlClient.Setup(c => c.GetResultSetAsync(It.IsAny<string>()))
             .ReturnsAsync(data);

@@ -8,7 +8,7 @@ using VDS.RDF;
 namespace Rdf;
 
 public class SubsetIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<SubsetIngest> logger)
-    : StagingIngest<DriSubset>(cache, sparqlClient, logger, "SubsetGraph")
+    : BaseStagingIngest<DriSubset>(cache, sparqlClient, logger, "SubsetGraph")
 {
     internal override async Task<Graph> BuildAsync(IGraph existing, DriSubset dri)
     {

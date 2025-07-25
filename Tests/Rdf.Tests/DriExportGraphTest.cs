@@ -26,7 +26,7 @@ public class DriExportGraphTest
     [TestMethod("Reads data")]
     [DynamicData(nameof(ReadsGraphData), DynamicDataDisplayName = nameof(DisplayName))]
     public async Task ReadsGraph<T>(IGraph data, Func<DriExport, Task<IEnumerable<T>>> getData,
-        T expected, string _) where T : DriRecord
+        T expected, string _) where T : IDriRecord
     {
         sparqlClient.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>()))
             .ReturnsAsync(data);

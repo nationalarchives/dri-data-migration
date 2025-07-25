@@ -12,7 +12,7 @@ using VDS.RDF.Parsing;
 namespace Rdf;
 
 public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<SensitivityReviewIngest> logger)
-    : StagingIngest<DriSensitivityReview>(cache, sparqlClient, logger, "SensitivityReviewGraph")
+    : BaseStagingIngest<DriSensitivityReview>(cache, sparqlClient, logger, "SensitivityReviewGraph")
 {
     private Dictionary<string, IUriNode>? accessConditions = null;
     private Dictionary<string, IUriNode>? legislations = null;

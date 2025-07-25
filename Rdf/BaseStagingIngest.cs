@@ -9,7 +9,7 @@ using VDS.RDF;
 
 namespace Rdf;
 
-public abstract class StagingIngest<T> : IStagingIngest<T> where T : IDriRecord
+public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRecord
 {
     private readonly IMemoryCache cache;
     internal readonly ISparqlClient sparqlClient;
@@ -23,14 +23,14 @@ public abstract class StagingIngest<T> : IStagingIngest<T> where T : IDriRecord
     private readonly string variationSparql;
     private readonly string retentionSparql;
 
-    protected StagingIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger logger, string sparqlFileName)
+    protected BaseStagingIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger logger, string sparqlFileName)
     {
         this.cache = cache;
         this.sparqlClient = sparqlClient;
         this.logger = logger;
 
-        var currentAssembly = typeof(StagingIngest<>).Assembly;
-        var baseName = $"{typeof(StagingIngest<>).Namespace}.Sparql.Staging";
+        var currentAssembly = typeof(BaseStagingIngest<>).Assembly;
+        var baseName = $"{typeof(BaseStagingIngest<>).Namespace}.Sparql.Staging";
         embedded = new(currentAssembly, baseName);
 
         graphSparql = embedded.GetSparql(sparqlFileName);
@@ -41,13 +41,18 @@ public abstract class StagingIngest<T> : IStagingIngest<T> where T : IDriRecord
         retentionSparql = embedded.GetSparql("GetRetention");
     }
 
-    public async Task<int> SetAsync(IEnumerable<T> dri)
+    internal virtual Task<Graph> BuildAsync(IGraph existing, T dri)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<int> SetAsync(IEnumerable<T> records)
     {
         int total = 0;
-        foreach (var item in dri)
+        foreach (var dri in records)
         {
-            var existing = await sparqlClient.GetGraphAsync(graphSparql, new Dictionary<string, object> { { "id", item.Id } });
-            var proposed = await BuildAsync(existing, item);
+            var existing = await sparqlClient.GetGraphAsync(graphSparql, new Dictionary<string, object> { { "id", dri.Id } });
+            var proposed = await BuildAsync(existing, dri);
             var diff = existing.Difference(proposed);
             if (!diff.AddedTriples.Any() && !diff.RemovedTriples.Any())
             {
@@ -56,7 +61,7 @@ public abstract class StagingIngest<T> : IStagingIngest<T> where T : IDriRecord
 
             await sparqlClient.ApplyDiffAsync(diff);
             total++;
-            logger.RecordUpdated(item.Id);
+            logger.RecordUpdated(dri.Id);
         }
         return total;
     }
@@ -103,11 +108,6 @@ public abstract class StagingIngest<T> : IStagingIngest<T> where T : IDriRecord
     internal IUriNode NewId => new UriNode(new Uri(idNamespace, Guid.NewGuid().ToString()));
 
     internal static string? GetUriFragment(Uri? uri) => uri?.Fragment.Length > 1 ? uri.Fragment.Substring(1) : null;
-
-    internal virtual Task<Graph> BuildAsync(IGraph existing, T dri)
-    {
-        throw new NotImplementedException();
-    }
 
     private sealed record CacheFetchInfo(string Sparql, string Key);
 
