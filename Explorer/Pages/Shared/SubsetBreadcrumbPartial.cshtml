@@ -1,0 +1,23 @@
+﻿@model IEnumerable<Models.Subset>
+
+@if (Model.Any())
+{
+    <div class="tna-container">
+        <section class="row">
+            <div class="tna-breadcrumbs">
+                <nav class="tna-breadcrumbs">
+                    <ol class="tna-breadcrumbs__list">
+                        @foreach (var subset in Model.Reverse())
+                        {
+                            <li class="tna-breadcrumbs__item">
+                                <a asp-page="/subset/item" asp-route-id="@subset.Reference.Single()" class="tna-breadcrumbs__link">
+                                    <span>@subset.Reference.Single()</span>
+                                </a>
+                            </li>
+                        }
+                    </ol>
+                </nav>
+            </div>
+        </section>
+    </div>
+}

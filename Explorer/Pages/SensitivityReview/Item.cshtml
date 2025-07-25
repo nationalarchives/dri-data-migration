@@ -1,0 +1,7 @@
+﻿@page "/sensitivityreview/{id}"
+@model Explorer.Pages.SensitivityReview.ItemModel
+
+<section class="row tna-!--margin-top-m tna-column tna-column--full">
+    <h1>Sensitivity review @Model.Item.DriId.Single()</h1>
+    <partial name="SensitivityReviewPartial" model="@Model.Item" />
+</section>

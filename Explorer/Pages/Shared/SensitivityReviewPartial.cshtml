@@ -1,0 +1,101 @@
+﻿@model Models.SensitivityReview
+
+<dl class="tna-dl tna-dl--plain">
+    @if (Model.AccessCondition.Any())
+    {
+        <dt>Access condition code</dt>
+        <dd>@Model.AccessCondition.Single().Code.Single()</dd>
+        <dt>Access condition name</dt>
+        <dd>@Model.AccessCondition.Single().Name.Single()</dd>
+    }
+    @if (Model.Date.Any())
+    {
+        <dt>Date</dt>
+        <dd>@Model.Date.Single().ToString("yyyy-MM-dd")</dd>
+    }
+    @if (Model.SensitiveName.Any())
+    {
+        <dt>Sensitive name</dt>
+        <dd>@Model.SensitiveName.Single()</dd>
+    }
+    @if (Model.SensitiveDescription.Any())
+    {
+        <dt>Sensitive description</dt>
+        <dd>@Model.SensitiveDescription.Single()</dd>
+    }
+    @if (Model.Past.Any())
+    {
+        <dt>Past</dt>
+        <dd>
+            <a asp-page="/sensitivityreview/item" asp-route-id="@Model.Past.Single().DriId.Single()">@Model.Past.Single().DriId.Single()</a>
+        </dd>
+    }
+    @if (Model.Restriction.Any())
+    {
+        var restriction = Model.Restriction.Single();
+        if (restriction.UkLegislations.Any())
+        {
+            <dt>Legislation</dt>
+            <dd>
+                <ul class="tna-ul tna-ul--plain">
+                    @foreach (var legislation in restriction.UkLegislations)
+                    {
+                        <li>
+                            <a href="@legislation.Legislation.Single()">@legislation.Legislation.Single()</a> @legislation.Reference.SingleOrDefault()
+                        </li>
+                    }
+                </ul>
+
+            </dd>
+        }
+        if (restriction.ReviewDate.Any())
+        {
+            <dt>Restriction review date</dt>
+            <dd>@restriction.ReviewDate.Single().ToString("yyyy-MM-dd")</dd>
+        }
+        if (restriction.CalculationStartDate.Any())
+        {
+            <dt>Calculation start</dt>
+            <dd>@restriction.CalculationStartDate.Single().ToString("yyyy-MM-dd")</dd>
+        }
+        if (restriction.Duration.Any())
+        {
+            <dt>Restriction duration</dt>
+            <dd>@restriction.Duration.Single()</dd>
+        }
+        if (restriction.EndYear.Any())
+        {
+            <dt>Restriction end year</dt>
+            <dd>@restriction.EndYear.Single()</dd>
+        }
+        if (restriction.Description.Any())
+        {
+            <dt>Restriction description</dt>
+            <dd>@restriction.Description.Single()</dd>
+        }
+        if (restriction.RetentionRestriction.Any())
+        {
+            var retentionRestriction = restriction.RetentionRestriction.Single();
+            if (retentionRestriction.InstrumentNumber.Any())
+            {
+                <dt>Instrument number</dt>
+                <dd>@retentionRestriction.InstrumentNumber.Single()</dd>
+            }
+            if (retentionRestriction.InstrumentSignedDate.Any())
+            {
+                <dt>Instrument signed date</dt>
+                <dd>@retentionRestriction.InstrumentSignedDate.Single().ToString("yyyy-MM-dd")</dd>
+            }
+            if (retentionRestriction.ReviewDate.Any())
+            {
+                <dt>Review date</dt>
+                <dd>@retentionRestriction.ReviewDate.Single().ToString("yyyy-MM-dd")</dd>
+            }
+            if (retentionRestriction.GroundForRetention.Any())
+            {
+                <dt>Ground for retention</dt>
+                <dd>(@retentionRestriction.GroundForRetention.Single().Code.Single()) @retentionRestriction.GroundForRetention.Single().Description.Single()</dd>
+            }
+        }
+    }
+</dl>

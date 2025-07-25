@@ -1,0 +1,65 @@
+﻿@page "/asset/{id}"
+@using VDS.RDF.Parsing
+@using VDS.RDF.Writing
+@model Explorer.Pages.Asset.ItemModel
+
+<partial name="SubsetBreadcrumbPartial" model="@Model.Item.Subset.Single().Broader" />
+
+<section class="row tna-!--margin-top-m tna-column tna-column--full">
+    <h1>Asset @Model.Item.Reference.Single() @Model.Item.Name.SingleOrDefault()</h1>
+
+    <div class="tna-!--margin-top-m">
+        <h2>Retention</h2>
+        <partial name="RetentionPartial" model="@Model.Item.Retention.Single()" />
+    </div>
+
+    @if (Model.Item.Variations.Any())
+    {
+        <div class="tna-!--margin-top-m">
+            <h2>Variations</h2>
+            <ul class="tna-ul tna-ul--dashed">
+                @foreach(var variation in Model.Item.Variations)
+                {
+                    <li>
+                        <a asp-page="/variation/item" asp-route-id="@variation.Id.Single()">@variation.Name.Single()</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+
+    @if (Model.Item.SensitivityReviews.Any())
+    {
+        <div class="tna-!--margin-top-m">
+            <h2>Sensitivity reviews</h2>
+            <ul class="tna-ul tna-ul--dashed">
+                @foreach (var sr in Model.Item.SensitivityReviews)
+                {
+                    <li>
+                        <p>
+                            <a asp-page="/sensitivityreview/item" asp-route-id="@sr.DriId.Single()">@sr.DriId.Single()</a>
+                        </p>
+                        <partial name="SensitivityReviewPartial" model="@sr" />
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+</section>
+
+<section class="tna-container tna-!--margin-top-m">
+    <div class="tna-column tna-column--full">
+        <div class="tna-form__group">
+            @{
+                var parser = new TurtleParser();
+                var writer = new RdfJsonWriter();
+
+                using (var stream = new System.IO.StringWriter())
+                {
+                    writer.Save(Model.Item.Graph, stream);
+                    <textarea class="tna-textarea" rows="25" readonly>@stream.ToString()</textarea>
+                }
+            }
+        </div>
+    </div>
+</section>

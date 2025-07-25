@@ -1,0 +1,11 @@
+﻿using Api;
+using VDS.RDF;
+using VDS.RDF.Dynamic;
+
+namespace Explorer.Models;
+
+public class AccessCondition(INode node, IGraph graph) : DynamicNode(node, graph)
+{
+    public ICollection<string> Name => new DynamicObjectCollection<string>(this, Vocabulary.AccessConditionName.Uri.ToString());
+    public ICollection<string> Code => new DynamicObjectCollection<string>(this, Vocabulary.AccessConditionCode.Uri.ToString());
+}

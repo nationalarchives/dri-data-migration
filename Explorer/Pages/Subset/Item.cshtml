@@ -1,0 +1,65 @@
+﻿@page "/subset/{id}"
+@model Explorer.Pages.Subset.ItemModel
+
+<partial name="SubsetBreadcrumbPartial" model="@Model.Item.Broader" />
+
+<section class="row tna-!--margin-top-m tna-column tna-column--full">
+    <h1>Subset @Model.Item.Reference.Single() @Model.Item.Name.SingleOrDefault()</h1>
+
+    <div class="tna-!--margin-top-m">
+        <h2>Retention</h2>
+        <partial name="RetentionPartial" model="@Model.Item.Retention.Single()" />
+    </div>
+
+    @if (Model.Item.Narrower.Any())
+    {
+        <div class="tna-!--margin-top-m">
+            <h2>Narrower</h2>
+            <ul class="tna-ul tna-ul--dashed">
+                @foreach(var subset in Model.Item.Narrower)
+                {
+                    <li>
+                        <p>
+                            <a asp-page="/subset/item" asp-route-id="@subset.Reference.Single()">@subset.Reference.Single()</a> @subset.Name.SingleOrDefault()
+                        </p>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+
+    @if (Model.Item.SensitivityReviews.Any())
+    {
+        <div class="tna-!--margin-top-m">
+            <h2>Sensitivity reviews</h2>
+            <ul class="tna-ul tna-ul--dashed">
+                @foreach (var sr in Model.Item.SensitivityReviews)
+                {
+                    <li>
+                        <p>
+                            <a asp-page="/sensitivityreview/item" asp-route-id="@sr.DriId.Single()">@sr.DriId.Single()</a>
+                        </p>
+                        <partial name="SensitivityReviewPartial" model="@sr" />
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+
+    @if (Model.Item.Assets.Any())
+    {
+        <div class="tna-!--margin-top-m">
+            <h2>Assets</h2>
+            <ul class="tna-ul tna-ul--dashed">
+                @foreach (var asset in Model.Item.Assets)
+                {
+                    <li>
+                        <p>
+                            <a asp-page="/asset/item" asp-route-id="@asset.Reference.Single()">@asset.Reference.Single()</a>
+                        </p>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+</section>

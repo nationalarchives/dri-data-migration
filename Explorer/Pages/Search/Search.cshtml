@@ -1,0 +1,49 @@
+﻿@page "/search"
+@model Explorer.Pages.Search.SearchModel
+
+<section class="tna-container tna-!--margin-top-m tna-container--align-centre">
+    <div class="tna-column tna-column--width-1-2">
+        <form method="post">
+            <div class="tna-search-field">
+                <div class="tna-form__group">
+                    <div class="tna-search-field__fields">
+                        <input type="search" class="tna-search-field__input " name="q">
+                        <button type="submit" class="tna-button tna-search-field__button">
+                            Search
+                            <i class="fa-solid fa-fw fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<section class="tna-container tna-!--margin-top-m">
+    @if(Model.Results is not null && Model.Results.Any())
+    {
+        var variationDriIdKey = Api.Vocabulary.VariationDriId.Uri.Segments.Last();
+        var variationNameKey = Api.Vocabulary.VariationName.Uri.Segments.Last();
+        var assetReferenceKey = Api.Vocabulary.AssetReference.Uri.Segments.Last();
+        var subsetReferenceKey = Api.Vocabulary.SubsetReference.Uri.Segments.Last();
+        <ul class="tna-ul tna-ul--dashed">
+            @foreach(var item in Model.Results)
+            {
+                <li>
+                    @if(item[variationNameKey] is not null)
+                    {
+                        <a asp-page="/variation/item" asp-route-id="@item[variationDriIdKey]">@item[variationNameKey] (variation)</a>
+                    }
+                    else if (item[assetReferenceKey] is not null)
+                    {
+                        <a asp-page="/asset/item" asp-route-id="@item[assetReferenceKey]">@item[assetReferenceKey] (asset)</a>
+                    }
+                    else if (item[subsetReferenceKey] is not null)
+                    {
+                        <a asp-page="/subset/item" asp-route-id="@item[subsetReferenceKey]">@item[subsetReferenceKey] (subset)</a>
+                    }
+                </li>
+            }
+        </ul>
+    }
+</section>
