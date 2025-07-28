@@ -3,7 +3,7 @@ using Orchestration;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public static class MigrationServiceCollectionExtensions
+public static class OrchestrationServiceCollectionExtensions
 {
     public static IServiceCollection AddMigration(this IServiceCollection services)
     {
@@ -14,6 +14,15 @@ public static class MigrationServiceCollectionExtensions
         services.AddSingleton<IEtl, EtlAsset>();
         services.AddSingleton<IEtl, EtlVariation>();
         services.AddSingleton<IEtl, EtlSensitivityReview>();
+        services.AddSingleton<IMigration, Migration>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddReconciliation(this IServiceCollection services)
+    {
+        services.AddSingleton<StagingReconciliationParser>();
+        services.AddSingleton<IReconciliation, Reconciliation>();
 
         return services;
     }

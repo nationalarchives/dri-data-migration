@@ -29,7 +29,7 @@ public class DriExportResultSetTest
         Func<DriExporter, Task<IEnumerable<T>>> getData,
         T expected, string _) where T : IDriRecord
     {
-        sparqlClient.Setup(c => c.GetResultSetAsync(It.IsAny<string>()))
+        sparqlClient.Setup(c => c.GetResultSetAsync(It.IsAny<string>(), CancellationToken.None))
             .ReturnsAsync(data);
 
         var exporter = new DriExporter(logger, sparqlClient.Object);
@@ -47,31 +47,31 @@ public class DriExportResultSetTest
     public static IEnumerable<object[]> ReadsResultSetsData => [
         [
             BuildBroadest(broadestSubset),
-            async (DriExporter exporter) => await exporter.GetBroadestSubsetsAsync(),
+            async (DriExporter exporter) => await exporter.GetBroadestSubsetsAsync(CancellationToken.None),
             broadestSubset,
             "broadest subset"
         ],
         [
             Build(accessCondition),
-            async (DriExporter exporter) => await exporter.GetAccessConditionsAsync(),
+            async (DriExporter exporter) => await exporter.GetAccessConditionsAsync(CancellationToken.None),
             accessCondition,
             "access condition"
         ],
         [
             Build(legislation),
-            async (DriExporter exporter) => await exporter.GetLegislationsAsync(),
+            async (DriExporter exporter) => await exporter.GetLegislationsAsync(CancellationToken.None),
             legislation,
             "legislation"
         ],
         [
             Build(missingSectionLegislation),
-            async (DriExporter exporter) => await exporter.GetLegislationsAsync(),
+            async (DriExporter exporter) => await exporter.GetLegislationsAsync(CancellationToken.None),
             missingSectionLegislation,
             "legislation without section"
         ],
         [
             Build(groundForRetention),
-            async (DriExporter exporter) => await exporter.GetGroundsForRetentionAsync(),
+            async (DriExporter exporter) => await exporter.GetGroundsForRetentionAsync(CancellationToken.None),
             groundForRetention,
             "ground for retention"
         ]

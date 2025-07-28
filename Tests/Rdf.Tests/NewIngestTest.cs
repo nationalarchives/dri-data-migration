@@ -19,48 +19,48 @@ public class NewIngestTest : BaseIngestTest
     public async Task ChangeIngest(Func<IMemoryCache, ISparqlClient, Task> ingest,
          Action<Mock<ISparqlClient>, Mock<IMemoryCache>> additionalSetup, int addedCount, string _)
     {
-        sparqlClient.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>()))
+        sparqlClient.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(new Graph());
         additionalSetup(sparqlClient, cache);
 
         await ingest(cache.Object, sparqlClient.Object);
 
         sparqlClient.Verify(c => c.ApplyDiffAsync(It.Is<GraphDiffReport>(r =>
-            r.AddedTriples.Count() == addedCount && !r.RemovedTriples.Any())));
+            r.AddedTriples.Count() == addedCount && !r.RemovedTriples.Any()), CancellationToken.None));
     }
 
     public static IEnumerable<object[]> ChangeIngestData => [
         [
             async (IMemoryCache cache, ISparqlClient client) => await new AccessConditionIngest(cache, client, loggerAc)
-                .SetAsync([accessCondition]),
+                .SetAsync([accessCondition], CancellationToken.None),
             NoopSetup(),
             2,
             "access condition"
         ],
         [
             async (IMemoryCache cache, ISparqlClient client) => await new GroundForRetentionIngest(cache, client, loggerGfr)
-                .SetAsync([groundForRetention]),
+                .SetAsync([groundForRetention], CancellationToken.None),
             NoopSetup(),
             2,
             "ground for retention"
         ],
         [
             async (IMemoryCache cache, ISparqlClient client) => await new LegislationIngest(cache, client, loggerLeg)
-                .SetAsync([legislation]),
+                .SetAsync([legislation], CancellationToken.None),
             NoopSetup(),
             2,
             "legislation"
         ],
         [
             async (IMemoryCache cache, ISparqlClient client) => await new SubsetIngest(cache, client, loggerSub)
-                .SetAsync([subset]),
+                .SetAsync([subset], CancellationToken.None),
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) => SetupFetchOrNewSubset(cache, parentSubsetRef, parentSubsetNode),
             5,
             "subset"
         ],
         [
             async (IMemoryCache cache, ISparqlClient client) => await new SubsetIngest(cache, client, loggerSub)
-                .SetAsync([subset]),
+                .SetAsync([subset], CancellationToken.None),
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) =>
             {
                 var notFound = (object?)null;
@@ -72,21 +72,21 @@ public class NewIngestTest : BaseIngestTest
         ],
         [
             async (IMemoryCache cache, ISparqlClient client) => await new AssetIngest(cache, client, loggerAss)
-                .SetAsync([asset]),
+                .SetAsync([asset], CancellationToken.None),
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) => SetupFetchSubset(cache, client, subsetRef, subsetNode),
             4,
             "asset"
         ],
         [
             async (IMemoryCache cache, ISparqlClient client) => await new VariationIngest(cache, client, loggerVar)
-                .SetAsync([variation]),
+                .SetAsync([variation], CancellationToken.None),
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) => SetupFetchAsset(cache, client, assetRef, assetNode),
             3,
             "variation"
         ],
         [
             async (IMemoryCache cache, ISparqlClient client) => await new SensitivityReviewIngest(cache, client, loggerSr)
-                .SetAsync([sr]),
+                .SetAsync([sr], CancellationToken.None),
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) =>
             {
                 SetupFetchAccessCondition(client, accessConditionRef.Fragment.Substring(1), accessConditionNode);
@@ -100,7 +100,7 @@ public class NewIngestTest : BaseIngestTest
         ],
         [
             async (IMemoryCache cache, ISparqlClient client) => await new SensitivityReviewIngest(cache, client, loggerSr)
-                .SetAsync([sr with { TargetType = new("http://example.com/target-type#DeliverableUnit"), TargetReference = assetRef }]),
+                .SetAsync([sr with { TargetType = new("http://example.com/target-type#DeliverableUnit"), TargetReference = assetRef }], CancellationToken.None),
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) =>
             {
                 SetupFetchAccessCondition(client, accessConditionRef.Fragment.Substring(1), accessConditionNode);
@@ -115,7 +115,7 @@ public class NewIngestTest : BaseIngestTest
         ],
         [
             async (IMemoryCache cache, ISparqlClient client) => await new SensitivityReviewIngest(cache, client, loggerSr)
-                .SetAsync([sr with { TargetType = new("http://example.com/target-type#DeliverableUnit"), TargetReference = subsetRef }]),
+                .SetAsync([sr with { TargetType = new("http://example.com/target-type#DeliverableUnit"), TargetReference = subsetRef }], CancellationToken.None),
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) =>
             {
                 SetupFetchAccessCondition(client, accessConditionRef.Fragment.Substring(1), accessConditionNode);
@@ -130,7 +130,7 @@ public class NewIngestTest : BaseIngestTest
         ],
         [
             async (IMemoryCache cache, ISparqlClient client) => await new SensitivityReviewIngest(cache, client, loggerSr)
-                .SetAsync([sr with { AccessCondition = accessConditionRef2, RestrictionDuration = 2020 }]),
+                .SetAsync([sr with { AccessCondition = accessConditionRef2, RestrictionDuration = 2020 }], CancellationToken.None),
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) =>
             {
                 SetupFetchAccessCondition(client, accessConditionRef2.Fragment.Substring(1), accessConditionNode2);

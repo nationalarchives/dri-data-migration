@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF;
 
@@ -10,14 +11,14 @@ namespace Rdf;
 public class AssetIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<AssetIngest> logger)
     : BaseStagingIngest<DriAsset>(cache, sparqlClient, logger, "AssetGraph")
 {
-    internal override async Task<Graph> BuildAsync(IGraph existing, DriAsset dri)
+    internal override async Task<Graph> BuildAsync(IGraph existing, DriAsset dri, CancellationToken cancellationToken)
     {
         logger.BuildingRecord(dri.Id);
         var assetReference = new LiteralNode(dri.Reference);
         var id = existing.GetTriplesWithPredicateObject(Vocabulary.AssetReference, assetReference).FirstOrDefault()?.Subject ?? NewId;
         var retention = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasRetention).FirstOrDefault()?.Object ?? NewId;
 
-        var subset = await CacheFetch(CacheEntityKind.Subset, dri.SubsetReference);
+        var subset = await CacheFetch(CacheEntityKind.Subset, dri.SubsetReference, cancellationToken);
         //TODO: handle null
         var graph = new Graph();
         graph.Assert(id, Vocabulary.AssetReference, assetReference);

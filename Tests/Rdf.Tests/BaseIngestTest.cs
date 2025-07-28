@@ -91,14 +91,14 @@ public class BaseIngestTest
 
     private static void SetupFetch(Mock<IMemoryCache> cache, Mock<ISparqlClient> client, string match, string prefix, string reference, object? node)
     {
-        client.Setup(c => c.GetSubjectAsync(It.Is<string>(m => m.Contains(match)), It.Is<object>(m => m.ToString() == reference)))
+        client.Setup(c => c.GetSubjectAsync(It.Is<string>(m => m.Contains(match)), It.Is<object>(m => m.ToString() == reference), CancellationToken.None))
             .ReturnsAsync(node as IUriNode);
         cache.Setup(c => c.CreateEntry(It.Is<object>(m => m.Equals($"{prefix}-{reference}"))))
             .Returns(Mock.Of<ICacheEntry>());
     }
 
     private static void SetupFetchDictionary(Mock<ISparqlClient> client, string match, string key, IUriNode value) =>
-        client.Setup(s => s.GetDictionaryAsync(It.Is<string>(m => m.Contains(match))))
+        client.Setup(s => s.GetDictionaryAsync(It.Is<string>(m => m.Contains(match)), CancellationToken.None))
             .Returns(Task.FromResult(new Dictionary<string, IUriNode> { { key, value } }));
 
     internal static readonly DriAccessCondition accessCondition = new(new Uri("http://example.com/ac#ac1"), "Access Condition 1");

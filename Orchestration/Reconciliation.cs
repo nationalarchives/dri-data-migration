@@ -4,19 +4,22 @@ using Microsoft.Extensions.Options;
 
 namespace Orchestration;
 
-public class Reconciliation(ILogger<Reconciliation> logger, IStagingReconciliationClient client, IOptions<StagingSettings> settings)
+public class Reconciliation(ILogger<Reconciliation> logger, IOptions<ReconciliationSettings> reconciliationSettings,
+    IStagingReconciliationClient client) : IReconciliation
 {
-    public async Task ReconcileAsync(string code, string prefix, string fileLocation, PreservicaExportMap.MapType mapType)
+    public async Task ReconcileAsync(CancellationToken cancellationToken)
     {
-        logger.ReconciliationStarted(mapType, fileLocation);
+        logger.ReconciliationStarted(reconciliationSettings.Value.MapKind, reconciliationSettings.Value.FileLocation);
 
-        var map = PreservicaExportMap.GetMap(mapType);
+        var map = PreservicaExportMap.GetMap(reconciliationSettings.Value.MapKind);
         //TODO: handle null
 
         var reconciliation = new StagingReconciliationParser(client);
-        var staging = (await reconciliation.ParseAsync(code, prefix, settings.Value.FetchPageSize)).ToList();
+        var staging = (await reconciliation.ParseAsync(reconciliationSettings.Value.Code,
+            reconciliationSettings.Value.FilePrefix, reconciliationSettings.Value.FetchPageSize, cancellationToken))
+            .ToList();
 
-        var preservica = new PreservicaExportParser(fileLocation, map);
+        var preservica = new PreservicaExportParser(reconciliationSettings.Value.FileLocation, map);
         var excel = preservica.Parse();
 
         var totalDiff = 0;
@@ -54,6 +57,6 @@ public class Reconciliation(ILogger<Reconciliation> logger, IStagingReconciliati
             totalDiff++;
         }
 
-        logger.ReconciliationFinished(mapType);
+        logger.ReconciliationFinished(reconciliationSettings.Value.MapKind);
     }
 }

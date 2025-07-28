@@ -4,16 +4,14 @@ using Microsoft.Extensions.Options;
 
 namespace Orchestration;
 
-public class Migration(ILogger<Migration> logger, IOptions<DriSettings> driSettings, IEnumerable<IEtl> etls)
+public class Migration(ILogger<Migration> logger, IOptions<DriSettings> driSettings, IEnumerable<IEtl> etls) : IMigration
 {
-    private readonly int limit = driSettings.Value.FetchPageSize;
-
-    public async Task MigrateAsync(string code)
+    public async Task MigrateAsync(CancellationToken cancellationToken)
     {
         logger.MigrationStarted();
         foreach (var etl in etls)
         {
-            await etl.RunAsync(code, limit);
+            await etl.RunAsync(driSettings.Value.Code, driSettings.Value.FetchPageSize, cancellationToken);
         }
         logger.MigrationFinished();
     }

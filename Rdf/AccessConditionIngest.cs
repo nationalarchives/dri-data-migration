@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF;
 
@@ -10,7 +11,7 @@ namespace Rdf;
 public class AccessConditionIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<AccessConditionIngest> logger)
     : BaseStagingIngest<DriAccessCondition>(cache, sparqlClient, logger, "AccessConditionGraph")
 {
-    internal override async Task<Graph> BuildAsync(IGraph existing, DriAccessCondition dri)
+    internal override async Task<Graph> BuildAsync(IGraph existing, DriAccessCondition dri, CancellationToken cancellationToken)
     {
         logger.BuildingRecord(dri.Id);
         var code = new LiteralNode(GetUriFragment(dri.Link));

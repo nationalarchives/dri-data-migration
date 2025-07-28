@@ -2,15 +2,8 @@
 
 namespace Orchestration;
 
-public static class PreservicaExportMap
+public static partial class PreservicaExportMap
 {
-    public enum MapType
-    {
-        Full,
-        Metadata,
-        Closure
-    }
-
     internal static Dictionary<string, ReconciliationRow>? GetMap(MapType mapType) => mapType switch
     {
         MapType.Full => Full,

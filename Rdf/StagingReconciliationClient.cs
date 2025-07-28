@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF;
 using VDS.RDF.Dynamic;
@@ -12,7 +13,8 @@ namespace Rdf;
 
 public class StagingReconciliationClient(ISparqlClientReadOnly sparqlClient) : IStagingReconciliationClient
 {
-    public async Task<IEnumerable<Dictionary<ReconciliationFieldName, object>>> FetchAsync(string code, int pageSize, int offset)
+    public async Task<IEnumerable<Dictionary<ReconciliationFieldName, object>>> FetchAsync(
+        string code, int pageSize, int offset, CancellationToken cancellationToken)
     {
         var currentAssembly = typeof(DriExporter).Assembly;
         var baseName = $"{typeof(DriExporter).Namespace}.Sparql.Staging";
@@ -22,7 +24,7 @@ public class StagingReconciliationClient(ISparqlClientReadOnly sparqlClient) : I
         sparql.SetParameter("id", new LiteralNode(code));
         sparql.SetParameter("limit", new DecimalNode(pageSize));
         sparql.SetParameter("offset", new DecimalNode(offset));
-        var results = await sparqlClient.GetResultSetAsync(sparql.ToString());
+        var results = await sparqlClient.GetResultSetAsync(sparql.ToString(), cancellationToken);
         var dynamicResults = new DynamicSparqlResultSet(results);
 
         return dynamicResults.Select(row =>

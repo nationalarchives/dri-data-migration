@@ -6,20 +6,20 @@ namespace Orchestration;
 public class EtlSensitivityReview(ILogger<EtlSensitivityReview> logger, IDriExporter driExport,
     IStagingIngest<DriSensitivityReview> ingest) : IEtl
 {
-    public async Task RunAsync(string code, int limit)
+    public async Task RunAsync(string code, int limit, CancellationToken cancellationToken)
     {
         List<DriSensitivityReview> dri = [];
         int offset = 0;
         IEnumerable<DriSensitivityReview> page;
         do
         {
-            page = await driExport.GetSensitivityReviewsByCodeAsync(code, limit, offset);
+            page = await driExport.GetSensitivityReviewsByCodeAsync(code, limit, offset, cancellationToken);
             dri.AddRange(page);
             offset += limit;
         } while (page.Any() && page.Count() == limit);
 
         logger.IngestingSensitivityReview(dri.Count);
-        var ingestSize = await ingest.SetAsync(dri);
+        var ingestSize = await ingest.SetAsync(dri, cancellationToken);
         logger.IngestedSensitivityReview(ingestSize);
     }
 }

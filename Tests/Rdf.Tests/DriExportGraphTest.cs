@@ -28,7 +28,7 @@ public class DriExportGraphTest
     public async Task ReadsGraph<T>(IGraph data, Func<DriExporter, Task<IEnumerable<T>>> getData,
         T expected, string _) where T : IDriRecord
     {
-        sparqlClient.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>()))
+        sparqlClient.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(data);
 
         var exporter = new DriExporter(logger, sparqlClient.Object);
@@ -50,49 +50,49 @@ public class DriExportGraphTest
     public static IEnumerable<object[]> ReadsGraphData => [
         [
             Build(subset),
-            async (DriExporter exporter) => await exporter.GetSubsetsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
+            async (DriExporter exporter) => await exporter.GetSubsetsByCodeAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), CancellationToken.None),
             subset,
             "subset"
         ],
         [
             Build(noParentSubset),
-            async (DriExporter exporter) => await exporter.GetSubsetsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
+            async (DriExporter exporter) => await exporter.GetSubsetsByCodeAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), CancellationToken.None),
             noParentSubset,
             "subset without parent"
         ],
         [
             Build(asset),
-            async (DriExporter exporter) => await exporter.GetAssetsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
+            async (DriExporter exporter) => await exporter.GetAssetsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>(), CancellationToken.None),
             asset,
             "asset"
         ],
         [
             Build(variation),
-            async (DriExporter exporter) => await exporter.GetVariationsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
+            async (DriExporter exporter) => await exporter.GetVariationsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>(), CancellationToken.None),
             variation,
             "variation"
         ],
         [
             Build(variation),
-            async (DriExporter exporter) => await exporter.GetVariationsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
+            async (DriExporter exporter) => await exporter.GetVariationsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>(), CancellationToken.None),
             variation,
             "variation"
         ],
         [
             Build(minimalSr),
-            async (DriExporter exporter) => await exporter.GetSensitivityReviewsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
+            async (DriExporter exporter) => await exporter.GetSensitivityReviewsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>(), CancellationToken.None),
             minimalSr,
             "minimal sensitivity review"
         ],
         [
             Build(multipleLegislationsSr),
-            async (DriExporter exporter) => await exporter.GetSensitivityReviewsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
+            async (DriExporter exporter) => await exporter.GetSensitivityReviewsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>(), CancellationToken.None),
             multipleLegislationsSr,
             "sensitivity review with multiple legislations"
         ],
         [
             Build(allFieldsSr),
-            async (DriExporter exporter) => await exporter.GetSensitivityReviewsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>()),
+            async (DriExporter exporter) => await exporter.GetSensitivityReviewsByCodeAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>(), CancellationToken.None),
             allFieldsSr,
             "sensitivity review with all fields"
         ]

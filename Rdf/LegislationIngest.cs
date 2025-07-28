@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF;
 
@@ -10,7 +11,7 @@ namespace Rdf;
 public class LegislationIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<LegislationIngest> logger)
     : BaseStagingIngest<DriLegislation>(cache, sparqlClient, logger, "LegislationGraph")
 {
-    internal override async Task<Graph> BuildAsync(IGraph existing, DriLegislation dri)
+    internal override async Task<Graph> BuildAsync(IGraph existing, DriLegislation dri, CancellationToken cancellationToken)
     {
         logger.BuildingRecord(dri.Id);
         var legislation = new UriNode(dri.Link);

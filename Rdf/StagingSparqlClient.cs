@@ -1,6 +1,7 @@
 ﻿using Api;
 using Microsoft.Extensions.Options;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF;
 using VDS.RDF.Update;
@@ -11,6 +12,6 @@ public class StagingSparqlClient(HttpClient httpClient, IOptions<StagingSettings
 {
     private readonly SparqlUpdateClient updateClient = new(httpClient, settings.Value.SparqlUpdateConnectionString);
 
-    public async Task ApplyDiffAsync(GraphDiffReport diffReport) =>
-        await updateClient.UpdateAsync(diffReport.AsUpdate().ToString());
+    public async Task ApplyDiffAsync(GraphDiffReport diffReport, CancellationToken cancellationToken) =>
+        await updateClient.UpdateAsync(diffReport.AsUpdate().ToString(), cancellationToken);
 }

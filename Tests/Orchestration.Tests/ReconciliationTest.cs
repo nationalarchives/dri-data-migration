@@ -26,12 +26,20 @@ public sealed class ReconciliationTest
         fakeLogger.ControlLevel(Microsoft.Extensions.Logging.LogLevel.Information, false);
         fakeLogger.ControlLevel(Microsoft.Extensions.Logging.LogLevel.Warning, true);
         var client = new Mock<IStagingReconciliationClient>();
-        var options = Options.Create<StagingSettings>(new());
+        var options = Options.Create<ReconciliationSettings>(new()
+        {
+            Code = code,
+            FilePrefix = "file://test location",
+            FileLocation = "../../../Csv/metadata-file.csv",
+            MapKind = MapType.Metadata,
+            FetchPageSize = 0
+        });
 
-        client.Setup(c => c.FetchAsync(code, 0, 0)).ReturnsAsync([data]);
 
-        var reconciliation = new Reconciliation(fakeLogger, client.Object, options);
-        await reconciliation.ReconcileAsync(code, "file://test location", "../../../Csv/metadata-folder.csv", PreservicaExportMap.MapType.Metadata);
+        client.Setup(c => c.FetchAsync(code, 0, 0, CancellationToken.None)).ReturnsAsync([data]);
+
+        var reconciliation = new Reconciliation(fakeLogger, options, client.Object);
+        await reconciliation.ReconcileAsync(CancellationToken.None);
 
         fakeLogger.Collector.Count.Should().Be(0);
     }
@@ -50,12 +58,19 @@ public sealed class ReconciliationTest
         fakeLogger.ControlLevel(Microsoft.Extensions.Logging.LogLevel.Warning, true);
         fakeLogger.ControlLevel(Microsoft.Extensions.Logging.LogLevel.Information, false);
         var client = new Mock<IStagingReconciliationClient>();
-        var options = Options.Create<StagingSettings>(new());
+        var options = Options.Create<ReconciliationSettings>(new()
+        {
+            Code = code,
+            FilePrefix = "file://test location",
+            FileLocation = "../../../Csv/metadata-file.csv",
+            MapKind = MapType.Metadata,
+            FetchPageSize = 0
+        });
 
-        client.Setup(c => c.FetchAsync(code, 0, 0)).ReturnsAsync([data]);
+        client.Setup(c => c.FetchAsync(code, 0, 0, CancellationToken.None)).ReturnsAsync([data]);
 
-        var reconciliation = new Reconciliation(fakeLogger, client.Object, options);
-        await reconciliation.ReconcileAsync(code, "file://test location", "../../../Csv/metadata-file.csv", PreservicaExportMap.MapType.Metadata);
+        var reconciliation = new Reconciliation(fakeLogger, options, client.Object);
+        await reconciliation.ReconcileAsync(CancellationToken.None);
 
         fakeLogger.Collector.Count.Should().Be(0);
     }

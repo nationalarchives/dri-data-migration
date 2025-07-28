@@ -54,10 +54,10 @@ internal static partial class Log
     internal static partial void MigrationFinished(this ILogger logger);
 
     [LoggerMessage(EventId = 17, Level = LogLevel.Information, Message = "Started `{mapType}` reconciliation against `{fileLocation}`")]
-    internal static partial void ReconciliationStarted(this ILogger logger, PreservicaExportMap.MapType mapType, string fileLocation);
+    internal static partial void ReconciliationStarted(this ILogger logger, MapType mapType, string fileLocation);
 
     [LoggerMessage(EventId = 18, Level = LogLevel.Information, Message = "Finished `{mapType}` reconciliation")]
-    internal static partial void ReconciliationFinished(this ILogger logger, PreservicaExportMap.MapType mapType);
+    internal static partial void ReconciliationFinished(this ILogger logger, MapType mapType);
 
     [LoggerMessage(EventId = 19, Level = LogLevel.Warning, Message = "`{id}` not found in the staging database")]
     internal static partial void ReconciliationNotFound(this ILogger logger, string id);

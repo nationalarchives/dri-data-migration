@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Api;
 
 public interface IEtl
 {
-    Task RunAsync(string code, int limit);
+    Task RunAsync(string code, int limit, CancellationToken cancellationToken);
 }

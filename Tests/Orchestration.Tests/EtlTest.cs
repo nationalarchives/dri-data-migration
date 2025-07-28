@@ -15,7 +15,7 @@ public sealed class EtlTest
     [DynamicData(nameof(RunsData), DynamicDataDisplayName = nameof(DisplayName))]
     public async Task Runs(FakeLogger fakeLogger, IEtl etl, int ingestedEventId, string _)
     {
-        await etl.RunAsync("ignore", 0);
+        await etl.RunAsync("ignore", 0, CancellationToken.None);
 
         fakeLogger.Collector.LatestRecord.Should().Satisfy<FakeLogRecord>(r => r.Id.Id.Should().Be(ingestedEventId))
             .And.Satisfy<FakeLogRecord>(r => r.StructuredState.Should().ContainSingle(s => s.Value == "1"));
@@ -33,8 +33,8 @@ public sealed class EtlTest
             FakeLogger<EtlAccessCondition> logger = new();
             Mock<IStagingIngest<DriAccessCondition>> ingest = new();
             var dri = new DriAccessCondition(new("http://example.com/access-condition"), "Access condition name");
-            driExport.Setup(e => e.GetAccessConditionsAsync()).ReturnsAsync([dri]);
-            ingest.Setup(i => i.SetAsync(new List<DriAccessCondition> { dri })).ReturnsAsync(1);
+            driExport.Setup(e => e.GetAccessConditionsAsync(CancellationToken.None)).ReturnsAsync([dri]);
+            ingest.Setup(i => i.SetAsync(new List<DriAccessCondition> { dri }, CancellationToken.None)).ReturnsAsync(1);
 
             return new(logger, driExport.Object, ingest.Object);
         }
@@ -45,8 +45,8 @@ public sealed class EtlTest
             FakeLogger<EtlLegislation> logger = new();
             Mock<IStagingIngest<DriLegislation>> ingest = new();
             var dri = new DriLegislation(new("http://example.com/legislation"), "Legislation section");
-            driExport.Setup(e => e.GetLegislationsAsync()).ReturnsAsync([dri]);
-            ingest.Setup(i => i.SetAsync(new List<DriLegislation> { dri })).ReturnsAsync(1);
+            driExport.Setup(e => e.GetLegislationsAsync(CancellationToken.None)).ReturnsAsync([dri]);
+            ingest.Setup(i => i.SetAsync(new List<DriLegislation> { dri }, CancellationToken.None)).ReturnsAsync(1);
 
             return new(logger, driExport.Object, ingest.Object);
         }
@@ -57,8 +57,8 @@ public sealed class EtlTest
             FakeLogger<EtlGroundForRetention> logger = new();
             Mock<IStagingIngest<DriGroundForRetention>> ingest = new();
             var dri = new DriGroundForRetention("Ground for retention", "GFR description");
-            driExport.Setup(e => e.GetGroundsForRetentionAsync()).ReturnsAsync([dri]);
-            ingest.Setup(i => i.SetAsync(new List<DriGroundForRetention> { dri })).ReturnsAsync(1);
+            driExport.Setup(e => e.GetGroundsForRetentionAsync(CancellationToken.None)).ReturnsAsync([dri]);
+            ingest.Setup(i => i.SetAsync(new List<DriGroundForRetention> { dri }, CancellationToken.None)).ReturnsAsync(1);
 
             return new(logger, driExport.Object, ingest.Object);
         }
@@ -69,8 +69,8 @@ public sealed class EtlTest
             FakeLogger<EtlSubset> logger = new();
             Mock<IStagingIngest<DriSubset>> ingest = new();
             var dri = new DriSubset("Subset", "Subset directory");
-            driExport.Setup(e => e.GetSubsetsByCodeAsync("ignore", 0, 0)).ReturnsAsync([dri]);
-            ingest.Setup(i => i.SetAsync(new List<DriSubset> { dri })).ReturnsAsync(1);
+            driExport.Setup(e => e.GetSubsetsByCodeAsync("ignore", 0, 0, CancellationToken.None)).ReturnsAsync([dri]);
+            ingest.Setup(i => i.SetAsync(new List<DriSubset> { dri }, CancellationToken.None)).ReturnsAsync(1);
 
             return new(logger, driExport.Object, ingest.Object);
         }
@@ -81,8 +81,8 @@ public sealed class EtlTest
             FakeLogger<EtlAsset> logger = new();
             Mock<IStagingIngest<DriAsset>> ingest = new();
             var dri = new DriAsset("Asset", "Asset directory", "Subset");
-            driExport.Setup(e => e.GetAssetsByCodeAsync("ignore", 0, 0)).ReturnsAsync([dri]);
-            ingest.Setup(i => i.SetAsync(new List<DriAsset> { dri })).ReturnsAsync(1);
+            driExport.Setup(e => e.GetAssetsByCodeAsync("ignore", 0, 0, CancellationToken.None)).ReturnsAsync([dri]);
+            ingest.Setup(i => i.SetAsync(new List<DriAsset> { dri }, CancellationToken.None)).ReturnsAsync(1);
 
             return new(logger, driExport.Object, ingest.Object);
         }
@@ -93,8 +93,8 @@ public sealed class EtlTest
             FakeLogger<EtlVariation> logger = new();
             Mock<IStagingIngest<DriVariation>> ingest = new();
             var dri = new DriVariation(new("http://example.com/variation"), "Variation name", "Asset");
-            driExport.Setup(e => e.GetVariationsByCodeAsync("ignore", 0, 0)).ReturnsAsync([dri]);
-            ingest.Setup(i => i.SetAsync(new List<DriVariation> { dri })).ReturnsAsync(1);
+            driExport.Setup(e => e.GetVariationsByCodeAsync("ignore", 0, 0, CancellationToken.None)).ReturnsAsync([dri]);
+            ingest.Setup(i => i.SetAsync(new List<DriVariation> { dri }, CancellationToken.None)).ReturnsAsync(1);
 
             return new(logger, driExport.Object, ingest.Object);
         }
@@ -107,8 +107,8 @@ public sealed class EtlTest
             var dri = new DriSensitivityReview(new("http://example.com/variation"), "Reference",
                 new("http://example.com/target"), new("http://example.com/target-type"),
                 new("http://example.com/access-condition"), []);
-            driExport.Setup(e => e.GetSensitivityReviewsByCodeAsync("ignore", 0, 0)).ReturnsAsync([dri]);
-            ingest.Setup(i => i.SetAsync(new List<DriSensitivityReview> { dri })).ReturnsAsync(1);
+            driExport.Setup(e => e.GetSensitivityReviewsByCodeAsync("ignore", 0, 0, CancellationToken.None)).ReturnsAsync([dri]);
+            ingest.Setup(i => i.SetAsync(new List<DriSensitivityReview> { dri }, CancellationToken.None)).ReturnsAsync(1);
 
             return new(logger, driExport.Object, ingest.Object);
         }

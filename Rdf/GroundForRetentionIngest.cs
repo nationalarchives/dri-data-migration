@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF;
 
@@ -10,7 +11,7 @@ namespace Rdf;
 public class GroundForRetentionIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<GroundForRetentionIngest> logger)
     : BaseStagingIngest<DriGroundForRetention>(cache, sparqlClient, logger, "GroundForRetentionGraph")
 {
-    internal override async Task<Graph> BuildAsync(IGraph existing, DriGroundForRetention dri)
+    internal override async Task<Graph> BuildAsync(IGraph existing, DriGroundForRetention dri, CancellationToken cancellationToken)
     {
         logger.BuildingRecord(dri.Id);
         var code = new LiteralNode(dri.Code);

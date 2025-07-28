@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF;
 
@@ -41,25 +42,25 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
         retentionSparql = embedded.GetSparql("GetRetention");
     }
 
-    internal virtual Task<Graph> BuildAsync(IGraph existing, T dri)
+    internal virtual Task<Graph> BuildAsync(IGraph existing, T dri, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> SetAsync(IEnumerable<T> records)
+    public async Task<int> SetAsync(IEnumerable<T> records, CancellationToken cancellationToken)
     {
         int total = 0;
         foreach (var dri in records)
         {
-            var existing = await sparqlClient.GetGraphAsync(graphSparql, new Dictionary<string, object> { { "id", dri.Id } });
-            var proposed = await BuildAsync(existing, dri);
+            var existing = await sparqlClient.GetGraphAsync(graphSparql, new Dictionary<string, object> { { "id", dri.Id } }, cancellationToken);
+            var proposed = await BuildAsync(existing, dri, cancellationToken);
             var diff = existing.Difference(proposed);
             if (!diff.AddedTriples.Any() && !diff.RemovedTriples.Any())
             {
                 continue;
             }
 
-            await sparqlClient.ApplyDiffAsync(diff);
+            await sparqlClient.ApplyDiffAsync(diff, cancellationToken);
             total++;
             logger.RecordUpdated(dri.Id);
         }
@@ -76,11 +77,11 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
         _ => null //TODO: handle null
     };
 
-    internal async Task<IUriNode?> CacheFetch(CacheEntityKind kind, string key)
+    internal async Task<IUriNode?> CacheFetch(CacheEntityKind kind, string key, CancellationToken cancellationToken)
     {
         var info = ToCacheFetchInfo(kind, key);
         //TODO: handle null
-        var item = (IUriNode?)cache.Get(info.Key) ?? await sparqlClient.GetSubjectAsync(info.Sparql, key);
+        var item = (IUriNode?)cache.Get(info.Key) ?? await sparqlClient.GetSubjectAsync(info.Sparql, key, cancellationToken);
 
         if (item is null)
         {
@@ -93,14 +94,14 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
         });
     }
 
-    internal async Task<IUriNode> CacheFetchOrNew(CacheEntityKind kind, string key)
+    internal async Task<IUriNode> CacheFetchOrNew(CacheEntityKind kind, string key, CancellationToken cancellationToken)
     {
         var info = ToCacheFetchInfo(kind, key);
         //TODO: handle null
         return await cache.GetOrCreateAsync(info.Key, async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromHours(1);
-            var subject = await sparqlClient.GetSubjectAsync(info.Sparql, info.Key);
+            var subject = await sparqlClient.GetSubjectAsync(info.Sparql, info.Key, cancellationToken);
             return subject is null ? NewId : subject;
         });
     }

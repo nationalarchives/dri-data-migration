@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using VDS.RDF;
 
 namespace Api;
 
 public interface ISparqlClient : ISparqlClientReadOnly
 {
-    Task ApplyDiffAsync(GraphDiffReport diffReport);
+    Task ApplyDiffAsync(GraphDiffReport diffReport, CancellationToken cancellationToken);
 }

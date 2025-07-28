@@ -7,14 +7,15 @@ internal class StagingReconciliationParser(IStagingReconciliationClient reconcil
     private const string folder = "folder";
     private const string file = "file";
 
-    internal async Task<IEnumerable<Dictionary<ReconciliationFieldName, object>>> ParseAsync(string code, string filePrefix, int limit)
+    internal async Task<IEnumerable<Dictionary<ReconciliationFieldName, object>>> ParseAsync(
+        string code, string filePrefix, int limit, CancellationToken cancellationToken)
     {
         int offset = 0;
         IEnumerable<Dictionary<ReconciliationFieldName, object>> page;
         var rows = new List<Dictionary<ReconciliationFieldName, object>>();
         do
         {
-            page = await reconciliationClient.FetchAsync(code, limit, offset);
+            page = await reconciliationClient.FetchAsync(code, limit, offset, cancellationToken);
             offset += limit;
 
             rows.AddRange(page.Select(r=>Adjust(r, code, filePrefix)));

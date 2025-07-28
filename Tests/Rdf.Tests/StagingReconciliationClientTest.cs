@@ -26,11 +26,11 @@ public class StagingReconciliationClientTest
     public async Task Reads(SparqlResultSet data,
         Dictionary<ReconciliationFieldName, object> expected, string _)
     {
-        sparqlClient.Setup(c => c.GetResultSetAsync(It.IsAny<string>()))
+        sparqlClient.Setup(c => c.GetResultSetAsync(It.IsAny<string>(), CancellationToken.None))
             .ReturnsAsync(data);
 
         var client = new StagingReconciliationClient(sparqlClient.Object);
-        var result = await client.FetchAsync("ignore", 0, 0);
+        var result = await client.FetchAsync("ignore", 0, 0, CancellationToken.None);
 
         result.Should().ContainSingle().And.BeEquivalentTo([expected]);
     }

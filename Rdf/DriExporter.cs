@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF;
 using VDS.RDF.Nodes;
@@ -25,51 +26,52 @@ public class DriExporter : IDriExporter
         embedded = new(currentAssembly, baseName);
     }
 
-    public async Task<IEnumerable<DriSubset>> GetBroadestSubsetsAsync()
+    public async Task<IEnumerable<DriSubset>> GetBroadestSubsetsAsync(CancellationToken cancellationToken)
     {
         logger.GetBroadestSubsets();
         var sparql = embedded.GetSparql(nameof(GetBroadestSubsetsAsync));
 
-        var result = await sparqlClient.GetResultSetAsync(sparql);
+        var result = await sparqlClient.GetResultSetAsync(sparql, cancellationToken);
 
         return result.Results.Select(s => new DriSubset(
             s.Value("directory").AsValuedNode().AsString(), s.Value("directory").AsValuedNode().AsString(), null));
     }
 
-    public async Task<IEnumerable<DriAccessCondition>> GetAccessConditionsAsync()
+    public async Task<IEnumerable<DriAccessCondition>> GetAccessConditionsAsync(CancellationToken cancellationToken)
     {
         logger.GetAccessConditions();
         var sparql = embedded.GetSparql(nameof(GetAccessConditionsAsync));
 
-        var result = await sparqlClient.GetResultSetAsync(sparql);
+        var result = await sparqlClient.GetResultSetAsync(sparql, cancellationToken);
 
         return result.Results.Select(s => new DriAccessCondition(
             (s.Value("s") as IUriNode)!.Uri, s.Value("label").AsValuedNode().AsString()));
     }
 
-    public async Task<IEnumerable<DriLegislation>> GetLegislationsAsync()
+    public async Task<IEnumerable<DriLegislation>> GetLegislationsAsync(CancellationToken cancellationToken)
     {
         logger.GetLegislations();
         var sparql = embedded.GetSparql(nameof(GetLegislationsAsync));
 
-        var result = await sparqlClient.GetResultSetAsync(sparql);
+        var result = await sparqlClient.GetResultSetAsync(sparql, cancellationToken);
 
         return result.Results.Select(s => new DriLegislation(
             (s.Value("legislation") as IUriNode)!.Uri, s.HasValue("label") ? s.Value("label")?.AsValuedNode().AsString() : null));
     }
 
-    public async Task<IEnumerable<DriGroundForRetention>> GetGroundsForRetentionAsync()
+    public async Task<IEnumerable<DriGroundForRetention>> GetGroundsForRetentionAsync(CancellationToken cancellationToken)
     {
         logger.GetGroundsForRetention();
         var sparql = embedded.GetSparql(nameof(GetGroundsForRetentionAsync));
 
-        var result = await sparqlClient.GetResultSetAsync(sparql);
+        var result = await sparqlClient.GetResultSetAsync(sparql, cancellationToken);
 
         return result.Results.Select(s => new DriGroundForRetention(
             s.Value("label").AsValuedNode().AsString(), s.Value("comment").AsValuedNode().AsString()));
     }
 
-    public async Task<IEnumerable<DriSubset>> GetSubsetsByCodeAsync(string code, int pageSize, int offset)
+    public async Task<IEnumerable<DriSubset>> GetSubsetsByCodeAsync(
+        string code, int pageSize, int offset, CancellationToken cancellationToken)
     {
         logger.GetSubsetsByCode(offset);
         var sparql = embedded.GetSparql(nameof(GetSubsetsByCodeAsync));
@@ -78,14 +80,15 @@ public class DriExporter : IDriExporter
             { "id", code },
             { "limit", pageSize },
             { "offset", offset}
-        });
+        }, cancellationToken);
 
         return graph.Triples.SubjectNodes.Where(s => s is not BlankNode)
             .Cast<IUriNode>()
             .Select(s => SusbsetBySubject(graph, s));
     }
 
-    public async Task<IEnumerable<DriAsset>> GetAssetsByCodeAsync(string code, int pageSize, int offset)
+    public async Task<IEnumerable<DriAsset>> GetAssetsByCodeAsync(string code, int pageSize, int offset,
+        CancellationToken cancellationToken)
     {
         logger.GetAssetsByCode(offset);
         var sparql = embedded.GetSparql(nameof(GetAssetsByCodeAsync));
@@ -94,14 +97,15 @@ public class DriExporter : IDriExporter
             { "id", code },
             { "limit", pageSize },
             { "offset", offset}
-        });
+        }, cancellationToken);
 
         return graph.GetTriplesWithPredicate(Vocabulary.AssetReference)
             .Select(t => t.Subject as IBlankNode)
             .Select(s => AssetBySubject(graph, s!));
     }
 
-    public async Task<IEnumerable<DriVariation>> GetVariationsByCodeAsync(string code, int pageSize, int offset)
+    public async Task<IEnumerable<DriVariation>> GetVariationsByCodeAsync(
+        string code, int pageSize, int offset, CancellationToken cancellationToken)
     {
         logger.GetVariationsByCode(offset);
         var sparql = embedded.GetSparql(nameof(GetVariationsByCodeAsync));
@@ -110,14 +114,15 @@ public class DriExporter : IDriExporter
             { "id", code },
             { "limit", pageSize },
             { "offset", offset}
-        });
+        }, cancellationToken);
 
         return graph.GetTriplesWithPredicate(Vocabulary.VariationName)
             .Select(t => t.Subject as IUriNode)
             .Select(s => VariationBySubject(graph, s!));
     }
 
-    public async Task<IEnumerable<DriSensitivityReview>> GetSensitivityReviewsByCodeAsync(string code, int pageSize, int offset)
+    public async Task<IEnumerable<DriSensitivityReview>> GetSensitivityReviewsByCodeAsync(
+        string code, int pageSize, int offset, CancellationToken cancellationToken)
     {
         logger.GetSensitivityReviewsByCode(offset);
         var sparql = embedded.GetSparql(nameof(GetSensitivityReviewsByCodeAsync));
@@ -126,7 +131,7 @@ public class DriExporter : IDriExporter
             { "id", code },
             { "limit", pageSize },
             { "offset", offset}
-        });
+        }, cancellationToken);
 
         return graph.GetTriplesWithPredicate(Vocabulary.SensitivityReviewDriId)
             .Select(t => t.Subject as IUriNode)

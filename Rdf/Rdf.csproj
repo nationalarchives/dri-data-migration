@@ -35,7 +35,8 @@
 
   <ItemGroup>
     <PackageReference Include="dotNetRdf" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+	<PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+	<PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Options" />
   </ItemGroup>
