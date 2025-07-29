@@ -30,11 +30,10 @@ public sealed class ReconciliationTest
         {
             Code = code,
             FilePrefix = "file://test location",
-            FileLocation = "../../../Csv/metadata-file.csv",
+            FileLocation = "../../../Csv/metadata-folder.csv",
             MapKind = MapType.Metadata,
             FetchPageSize = 0
         });
-
 
         client.Setup(c => c.FetchAsync(code, 0, 0, CancellationToken.None)).ReturnsAsync([data]);
 
