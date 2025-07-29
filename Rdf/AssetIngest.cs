@@ -24,7 +24,10 @@ public class AssetIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger
         graph.Assert(id, Vocabulary.AssetReference, assetReference);
         graph.Assert(id, Vocabulary.AssetHasSubset, subset);
         graph.Assert(id, Vocabulary.AssetHasRetention, retention);
-        graph.Assert(retention, Vocabulary.ImportLocation, new LiteralNode(dri.Directory));
+        if (!string.IsNullOrEmpty(dri.Directory))
+        {
+            graph.Assert(retention, Vocabulary.ImportLocation, new LiteralNode(dri.Directory));
+        }
         logger.RecordBuilt(dri.Id);
 
         return graph;

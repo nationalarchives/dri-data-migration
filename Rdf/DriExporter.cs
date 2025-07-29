@@ -193,16 +193,16 @@ public class DriExporter : IDriExporter
         var subset = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AssetHasSubset).SingleOrDefault().Object as IBlankNode;
         var subsetReference = graph.GetTriplesWithSubjectPredicate(subset, Vocabulary.SubsetReference).SingleOrDefault().Object as ILiteralNode;
         var retention = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AssetHasRetention).SingleOrDefault().Object as IBlankNode;
-        var location = graph.GetTriplesWithSubjectPredicate(retention, Vocabulary.ImportLocation).SingleOrDefault().Object as ILiteralNode;
+        var location = graph.GetTriplesWithSubjectPredicate(retention, Vocabulary.ImportLocation).SingleOrDefault()?.Object as ILiteralNode;
 
-        return new DriAsset(reference.AsValuedNode().AsString(), location.AsValuedNode().AsString(), subsetReference.AsValuedNode().AsString());
+        return new DriAsset(reference.AsValuedNode().AsString(), location?.AsValuedNode().AsString(), subsetReference.AsValuedNode().AsString());
     }
 
     private static DriSubset SusbsetBySubject(IGraph graph, IUriNode subject)
     {
         var reference = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SubsetReference).SingleOrDefault().Object as ILiteralNode;
         var retention = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SubsetHasRetention).SingleOrDefault().Object as IBlankNode;
-        var directory = graph.GetTriplesWithSubjectPredicate(retention, Vocabulary.ImportLocation).SingleOrDefault().Object as ILiteralNode;
+        var directory = graph.GetTriplesWithSubjectPredicate(retention, Vocabulary.ImportLocation).SingleOrDefault()?.Object as ILiteralNode;
         var broader = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SubsetHasBroaderSubset).SingleOrDefault()?.Object as IBlankNode;
         ILiteralNode? parent = null;
         if (broader is not null)
@@ -210,7 +210,7 @@ public class DriExporter : IDriExporter
             parent = graph.GetTriplesWithSubjectPredicate(broader, Vocabulary.SubsetReference).SingleOrDefault()?.Object as ILiteralNode;
         }
 
-        return new DriSubset(reference!.AsValuedNode().AsString(), directory.AsValuedNode().AsString(),
+        return new DriSubset(reference!.AsValuedNode().AsString(), directory?.AsValuedNode().AsString(),
             parent?.AsValuedNode().AsString());
     }
 }
