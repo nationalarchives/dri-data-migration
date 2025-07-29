@@ -47,8 +47,8 @@ internal static partial class Log
     [LoggerMessage(EventId = 14, Level = LogLevel.Information, Message = "Updated {size} sensitivity reviews")]
     internal static partial void IngestedSensitivityReview(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 15, Level = LogLevel.Information, Message = "Migration started")]
-    internal static partial void MigrationStarted(this ILogger logger);
+    [LoggerMessage(EventId = 15, Level = LogLevel.Information, Message = "{code} migration started")]
+    internal static partial void MigrationStarted(this ILogger logger, string code);
 
     [LoggerMessage(EventId = 16, Level = LogLevel.Information, Message = "Migration finished")]
     internal static partial void MigrationFinished(this ILogger logger);
