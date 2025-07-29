@@ -26,25 +26,25 @@ internal static partial class Log
     [LoggerMessage(EventId = 7, Level = LogLevel.Information, Message = "Ingesting {size} sensitivity reviews")]
     internal static partial void IngestingSensitivityReview(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 8, Level = LogLevel.Information, Message = "Ingested {size} access conditions")]
+    [LoggerMessage(EventId = 8, Level = LogLevel.Information, Message = "Updated {size} access conditions")]
     internal static partial void IngestedAccessConditions(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 9, Level = LogLevel.Information, Message = "Ingested {size} legislations")]
+    [LoggerMessage(EventId = 9, Level = LogLevel.Information, Message = "Updated {size} legislations")]
     internal static partial void IngestedLegislations(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 10, Level = LogLevel.Information, Message = "Ingested {size} grounds for retention")]
+    [LoggerMessage(EventId = 10, Level = LogLevel.Information, Message = "Updated {size} grounds for retention")]
     internal static partial void IngestedGroundsForRetention(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 11, Level = LogLevel.Information, Message = "Ingested {size} subsets")]
+    [LoggerMessage(EventId = 11, Level = LogLevel.Information, Message = "Updated {size} subsets")]
     internal static partial void IngestedSubsets(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 12, Level = LogLevel.Information, Message = "Ingested {size} assets")]
+    [LoggerMessage(EventId = 12, Level = LogLevel.Information, Message = "Updated {size} assets")]
     internal static partial void IngestedAssets(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 13, Level = LogLevel.Information, Message = "Ingested {size} variations")]
+    [LoggerMessage(EventId = 13, Level = LogLevel.Information, Message = "Updated {size} variations")]
     internal static partial void IngestedVariations(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 14, Level = LogLevel.Information, Message = "Ingested {size} sensitivity reviews")]
+    [LoggerMessage(EventId = 14, Level = LogLevel.Information, Message = "Updated {size} sensitivity reviews")]
     internal static partial void IngestedSensitivityReview(this ILogger logger, int size);
 
     [LoggerMessage(EventId = 15, Level = LogLevel.Information, Message = "Migration started")]
