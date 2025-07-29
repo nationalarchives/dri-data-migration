@@ -11,12 +11,12 @@ namespace Rdf.Tests;
 [TestClass]
 public class StagingReconciliationClientTest
 {
-    private Mock<ISparqlClient> sparqlClient;
+    private Mock<IReconciliationSparqlClient> sparqlClient;
 
     [TestInitialize]
     public void TestInitialize()
     {
-        sparqlClient = new Mock<ISparqlClient>();
+        sparqlClient = new Mock<IReconciliationSparqlClient>();
     }
 
     public static string DisplayName(MethodInfo _, object[] data) => data[data.Length - 1].ToString()!;

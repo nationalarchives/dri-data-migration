@@ -14,3 +14,6 @@ public interface ISparqlClientReadOnly
     Task<IUriNode?> GetSubjectAsync(string sparql, object id, CancellationToken cancellationToken);
     Task<Dictionary<string, IUriNode>> GetDictionaryAsync(string sparql, CancellationToken cancellationToken);
 }
+
+public interface IDriSparqlClient : ISparqlClientReadOnly;
+public interface IReconciliationSparqlClient : ISparqlClientReadOnly;

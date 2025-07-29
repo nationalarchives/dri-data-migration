@@ -7,7 +7,7 @@ public static class RdfServiceCollectionExtensions
 {
     public static IServiceCollection AddDriExport(this IServiceCollection services)
     {
-        services.AddHttpClient<ISparqlClientReadOnly, DriSparqlClient>();
+        services.AddHttpClient<IDriSparqlClient, DriSparqlClient>();
         services.AddSingleton<IDriExporter, DriExporter>();
 
         return services;
@@ -29,7 +29,7 @@ public static class RdfServiceCollectionExtensions
 
     public static IServiceCollection AddReconciliationClient(this IServiceCollection services)
     {
-        services.AddHttpClient<ISparqlClientReadOnly, ReconciliationSparqlClient>();
+        services.AddHttpClient<IReconciliationSparqlClient, ReconciliationSparqlClient>();
         services.AddSingleton<IStagingReconciliationClient, StagingReconciliationClient>();
 
         return services;

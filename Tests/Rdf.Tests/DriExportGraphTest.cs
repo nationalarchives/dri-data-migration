@@ -11,13 +11,13 @@ namespace Rdf.Tests;
 [TestClass]
 public class DriExportGraphTest
 {
-    private Mock<ISparqlClient> sparqlClient;
+    private Mock<IDriSparqlClient> sparqlClient;
     internal ILogger<DriExporter> logger;
 
     [TestInitialize]
     public void TestInitialize()
     {
-        sparqlClient = new Mock<ISparqlClient>();
+        sparqlClient = new Mock<IDriSparqlClient>();
         logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<DriExporter>();
     }
 

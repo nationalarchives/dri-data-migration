@@ -13,10 +13,10 @@ namespace Rdf;
 public class DriExporter : IDriExporter
 {
     private readonly ILogger<DriExporter> logger;
-    private readonly ISparqlClientReadOnly sparqlClient;
+    private readonly IDriSparqlClient sparqlClient;
     private readonly EmbeddedSparqlResource embedded;
 
-    public DriExporter(ILogger<DriExporter> logger, ISparqlClientReadOnly sparqlClient)
+    public DriExporter(ILogger<DriExporter> logger, IDriSparqlClient sparqlClient)
     {
         this.logger = logger;
         this.sparqlClient = sparqlClient;
