@@ -1,6 +1,15 @@
-﻿@model Models.Retention
+﻿@model IEnumerable<Models.Retention>
 
-<dl class="tna-dl tna-dl--plain">
-    <dt>Import location</dt>
-    <dd>@Model.ImportLocation.Single()</dd>
-</dl>
+@if (Model.Any())
+{
+    <div class="tna-!--margin-top-m">
+        <h2>Retention</h2>
+        @if (Model.Single().ImportLocation.Any())
+        {
+            <dl class="tna-dl tna-dl--plain">
+                <dt>Import location</dt>
+                <dd>@Model.Single().ImportLocation.Single()</dd>
+            </dl>
+        }
+    </div>
+}

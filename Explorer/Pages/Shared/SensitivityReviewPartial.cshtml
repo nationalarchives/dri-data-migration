@@ -61,7 +61,7 @@
         if (restriction.Duration.Any())
         {
             <dt>Restriction duration</dt>
-            <dd>@restriction.Duration.Single()</dd>
+            <dd>@(restriction.Duration.Single().Days / 365)</dd>
         }
         if (restriction.EndYear.Any())
         {

@@ -8,7 +8,7 @@ public class Restriction(INode node, IGraph graph) : DynamicNode(node, graph)
 {
     public ICollection<DateTimeOffset> ReviewDate => new DynamicObjectCollection<DateTimeOffset>(this, Vocabulary.SensitivityReviewRestrictionReviewDate.Uri.ToString());
     public ICollection<DateTimeOffset> CalculationStartDate => new DynamicObjectCollection<DateTimeOffset>(this, Vocabulary.SensitivityReviewRestrictionCalculationStartDate.Uri.ToString());
-    public ICollection<string> Duration => new DynamicObjectCollection<string>(this, Vocabulary.SensitivityReviewRestrictionDuration.Uri.ToString());
+    public ICollection<TimeSpan> Duration => new DynamicObjectCollection<TimeSpan>(this, Vocabulary.SensitivityReviewRestrictionDuration.Uri.ToString());
     public ICollection<int> EndYear => new DynamicObjectCollection<int>(this, Vocabulary.SensitivityReviewRestrictionEndYear.Uri.ToString());
     public ICollection<string> Description => new DynamicObjectCollection<string>(this, Vocabulary.SensitivityReviewRestrictionDescription.Uri.ToString());
     public ICollection<UkLegislation> UkLegislations => new DynamicObjectCollection<UkLegislation>(this, Vocabulary.SensitivityReviewRestrictionHasLegislation.Uri.ToString());

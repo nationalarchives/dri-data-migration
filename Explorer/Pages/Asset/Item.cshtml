@@ -8,10 +8,7 @@
 <section class="row tna-!--margin-top-m tna-column tna-column--full">
     <h1>Asset @Model.Item.Reference.Single() @Model.Item.Name.SingleOrDefault()</h1>
 
-    <div class="tna-!--margin-top-m">
-        <h2>Retention</h2>
-        <partial name="RetentionPartial" model="@Model.Item.Retention.Single()" />
-    </div>
+    <partial name="RetentionPartial" model="@Model.Item.Retention" />
 
     @if (Model.Item.Variations.Any())
     {
