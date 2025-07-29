@@ -1,6 +1,7 @@
 ﻿using Api;
 using Microsoft.Extensions.Configuration;
 using System.CommandLine;
+using System.CommandLine.Help;
 
 namespace Migration;
 
@@ -196,5 +197,15 @@ public class ProgramCommandLineProvider(IEnumerable<string> args) : Configuratio
             }
 
         return data;
+    }
+
+    public static void PrintHelp()
+    {
+        var root = new RootCommand();
+        root.Add(MigrationCommand());
+        root.Add(ReconciliationCommand());
+
+        var result = root.Parse([]);
+        new HelpAction().Invoke(result);
     }
 }

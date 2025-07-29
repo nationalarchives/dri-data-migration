@@ -6,7 +6,8 @@ namespace Migration;
 
 public class ProgramHostedService(IOptions<StagingSettings> stagingSettings,
     IOptions<ReconciliationSettings> reconciliationSettings,
-    IMigration migration, IReconciliation reconciliation) : IHostedService
+    IMigration migration, IReconciliation reconciliation, IHostApplicationLifetime applicationLifetime)
+    : IHostedService
 {
     async Task IHostedService.StartAsync(CancellationToken cancellationToken)
     {
@@ -20,7 +21,12 @@ public class ProgramHostedService(IOptions<StagingSettings> stagingSettings,
             {
                 await reconciliation.ReconcileAsync(cancellationToken);
             }
+            else
+            {
+                ProgramCommandLineProvider.PrintHelp();
+            }
         }
+        applicationLifetime.StopApplication();
     }
 
     Task IHostedService.StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
