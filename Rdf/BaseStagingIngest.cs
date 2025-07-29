@@ -101,7 +101,7 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
         return await cache.GetOrCreateAsync(info.Key, async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromHours(1);
-            var subject = await sparqlClient.GetSubjectAsync(info.Sparql, info.Key, cancellationToken);
+            var subject = await sparqlClient.GetSubjectAsync(info.Sparql, key, cancellationToken);
             return subject is null ? NewId : subject;
         });
     }

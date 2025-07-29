@@ -58,7 +58,7 @@ public class UpdateIngestTest : BaseIngestTest
         [
             subset.Id,
             Build(subset with { ParentReference = "Old parent subset reference" }),
-            (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) => SetupFetchOrNewSubset(cache, parentSubsetRef, parentSubsetNode),
+            (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) => SetupFetchOrNewSubset(cache, client, parentSubsetRef, parentSubsetNode),
             async (IMemoryCache cache, ISparqlClient client) => await new SubsetIngest(cache, client, loggerSub).SetAsync([subset], CancellationToken.None),
             1, 1,
             "subset"
@@ -96,7 +96,7 @@ public class UpdateIngestTest : BaseIngestTest
             (Mock<ISparqlClient> client, Mock<IMemoryCache> cache) =>
             {
                 SetupFetchAccessCondition(client, accessConditionRef.Fragment.Substring(1), accessConditionNode);
-                SetupFetchOrNewSensitivityReview(cache, previousSrRef.ToString(), previousSrNode);
+                SetupFetchOrNewSensitivityReview(cache, client, previousSrRef.ToString(), previousSrNode);
                 SetupFetchLegislation(client, legislationRef.ToString(), legislationNode);
                 SetupFetchVariation(cache, client, variationRef.ToString(), variationNode);
                 SetupFetchGroundForRetention(client, groundForRetentionRef.Fragment.Substring(1), groundForRetentionNode);

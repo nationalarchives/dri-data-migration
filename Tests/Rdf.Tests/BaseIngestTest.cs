@@ -57,11 +57,11 @@ public class BaseIngestTest
         cache = new Mock<IMemoryCache>();
     }
 
-    internal static void SetupFetchOrNewSubset(Mock<IMemoryCache> cache, string reference, object? node) =>
-        SetupFetchOrNew(cache, "subset", reference, node);
+    internal static void SetupFetchOrNewSubset(Mock<IMemoryCache> cache, Mock<ISparqlClient> client, string reference, object? node) =>
+        SetupFetchOrNew(cache, client, "subsetReference", "subset", reference, node);
 
-    internal static void SetupFetchOrNewSensitivityReview(Mock<IMemoryCache> cache, string reference, object? node) =>
-        SetupFetchOrNew(cache, "sensititvity-review", reference, node);
+    internal static void SetupFetchOrNewSensitivityReview(Mock<IMemoryCache> cache, Mock<ISparqlClient> client, string reference, object? node) =>
+        SetupFetchOrNew(cache, client, "sensitivityReviewDriId", "sensititvity-review", reference, node);
 
     internal static void SetupFetchSubset(Mock<IMemoryCache> cache, Mock<ISparqlClient> client, string reference, object? node) =>
         SetupFetch(cache, client, "subsetReference", "subset", reference, node);
@@ -86,8 +86,15 @@ public class BaseIngestTest
 
     internal static Action<Mock<ISparqlClient>, Mock<IMemoryCache>> NoopSetup() => (client, cache) => { };
 
-    private static void SetupFetchOrNew(Mock<IMemoryCache> cache, string prefix, string reference, object? node) =>
-        cache.Setup(c => c.TryGetValue(It.Is<object>(m => m.Equals($"{prefix}-{reference}")), out node)).Returns(true);
+    private static void SetupFetchOrNew(Mock<IMemoryCache> cache, Mock<ISparqlClient> client, string match, string prefix, string reference, object? node)
+    {
+        var notFound = (object?)(IUriNode?)null;
+        cache.Setup(c => c.TryGetValue(It.Is<object>(m => m.Equals($"{prefix}-{reference}")), out notFound)).Returns(false);
+        cache.Setup(c => c.CreateEntry(It.Is<object>(m => m.Equals($"{prefix}-{reference}"))))
+            .Returns(Mock.Of<ICacheEntry>());
+        client.Setup(c => c.GetSubjectAsync(It.Is<string>(m => m.Contains(match)), It.Is<object>(m => m.ToString() == reference), CancellationToken.None))
+            .ReturnsAsync(node as IUriNode);
+    }
 
     private static void SetupFetch(Mock<IMemoryCache> cache, Mock<ISparqlClient> client, string match, string prefix, string reference, object? node)
     {
@@ -148,7 +155,10 @@ public class BaseIngestTest
         var id = new UriNode(new Uri("http://example.com/s"));
         graph.Assert(id, Vocabulary.SubsetReference, new LiteralNode(dri.Reference));
         graph.Assert(id, Vocabulary.SubsetHasRetention, (IUriNode?)retentionNode);
-        graph.Assert((IUriNode?)retentionNode, Vocabulary.ImportLocation, new LiteralNode(dri.Directory));
+        if (!string.IsNullOrEmpty(dri.Directory))
+        {
+            graph.Assert((IUriNode?)retentionNode, Vocabulary.ImportLocation, new LiteralNode(dri.Directory));
+        }
         graph.Assert(id, Vocabulary.SubsetHasBroaderSubset, (IUriNode?)parentSubsetNode);
         graph.Assert((IUriNode?)parentSubsetNode, Vocabulary.SubsetReference, new LiteralNode(dri.ParentReference));
 
