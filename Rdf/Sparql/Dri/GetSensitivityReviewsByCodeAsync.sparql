@@ -27,7 +27,7 @@ construct {
             	]
         	];
             ex:sensitivityReviewRestrictionHasLegislation [
-                ex:legislationHasUkLegislation ?exemptionCode
+                ex:legislationHasUkLegislation ?legislations
             ]
         ];
         ex:sensitivityReviewHasAccessCondition [
@@ -36,7 +36,10 @@ construct {
 }
 where {
     {
-        select * where {
+        select ?closure ?type ?record ?reference ?exemptionAsserted ?titleAlternative
+            ?descriptionAlternative ?previous ?reviewDate ?startDate ?closurePeriod
+            ?reasonForChange ?rINumber ?rISignedDate ?retentionReconsiderDate ?retentionJustification
+	        (group_concat(?legislation; separator=',') as ?legislations) ?closureType where {
             bind(@id as ?code)
             ?closure prov:specializationOf ?record;
                 dri:closureType ?closureType.
@@ -48,9 +51,9 @@ where {
             optional { ?closure dri:exemptionAsserted ?exemptionAsserted }
             optional { ?closure dri:reviewDate ?reviewDate }
             optional { ?closure dri:retentionReconsiderDate ?retentionReconsiderDate }
-            optional { 
+            optional {
                 ?closure dri:exemptionCode ?exemptionCode.
-                ?exemptionCode rdfs:label ?legislationSectionReference.
+                bind(str(?exemptionCode) as ?legislation)
             }
             optional { ?closure dri:titleAlternative ?titleAlternative }
             optional { ?closure dri:alternative ?descriptionAlternative }
@@ -62,7 +65,10 @@ where {
             optional { ?closure dri:rISignedDate ?rISignedDate }
     		optional { ?closure dri:retentionJustification ?retentionJustification }
         }
-        order by ?label
+        group by ?closure ?type ?record ?reference ?exemptionAsserted ?titleAlternative ?descriptionAlternative
+	        ?previous ?reviewDate ?startDate ?closurePeriod ?reasonForChange ?rINumber ?rISignedDate
+	        ?retentionReconsiderDate ?retentionJustification ?closureType
+        order by ?reference
         limit @limit offset @offset
     }
 }

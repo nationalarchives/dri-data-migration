@@ -166,10 +166,13 @@ public class DriExporter : IDriExporter
         var condition = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewHasAccessCondition).SingleOrDefault().Object as IBlankNode;
         var accessCode = graph.GetTriplesWithSubjectPredicate(condition, Vocabulary.AccessConditionCode).SingleOrDefault().Object as IUriNode;
         var legislation = graph.GetTriplesWithSubjectPredicate(restriction, Vocabulary.SensitivityReviewRestrictionHasLegislation).SingleOrDefault().Object as IBlankNode;
-        var legislations = graph.GetTriplesWithSubjectPredicate(legislation, Vocabulary.LegislationHasUkLegislation).Select(t => (t.Object as IUriNode)!.Uri);
+        var legislations = graph.GetTriplesWithSubjectPredicate(legislation, Vocabulary.LegislationHasUkLegislation).SingleOrDefault()?.Object as ILiteralNode;
+
+        var legislationUris = legislations is null ? [] :
+            legislations.AsValuedNode().AsString().Split(',', StringSplitOptions.RemoveEmptyEntries).Select(l => new Uri(l));
 
         return new DriSensitivityReview(id!.Uri, reference.AsValuedNode().AsString(), targetId!.Uri, targetType!.Uri,
-            accessCode!.Uri, legislations, reviewDate?.AsValuedNode().AsDateTimeOffset(),
+            accessCode!.Uri, legislationUris, reviewDate?.AsValuedNode().AsDateTimeOffset(),
             past?.Uri, sensitiveName?.AsValuedNode().AsString(), sensitiveDescription?.AsValuedNode().AsString(),
             date?.AsValuedNode().AsDateTimeOffset(), startDate?.AsValuedNode().AsDateTimeOffset(),
             duration?.AsValuedNode().AsInteger(), description?.AsValuedNode().AsString(),
