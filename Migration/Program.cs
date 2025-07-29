@@ -2,19 +2,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Migration;
 
 var builder = Host.CreateApplicationBuilder();
-
-builder.Logging.AddFilter("System.Net.Http.HttpClient", LogLevel.Warning);
-
-builder.Logging.AddSimpleConsole(configure =>
-{
-    configure.SingleLine = true;
-    configure.IncludeScopes = false;
-    configure.TimestampFormat = "yyyy-MM-dd HH:mm:ss.fffffff ";
-});
 
 builder.Configuration.AddProgramCommandLine(args);
 
