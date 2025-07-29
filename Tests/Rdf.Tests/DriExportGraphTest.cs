@@ -225,9 +225,10 @@ public class DriExportGraphTest
             graph.Assert(ac, Vocabulary.AccessConditionCode, new UriNode(dri.AccessCondition));
         }
         graph.Assert(restriction, Vocabulary.SensitivityReviewRestrictionHasLegislation, legislation);
-        foreach (var item in dri.Legislations)
+        if (dri.Legislations.Any())
         {
-            graph.Assert(legislation, Vocabulary.LegislationHasUkLegislation, new UriNode(item));
+            var legislations = string.Join(',', dri.Legislations);
+            graph.Assert(legislation, Vocabulary.LegislationHasUkLegislation, new LiteralNode(legislations));
         }
 
         return graph;
