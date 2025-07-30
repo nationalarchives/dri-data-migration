@@ -3,8 +3,8 @@ services:
         image: ontotext/graphdb:11.0.1
         container_name: graphdb
         environment:
-            GDB_HEAP_SIZE: "5G"
-            GDB_JAVA_OPTS: "-Dgraphdb.page.cache.size=512M -Dgraphdb.query.memory.threshold=512M -XX:+UseParallelGC"
+            GDB_HEAP_SIZE: "10G"
+            GDB_JAVA_OPTS: "-Dgraphdb.page.cache.size=5G -Dgraphdb.query.memory.threshold=512M -XX:+UseParallelGC"
         #command:
         #    - "-s"
         ports:
