@@ -34,7 +34,7 @@ public class ProgramCommandLineProvider(IEnumerable<string> args) : Configuratio
     };
     private static readonly Option<int> pageSize = new("--page-size", "-ps")
     {
-        Description = "Some queries page results. This allows to provide the page size for these queries.",
+        Description = "Allows to provide the page size for queries that needs paging.",
         DefaultValueFactory = _ => 500,
         Arity = ArgumentArity.ExactlyOne,
         Required = false,
