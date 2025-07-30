@@ -8,18 +8,15 @@ public class EtlSensitivityReview(ILogger<EtlSensitivityReview> logger, IDriExpo
 {
     public async Task RunAsync(string code, int limit, CancellationToken cancellationToken)
     {
-        List<DriSensitivityReview> dri = [];
         int offset = 0;
-        IEnumerable<DriSensitivityReview> page;
+        IEnumerable<DriSensitivityReview> dri;
         do
         {
-            page = await driExport.GetSensitivityReviewsByCodeAsync(code, limit, offset, cancellationToken);
-            dri.AddRange(page);
+            dri = await driExport.GetSensitivityReviewsByCodeAsync(code, limit, offset, cancellationToken);
             offset += limit;
-        } while (page.Any() && page.Count() == limit);
-
-        logger.IngestingSensitivityReview(dri.Count);
-        var ingestSize = await ingest.SetAsync(dri, cancellationToken);
-        logger.IngestedSensitivityReview(ingestSize);
+            logger.IngestingSensitivityReview(dri.Count());
+            var ingestSize = await ingest.SetAsync(dri, cancellationToken);
+            logger.IngestedSensitivityReview(ingestSize);
+        } while (dri.Any() && dri.Count() == limit);
     }
 }

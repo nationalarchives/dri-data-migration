@@ -8,18 +8,15 @@ public class EtlAsset(ILogger<EtlAsset> logger, IDriExporter driExport,
 {
     public async Task RunAsync(string code, int limit, CancellationToken cancellationToken)
     {
-        List<DriAsset> dri = [];
         int offset = 0;
-        IEnumerable<DriAsset> page;
+        IEnumerable<DriAsset> dri;
         do
         {
-            page = await driExport.GetAssetsByCodeAsync(code, limit, offset, cancellationToken);
-            dri.AddRange(page);
+            dri = await driExport.GetAssetsByCodeAsync(code, limit, offset, cancellationToken);
             offset += limit;
-        } while (page.Any() && page.Count() == limit);
-
-        logger.IngestingAssets(dri.Count);
-        var ingestSize = await ingest.SetAsync(dri, cancellationToken);
-        logger.IngestedAssets(ingestSize);
+            logger.IngestingAssets(dri.Count());
+            var ingestSize = await ingest.SetAsync(dri, cancellationToken);
+            logger.IngestedAssets(ingestSize);
+        } while (dri.Any() && dri.Count() == limit);
     }
 }

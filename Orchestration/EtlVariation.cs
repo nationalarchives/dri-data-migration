@@ -8,18 +8,15 @@ public class EtlVariation(ILogger<EtlVariation> logger, IDriExporter driExport,
 {
     public async Task RunAsync(string code, int limit, CancellationToken cancellationToken)
     {
-        List<DriVariation> dri = [];
         int offset = 0;
-        IEnumerable<DriVariation> page;
+        IEnumerable<DriVariation> dri;
         do
         {
-            page = await driExport.GetVariationsByCodeAsync(code, limit, offset, cancellationToken);
-            dri.AddRange(page);
+            dri = await driExport.GetVariationsByCodeAsync(code, limit, offset, cancellationToken);
             offset += limit;
-        } while (page.Any() && page.Count() == limit);
-
-        logger.IngestingVariations(dri.Count);
-        var ingestSize = await ingest.SetAsync(dri, cancellationToken);
-        logger.IngestedVariations(ingestSize);
+            logger.IngestingVariations(dri.Count());
+            var ingestSize = await ingest.SetAsync(dri, cancellationToken);
+            logger.IngestedVariations(ingestSize);
+        } while (dri.Any() && dri.Count() == limit);
     }
 }
