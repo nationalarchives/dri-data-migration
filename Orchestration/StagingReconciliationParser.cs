@@ -2,30 +2,17 @@
 
 namespace Orchestration;
 
-internal class StagingReconciliationParser(IStagingReconciliationClient reconciliationClient)
+internal static class StagingReconciliationParser
 {
     private const string folder = "folder";
     private const string file = "file";
 
-    internal async Task<IEnumerable<Dictionary<ReconciliationFieldName, object>>> ParseAsync(
-        string code, string filePrefix, int limit, CancellationToken cancellationToken)
-    {
-        int offset = 0;
-        IEnumerable<Dictionary<ReconciliationFieldName, object>> page;
-        var rows = new List<Dictionary<ReconciliationFieldName, object>>();
-        do
-        {
-            page = await reconciliationClient.FetchAsync(code, limit, offset, cancellationToken);
-            offset += limit;
+    internal static async Task<IEnumerable<Dictionary<ReconciliationFieldName, object>>> ParseAsync(
+        IEnumerable<Dictionary<ReconciliationFieldName, object>> page, string code, string prefix,
+        CancellationToken cancellationToken) =>
+        page.Select(r => Adjust(r, code, prefix));
 
-            rows.AddRange(page.Select(r=>Adjust(r, code, filePrefix)));
-
-        } while (page.Any() && page.Count() == limit);
-
-        return rows;
-    }
-
-    private Dictionary<ReconciliationFieldName, object> Adjust(Dictionary<ReconciliationFieldName, object> row, string code, string filePrefix) =>
+    private static Dictionary<ReconciliationFieldName, object> Adjust(Dictionary<ReconciliationFieldName, object> row, string code, string filePrefix) =>
         row.Select(cell =>
             cell.Key switch
             {
@@ -33,7 +20,7 @@ internal class StagingReconciliationParser(IStagingReconciliationClient reconcil
                 ReconciliationFieldName.ImportLocation => new(cell.Key, ToImportLocation(row, cell.Value as string, code, filePrefix)),
                 ReconciliationFieldName.VariationName => new(cell.Key, ToVariationName(row, cell.Value as string)),
                 ReconciliationFieldName.AccessConditionName => new(cell.Key, ToAccessConditon(cell.Value as string)),
-                ReconciliationFieldName.SensitivityReviewDuration => new(cell.Key, ToYearDuration(row, cell.Value as string)),
+                ReconciliationFieldName.SensitivityReviewDuration => new(cell.Key, ToYearDuration(row, cell.Value as TimeSpan?)),
                 ReconciliationFieldName.LegislationSectionReference => new(cell.Key, ToLegislationReferences(cell.Value as string)),
                 ReconciliationFieldName.SensitivityReviewEndYear => new(cell.Key, null),
                 ReconciliationFieldName.RetentionType => new(cell.Key, ToRetentionType(cell.Value as string)),
@@ -46,12 +33,13 @@ internal class StagingReconciliationParser(IStagingReconciliationClient reconcil
         subject == Vocabulary.Subset.Uri ? folder :
             subject == Vocabulary.Variation.Uri ? file : null;
 
-    private string? ToImportLocation(Dictionary<ReconciliationFieldName, object> row, string? importLocation, string code, string filePrefix)
+    private static string? ToImportLocation(Dictionary<ReconciliationFieldName, object> row, string? importLocation, string code, string filePrefix)
     {
         if (row.TryGetValue(ReconciliationFieldName.FileFolder, out var fileFolder))
         {
             var replaced = importLocation?.Replace(code, filePrefix);
-            if (replaced is not null && fileFolder == Vocabulary.Subset.Uri && replaced.Last() != '/')
+            if (replaced is not null && replaced.Last() != '/' &&
+                fileFolder.ToString() == Vocabulary.Subset.Uri.ToString())
             {
                 replaced = $"{replaced}/";
             }
@@ -65,7 +53,7 @@ internal class StagingReconciliationParser(IStagingReconciliationClient reconcil
     {
         if (row.TryGetValue(ReconciliationFieldName.FileFolder, out var fileFolder))
         {
-            return fileFolder is not null && fileFolder == Vocabulary.Subset.Uri ?
+            return fileFolder is not null && fileFolder.ToString() == Vocabulary.Subset.Uri.ToString() ?
                 variationName?.Split('/').Last() : variationName;
         }
         return null;
@@ -73,11 +61,9 @@ internal class StagingReconciliationParser(IStagingReconciliationClient reconcil
 
     private static string? ToAccessConditon(string? accessConditionName) => accessConditionName?.Replace(' ', '_');
 
-    private static int? ToYearDuration(Dictionary<ReconciliationFieldName, object> row, string? duration) =>
+    private static int ToYearDuration(Dictionary<ReconciliationFieldName, object> row, TimeSpan? duration) =>
         row.TryGetValue(ReconciliationFieldName.SensitivityReviewEndYear, out var endYear) && endYear is not null ? (int)endYear :
-            duration is null ? null : XsdDurationYear(duration);
-
-    private static int XsdDurationYear(string duration) => (int)Math.Floor(System.Xml.XmlConvert.ToTimeSpan(duration).TotalDays / 365);
+            duration is null ? 0 : (int)Math.Floor(duration.Value.TotalDays / 365);
 
     private static string[] ToLegislationReferences(string? references) => string.IsNullOrWhiteSpace(references) ? ["open"] : references.Split(',', StringSplitOptions.RemoveEmptyEntries);
 

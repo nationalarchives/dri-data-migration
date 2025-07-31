@@ -1,25 +1,25 @@
 ﻿prefix ex: <http://example.com/schema/>
 
 select ?s ?t ?importLocation ?variationName ?accessConditionName ?retentionType
-	?sensitivityReviewDate ?sensitivityReviewSensitiveName ?isPublicName ?isPublicDescription
-	?sensitivityReviewSensitiveDescription ?sensitivityReviewRestrictionReviewDate
-	?sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionDuration
-	?sensitivityReviewRestrictionEndYear (group_concat(?lsr; separator=',') as ?legislationSectionReference)
+	?sensitivityReviewDate ?sensitivityReviewSensitiveName ?isPublicName
+	?sensitivityReviewRestrictionReviewDate ?sensitivityReviewRestrictionCalculationStartDate
+	?sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionEndYear
+	(group_concat(?lsr; separator=',') as ?legislationSectionReference)
 	?retentionRestrictionReviewDate ?retentionInstrumentNumber ?retentionInstrumentSignatureDate ?groundForRetentionCode
 where {
     bind(@id as ?id)
     ?subset ex:subsetHasBroaderSubset*/ex:subsetReference ?id.
-	bind(!bound(?sensitivityReviewSensitiveName) as ?isPublicName)
-	bind(!bound(?sensitivityReviewSensitiveDescription) as ?isPublicDescription)
-    filter(?t in (ex:Subset, ex:Variation))
+	filter(?t in (ex:Subset, ex:Variation))
 	optional { 
 		?sr ex:sensitivityReviewHasAccessCondition ?ac.
 		?ac ex:accessConditionName ?accessConditionName.
 		bind(?accessConditionName as ?retentionType)
 	}
 	optional { ?sr ex:sensitivityReviewDate ?sensitivityReviewDate }
-	optional { ?sr ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName }
-	optional { ?sr ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription }
+	optional {
+		?sr ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName.
+		bind(?sensitivityReviewSensitiveName as ?isPublicName)
+	}
 	optional {
 		?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
 		optional { ?restriction ex:sensitivityReviewRestrictionReviewDate ?sensitivityReviewRestrictionReviewDate }

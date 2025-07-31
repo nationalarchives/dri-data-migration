@@ -14,14 +14,26 @@ internal static class ReconciliationEqualityComparer
             {
                 continue;
             }
-            if (preservica[field] is not null && staging.TryGetValue(field, out var value))
+            if (preservica[field] is not null)
             {
-                if (preservica[field] is string[] preservicaArr && value is string[] stagingArr &&
-                    !preservicaArr.Except(stagingArr).Any() && !stagingArr.Except(preservicaArr).Any())
+                if (staging.TryGetValue(field, out var value) && value is not null)
                 {
-                    continue;
+                    if (preservica[field] is DateTimeOffset pDt && value is DateTimeOffset sDt &&
+                        pDt.Date == sDt.Date)
+                    {
+                        continue;
+                    }
+                    if (preservica[field] is string[] preservicaArr && value is string[] stagingArr &&
+                        !preservicaArr.Except(stagingArr).Any() && !stagingArr.Except(preservicaArr).Any())
+                    {
+                        continue;
+                    }
+                    if (preservica[field]!.Equals(value))
+                    {
+                        continue;
+                    }
                 }
-                if (preservica[field]!.Equals(value))
+                else if (preservica[field] is string preservicaTxt && string.IsNullOrWhiteSpace(preservicaTxt))
                 {
                     continue;
                 }

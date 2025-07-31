@@ -4,9 +4,9 @@ using System.Web;
 
 namespace Orchestration;
 
-internal partial class PreservicaExportParser(string fileLocation, Dictionary<string, ReconciliationRow> Map)
+internal static class PreservicaExportParser
 {
-    internal IEnumerable<Dictionary<ReconciliationFieldName, object>?> Parse()
+    internal static IEnumerable<Dictionary<ReconciliationFieldName, object>?> Parse(string fileLocation, Dictionary<string, ReconciliationRow> Map)
     {
         using (var csv = new Microsoft.VisualBasic.FileIO.TextFieldParser(fileLocation))
         {

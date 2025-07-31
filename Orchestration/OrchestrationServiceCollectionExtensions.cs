@@ -21,7 +21,6 @@ public static class OrchestrationServiceCollectionExtensions
 
     public static IServiceCollection AddReconciliation(this IServiceCollection services)
     {
-        services.AddSingleton<StagingReconciliationParser>();
         services.AddSingleton<IReconciliation, Reconciliation>();
 
         return services;
