@@ -126,43 +126,43 @@ public sealed class EtlTest
             [
                 ac.Logger,
                 new EtlAccessCondition(ac.Logger, ac.DriExport, ac.Ingest),
-                8,
+                9,
                 "access condition"
             ],
             [
                 leg.Logger,
                 new EtlLegislation(leg.Logger, leg.DriExport, leg.Ingest),
-                9,
+                10,
                 "legislation"
             ],
             [
                 gfr.Logger,
                 new EtlGroundForRetention(gfr.Logger, gfr.DriExport, gfr.Ingest),
-                10,
+                11,
                 "ground for retention"
             ],
             [
                 sub.Logger,
                 new EtlSubset(sub.Logger, sub.DriExport, sub.Ingest),
-                11,
+                13,
                 "subset"
             ],
             [
                 ass.Logger,
                 new EtlAsset(ass.Logger, ass.DriExport, ass.Ingest),
-                12,
+                14,
                 "asset"
             ],
             [
                 v.Logger,
                 new EtlVariation(v.Logger, v.DriExport, v.Ingest),
-                13,
+                15,
                 "variation"
             ],
             [
                 sr.Logger,
                 new EtlSensitivityReview(sr.Logger, sr.DriExport, sr.Ingest),
-                14,
+                16,
                 "sensitivity review"
             ]
         ];
