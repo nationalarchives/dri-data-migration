@@ -5,7 +5,7 @@ using System.CommandLine.Help;
 
 namespace Migration;
 
-public class ProgramCommandLineProvider(IEnumerable<string> args) : ConfigurationProvider
+public class ProgramCommandLineProvider : ConfigurationProvider
 {
     private static readonly Option<string> reference = new("--reference", "-ref")
     {
@@ -45,7 +45,7 @@ public class ProgramCommandLineProvider(IEnumerable<string> args) : Configuratio
         Arity = ArgumentArity.ExactlyOne,
         Required = true,
     };
-    private static readonly Option<string> fileLocation = new("--exported-file", "-ef")
+    private static readonly Option<FileInfo> fileLocation = new("--exported-file", "-ef")
     {
         Description = "Location of the exported file.",
         Arity = ArgumentArity.ExactlyOne,
@@ -57,6 +57,13 @@ public class ProgramCommandLineProvider(IEnumerable<string> args) : Configuratio
         Arity = ArgumentArity.ExactlyOne,
         Required = true,
     };
+    private readonly IEnumerable<string> args;
+
+    public ProgramCommandLineProvider(IEnumerable<string> args)
+    {
+        this.args = args;
+        fileLocation.AcceptExistingOnly();
+    }
 
     public override void Load()
     {
@@ -68,7 +75,7 @@ public class ProgramCommandLineProvider(IEnumerable<string> args) : Configuratio
 
     private static Command MigrationCommand()
     {
-        var command = new Command("migration", """
+        var command = new Command("migrate", """
             Performs data migration from a specified source supporting SPARQL 1.1 Protocol.
             Use '--sparql' and optionally '--sparql-update' to provide SPARQL endpoints.
             Data is partitioned by catalogue reference. Use '--reference' to provide the reference.
@@ -135,7 +142,7 @@ public class ProgramCommandLineProvider(IEnumerable<string> args) : Configuratio
 
     private static Command ReconciliationCommand()
     {
-        var command = new Command("reconciliation", """
+        var command = new Command("reconcile", """
             Performs reconciliation on migrated data in a staging triplestore against provided file.
             Use '--exported-file' to specify the location of the file exported from Preservica.
             Use '--file-type' to pick the type of the exported file ('Metadata' or 'Closure').
@@ -149,6 +156,7 @@ public class ProgramCommandLineProvider(IEnumerable<string> args) : Configuratio
         command.Add(fileLocation);
         command.Add(mapType);
         command.Add(sparql);
+        command.Add(pageSize);
 
         return command;
     }
@@ -173,9 +181,9 @@ public class ProgramCommandLineProvider(IEnumerable<string> args) : Configuratio
             {
                 data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.Code)}", code);
             }
-            if (parseResult.GetValue(fileLocation) is string info && File.Exists(info))
+            if (parseResult.GetValue(fileLocation) is FileInfo info)
             {
-                data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.FileLocation)}", info);
+                data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.FileLocation)}", info.FullName);
                 if (parseResult.GetValue(mapType) is MapType mapKind)
                 {
                     data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.MapKind)}", mapKind.ToString());
@@ -194,7 +202,7 @@ public class ProgramCommandLineProvider(IEnumerable<string> args) : Configuratio
             {
                 data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.SparqlConnectionString)}", uri.ToString());
             }
-            }
+        }
 
         return data;
     }
