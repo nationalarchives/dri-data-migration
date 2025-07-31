@@ -15,8 +15,6 @@ public enum ReconciliationFieldName
     SensitivityReviewRestrictionReviewDate,
     IsPublicName,
     SensitivityReviewSensitiveName,
-    IsPublicDescription,
-    SensitivityReviewSensitiveDescription,
     RetentionType,
     RetentionReviewDate,
     RetentionInstrumentNumber,

@@ -45,12 +45,10 @@ public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClien
         { "retentionType", new(ReconciliationFieldName.RetentionType, ToText) },
         { Vocabulary.SensitivityReviewDate.Uri.Segments.Last(), new(ReconciliationFieldName.SensitivityReviewDate, ToDateTime) },
         { Vocabulary.SensitivityReviewSensitiveName.Uri.Segments.Last(), new(ReconciliationFieldName.SensitivityReviewSensitiveName, ToText) },
-        { "isPublicName", new(ReconciliationFieldName.IsPublicName, ToBool) },
-        { "isPublicDescription", new(ReconciliationFieldName.IsPublicDescription, ToBool) },
-        { Vocabulary.SensitivityReviewSensitiveDescription.Uri.Segments.Last(), new(ReconciliationFieldName.SensitivityReviewSensitiveDescription, ToText) },
+        { "isPublicName", new(ReconciliationFieldName.IsPublicName, ToRequiredBool) },
         { Vocabulary.SensitivityReviewRestrictionReviewDate.Uri.Segments.Last(), new(ReconciliationFieldName.SensitivityReviewRestrictionReviewDate, ToDateTime) },
         { Vocabulary.SensitivityReviewRestrictionCalculationStartDate.Uri.Segments.Last(), new(ReconciliationFieldName.SensitivityReviewRestrictionCalculationStartDate, ToDateTime) },
-        { Vocabulary.SensitivityReviewRestrictionDuration.Uri.Segments.Last(), new(ReconciliationFieldName.SensitivityReviewDuration, ToText) },
+        { Vocabulary.SensitivityReviewRestrictionDuration.Uri.Segments.Last(), new(ReconciliationFieldName.SensitivityReviewDuration, ToTimeSpan) },
         { Vocabulary.SensitivityReviewRestrictionEndYear.Uri.Segments.Last(), new(ReconciliationFieldName.SensitivityReviewEndYear, ToInt) },
         { Vocabulary.LegislationSectionReference.Uri.Segments.Last(), new(ReconciliationFieldName.LegislationSectionReference, ToText) },
         { Vocabulary.RetentionRestrictionReviewDate.Uri.Segments.Last(), new(ReconciliationFieldName.RetentionReviewDate, ToDateTime) },
@@ -59,9 +57,10 @@ public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClien
         { Vocabulary.GroundForRetentionCode.Uri.Segments.Last(), new(ReconciliationFieldName.GroundForRetentionCode, ToText) }
     };
 
-    private static readonly Func<object?, object?> ToUri = result => result is Uri ? result as Uri : null;
-    private static readonly Func<object?, object?> ToText = result => result is string ? result as string : null;
-    private static readonly Func<object?, object?> ToDateTime = result => result is DateTimeOffset ? result as DateTimeOffset? : null;
-    private static readonly Func<object?, object?> ToInt = result => result is long ? (int?)(result as long?) : null;
-    private static readonly Func<object?, object?> ToBool = result => result is bool ? result as bool? : null;
+    private static readonly Func<object?, object?> ToUri = result => result is Uri uri ? uri : null;
+    private static readonly Func<object?, object?> ToText = result => result is string txt ? txt : null;
+    private static readonly Func<object?, object?> ToDateTime = result => result is DateTimeOffset dt ? dt : null;
+    private static readonly Func<object?, object?> ToTimeSpan = result => result is TimeSpan ts ? ts : null;
+    private static readonly Func<object?, object?> ToInt = result => result is long l ? (int)l : null;
+    private static readonly Func<object?, object?> ToRequiredBool = result => result is null;
 }

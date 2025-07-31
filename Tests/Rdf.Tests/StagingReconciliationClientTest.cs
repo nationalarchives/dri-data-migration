@@ -2,8 +2,10 @@ using Api;
 using FluentAssertions;
 using Moq;
 using System.Reflection;
+using System.Xml;
 using VDS.RDF;
 using VDS.RDF.Nodes;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
 namespace Rdf.Tests;
@@ -38,19 +40,16 @@ public class StagingReconciliationClientTest
     private static readonly Dictionary<ReconciliationFieldName, object> allFields = new()
     {
             { ReconciliationFieldName.Id, new Uri("http://example.com/s") },
-            { ReconciliationFieldName.FileFolder, new Uri("http://example.com/foleOrFolder") },
+            { ReconciliationFieldName.FileFolder, new Uri("http://example.com/fileOrFolder") },
             { ReconciliationFieldName.ImportLocation, "Directory" },
             { ReconciliationFieldName.VariationName, "Variation name" },
             { ReconciliationFieldName.AccessConditionName, "Access condition name" },
             { ReconciliationFieldName.RetentionType, "Access condition name" },
             { ReconciliationFieldName.SensitivityReviewDate, DateTimeOffset.UtcNow.AddDays(-1) },
             { ReconciliationFieldName.SensitivityReviewSensitiveName, "Sensitive name" },
-            { ReconciliationFieldName.IsPublicName, true },
-            { ReconciliationFieldName.IsPublicDescription, false },
-            { ReconciliationFieldName.SensitivityReviewSensitiveDescription, "Sensitive description" },
+            { ReconciliationFieldName.IsPublicName, false },
             { ReconciliationFieldName.SensitivityReviewRestrictionReviewDate, DateTimeOffset.UtcNow.AddDays(-2) },
             { ReconciliationFieldName.SensitivityReviewRestrictionCalculationStartDate, DateTimeOffset.UtcNow.AddDays(-3) },
-            { ReconciliationFieldName.SensitivityReviewDuration, "P1Y" },
             { ReconciliationFieldName.SensitivityReviewEndYear, 2020 },
             { ReconciliationFieldName.LegislationSectionReference, "Legislation section" },
             { ReconciliationFieldName.RetentionReviewDate, DateTimeOffset.UtcNow.AddDays(-4) },
@@ -61,34 +60,15 @@ public class StagingReconciliationClientTest
 
     private static readonly Dictionary<ReconciliationFieldName, object> minFields = new()
     {
-            { ReconciliationFieldName.Id, new Uri("http://example.com/s") },
-            { ReconciliationFieldName.FileFolder, new Uri("http://example.com/foleOrFolder") },
-            { ReconciliationFieldName.ImportLocation, "Directory" },
-            { ReconciliationFieldName.VariationName, null },
-            { ReconciliationFieldName.AccessConditionName, null },
-            { ReconciliationFieldName.RetentionType, null },
-            { ReconciliationFieldName.SensitivityReviewDate, null },
-            { ReconciliationFieldName.SensitivityReviewSensitiveName, null },
-            { ReconciliationFieldName.IsPublicName, null },
-            { ReconciliationFieldName.IsPublicDescription, null },
-            { ReconciliationFieldName.SensitivityReviewSensitiveDescription, null },
-            { ReconciliationFieldName.SensitivityReviewRestrictionReviewDate, null },
-            { ReconciliationFieldName.SensitivityReviewRestrictionCalculationStartDate, null },
-            { ReconciliationFieldName.SensitivityReviewDuration, null },
-            { ReconciliationFieldName.SensitivityReviewEndYear, null },
-            { ReconciliationFieldName.LegislationSectionReference, null },
-            { ReconciliationFieldName.RetentionReviewDate, null },
-            { ReconciliationFieldName.RetentionInstrumentNumber, null },
-            { ReconciliationFieldName.RetentionInstrumentSignatureDate, null },
-            { ReconciliationFieldName.GroundForRetentionCode, null }
-        };
-
-    private static readonly Dictionary<ReconciliationFieldName, object> minFieldsNoNulls =
-        minFields.Where(kv => kv.Value is not null).ToDictionary();
+        { ReconciliationFieldName.Id, new Uri("http://example.com/s") },
+        { ReconciliationFieldName.FileFolder, new Uri("http://example.com/fileOrFolder") },
+        { ReconciliationFieldName.ImportLocation, "Directory" },
+        { ReconciliationFieldName.IsPublicName, false }
+    };
 
     public static IEnumerable<object[]> ReadsData => [
         [ Build(allFields), allFields, "when all values are returned" ],
-        [ Build(minFields), minFieldsNoNulls, "when only required values are returned" ],
+        [ Build(minFields), minFields, "when only required values are returned" ],
     ];
 
     private static SparqlResultSet Build(Dictionary<ReconciliationFieldName, object> dir)
@@ -102,12 +82,10 @@ public class StagingReconciliationClientTest
             new("retentionType", dir.TryGetValue(ReconciliationFieldName.RetentionType, out var v3) && v3 is not null ? new LiteralNode(v3 as string) : null),
             new(Vocabulary.SensitivityReviewDate.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.SensitivityReviewDate, out var v4) && v4 is not null ? new DateNode((DateTimeOffset)v4) : null),
             new(Vocabulary.SensitivityReviewSensitiveName.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.SensitivityReviewSensitiveName, out var v5) && v5 is not null ? new LiteralNode(v5 as string) : null),
-            new("isPublicName", dir.TryGetValue(ReconciliationFieldName.IsPublicName, out var v6) && v6 is not null ? new BooleanNode((bool)v6) : null),
-            new("isPublicDescription", dir.TryGetValue(ReconciliationFieldName.IsPublicDescription, out var v7) && v7 is not null ? new BooleanNode((bool)v7) : null),
-            new(Vocabulary.SensitivityReviewSensitiveDescription.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.SensitivityReviewSensitiveDescription, out var v8) && v8 is not null ? new LiteralNode(v8 as string) : null),
+            new("isPublicName", dir.TryGetValue(ReconciliationFieldName.IsPublicName, out var v6) && v6 is not null && v6 is bool b ? new BooleanNode(b) : new BooleanNode(true)),
             new(Vocabulary.SensitivityReviewRestrictionReviewDate.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.SensitivityReviewRestrictionReviewDate, out var v9) && v9 is not null ? new DateNode((DateTimeOffset)v9) : null),
             new(Vocabulary.SensitivityReviewRestrictionCalculationStartDate.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.SensitivityReviewRestrictionCalculationStartDate, out var v10) && v10 is not null ? new DateNode((DateTimeOffset)v10) : null),
-            new(Vocabulary.SensitivityReviewRestrictionDuration.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.SensitivityReviewDuration, out var v11) && v11 is not null ? new LiteralNode(v11 as string) : null),
+            new(Vocabulary.SensitivityReviewRestrictionDuration.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.SensitivityReviewDuration, out var v11) && v11 is not null && v11 is TimeSpan ts? new LiteralNode((ts.TotalDays/365).ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDuration)) : null),
             new(Vocabulary.SensitivityReviewRestrictionEndYear.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.SensitivityReviewEndYear, out var v12) && v12 is not null ? new LongNode((int)v12) : null),
             new(Vocabulary.LegislationSectionReference.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.LegislationSectionReference, out var v13) && v13 is not null ? new LiteralNode(v13 as string) : null),
             new(Vocabulary.RetentionRestrictionReviewDate.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.RetentionReviewDate, out var v14) && v14 is not null ? new DateNode((DateTimeOffset)v14) : null),
