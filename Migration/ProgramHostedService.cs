@@ -21,10 +21,6 @@ public class ProgramHostedService(IOptions<StagingSettings> stagingSettings,
             {
                 await reconciliation.ReconcileAsync(cancellationToken);
             }
-            else
-            {
-                ProgramCommandLineProvider.PrintHelp();
-            }
         }
         applicationLifetime.StopApplication();
     }

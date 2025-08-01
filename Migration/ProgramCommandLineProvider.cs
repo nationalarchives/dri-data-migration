@@ -1,7 +1,7 @@
 ﻿using Api;
 using Microsoft.Extensions.Configuration;
 using System.CommandLine;
-using System.CommandLine.Help;
+using System.CommandLine.Invocation;
 
 namespace Migration;
 
@@ -11,58 +11,96 @@ public class ProgramCommandLineProvider : ConfigurationProvider
     {
         Description = "Catalogue reference",
         Arity = ArgumentArity.ExactlyOne,
-        Required = true,
+        Required = true
     };
     private static readonly Option<string> driSparql = new("--dri-sparql", "-ds")
     {
         Description = "DRI query SPARQL endpoint",
         Arity = ArgumentArity.ExactlyOne,
-        Required = true,
+        Required = true
     };
     private static readonly Option<string> sparql = new("--sparql", "-sq")
     {
-        Description = "Query SPARQL endpoint",
+        Description = "Staging query SPARQL endpoint",
         Arity = ArgumentArity.ExactlyOne,
-        Required = true,
+        Required = true
     };
     private static readonly Option<string> sparqlUpdate = new("--sparql-update", "-su")
     {
-        Description = "Update SPARQL endpoint. By default appends 'statements' path segment to the read only SAPRQL endpoint.",
-        DefaultValueFactory = a => new Uri(new Uri(a.GetRequiredValue(sparql)), "statements").ToString(),
-        Arity = ArgumentArity.ExactlyOne,
-        Required = false,
+        Description = "Staging update SPARQL endpoint. By default appends 'statements' path segment to the read only SAPRQL endpoint.",
+        DefaultValueFactory = a => a.Tokens.Any() ? new Uri(new Uri(a.GetRequiredValue<string>(sparql)), "statements").ToString() : string.Empty,
+        Arity = ArgumentArity.ZeroOrOne,
+        Required = false
     };
     private static readonly Option<int> pageSize = new("--page-size", "-ps")
     {
-        Description = "Allows to provide the page size for queries that needs paging.",
+        Description = "Allows to provide the page size for queries that needs paging. Defaults to 500.",
         DefaultValueFactory = _ => 500,
-        Arity = ArgumentArity.ExactlyOne,
-        Required = false,
+        Arity = ArgumentArity.ZeroOrOne,
+        Required = false
     };
     private static readonly Option<string> filePrefix = new("--prefix", "-px")
     {
-        Description = "Starting part of of the identifier in the file. This value will be used to replace catalogue reference in the staging data with the reference to match records.",
+        Description = "Starting part of of the identifier in the exported file. This value will be used to replace catalogue reference in the staging data with the reference to match records.",
         Arity = ArgumentArity.ExactlyOne,
-        Required = true,
+        Required = true
     };
     private static readonly Option<FileInfo> fileLocation = new("--exported-file", "-ef")
     {
         Description = "Location of the exported file.",
         Arity = ArgumentArity.ExactlyOne,
-        Required = true,
+        Required = true
     };
     private static readonly Option<MapType> mapType = new("--file-type", "-ft")
     {
         Description = "Type of the exported file. Acceptable values: 'Metadata' or 'Closure'.",
         Arity = ArgumentArity.ExactlyOne,
-        Required = true,
+        Required = true
     };
+
     private readonly IEnumerable<string> args;
+    private readonly Command MigrateCommand;
+    private readonly Command ReconcileCommand;
 
     public ProgramCommandLineProvider(IEnumerable<string> args)
     {
         this.args = args;
         fileLocation.AcceptExistingOnly();
+
+        MigrateCommand = new Command("migrate", """
+            Performs data migration from a specified source supporting SPARQL 1.1 Protocol.
+            Data is partitioned by catalogue reference. Use '--reference' to provide the reference.
+            Use '--dri-sparql' to provide SPARQL endpoints to the DRI triplestore.
+            Use '--sparql' and optionally '--sparql-update' to provide SPARQL endpoints to the staging triplestore.
+            Use '--page-size' if you want to specify the numer of records fetched in a single request when the query batches results. Defaults to 500.
+
+            """)
+        {
+            reference,
+            driSparql,
+            sparql,
+            sparqlUpdate,
+            pageSize
+        };
+
+        ReconcileCommand = new Command("reconcile", """
+            Performs reconciliation on migrated data in a staging triplestore against provided file.
+            Data is partitioned by catalogue reference. Use '--reference' to provide the reference.
+            Use '--prefix' to set the prefix of the identifier in the exported file (eg. 'file:/<REFERENCE>/content').
+            Use '--exported-file' to specify the location of the file exported from Preservica.
+            Use '--file-type' to pick the type of the exported file ('Metadata' or 'Closure').
+            Use '--sparql' and optionally '--sparql-update' to provide SPARQL endpoints to the staging triplestore.
+            Use '--page-size' if you want to specify the numer of records fetched in a single request when the query batches results. Defaults to 500.
+
+            """)
+        {
+            reference,
+            filePrefix,
+            fileLocation,
+            mapType,
+            sparql,
+            pageSize
+        };
     }
 
     public override void Load()
@@ -71,37 +109,23 @@ public class ProgramCommandLineProvider : ConfigurationProvider
         var reconciliationParse = ParseReconciliationCommand();
 
         Data = migrationParse.Count != 0 ? migrationParse : reconciliationParse;
-    }
-
-    private static Command MigrationCommand()
-    {
-        var command = new Command("migrate", """
-            Performs data migration from a specified source supporting SPARQL 1.1 Protocol.
-            Use '--sparql' and optionally '--sparql-update' to provide SPARQL endpoints.
-            Data is partitioned by catalogue reference. Use '--reference' to provide the reference.
-            """);
-
-        command.Add(reference);
-        command.Add(driSparql);
-        command.Add(sparql);
-        command.Add(sparqlUpdate);
-        command.Add(pageSize);
-
-        return command;
+        if (!Data.Any())
+        {
+            PrintHelp();
+        }
     }
 
     private Dictionary<string, string?> ParseMigrationCommand()
     {
         var data = new Dictionary<string, string?>();
-        var command = MigrationCommand();
-        ParseResult parseResult;
+        ParseResult? parseResult = null;
         try
         {
-            parseResult = command.Parse(args.ToArray());
+            parseResult = MigrateCommand.Parse(args.ToArray());
         }
         catch
         {
-            return data; //TODO
+            return [];
         }
 
         if (parseResult.Errors.Count == 0 && parseResult.UnmatchedTokens.Count == 0)
@@ -140,39 +164,17 @@ public class ProgramCommandLineProvider : ConfigurationProvider
         return data;
     }
 
-    private static Command ReconciliationCommand()
-    {
-        var command = new Command("reconcile", """
-            Performs reconciliation on migrated data in a staging triplestore against provided file.
-            Use '--exported-file' to specify the location of the file exported from Preservica.
-            Use '--file-type' to pick the type of the exported file ('Metadata' or 'Closure').
-            Use '--prefix' to set the prefix of the identifier in the exported file (eg. 'file:/<REFERENCE>/content').
-            Use '--sparql' to provide SPARQL endpoints.
-            Use '--reference' to provide the catalogue reference to scope reconciliation process.
-            """);
-
-        command.Add(reference);
-        command.Add(filePrefix);
-        command.Add(fileLocation);
-        command.Add(mapType);
-        command.Add(sparql);
-        command.Add(pageSize);
-
-        return command;
-    }
-
     private Dictionary<string, string?> ParseReconciliationCommand()
     {
         var data = new Dictionary<string, string?>();
-        var command = ReconciliationCommand();
-        ParseResult parseResult;
+        ParseResult? parseResult = null;
         try
         {
-            parseResult = command.Parse(args.ToArray());
+            parseResult = ReconcileCommand.Parse(args.ToArray());
         }
-        catch (Exception ex)
+        catch
         {
-            return data; //TODO
+            return [];
         }
 
         if (parseResult.Errors.Count == 0 && parseResult.UnmatchedTokens.Count == 0)
@@ -207,13 +209,15 @@ public class ProgramCommandLineProvider : ConfigurationProvider
         return data;
     }
 
-    public static void PrintHelp()
+    private void PrintHelp()
     {
-        var root = new RootCommand();
-        root.Add(MigrationCommand());
-        root.Add(ReconciliationCommand());
-
-        var result = root.Parse([]);
-        new HelpAction().Invoke(result);
+        var root = new RootCommand
+        {
+            MigrateCommand,
+            ReconcileCommand
+        };
+        root.Parse(args.ToArray()).Invoke();
+        MigrateCommand.Parse("-h").Invoke();
+        ReconcileCommand.Parse("-h").Invoke();
     }
 }
