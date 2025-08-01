@@ -7,13 +7,16 @@ internal static class StagingReconciliationParser
     private const string folder = "folder";
     private const string file = "file";
 
-    internal static async Task<IEnumerable<Dictionary<ReconciliationFieldName, object>>> ParseAsync(
-        IEnumerable<Dictionary<ReconciliationFieldName, object>> page, string code, string prefix,
-        CancellationToken cancellationToken) =>
+    internal static IEnumerable<Dictionary<ReconciliationFieldName, object>> Parse(
+        IEnumerable<Dictionary<ReconciliationFieldName, object>> page, string code, string prefix) =>
         page.Select(r => Adjust(r, code, prefix));
 
     private static Dictionary<ReconciliationFieldName, object> Adjust(Dictionary<ReconciliationFieldName, object> row, string code, string filePrefix) =>
-        row.Select(cell =>
+        row.Select(cell => Match(cell, row, code, filePrefix)).Where(kv => kv.Value is not null)
+            .ToDictionary(kv => kv.Key, kv => kv.Value!);
+
+    private static KeyValuePair<ReconciliationFieldName, object?> Match(KeyValuePair<ReconciliationFieldName, object> cell,
+        Dictionary<ReconciliationFieldName, object> row, string code, string filePrefix) =>
             cell.Key switch
             {
                 ReconciliationFieldName.FileFolder => new(cell.Key, ToFileFolder(cell.Value as Uri)),
@@ -24,10 +27,8 @@ internal static class StagingReconciliationParser
                 ReconciliationFieldName.LegislationSectionReference => new(cell.Key, ToLegislationReferences(cell.Value as string)),
                 ReconciliationFieldName.SensitivityReviewEndYear => new(cell.Key, null),
                 ReconciliationFieldName.RetentionType => new(cell.Key, ToRetentionType(cell.Value as string)),
-                _ => cell
-            })
-            .Where(kv => kv.Value is not null)
-            .ToDictionary();
+                _ => new KeyValuePair<ReconciliationFieldName, object?>(cell.Key, cell.Value),
+            };
 
     private static string? ToFileFolder(Uri? subject) =>
         subject == Vocabulary.Subset.Uri ? folder :

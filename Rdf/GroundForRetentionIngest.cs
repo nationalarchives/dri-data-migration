@@ -11,7 +11,7 @@ namespace Rdf;
 public class GroundForRetentionIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<GroundForRetentionIngest> logger)
     : BaseStagingIngest<DriGroundForRetention>(cache, sparqlClient, logger, "GroundForRetentionGraph")
 {
-    internal override async Task<Graph> BuildAsync(IGraph existing, DriGroundForRetention dri, CancellationToken cancellationToken)
+    internal override Task<Graph?> BuildAsync(IGraph existing, DriGroundForRetention dri, CancellationToken cancellationToken)
     {
         logger.BuildingRecord(dri.Id);
         var code = new LiteralNode(dri.Code);
@@ -22,7 +22,7 @@ public class GroundForRetentionIngest(IMemoryCache cache, ISparqlClient sparqlCl
         graph.Assert(id, Vocabulary.GroundForRetentionDescription, new LiteralNode(dri.Description));
         logger.RecordBuilt(dri.Id);
 
-        return graph;
+        return Task.FromResult((Graph?)graph);
     }
 
 }

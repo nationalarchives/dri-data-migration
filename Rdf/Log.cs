@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using System;
 
 namespace Rdf;
 
@@ -36,4 +37,43 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 11, Level = LogLevel.Trace, Message = "Record {id} updated")]
     internal static partial void RecordUpdated(this ILogger logger, string id);
+
+    [LoggerMessage(EventId = 12, Level = LogLevel.Warning, Message = "Record {id} not ingested because graph couldn't be counstructed")]
+    internal static partial void RecordNotIngestedNoGraph(this ILogger logger, string id);
+
+    [LoggerMessage(EventId = 13, Level = LogLevel.Warning, Message = "Subset {subset} not found")]
+    internal static partial void SubsetNotFound(this ILogger logger, string subset);
+
+    [LoggerMessage(EventId = 14, Level = LogLevel.Warning, Message = "Asset {asset} not found")]
+    internal static partial void AssetNotFound(this ILogger logger, string asset);
+
+    [LoggerMessage(EventId = 15, Level = LogLevel.Error, Message = "Access conditions not found")]
+    internal static partial void MissingAccessConditions(this ILogger logger);
+
+    [LoggerMessage(EventId = 16, Level = LogLevel.Error, Message = "Legislations not found")]
+    internal static partial void MissingLegislations(this ILogger logger);
+
+    [LoggerMessage(EventId = 17, Level = LogLevel.Error, Message = "Grounds for rejection not found")]
+    internal static partial void MissingGroundsForRejection(this ILogger logger);
+
+    [LoggerMessage(EventId = 18, Level = LogLevel.Warning, Message = "Unable to parse access condition code from {accessCondition}")]
+    internal static partial void UnableParseAccessConditionUri(this ILogger logger, Uri accessCondition);
+
+    [LoggerMessage(EventId = 19, Level = LogLevel.Warning, Message = "Access condition {code} not found")]
+    internal static partial void AccessConditionNotFound(this ILogger logger, string code);
+
+    [LoggerMessage(EventId = 20, Level = LogLevel.Warning, Message = "Asset {asset} not found")]
+    internal static partial void VariationNotFound(this ILogger logger, string asset);
+
+    [LoggerMessage(EventId = 21, Level = LogLevel.Warning, Message = "Unable to parse ground for retention code from {groundForRetention}")]
+    internal static partial void UnableParseGroundForRetentionUri(this ILogger logger, Uri groundForRetention);
+
+    [LoggerMessage(EventId = 22, Level = LogLevel.Warning, Message = "Ground for retention {code} not found")]
+    internal static partial void GroundForRetentionNotFound(this ILogger logger, string code);
+
+    [LoggerMessage(EventId = 23, Level = LogLevel.Warning, Message = "Retention for {code} not found")]
+    internal static partial void RetentionNotFound(this ILogger logger, Uri code);
+
+    [LoggerMessage(EventId = 24, Level = LogLevel.Warning, Message = "Unrecognized cache entity type")]
+    internal static partial void InvalidCacheEntityKind(this ILogger logger);
 }

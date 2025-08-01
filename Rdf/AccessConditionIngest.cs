@@ -11,7 +11,7 @@ namespace Rdf;
 public class AccessConditionIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<AccessConditionIngest> logger)
     : BaseStagingIngest<DriAccessCondition>(cache, sparqlClient, logger, "AccessConditionGraph")
 {
-    internal override async Task<Graph> BuildAsync(IGraph existing, DriAccessCondition dri, CancellationToken cancellationToken)
+    internal override Task<Graph?> BuildAsync(IGraph existing, DriAccessCondition dri, CancellationToken cancellationToken)
     {
         logger.BuildingRecord(dri.Id);
         var code = new LiteralNode(GetUriFragment(dri.Link));
@@ -22,6 +22,6 @@ public class AccessConditionIngest(IMemoryCache cache, ISparqlClient sparqlClien
         graph.Assert(id, Vocabulary.AccessConditionName, new LiteralNode(dri.Name));
         logger.RecordBuilt(dri.Id);
 
-        return graph;
+        return Task.FromResult((Graph?)graph);
     }
 }

@@ -19,28 +19,65 @@ public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlCli
     private Dictionary<string, IUriNode>? legislations = null;
     private Dictionary<string, IUriNode>? grounds = null;
 
-    internal override async Task<Graph> BuildAsync(IGraph existing, DriSensitivityReview dri, CancellationToken cancellationToken)
+    internal override async Task<Graph?> BuildAsync(IGraph existing, DriSensitivityReview dri, CancellationToken cancellationToken)
     {
         logger.BuildingRecord(dri.Id);
-        accessConditions ??= await sparqlClient.GetDictionaryAsync(embedded.GetSparql("GetAccessConditions"), cancellationToken);
-        legislations ??= await sparqlClient.GetDictionaryAsync(embedded.GetSparql("GetLegislations"), cancellationToken);
-        grounds ??= await sparqlClient.GetDictionaryAsync(embedded.GetSparql("GetGroundsForRetention"), cancellationToken);
+        await PreloadAsync(cancellationToken);
 
         var id = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewDriId).FirstOrDefault()?.Subject ?? NewId;
         var restriction = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewHasSensitivityReviewRestriction).FirstOrDefault()?.Object ?? NewId;
         var retentionRestriction = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewRestrictionHasRetentionRestriction).FirstOrDefault()?.Object ?? NewId;
 
         var graph = new Graph();
-        await AddSensitivityReview(graph, id, dri, cancellationToken);
+        
+        var proceed = await AddSensitivityReview(graph, id, dri, cancellationToken);
+        if (!proceed)
+        {
+            return null;
+        }
+
         AddRestriction(graph, id, restriction, dri);
-        await AddTargetAssociation(graph, id, dri, cancellationToken);
-        await AddRetentionRestriction(graph, id, restriction, retentionRestriction, dri, cancellationToken);
+
+        proceed = await AddTargetAssociation(graph, id, dri, cancellationToken);
+        if (!proceed)
+        {
+            return null;
+        }
+
+        proceed = await AddRetentionRestriction(graph, id, restriction, retentionRestriction, dri, cancellationToken);
+        if (!proceed)
+        {
+            return null;
+        }
         logger.RecordBuilt(dri.Id);
 
         return graph;
     }
 
-    private async Task AddSensitivityReview(IGraph graph, INode id, DriSensitivityReview dri, CancellationToken cancellationToken)
+    private async Task PreloadAsync(CancellationToken cancellationToken)
+    {
+        accessConditions ??= await sparqlClient.GetDictionaryAsync(embedded.GetSparql("GetAccessConditions"), cancellationToken);
+        legislations ??= await sparqlClient.GetDictionaryAsync(embedded.GetSparql("GetLegislations"), cancellationToken);
+        grounds ??= await sparqlClient.GetDictionaryAsync(embedded.GetSparql("GetGroundsForRetention"), cancellationToken);
+
+        if (accessConditions is null || !accessConditions.Any())
+        {
+            logger.MissingAccessConditions();
+            throw new MigrationException();
+        }
+        if (legislations is null || !legislations.Any())
+        {
+            logger.MissingLegislations();
+            throw new MigrationException();
+        }
+        if (grounds is null || !grounds.Any())
+        {
+            logger.MissingLegislations();
+            throw new MigrationException();
+        }
+    }
+
+    private async Task<bool> AddSensitivityReview(IGraph graph, INode id, DriSensitivityReview dri, CancellationToken cancellationToken)
     {
         graph.Assert(id, Vocabulary.SensitivityReviewDriId, new LiteralNode(dri.Id));
         if (dri.Date.HasValue)
@@ -55,15 +92,28 @@ public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlCli
         {
             graph.Assert(id, Vocabulary.SensitivityReviewSensitiveDescription, new LiteralNode(dri.SensitiveDescription));
         }
-        //TODO: handle null
-        graph.Assert(id, Vocabulary.SensitivityReviewHasAccessCondition, accessConditions![GetUriFragment(dri.AccessCondition)]);
-        
+
+        var acCode = GetUriFragment(dri.AccessCondition);
+        if (acCode is null)
+        {
+            logger.UnableParseAccessConditionUri(dri.AccessCondition);
+            return false;
+        }
+        if (!accessConditions!.TryGetValue(acCode, out var ac))
+        {
+            logger.AccessConditionNotFound(acCode);
+            return false;
+        }
+        graph.Assert(id, Vocabulary.SensitivityReviewHasAccessCondition, ac);
+
         if (dri.PreviousId is not null)
         {
             var past = await CacheFetchOrNew(CacheEntityKind.SensititvityReview, dri.PreviousId.ToString(), cancellationToken);
             graph.Assert(id, Vocabulary.SensitivityReviewHasPastSensitivityReview, past);
             graph.Assert(past, Vocabulary.SensitivityReviewDriId, new LiteralNode(dri.PreviousId.ToString()));
         }
+
+        return true;
     }
 
     private void AddRestriction(IGraph graph, INode id, INode restriction, DriSensitivityReview dri)
@@ -105,7 +155,7 @@ public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlCli
         }
     }
 
-    private async Task AddTargetAssociation(IGraph graph, INode id, DriSensitivityReview dri, CancellationToken cancellationToken)
+    private async Task<bool> AddTargetAssociation(IGraph graph, INode id, DriSensitivityReview dri, CancellationToken cancellationToken)
     {
         if (dri.TargetType.Fragment == "#DeliverableUnit")
         {
@@ -117,19 +167,29 @@ public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlCli
             else
             {
                 var subset = await CacheFetch(CacheEntityKind.Subset, dri.TargetReference, cancellationToken);
-                //TODO: handle null
+                if (subset is null)
+                {
+                    logger.SubsetNotFound(dri.TargetReference);
+                    return false;
+                }
                 graph.Assert(id, Vocabulary.SensitivityReviewHasSubset, subset);
             }
         }
         else
         {
             var variation = await CacheFetch(CacheEntityKind.Variation, dri.TargetId.ToString(), cancellationToken);
-            //TODO: handle null
+            if (variation is null)
+            {
+                logger.VariationNotFound(dri.TargetId.ToString());
+                return false;
+            }
             graph.Assert(id, Vocabulary.SensitivityReviewHasVariation, variation);
         }
+
+        return true;
     }
 
-    private async Task AddRetentionRestriction(IGraph graph, INode id, INode restriction, INode retentionRestriction,
+    private async Task<bool> AddRetentionRestriction(IGraph graph, INode id, INode restriction, INode retentionRestriction,
         DriSensitivityReview dri, CancellationToken cancellationToken)
     {
         var existing = graph.Triples.Count;
@@ -148,8 +208,18 @@ public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlCli
         }
         if (dri.GroundForRetention is not null)
         {
-            //TODO: handle null
-            graph.Assert(retentionRestriction, Vocabulary.RetentionRestrictionHasGroundForRetention, grounds[GetUriFragment(dri.GroundForRetention)]);
+            var gCode = GetUriFragment(dri.GroundForRetention);
+            if (gCode is null)
+            {
+                logger.UnableParseGroundForRetentionUri(dri.GroundForRetention);
+                return false;
+            }
+            if (!grounds!.TryGetValue(gCode, out var ground))
+            {
+                logger.GroundForRetentionNotFound(gCode);
+                return false;
+            }
+            graph.Assert(retentionRestriction, Vocabulary.RetentionRestrictionHasGroundForRetention, ground);
         }
 
         if (existing < graph.Triples.Count)
@@ -160,7 +230,11 @@ public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlCli
             if (asset is not null)
             {
                 var retention = await CacheFetch(CacheEntityKind.Retention, asset.Uri.ToString(), cancellationToken);
-                //TODO: handle null
+                if (retention is null)
+                {
+                    logger.RetentionNotFound(asset.Uri);
+                    return false;
+                }
                 graph.Assert(retentionRestriction, Vocabulary.RetentionRestrictionHasRetention, retention);
                 graph.Assert(asset, Vocabulary.AssetHasRetention, retention);
             }
@@ -168,10 +242,15 @@ public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlCli
             if (subset is not null)
             {
                 var retention = await CacheFetch(CacheEntityKind.Retention, subset.Uri.ToString(), cancellationToken);
-                //TODO: handle null
+                if (retention is null)
+                {
+                    logger.RetentionNotFound(subset.Uri);
+                    return false;
+                }
                 graph.Assert(retentionRestriction, Vocabulary.RetentionRestrictionHasRetention, retention);
                 graph.Assert(subset, Vocabulary.SubsetHasRetention, retention);
             }
         }
+        return true;
     }
 }

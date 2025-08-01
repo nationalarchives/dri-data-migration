@@ -90,4 +90,7 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 28, Level = LogLevel.Information, Message = "Fetching data from source reconciliation file {file}")]
     internal static partial void GetReconciliationFile(this ILogger logger, string file);
+
+    [LoggerMessage(EventId = 29, Level = LogLevel.Error, Message = "Unrecognized map type")]
+    internal static partial void InvalidMapType(this ILogger logger);
 }

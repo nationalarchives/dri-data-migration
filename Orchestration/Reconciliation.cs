@@ -7,15 +7,12 @@ namespace Orchestration;
 public class Reconciliation(ILogger<Reconciliation> logger, IOptions<ReconciliationSettings> reconciliationSettings,
     IStagingReconciliationClient client) : IReconciliation
 {
+    private const string missing = "MISSING IMPORT LOCATION";
+
     public async Task ReconcileAsync(CancellationToken cancellationToken)
     {//TODO: use sensitive name in logs
         logger.ReconciliationStarted(reconciliationSettings.Value.MapKind);
-
-        var map = PreservicaExportMap.GetMap(reconciliationSettings.Value.MapKind);
-        //TODO: handle null
-        logger.GetReconciliationFile(reconciliationSettings.Value.FileLocation);
-        var preservica = PreservicaExportParser.Parse(reconciliationSettings.Value.FileLocation, map).ToList();
-        //TODO: handle null
+        var preservica = GetPreservicaData().ToList();
 
         ReconciliationSummary summary = new(0, 0, 0, 0, 0);
         IEnumerable<Dictionary<ReconciliationFieldName, object>> page;
@@ -27,8 +24,8 @@ public class Reconciliation(ILogger<Reconciliation> logger, IOptions<Reconciliat
                 reconciliationSettings.Value.FetchPageSize, offset, cancellationToken);
             offset += reconciliationSettings.Value.FetchPageSize;
 
-            var adjustedStaging = (await StagingReconciliationParser.ParseAsync(page, reconciliationSettings.Value.Code,
-                reconciliationSettings.Value.FilePrefix, cancellationToken)).ToList();
+            var adjustedStaging = StagingReconciliationParser.Parse(page, reconciliationSettings.Value.Code,
+                reconciliationSettings.Value.FilePrefix).ToList();
             var pageSummary = CheckRecords(preservica, adjustedStaging);
             summary.Update(pageSummary);
         }
@@ -46,6 +43,20 @@ public class Reconciliation(ILogger<Reconciliation> logger, IOptions<Reconciliat
         logger.ReconciliationFinished(reconciliationSettings.Value.MapKind);
     }
 
+    private IEnumerable<Dictionary<ReconciliationFieldName, object>> GetPreservicaData()
+    {
+        var map = PreservicaExportMap.GetMap(reconciliationSettings.Value.MapKind);
+        if (map is null)
+        {
+            logger.InvalidMapType();
+            throw new MigrationException();
+        }
+        logger.GetReconciliationFile(reconciliationSettings.Value.FileLocation);
+        var preservica = PreservicaExportParser.Parse(reconciliationSettings.Value.FileLocation, map);
+
+        return preservica.Where(p => p != null).Select(p => p!);
+    }
+
     private ReconciliationSummary CheckRecords(List<Dictionary<ReconciliationFieldName, object>> preservica,
         List<Dictionary<ReconciliationFieldName, object>> staging)
     {
@@ -59,26 +70,25 @@ public class Reconciliation(ILogger<Reconciliation> logger, IOptions<Reconciliat
 
             if (preservicaRow is null)
             {
-                if (stagingIdentifier.EndsWith('/'))
+                if (stagingIdentifier?.EndsWith('/') == true)
                 {
                     logger.ReconciliationFolderAdditional(stagingIdentifier);
                     additionalFolderCount++;
                 }
                 else
                 {
-                    logger.ReconciliationFileAdditional(stagingIdentifier);
+                    logger.ReconciliationFileAdditional(stagingIdentifier ?? missing);
                     additionalFilesCount++;
                 }
                 continue;
             }
 
             var identifier = preservicaRow[ReconciliationFieldName.ImportLocation] as string;
-            //TODO: handle null and not existing
 
             var diffs = ReconciliationEqualityComparer.Check(preservicaRow!, stagingRow!);
             if (diffs.Any())
             {
-                logger.ReconciliationDiff(identifier, diffs);
+                logger.ReconciliationDiff(identifier ?? missing, diffs);
                 diffCount++;
             }
             preservica.Remove(preservicaRow);
@@ -95,16 +105,15 @@ public class Reconciliation(ILogger<Reconciliation> logger, IOptions<Reconciliat
         foreach (var item in preservica)
         {
             var identifier = item[ReconciliationFieldName.ImportLocation] as string;
-            //TODO: handle null and not existing
 
-            if (identifier.EndsWith('/'))
+            if (identifier?.EndsWith('/') == true)
             {
                 logger.ReconciliationFolderNotFound(identifier);
                 missingFolderCount++;
             }
             else
             {
-                logger.ReconciliationFileNotFound(identifier);
+                logger.ReconciliationFileNotFound(identifier ?? missing);
                 missingFilesCount++;
             }
         }
@@ -112,7 +121,7 @@ public class Reconciliation(ILogger<Reconciliation> logger, IOptions<Reconciliat
         return new ReconciliationSummary(0, 0, missingFilesCount, missingFolderCount, 0);
     }
 
-    private class ReconciliationSummary
+    private sealed class ReconciliationSummary
     {
         public int AdditionalFilesCount { get; set; }
         public int AdditionalFolderCount { get; set; }

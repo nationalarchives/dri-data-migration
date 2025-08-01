@@ -11,7 +11,7 @@ namespace Rdf;
 public class LegislationIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<LegislationIngest> logger)
     : BaseStagingIngest<DriLegislation>(cache, sparqlClient, logger, "LegislationGraph")
 {
-    internal override async Task<Graph> BuildAsync(IGraph existing, DriLegislation dri, CancellationToken cancellationToken)
+    internal override Task<Graph?> BuildAsync(IGraph existing, DriLegislation dri, CancellationToken cancellationToken)
     {
         logger.BuildingRecord(dri.Id);
         var legislation = new UriNode(dri.Link);
@@ -25,7 +25,7 @@ public class LegislationIngest(IMemoryCache cache, ISparqlClient sparqlClient, I
         }
         logger.RecordBuilt(dri.Id);
 
-        return graph;
+        return Task.FromResult((Graph?)graph);
     }
 
 }

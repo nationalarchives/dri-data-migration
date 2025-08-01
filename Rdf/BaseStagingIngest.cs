@@ -42,7 +42,7 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
         retentionSparql = embedded.GetSparql("GetRetention");
     }
 
-    internal virtual Task<Graph> BuildAsync(IGraph existing, T dri, CancellationToken cancellationToken)
+    internal virtual Task<Graph?> BuildAsync(IGraph existing, T dri, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
@@ -54,6 +54,11 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
         {
             var existing = await sparqlClient.GetGraphAsync(graphSparql, new Dictionary<string, object> { { "id", dri.Id } }, cancellationToken);
             var proposed = await BuildAsync(existing, dri, cancellationToken);
+            if (proposed is null)
+            {
+                logger.RecordNotIngestedNoGraph(dri.Id);
+                continue;
+            }
             var diff = existing.Difference(proposed);
             if (!diff.AddedTriples.Any() && !diff.RemovedTriples.Any())
             {
@@ -74,13 +79,18 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
         CacheEntityKind.Subset => new(subsetSparql, $"subset-{key}"),
         CacheEntityKind.Variation => new(variationSparql, $"variation-{key}"),
         CacheEntityKind.Retention => new(retentionSparql, $"retention-{key}"),
-        _ => null //TODO: handle null
+        _ => null
     };
 
     internal async Task<IUriNode?> CacheFetch(CacheEntityKind kind, string key, CancellationToken cancellationToken)
     {
         var info = ToCacheFetchInfo(kind, key);
-        //TODO: handle null
+        if (info is null)
+        {
+            logger.InvalidCacheEntityKind();
+            return null;
+        }
+
         var item = (IUriNode?)cache.Get(info.Key) ?? await sparqlClient.GetSubjectAsync(info.Sparql, key, cancellationToken);
 
         if (item is null)
@@ -97,12 +107,18 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
     internal async Task<IUriNode> CacheFetchOrNew(CacheEntityKind kind, string key, CancellationToken cancellationToken)
     {
         var info = ToCacheFetchInfo(kind, key);
-        //TODO: handle null
+        if (info is null)
+        {
+            logger.InvalidCacheEntityKind();
+            return NewId;
+        }
+
         return await cache.GetOrCreateAsync(info.Key, async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromHours(1);
             var subject = await sparqlClient.GetSubjectAsync(info.Sparql, key, cancellationToken);
-            return subject is null ? NewId : subject;
+            
+            return subject ?? NewId;
         });
     }
 

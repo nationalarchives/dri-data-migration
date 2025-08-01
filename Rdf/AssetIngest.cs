@@ -11,7 +11,7 @@ namespace Rdf;
 public class AssetIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<AssetIngest> logger)
     : BaseStagingIngest<DriAsset>(cache, sparqlClient, logger, "AssetGraph")
 {
-    internal override async Task<Graph> BuildAsync(IGraph existing, DriAsset dri, CancellationToken cancellationToken)
+    internal override async Task<Graph?> BuildAsync(IGraph existing, DriAsset dri, CancellationToken cancellationToken)
     {
         logger.BuildingRecord(dri.Id);
         var assetReference = new LiteralNode(dri.Reference);
@@ -19,7 +19,12 @@ public class AssetIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger
         var retention = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasRetention).FirstOrDefault()?.Object ?? NewId;
 
         var subset = await CacheFetch(CacheEntityKind.Subset, dri.SubsetReference, cancellationToken);
-        //TODO: handle null
+        if (subset is null)
+        {
+            logger.SubsetNotFound(dri.SubsetReference);
+            return null;
+        }
+
         var graph = new Graph();
         graph.Assert(id, Vocabulary.AssetReference, assetReference);
         graph.Assert(id, Vocabulary.AssetHasSubset, subset);
@@ -32,5 +37,4 @@ public class AssetIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger
 
         return graph;
     }
-
 }
