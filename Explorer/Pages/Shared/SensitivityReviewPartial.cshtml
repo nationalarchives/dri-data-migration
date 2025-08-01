@@ -1,5 +1,9 @@
 ﻿@model Models.SensitivityReview
 
+@{
+    var dateFormat = "dd MMMM yyyy";
+}
+
 <dl class="tna-dl tna-dl--plain">
     @if (Model.AccessCondition.Any())
     {
@@ -11,7 +15,7 @@
     @if (Model.Date.Any())
     {
         <dt>Date</dt>
-        <dd>@Model.Date.Single().ToString("yyyy-MM-dd")</dd>
+        <dd>@Model.Date.Single().ToString(dateFormat)</dd>
     }
     @if (Model.SensitiveName.Any())
     {
@@ -51,12 +55,12 @@
         if (restriction.ReviewDate.Any())
         {
             <dt>Restriction review date</dt>
-            <dd>@restriction.ReviewDate.Single().ToString("yyyy-MM-dd")</dd>
+            <dd>@restriction.ReviewDate.Single().ToString(dateFormat)</dd>
         }
         if (restriction.CalculationStartDate.Any())
         {
             <dt>Calculation start</dt>
-            <dd>@restriction.CalculationStartDate.Single().ToString("yyyy-MM-dd")</dd>
+            <dd>@restriction.CalculationStartDate.Single().ToString(dateFormat)</dd>
         }
         if (restriction.Duration.Any())
         {
@@ -84,12 +88,12 @@
             if (retentionRestriction.InstrumentSignedDate.Any())
             {
                 <dt>Instrument signed date</dt>
-                <dd>@retentionRestriction.InstrumentSignedDate.Single().ToString("yyyy-MM-dd")</dd>
+                <dd>@retentionRestriction.InstrumentSignedDate.Single().ToString(dateFormat)</dd>
             }
             if (retentionRestriction.ReviewDate.Any())
             {
                 <dt>Review date</dt>
-                <dd>@retentionRestriction.ReviewDate.Single().ToString("yyyy-MM-dd")</dd>
+                <dd>@retentionRestriction.ReviewDate.Single().ToString(dateFormat)</dd>
             }
             if (retentionRestriction.GroundForRetention.Any())
             {
