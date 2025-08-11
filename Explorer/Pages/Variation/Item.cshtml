@@ -1,6 +1,4 @@
 ﻿@page "/variation/{id}"
-@using VDS.RDF.Parsing
-@using VDS.RDF.Writing
 @model Explorer.Pages.Variation.ItemModel
 
 <partial name="SubsetBreadcrumbPartial" model="@Model.Item.Asset.Single().Subset.Single().Broader" />
@@ -35,14 +33,17 @@
     <div class="tna-column tna-column--full">
         <div class="tna-form__group">
             @{
-                var parser = new TurtleParser();
-                var writer = new RdfJsonWriter();
+                var ldWriter = new VDS.RDF.Writing.JsonLdWriter();
+                var ts = new VDS.RDF.TripleStore();
+                ts.Add(Model.Item.Graph);
+                var input = ldWriter.SerializeStore(ts);
 
-                using (var stream = new System.IO.StringWriter())
-                {
-                    writer.Save(Model.Item.Graph, stream);
-                    <textarea class="tna-textarea" rows="25" readonly>@stream.ToString()</textarea>
-                }
+                var txt = System.IO.File.ReadAllText("frame.jsonld");
+                var frame = Newtonsoft.Json.Linq.JToken.Parse(txt);
+                var framed = VDS.RDF.JsonLd.JsonLdProcessor.Frame(input, frame, new VDS.RDF.JsonLd.JsonLdProcessorOptions());
+                framed.Remove("@context");
+                framed.Remove("@type");
+                <textarea class="tna-textarea" rows="25" readonly>@framed.ToString()</textarea>
             }
         </div>
     </div>

@@ -1,0 +1,89 @@
+{
+  "@context": {
+    "@vocab": "http://example.com/schema/",
+    "asset": "variationHasAsset",
+    "subset": {
+      "@id": "assetHasSubset",
+      "@container": "@set"
+    },
+    "sensitivityReview": "variationHasSensitivityReview",
+    "accessCondition": "sensitivityReviewHasAccessCondition",
+    "pastSensitivityReview": "sensitivityReviewHasPastSensitivityReview",
+    "restriction": "sensitivityReviewHasSensitivityReviewRestriction",
+    "legislation": {
+      "@id": "sensitivityReviewRestrictionHasLegislation",
+      "@container": "@set"
+    },
+    "retentionRestriction": "sensitivityReviewRestrictionHasRetentionRestriction",
+    "groundForRetention": "retentionRestrictionHasGroundForRetention",
+    "sensitivityReviewRestrictionReviewDate": {
+      "@id": "sensitivityReviewRestrictionReviewDate",
+      "@type": "http://www.w3.org/2001/XMLSchema#date"
+    },
+    "sensitivityReviewRestrictionCalculationStartDate": {
+      "@id": "sensitivityReviewRestrictionCalculationStartDate",
+      "@type": "http://www.w3.org/2001/XMLSchema#date"
+    },
+    "sensitivityReviewRestrictionDuration": {
+      "@id": "sensitivityReviewRestrictionDuration",
+      "@type": "http://www.w3.org/2001/XMLSchema#duration"
+    },
+    "retentionInstrumentSignatureDate": {
+      "@id": "retentionInstrumentSignatureDate",
+      "@type": "http://www.w3.org/2001/XMLSchema#date"
+    },
+    "retentionRestrictionReviewDate": {
+      "@id": "retentionRestrictionReviewDate",
+      "@type": "http://www.w3.org/2001/XMLSchema#date"
+    }
+  },
+  "@explicit": true,
+  "variationName": {},
+  "variationDriId": {},
+  "asset": {
+    "@explicit": true,
+    "assetReference": {},
+    "subset": {
+      "@explicit": true,
+      "subsetReference": {}
+    }
+  },
+  "sensitivityReview": {
+    "@explicit": true,
+    "sensitivityReviewDriId": {},
+    "sensitivityReviewDate": {},
+    "sensitivityReviewSensitiveName": {},
+    "sensitivityReviewSensitiveDescription": {},
+    "pastSensitivityReview": {
+      "@id": {}
+    },
+    "accessCondition": {
+      "@explicit": true,
+      "accessConditionCode": {},
+      "accessConditionName": {}
+    },
+    "restriction": {
+      "@explicit": true,
+      "sensitivityReviewRestrictionReviewDate": {},
+      "sensitivityReviewRestrictionCalculationStartDate": {},
+      "sensitivityReviewRestrictionDuration": {},
+      "sensitivityReviewRestrictionEndYear": {},
+      "sensitivityReviewRestrictionDescription": {},
+      "legislation": {
+        "@explicit": true,
+        "legislationHasUkLegislation": {},
+        "legislationSectionReference": {}
+      }
+    },
+    "retentionRestriction": {
+      "@explicit": true,
+      "retentionInstrumentNumber": {},
+      "retentionInstrumentSignatureDate": {},
+      "retentionRestrictionReviewDate": {},
+      "groundForRetention": {
+        "groundForRetentionCode": {},
+        "groundForRetentionDescription": {}
+      }
+    }
+  }
+}

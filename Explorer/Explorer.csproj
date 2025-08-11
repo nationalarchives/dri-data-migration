@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="frame.jsonld" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="frame.jsonld" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="dotNetRdf" />
   </ItemGroup>
 

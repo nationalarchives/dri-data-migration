@@ -43,20 +43,3 @@
         </div>
     }
 </section>
-
-<section class="tna-container tna-!--margin-top-m">
-    <div class="tna-column tna-column--full">
-        <div class="tna-form__group">
-            @{
-                var parser = new TurtleParser();
-                var writer = new RdfJsonWriter();
-
-                using (var stream = new System.IO.StringWriter())
-                {
-                    writer.Save(Model.Item.Graph, stream);
-                    <textarea class="tna-textarea" rows="25" readonly>@stream.ToString()</textarea>
-                }
-            }
-        </div>
-    </div>
-</section>
