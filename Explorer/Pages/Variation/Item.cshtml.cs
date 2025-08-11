@@ -63,7 +63,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
             optional {
                 ?variation ex:variationHasSensitivityReview ?sr.
         	    ?sr ex:sensitivityReviewDriId ?sensitivityReviewDriId.
-                filter not exists { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?sr }
+                # filter not exists { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?sr }
                 optional { 
                     ?sr ex:sensitivityReviewHasAccessCondition ?accessCondition.
                     ?accessCondition ex:accessConditionCode ?accessConditionCode;
