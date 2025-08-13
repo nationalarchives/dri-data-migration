@@ -5,6 +5,10 @@ VisualStudioVersion = 17.14.36202.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{84BF4D8C-CDEA-4B4F-B559-B57ECD82ADA1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sql", "Sql\Sql.csproj", "{0EA4933C-96F0-4213-829D-5D786A4B434C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sql.Tests", "Tests\Sql.Tests\Sql.Tests.csproj", "{65E47310-A10E-4FE4-83E5-7337953575C0}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
@@ -29,8 +33,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{31D45123
 		Tests\Directory.Packages.props = Tests\Directory.Packages.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orchestration.Tests", "Tests\Orchestration.Tests\Orchestration.Tests.csproj", "{1A459EE0-086D-4F92-A279-5463031716EB}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migration", "Migration\Migration.csproj", "{A7DD4606-6CD9-4CE3-9596-130B261AD2BD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reconciliation", "Reconciliation\Reconciliation.csproj", "{68C61199-8012-4A05-9B10-CFAF2ECD7D94}"
@@ -51,6 +53,14 @@ Global
 		{84BF4D8C-CDEA-4B4F-B559-B57ECD82ADA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84BF4D8C-CDEA-4B4F-B559-B57ECD82ADA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84BF4D8C-CDEA-4B4F-B559-B57ECD82ADA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EA4933C-96F0-4213-829D-5D786A4B434C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EA4933C-96F0-4213-829D-5D786A4B434C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EA4933C-96F0-4213-829D-5D786A4B434C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EA4933C-96F0-4213-829D-5D786A4B434C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65E47310-A10E-4FE4-83E5-7337953575C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65E47310-A10E-4FE4-83E5-7337953575C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65E47310-A10E-4FE4-83E5-7337953575C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65E47310-A10E-4FE4-83E5-7337953575C0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{50305A28-B2CE-4FE1-BFAE-E7B508B0DDED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{50305A28-B2CE-4FE1-BFAE-E7B508B0DDED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50305A28-B2CE-4FE1-BFAE-E7B508B0DDED}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -63,10 +73,6 @@ Global
 		{EF248421-CE1E-4968-B830-066BDF922BCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF248421-CE1E-4968-B830-066BDF922BCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF248421-CE1E-4968-B830-066BDF922BCD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1A459EE0-086D-4F92-A279-5463031716EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1A459EE0-086D-4F92-A279-5463031716EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1A459EE0-086D-4F92-A279-5463031716EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1A459EE0-086D-4F92-A279-5463031716EB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A7DD4606-6CD9-4CE3-9596-130B261AD2BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A7DD4606-6CD9-4CE3-9596-130B261AD2BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7DD4606-6CD9-4CE3-9596-130B261AD2BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -92,8 +98,10 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{65E47310-A10E-4FE4-83E5-7337953575C0} = {31D45123-7C5B-41BC-9934-B2574F6D9792}
 		{50305A28-B2CE-4FE1-BFAE-E7B508B0DDED} = {31D45123-7C5B-41BC-9934-B2574F6D9792}
-		{1A459EE0-086D-4F92-A279-5463031716EB} = {31D45123-7C5B-41BC-9934-B2574F6D9792}
+		{8B4EACA5-8092-4F27-BBE5-357D8456D2A0} = {31D45123-7C5B-41BC-9934-B2574F6D9792}
+		{3EDB8CAA-F316-43BE-8158-CB47A6A8B2D2} = {31D45123-7C5B-41BC-9934-B2574F6D9792}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {27E75E5F-DA13-4B25-8732-47D7924D00D4}

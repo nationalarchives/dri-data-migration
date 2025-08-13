@@ -5,6 +5,7 @@
   <ItemGroup>
     <PackageVersion Include="dotNetRdf" Version="3.3.2" />
     <PackageVersion Include="dotNetRdf.Core" Version="3.3.2" />
+    <PackageVersion Include="Microsoft.Data.Sqlite" Version="9.0.8" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.7" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.7" />
@@ -14,5 +15,6 @@
     <PackageVersion Include="Microsoft.Data.SqlClient" Version="6.0.2" />
     <PackageVersion Include="System.CommandLine" Version="2.0.0-beta6.25358.103" />
     <PackageVersion Include="System.CommandLine.Hosting" Version="0.4.0-alpha.25306.1" />
+    <PackageVersion Include="System.Text.Json" Version="9.0.7" />
   </ItemGroup>
 </Project>
