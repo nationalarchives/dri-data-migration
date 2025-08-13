@@ -29,10 +29,15 @@ jobs:
       - name: Build
         run: dotnet build --no-restore --configuration Release
 
-      - name: Test Orchestration
+      - name: Test Etl
         run: |
             cd Tests
-            dotnet run --no-restore --project "Orchestration.Tests" --configuration Release
+            dotnet run --no-restore --project "Etl.Tests" --configuration Release
+
+      - name: Test Reconciliation
+        run: |
+            cd Tests
+            dotnet run --no-restore --project "Reconciliation.Tests" --configuration Release
 
       - name: Test Rdf
         run: |
