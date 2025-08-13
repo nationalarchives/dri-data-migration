@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" VersionOverride="9.0.8" />
     <ProjectReference Include="..\Api\Api.csproj" />
     <ProjectReference Include="..\Etl\Etl.csproj" />
     <ProjectReference Include="..\Rdf\Rdf.csproj" />
