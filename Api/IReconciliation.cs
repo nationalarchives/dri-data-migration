@@ -5,5 +5,5 @@ namespace Api;
 
 public interface IReconciliation
 {
-    Task ReconcileAsync(CancellationToken cancellationToken);
+    Task<ReconciliationSummary> ReconcileAsync(CancellationToken cancellationToken);
 }

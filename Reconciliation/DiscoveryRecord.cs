@@ -6,7 +6,7 @@ using System.Net.Http.Json;
 
 namespace Reconciliation;
 
-internal class DiscoveryRecord(HttpClient httpClient, ILogger<DiscoveryRecord> logger, IOptions<ReconciliationSettings> reconciliationSettings) : IReconciliationSource
+public class DiscoveryRecord(HttpClient httpClient, ILogger<DiscoveryRecord> logger, IOptions<ReconciliationSettings> reconciliationSettings) : IReconciliationSource
 {
     private readonly ReconciliationSettings settings = reconciliationSettings.Value;
 

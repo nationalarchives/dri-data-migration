@@ -10,7 +10,7 @@ public class Comparer(ILogger<Comparer> logger, IOptions<ReconciliationSettings>
     private readonly ReconciliationSettings settings = reconciliationSettings.Value;
     private const string missing = "MISSING IMPORT LOCATION";
 
-    public async Task ReconcileAsync(CancellationToken cancellationToken)
+    public async Task<ReconciliationSummary> ReconcileAsync(CancellationToken cancellationToken)
     {
         //TODO: use sensitive name in logs
         logger.ReconciliationStarted(settings.MapKind);
@@ -43,6 +43,8 @@ public class Comparer(ILogger<Comparer> logger, IOptions<ReconciliationSettings>
         }
 
         logger.ReconciliationFinished(settings.MapKind);
+
+        return summary;
     }
 
     private async Task<List<Dictionary<ReconciliationFieldName, object>>> GetExpectedDataAsync(CancellationToken cancellationToken)
@@ -75,7 +77,7 @@ public class Comparer(ILogger<Comparer> logger, IOptions<ReconciliationSettings>
         {
             var stagingImportLocation = (stagingRow[ReconciliationFieldName.ImportLocation] as string)!;
             var stagingIdentifier = stagingRow[ReconciliationFieldName.Reference] as string ?? stagingImportLocation;
-            var expectedRow = expected.SingleOrDefault(p => SelectIdentifier(p).Equals(stagingIdentifier));
+            var expectedRow = expected.SingleOrDefault(p => SelectIdentifier(p).Equals(SelectIdentifier(stagingRow)));
 
             if (expectedRow is null)
             {
@@ -133,35 +135,4 @@ public class Comparer(ILogger<Comparer> logger, IOptions<ReconciliationSettings>
         settings.MapKind == MapType.Discovery ?
                 item[ReconciliationFieldName.Reference] as string :
                 item[ReconciliationFieldName.ImportLocation] as string; //TODO: handle null
-
-    private sealed class ReconciliationSummary
-    {
-        public int AdditionalFilesCount { get; set; }
-        public int AdditionalFolderCount { get; set; }
-        public int MissingFilesCount { get; set; }
-        public int MissingFolderCount { get; set; }
-        public int DiffCount { get; set; }
-
-        internal ReconciliationSummary(int additionalFilesCount, int additionalFolderCount,
-            int missingFilesCount, int missingFolderCount, int diffCount)
-        {
-            AdditionalFilesCount = additionalFilesCount;
-            AdditionalFolderCount = additionalFolderCount;
-            MissingFilesCount = missingFilesCount;
-            MissingFolderCount = missingFolderCount;
-            DiffCount = diffCount;
-        }
-
-        internal void Update(ReconciliationSummary summary)
-        {
-            AdditionalFilesCount += summary.AdditionalFilesCount;
-            AdditionalFolderCount += summary.AdditionalFolderCount;
-            MissingFilesCount += summary.MissingFilesCount;
-            MissingFolderCount += summary.MissingFolderCount;
-            DiffCount += summary.DiffCount;
-        }
-
-        internal bool HasDifference => AdditionalFilesCount > 0 || AdditionalFolderCount > 0 ||
-            MissingFilesCount > 0 || MissingFolderCount > 0 || DiffCount > 0;
-    }
 }
