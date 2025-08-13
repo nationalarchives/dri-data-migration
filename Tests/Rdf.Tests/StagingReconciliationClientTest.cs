@@ -2,7 +2,6 @@ using Api;
 using FluentAssertions;
 using Moq;
 using System.Reflection;
-using System.Xml;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
@@ -48,6 +47,7 @@ public class StagingReconciliationClientTest
             { ReconciliationFieldName.SensitivityReviewDate, DateTimeOffset.UtcNow.AddDays(-1) },
             { ReconciliationFieldName.SensitivityReviewSensitiveName, "Sensitive name" },
             { ReconciliationFieldName.IsPublicName, false },
+            { ReconciliationFieldName.IsPublicDescription, false },
             { ReconciliationFieldName.SensitivityReviewRestrictionReviewDate, DateTimeOffset.UtcNow.AddDays(-2) },
             { ReconciliationFieldName.SensitivityReviewRestrictionCalculationStartDate, DateTimeOffset.UtcNow.AddDays(-3) },
             { ReconciliationFieldName.SensitivityReviewEndYear, 2020 },
@@ -63,7 +63,8 @@ public class StagingReconciliationClientTest
         { ReconciliationFieldName.Id, new Uri("http://example.com/s") },
         { ReconciliationFieldName.FileFolder, new Uri("http://example.com/fileOrFolder") },
         { ReconciliationFieldName.ImportLocation, "Directory" },
-        { ReconciliationFieldName.IsPublicName, false }
+        { ReconciliationFieldName.IsPublicName, false },
+        { ReconciliationFieldName.IsPublicDescription, false }
     };
 
     public static IEnumerable<object[]> ReadsData => [
@@ -77,15 +78,19 @@ public class StagingReconciliationClientTest
             new("s", new UriNode(dir[ReconciliationFieldName.Id] as Uri)),
             new("t", new UriNode(dir[ReconciliationFieldName.FileFolder] as Uri)),
             new(Vocabulary.ImportLocation.Uri.Segments.Last(), new LiteralNode(dir[ReconciliationFieldName.ImportLocation] as string)),
-            new(Vocabulary.VariationName.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.VariationName, out var v) && v is not null ? new LiteralNode(v as string) : null),
+            new("reference", dir.TryGetValue(ReconciliationFieldName.Reference, out var v) && v is not null ? new LiteralNode(v as string) : null),
+            new(Vocabulary.VariationName.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.VariationName, out var v0) && v0 is not null ? new LiteralNode(v0 as string) : null),
+            new(Vocabulary.VariationDriId.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.DriId, out var v00) && v00 is not null ? new LiteralNode(v00 as string) : null),
+            new(Vocabulary.AccessConditionCode.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.AccessConditionCode, out var v000) && v is not null ? new LiteralNode(v000 as string) : null),
             new(Vocabulary.AccessConditionName.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.AccessConditionName, out var v2) && v2 is not null ? new LiteralNode(v2 as string) : null),
             new("retentionType", dir.TryGetValue(ReconciliationFieldName.RetentionType, out var v3) && v3 is not null ? new LiteralNode(v3 as string) : null),
             new(Vocabulary.SensitivityReviewDate.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.SensitivityReviewDate, out var v4) && v4 is not null ? new DateNode((DateTimeOffset)v4) : null),
             new(Vocabulary.SensitivityReviewSensitiveName.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.SensitivityReviewSensitiveName, out var v5) && v5 is not null ? new LiteralNode(v5 as string) : null),
             new("isPublicName", dir.TryGetValue(ReconciliationFieldName.IsPublicName, out var v6) && v6 is not null && v6 is bool b ? new BooleanNode(b) : new BooleanNode(true)),
+            new("isPublicDescription", dir.TryGetValue(ReconciliationFieldName.IsPublicDescription, out var isPd) && isPd is not null && isPd is bool isPdB ? new BooleanNode(isPdB) : new BooleanNode(true)),
             new(Vocabulary.SensitivityReviewRestrictionReviewDate.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.SensitivityReviewRestrictionReviewDate, out var v9) && v9 is not null ? new DateNode((DateTimeOffset)v9) : null),
             new(Vocabulary.SensitivityReviewRestrictionCalculationStartDate.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.SensitivityReviewRestrictionCalculationStartDate, out var v10) && v10 is not null ? new DateNode((DateTimeOffset)v10) : null),
-            new(Vocabulary.SensitivityReviewRestrictionDuration.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.SensitivityReviewDuration, out var v11) && v11 is not null && v11 is TimeSpan ts? new LiteralNode((ts.TotalDays/365).ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDuration)) : null),
+            new(Vocabulary.SensitivityReviewRestrictionDuration.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.SensitivityReviewDuration, out var v11) && v11 is not null && v11 is TimeSpan ts ? new LiteralNode((ts.TotalDays / 365).ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDuration)) : null),
             new(Vocabulary.SensitivityReviewRestrictionEndYear.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.SensitivityReviewEndYear, out var v12) && v12 is not null ? new LongNode((int)v12) : null),
             new(Vocabulary.LegislationSectionReference.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.LegislationSectionReference, out var v13) && v13 is not null ? new LiteralNode(v13 as string) : null),
             new(Vocabulary.RetentionRestrictionReviewDate.Uri.Segments.Last(), dir.TryGetValue(ReconciliationFieldName.RetentionReviewDate, out var v14) && v14 is not null ? new DateNode((DateTimeOffset)v14) : null),

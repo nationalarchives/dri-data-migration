@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Orchestration\Orchestration.csproj" />
     <ProjectReference Include="..\..\Rdf\Rdf.csproj" />
   </ItemGroup>
 
