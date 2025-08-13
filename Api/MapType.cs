@@ -2,7 +2,7 @@
 
 public enum MapType
 {
-    Full,
+    Discovery,
     Metadata,
     Closure
 }
