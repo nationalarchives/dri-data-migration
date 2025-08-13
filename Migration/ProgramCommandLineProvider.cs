@@ -1,7 +1,6 @@
 ﻿using Api;
 using Microsoft.Extensions.Configuration;
 using System.CommandLine;
-using System.CommandLine.Invocation;
 
 namespace Migration;
 
@@ -13,22 +12,24 @@ public class ProgramCommandLineProvider : ConfigurationProvider
         Arity = ArgumentArity.ExactlyOne,
         Required = true
     };
-    private static readonly Option<string> driSparql = new("--dri-sparql", "-ds")
+    private static readonly Option<Uri> driSparql = new("--dri-sparql", "-ds")
     {
-        Description = "DRI query SPARQL endpoint",
+        Description = "DRI query SPARQL endpoint. Defaults to 'http://localhost:7200/repositories/dri'.",
+        DefaultValueFactory = _ => new Uri("http://localhost:7200/repositories/dri"),
         Arity = ArgumentArity.ExactlyOne,
         Required = true
     };
-    private static readonly Option<string> sparql = new("--sparql", "-sq")
+    private static readonly Option<Uri> sparql = new("--sparql", "-sq")
     {
-        Description = "Staging query SPARQL endpoint",
+        Description = "Staging query SPARQL endpoint. Defaults to 'http://localhost:7200/repositories/staging'.",
+        DefaultValueFactory = _ => new Uri("http://localhost:7200/repositories/staging"),
         Arity = ArgumentArity.ExactlyOne,
         Required = true
     };
-    private static readonly Option<string> sparqlUpdate = new("--sparql-update", "-su")
+    private static readonly Option<Uri> sparqlUpdate = new("--sparql-update", "-su")
     {
-        Description = "Staging update SPARQL endpoint. By default appends 'statements' path segment to the read only SAPRQL endpoint.",
-        DefaultValueFactory = a => a.Tokens.Any() ? new Uri(new Uri(a.GetRequiredValue<string>(sparql)), "statements").ToString() : string.Empty,
+        Description = "Staging update SPARQL endpoint. Defaults to 'http://localhost:7200/repositories/staging/statements'.",
+        DefaultValueFactory = a => new Uri("http://localhost:7200/repositories/staging/statements"),
         Arity = ArgumentArity.ZeroOrOne,
         Required = false
     };
@@ -42,20 +43,28 @@ public class ProgramCommandLineProvider : ConfigurationProvider
     private static readonly Option<string> filePrefix = new("--prefix", "-px")
     {
         Description = "Starting part of of the identifier in the exported file. This value will be used to replace catalogue reference in the staging data with the reference to match records.",
+        DefaultValueFactory = _ => string.Empty,
         Arity = ArgumentArity.ExactlyOne,
-        Required = true
+        Required = false
     };
     private static readonly Option<FileInfo> fileLocation = new("--exported-file", "-ef")
     {
         Description = "Location of the exported file.",
         Arity = ArgumentArity.ExactlyOne,
-        Required = true
+        Required = false
     };
-    private static readonly Option<MapType> mapType = new("--file-type", "-ft")
+    private static readonly Option<MapType> mapType = new("--mapping", "-mp")
     {
-        Description = "Type of the exported file. Acceptable values: 'Metadata' or 'Closure'.",
+        Description = "Mapping used to retrieve values from the exported file or Discovery API. Acceptable values: 'Discover', 'Metadata' or 'Closure'.",
         Arity = ArgumentArity.ExactlyOne,
         Required = true
+    };
+    private static readonly Option<string> discoveryRecordsUri = new("--discovery-uri", "-du")
+    {
+        Description = "URI of the Discovery API search records endpoint. Defaults to 'https://discovery.nationalarchives.gov.uk/API/search/v1/records'",
+        DefaultValueFactory = _ => "https://discovery.nationalarchives.gov.uk/API/search/v1/records",
+        Arity = ArgumentArity.ExactlyOne,
+        Required = false
     };
 
     private readonly IEnumerable<string> args;
@@ -69,11 +78,6 @@ public class ProgramCommandLineProvider : ConfigurationProvider
 
         MigrateCommand = new Command("migrate", """
             Performs data migration from a specified source supporting SPARQL 1.1 Protocol.
-            Data is partitioned by catalogue reference. Use '--reference' to provide the reference.
-            Use '--dri-sparql' to provide SPARQL endpoints to the DRI triplestore.
-            Use '--sparql' and optionally '--sparql-update' to provide SPARQL endpoints to the staging triplestore.
-            Use '--page-size' if you want to specify the numer of records fetched in a single request when the query batches results. Defaults to 500.
-
             """)
         {
             reference,
@@ -85,13 +89,6 @@ public class ProgramCommandLineProvider : ConfigurationProvider
 
         ReconcileCommand = new Command("reconcile", """
             Performs reconciliation on migrated data in a staging triplestore against provided file.
-            Data is partitioned by catalogue reference. Use '--reference' to provide the reference.
-            Use '--prefix' to set the prefix of the identifier in the exported file (eg. 'file:/<REFERENCE>/content').
-            Use '--exported-file' to specify the location of the file exported from Preservica.
-            Use '--file-type' to pick the type of the exported file ('Metadata' or 'Closure').
-            Use '--sparql' and optionally '--sparql-update' to provide SPARQL endpoints to the staging triplestore.
-            Use '--page-size' if you want to specify the numer of records fetched in a single request when the query batches results. Defaults to 500.
-
             """)
         {
             reference,
@@ -99,7 +96,8 @@ public class ProgramCommandLineProvider : ConfigurationProvider
             fileLocation,
             mapType,
             sparql,
-            pageSize
+            pageSize,
+            discoveryRecordsUri
         };
     }
 
@@ -135,17 +133,14 @@ public class ProgramCommandLineProvider : ConfigurationProvider
                 data.Add($"{StagingSettings.Prefix}:{nameof(StagingSettings.Code)}", code);
                 data.Add($"{DriSettings.Prefix}:{nameof(DriSettings.Code)}", code);
             }
-            if (parseResult.GetValue(driSparql) is string txtDri &&
-                    Uri.TryCreate(txtDri, UriKind.Absolute, out var driUri))
+            if (parseResult.GetValue(driSparql) is Uri driUri)
             {
                 data.Add($"{DriSettings.Prefix}:{nameof(DriSettings.SparqlConnectionString)}", driUri.ToString());
             }
-            if (parseResult.GetValue(sparql) is string txtSparql &&
-                Uri.TryCreate(txtSparql, UriKind.Absolute, out var uri))
+            if (parseResult.GetValue(sparql) is Uri uri)
             {
                 data.Add($"{StagingSettings.Prefix}:{nameof(StagingSettings.SparqlConnectionString)}", uri.ToString());
-                if (parseResult.GetValue(sparqlUpdate) is string txtUpdate &&
-                    Uri.TryCreate(txtUpdate, UriKind.Absolute, out var updateUri))
+                if (parseResult.GetValue(sparqlUpdate) is Uri updateUri)
                 {
                     data.Add($"{StagingSettings.Prefix}:{nameof(StagingSettings.SparqlUpdateConnectionString)}", updateUri.ToString());
                 }
@@ -183,26 +178,35 @@ public class ProgramCommandLineProvider : ConfigurationProvider
             {
                 data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.Code)}", code);
             }
-            if (parseResult.GetValue(fileLocation) is FileInfo info)
+            if (parseResult.GetValue(mapType) is MapType mapKind)
+            {
+                data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.MapKind)}", mapKind.ToString());
+            }
+            if (parseResult.GetValue(filePrefix) is string prefix)
+            {
+                data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.FilePrefix)}", prefix);
+            }
+            var info = parseResult.GetValue(fileLocation);
+            if (info is not null)
             {
                 data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.FileLocation)}", info.FullName);
-                if (parseResult.GetValue(mapType) is MapType mapKind)
-                {
-                    data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.MapKind)}", mapKind.ToString());
-                }
-                if (parseResult.GetValue(filePrefix) is string prefix)
-                {
-                    data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.FilePrefix)}", prefix);
-                }
+            }
+            else if (mapKind != MapType.Discovery)
+            {
+                return [];
             }
             if (parseResult.GetValue(pageSize) is int size)
             {
                 data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.FetchPageSize)}", size.ToString());
             }
-            if (parseResult.GetValue(sparql) is string txtSparql &&
-                Uri.TryCreate(txtSparql, UriKind.Absolute, out var uri))
+            if (parseResult.GetValue(sparql) is Uri sparqlUri)
             {
-                data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.SparqlConnectionString)}", uri.ToString());
+                data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.SparqlConnectionString)}", sparqlUri.ToString());
+            }
+            if (parseResult.GetValue(discoveryRecordsUri) is string txtDiscovery &&
+                Uri.TryCreate(txtDiscovery, UriKind.Absolute, out var discoveryUri))
+            {
+                data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.SearchRecordUri)}", discoveryUri.ToString());
             }
         }
 
