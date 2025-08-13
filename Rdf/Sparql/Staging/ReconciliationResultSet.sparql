@@ -1,7 +1,7 @@
 ﻿prefix ex: <http://example.com/schema/>
 
-select ?s ?t ?importLocation ?variationName ?accessConditionName ?retentionType
-	?sensitivityReviewDate ?sensitivityReviewSensitiveName ?isPublicName
+select ?s ?t ?importLocation ?reference ?variationName ?variationDriId ?accessConditionCode ?accessConditionName
+	?retentionType ?sensitivityReviewDate ?sensitivityReviewSensitiveName ?isPublicName ?isPublicDescription
 	?sensitivityReviewRestrictionReviewDate ?sensitivityReviewRestrictionCalculationStartDate
 	?sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionEndYear
 	(group_concat(?lsr; separator=',') as ?legislationSectionReference)
@@ -12,13 +12,18 @@ where {
 	filter(?t in (ex:Subset, ex:Variation))
 	optional { 
 		?sr ex:sensitivityReviewHasAccessCondition ?ac.
-		?ac ex:accessConditionName ?accessConditionName.
+		?ac ex:accessConditionCode ?accessConditionCode;
+			ex:accessConditionName ?accessConditionName.
 		bind(?accessConditionName as ?retentionType)
 	}
 	optional { ?sr ex:sensitivityReviewDate ?sensitivityReviewDate }
 	optional {
 		?sr ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName.
 		bind(?sensitivityReviewSensitiveName as ?isPublicName)
+	}
+	optional {
+		?sr ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription.
+		bind(?sensitivityReviewSensitiveDescription as ?isPublicDescription)
 	}
 	optional {
 		?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
@@ -46,7 +51,8 @@ where {
 		select * where {
 			{
 				?s a ?t;
-					ex:subsetHasRetention/ex:importLocation ?importLocation.
+					ex:subsetHasRetention/ex:importLocation ?importLocation;
+					ex:subsetReference ?reference.
 				optional {
 					?s ex:subsetHasSensitivityReview ?subsetHasSensitivityReview.
 					filter not exists { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?subsetHasSensitivityReview }
@@ -59,8 +65,10 @@ where {
 			{
 				?s a ?t;
 					ex:variationName ?variationName;
+					ex:variationDriId ?variationDriId;
 					ex:variationHasAsset ?asset.
 				?asset ex:assetHasRetention/ex:importLocation ?importFolder;
+					ex:assetReference ?reference;
 					ex:assetHasSubset ?subset.
 				optional {
 					?s ex:variationHasSensitivityReview ?variationHasSensitivityReview
@@ -72,8 +80,8 @@ where {
 		}
 	}
 }
-group by ?s ?t ?importLocation ?variationName ?accessConditionName ?retentionType
-	?sensitivityReviewDate ?sensitivityReviewSensitiveName ?isPublicName ?isPublicDescription
+group by ?s ?t ?importLocation ?reference ?variationName ?variationDriId ?accessConditionCode ?accessConditionName
+	?retentionType ?sensitivityReviewDate ?sensitivityReviewSensitiveName ?isPublicName ?isPublicDescription
 	?sensitivityReviewSensitiveDescription ?sensitivityReviewRestrictionReviewDate
 	?sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionDuration
 	?sensitivityReviewRestrictionEndYear

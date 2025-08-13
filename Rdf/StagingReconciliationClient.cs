@@ -40,12 +40,16 @@ public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClien
         { "s", new(ReconciliationFieldName.Id, ToUri) },
         { "t", new(ReconciliationFieldName.FileFolder, ToUri) },
         { Vocabulary.ImportLocation.Uri.Segments.Last(), new(ReconciliationFieldName.ImportLocation, ToText) },
+        { "reference", new(ReconciliationFieldName.Reference, ToText) },
         { Vocabulary.VariationName.Uri.Segments.Last(), new(ReconciliationFieldName.VariationName, ToText) },
+        { Vocabulary.VariationDriId.Uri.Segments.Last(), new(ReconciliationFieldName.DriId, ToGuid) },
+        { Vocabulary.AccessConditionCode.Uri.Segments.Last(), new(ReconciliationFieldName.AccessConditionCode, ToText) },
         { Vocabulary.AccessConditionName.Uri.Segments.Last(), new(ReconciliationFieldName.AccessConditionName, ToText) },
         { "retentionType", new(ReconciliationFieldName.RetentionType, ToText) },
         { Vocabulary.SensitivityReviewDate.Uri.Segments.Last(), new(ReconciliationFieldName.SensitivityReviewDate, ToDateTime) },
         { Vocabulary.SensitivityReviewSensitiveName.Uri.Segments.Last(), new(ReconciliationFieldName.SensitivityReviewSensitiveName, ToText) },
         { "isPublicName", new(ReconciliationFieldName.IsPublicName, ToRequiredBool) },
+        { "isPublicDescription", new(ReconciliationFieldName.IsPublicDescription, ToRequiredBool) },
         { Vocabulary.SensitivityReviewRestrictionReviewDate.Uri.Segments.Last(), new(ReconciliationFieldName.SensitivityReviewRestrictionReviewDate, ToDateTime) },
         { Vocabulary.SensitivityReviewRestrictionCalculationStartDate.Uri.Segments.Last(), new(ReconciliationFieldName.SensitivityReviewRestrictionCalculationStartDate, ToDateTime) },
         { Vocabulary.SensitivityReviewRestrictionDuration.Uri.Segments.Last(), new(ReconciliationFieldName.SensitivityReviewDuration, ToTimeSpan) },
@@ -59,6 +63,7 @@ public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClien
 
     private static readonly Func<object?, object?> ToUri = result => result is Uri uri ? uri : null;
     private static readonly Func<object?, object?> ToText = result => result is string txt ? txt : null;
+    private static readonly Func<object?, object?> ToGuid = result => result is string txt ? new Guid(new Uri(txt).Segments.Last()) : null;
     private static readonly Func<object?, object?> ToDateTime = result => result is DateTimeOffset dt ? dt : null;
     private static readonly Func<object?, object?> ToTimeSpan = result => result is TimeSpan ts ? ts : null;
     private static readonly Func<object?, object?> ToInt = result => result is long l ? (int)l : null;

@@ -3,9 +3,12 @@
 public enum ReconciliationFieldName
 {
     Id,
+    DriId,
     ImportLocation,
+    Reference,
     VariationName,
     FileFolder,
+    AccessConditionCode,
     AccessConditionName,
     SensitivityReviewDate,
     SensitivityReviewDuration,
@@ -14,6 +17,7 @@ public enum ReconciliationFieldName
     LegislationSectionReference,
     SensitivityReviewRestrictionReviewDate,
     IsPublicName,
+    IsPublicDescription,
     SensitivityReviewSensitiveName,
     RetentionType,
     RetentionReviewDate,
