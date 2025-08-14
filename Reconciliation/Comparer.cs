@@ -98,6 +98,11 @@ public class Comparer(ILogger<Comparer> logger, IOptions<ReconciliationSettings>
             if (diffs.Any())
             {
                 logger.ReconciliationDiff(stagingIdentifier, diffs);
+                foreach (var diff in diffs)
+                {
+                    var actualValue = stagingRow.TryGetValue(diff, out var value) ? value : "NOT FOUND";
+                    logger.ReconciliationDiffDetails(diff, expectedRow[diff], actualValue);
+                }
                 diffCount++;
             }
             expected.Remove(expectedRow);

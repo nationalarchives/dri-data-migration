@@ -51,4 +51,9 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 15, Level = LogLevel.Error, Message = "Unable to find matching source data retrieval")]
     internal static partial void UnableFindSource(this ILogger logger);
+
+    //TODO: Verbose???
+    [LoggerMessage(EventId = 16, Level = LogLevel.Information, Message = "Field '{field}': expected '{expected}', actual '{actual}'")]
+    internal static partial void ReconciliationDiffDetails(this ILogger logger, ReconciliationFieldName field, object expected, object actual);
+
 }
