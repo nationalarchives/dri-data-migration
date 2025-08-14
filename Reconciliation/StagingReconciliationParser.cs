@@ -25,7 +25,7 @@ internal static class StagingReconciliationParser
                 ReconciliationFieldName.AccessConditionName => new(cell.Key, ToAccessConditon(cell.Value as string)),
                 ReconciliationFieldName.SensitivityReviewDuration => new(cell.Key, ToYearDuration(row, cell.Value as TimeSpan?)),
                 ReconciliationFieldName.LegislationSectionReference => new(cell.Key, ToLegislationReferences(cell.Value as string)),
-                ReconciliationFieldName.SensitivityReviewEndYear => new(cell.Key, null),
+                ReconciliationFieldName.SensitivityReviewEndYear => new(cell.Key, cell.Value as int?),
                 ReconciliationFieldName.RetentionType => new(cell.Key, ToRetentionType(cell.Value as string)),
                 _ => new KeyValuePair<ReconciliationFieldName, object?>(cell.Key, cell.Value),
             };
