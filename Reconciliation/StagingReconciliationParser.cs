@@ -39,7 +39,7 @@ internal static class StagingReconciliationParser
         if (row.TryGetValue(ReconciliationFieldName.FileFolder, out var fileFolder))
         {
             var replaced = importLocation?.Replace(code, filePrefix);
-            if (replaced is not null && replaced.Last() != '/' &&
+            if (!string.IsNullOrWhiteSpace(replaced) && replaced.Last() != '/' &&
                 fileFolder.ToString() == Vocabulary.Subset.Uri.ToString())
             {
                 replaced = $"{replaced}/";
