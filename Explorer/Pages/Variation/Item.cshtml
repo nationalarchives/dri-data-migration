@@ -40,9 +40,15 @@
 
                 var txt = System.IO.File.ReadAllText("frame.jsonld");
                 var frame = Newtonsoft.Json.Linq.JToken.Parse(txt);
-                var framed = VDS.RDF.JsonLd.JsonLdProcessor.Frame(input, frame, new VDS.RDF.JsonLd.JsonLdProcessorOptions());
+                var options = new VDS.RDF.JsonLd.JsonLdProcessorOptions()
+                {
+                    Embed = VDS.RDF.JsonLd.Syntax.JsonLdEmbed.Always
+                };
+                var framed = VDS.RDF.JsonLd.JsonLdProcessor.Frame(input, frame, options);
                 framed.Remove("@context");
                 framed.Remove("@type");
+                var lastSr = framed.Value<Newtonsoft.Json.Linq.JArray>("sensitivityReview").Last;
+                framed.GetValue("sensitivityReview").Replace(lastSr);
                 <textarea class="tna-textarea" rows="25" readonly>@framed.ToString()</textarea>
             }
         </div>

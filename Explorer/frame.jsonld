@@ -6,7 +6,10 @@
       "@id": "assetHasSubset",
       "@container": "@set"
     },
-    "sensitivityReview": "variationHasSensitivityReview",
+    "sensitivityReview": {
+      "@id": "variationHasSensitivityReview",
+      "@container": "@set"
+    },
     "accessCondition": "sensitivityReviewHasAccessCondition",
     "pastSensitivityReview": "sensitivityReviewHasPastSensitivityReview",
     "restriction": "sensitivityReviewHasSensitivityReviewRestriction",
