@@ -7,7 +7,7 @@ construct {
         ex:assetHasRetention ?retention.
     ?retention ex:importLocation ?importLocation.
 } where {
-    bind(@id as ?reference)
+    bind(@id as ?assetDriId)
     ?asset ex:assetDriId ?assetDriId;
         ex:assetReference ?reference.
     optional { ?asset ex:assetHasSubset ?subset }
