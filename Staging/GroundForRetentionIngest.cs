@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF;
 
-namespace Rdf;
+namespace Staging;
 
 public class GroundForRetentionIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<GroundForRetentionIngest> logger)
     : BaseStagingIngest<DriGroundForRetention>(cache, sparqlClient, logger, "GroundForRetentionGraph")

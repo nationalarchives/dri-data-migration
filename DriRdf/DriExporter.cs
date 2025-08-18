@@ -1,6 +1,7 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Rdf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 
-namespace Rdf;
+namespace DriRdf;
 
 public class DriExporter : IDriRdfExporter
 {
@@ -26,7 +27,7 @@ public class DriExporter : IDriRdfExporter
         this.sparqlClient = sparqlClient;
 
         var currentAssembly = typeof(DriExporter).Assembly;
-        var baseName = $"{typeof(DriExporter).Namespace}.Sparql.Dri";
+        var baseName = $"{typeof(DriExporter).Namespace}.Sparql";
         embedded = new(currentAssembly, baseName);
     }
 

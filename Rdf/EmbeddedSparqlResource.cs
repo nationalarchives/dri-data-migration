@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Rdf;
 
-internal class EmbeddedSparqlResource(Assembly assembly, string baseName)
+public class EmbeddedSparqlResource(Assembly assembly, string baseName)
 {
     public string GetSparql(string fileName)
     {

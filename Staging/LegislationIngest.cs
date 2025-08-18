@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF;
 
-namespace Rdf;
+namespace Staging;
 
 public class LegislationIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<LegislationIngest> logger)
     : BaseStagingIngest<DriLegislation>(cache, sparqlClient, logger, "LegislationGraph")

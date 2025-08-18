@@ -10,7 +10,7 @@ using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 
-namespace Rdf;
+namespace Staging;
 
 public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<SensitivityReviewIngest> logger)
     : BaseStagingIngest<DriSensitivityReview>(cache, sparqlClient, logger, "SensitivityReviewGraph")

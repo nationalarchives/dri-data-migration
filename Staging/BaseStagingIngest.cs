@@ -1,6 +1,7 @@
 ﻿using Api;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Rdf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF;
 
-namespace Rdf;
+namespace Staging;
 
 public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRecord
 {
@@ -31,7 +32,7 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
         this.logger = logger;
 
         var currentAssembly = typeof(BaseStagingIngest<>).Assembly;
-        var baseName = $"{typeof(BaseStagingIngest<>).Namespace}.Sparql.Staging";
+        var baseName = $"{typeof(BaseStagingIngest<>).Namespace}.Sparql";
         embedded = new(currentAssembly, baseName);
 
         graphSparql = embedded.GetSparql(sparqlFileName);
@@ -49,7 +50,7 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
 
     public async Task<int> SetAsync(IEnumerable<T> records, CancellationToken cancellationToken)
     {
-        int total = 0;
+        var total = 0;
         foreach (var dri in records)
         {
             var existing = await sparqlClient.GetGraphAsync(graphSparql, new Dictionary<string, object> { { "id", dri.Id } }, cancellationToken);

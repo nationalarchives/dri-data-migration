@@ -7,42 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Sparql\Dri\GetGroundsForRetentionAsync.sparql" />
-    <EmbeddedResource Include="Sparql\Dri\GetLegislationsAsync.sparql" />
-    <EmbeddedResource Include="Sparql\Dri\GetVariationsByCodeAsync.sparql" />
-    <EmbeddedResource Include="Sparql\Dri\GetBroadestSubsetsAsync.sparql" />
-    <EmbeddedResource Include="Sparql\Dri\GetAccessConditionsAsync.sparql" />
-    <EmbeddedResource Include="Sparql\Dri\GetSensitivityReviewsByCodeAsync.sparql" />
-    <EmbeddedResource Include="Sparql\Dri\GetAssetsByCodeAsync.sparql" />
-    <EmbeddedResource Include="Sparql\Dri\GetSubsetsByCodeAsync.sparql" />
-    <EmbeddedResource Include="Sparql\Staging\GetGroundsForRetention.sparql" />
-    <EmbeddedResource Include="Sparql\Staging\GetLegislations.sparql" />
-    <EmbeddedResource Include="Sparql\Staging\GetAccessConditions.sparql" />
-    <EmbeddedResource Include="Sparql\Staging\GetRetention.sparql" />
-    <EmbeddedResource Include="Sparql\Staging\GetVariation.sparql" />
-    <EmbeddedResource Include="Sparql\Staging\GetSensitivityReview.sparql" />
-    <EmbeddedResource Include="Sparql\Staging\GetAsset.sparql" />
-    <EmbeddedResource Include="Sparql\Staging\GetSubset.sparql" />
-    <EmbeddedResource Include="Sparql\Staging\GroundForRetentionGraph.sparql" />
-    <EmbeddedResource Include="Sparql\Staging\LegislationGraph.sparql" />
-    <EmbeddedResource Include="Sparql\Staging\ReconciliationResultSet.sparql" />
-    <EmbeddedResource Include="Sparql\Staging\VariationGraph.sparql" />
-    <EmbeddedResource Include="Sparql\Staging\SubsetGraph.sparql" />
-    <EmbeddedResource Include="Sparql\Staging\SensitivityReviewGraph.sparql" />
-    <EmbeddedResource Include="Sparql\Staging\AssetGraph.sparql" />
-    <EmbeddedResource Include="Sparql\Staging\AccessConditionGraph.sparql" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="dotNetRdf" />
-	<PackageReference Include="Microsoft.Extensions.Caching.Memory" />
-	<PackageReference Include="Microsoft.Extensions.Http" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.Options" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Api\Api.csproj" />
-  </ItemGroup>	
-
+  </ItemGroup>
 </Project>

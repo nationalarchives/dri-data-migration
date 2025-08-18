@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF;
 
-namespace Rdf;
+namespace Staging;
 
 public class SubsetIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<SubsetIngest> logger)
     : BaseStagingIngest<DriSubset>(cache, sparqlClient, logger, "SubsetGraph")

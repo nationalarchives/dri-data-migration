@@ -1,8 +1,9 @@
 ﻿using Api;
 using Microsoft.Extensions.Options;
+using Rdf;
 using System.Net.Http;
 
-namespace Rdf;
+namespace DriRdf;
 
 public class DriSparqlClient(HttpClient httpClient, IOptions<DriSettings> settings) : SparqlClientReadOnly(httpClient, settings.Value.SparqlConnectionString), IDriSparqlClient
 {

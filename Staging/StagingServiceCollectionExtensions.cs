@@ -1,20 +1,13 @@
 ﻿using Api;
-using Rdf;
+using Staging;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public static class RdfServiceCollectionExtensions
+public static class StagingServiceCollectionExtensions
 {
-    public static IServiceCollection AddDriExport(this IServiceCollection services)
-    {
-        services.AddHttpClient<IDriSparqlClient, DriSparqlClient>();
-        services.AddSingleton<IDriRdfExporter, DriExporter>();
-
-        return services;
-    }
-
     public static IServiceCollection AddStagingIngest(this IServiceCollection services)
     {
+        services.AddMemoryCache();
         services.AddHttpClient<ISparqlClient, StagingSparqlClient>();
         services.AddSingleton<IStagingIngest<DriAccessCondition>, AccessConditionIngest>();
         services.AddSingleton<IStagingIngest<DriLegislation>, LegislationIngest>();
@@ -23,14 +16,6 @@ public static class RdfServiceCollectionExtensions
         services.AddSingleton<IStagingIngest<DriAsset>, AssetIngest>();
         services.AddSingleton<IStagingIngest<DriVariation>, VariationIngest>();
         services.AddSingleton<IStagingIngest<DriSensitivityReview>, SensitivityReviewIngest>();
-
-        return services;
-    }
-
-    public static IServiceCollection AddReconciliationClient(this IServiceCollection services)
-    {
-        services.AddHttpClient<IReconciliationSparqlClient, ReconciliationSparqlClient>();
-        services.AddSingleton<IStagingReconciliationClient, StagingReconciliationClient>();
 
         return services;
     }

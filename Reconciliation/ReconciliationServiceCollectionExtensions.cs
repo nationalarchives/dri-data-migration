@@ -7,6 +7,8 @@ public static class ReconciliationServiceCollectionExtensions
 {
     public static IServiceCollection AddReconciliation(this IServiceCollection services)
     {
+        services.AddHttpClient<IReconciliationSparqlClient, ReconciliationSparqlClient>();
+        services.AddSingleton<IStagingReconciliationClient, StagingReconciliationClient>();
         services.AddHttpClient<IReconciliationSource, DiscoveryRecord>();
         services.AddSingleton<IReconciliationSource, PreservicaClosure>();
         services.AddSingleton<IReconciliationSource, PreservicaMetadata>();

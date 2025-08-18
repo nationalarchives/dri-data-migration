@@ -1,23 +1,19 @@
 ﻿using Api;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using Rdf;
 using VDS.RDF;
 using VDS.RDF.Dynamic;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query;
 
-namespace Rdf;
+namespace Reconciliation;
 
 public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClient) : IStagingReconciliationClient
 {
     public async Task<IEnumerable<Dictionary<ReconciliationFieldName, object>>> FetchAsync(
         string code, int pageSize, int offset, CancellationToken cancellationToken)
     {
-        var currentAssembly = typeof(DriExporter).Assembly;
-        var baseName = $"{typeof(DriExporter).Namespace}.Sparql.Staging";
+        var currentAssembly = typeof(StagingReconciliationClient).Assembly;
+        var baseName = $"{typeof(StagingReconciliationClient).Namespace}.Sparql";
         var recordsByCodeSparql = new EmbeddedSparqlResource(currentAssembly, baseName).GetSparql("ReconciliationResultSet");
 
         var sparql = new SparqlParameterizedString(recordsByCodeSparql);

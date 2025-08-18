@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF;
 
-namespace Rdf;
+namespace Staging;
 
 public class VariationIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<VariationIngest> logger)
     : BaseStagingIngest<DriVariation>(cache, sparqlClient, logger, "VariationGraph")

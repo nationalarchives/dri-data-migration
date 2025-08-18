@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF;
 
-namespace Rdf;
+namespace Staging;
 
 public class AssetIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<AssetIngest> logger)
     : BaseStagingIngest<DriAsset>(cache, sparqlClient, logger, "AssetGraph")

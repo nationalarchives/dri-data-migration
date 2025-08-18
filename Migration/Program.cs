@@ -8,8 +8,6 @@ var builder = Host.CreateApplicationBuilder();
 
 builder.Configuration.AddProgramCommandLine(args);
 
-builder.Services.AddMemoryCache();
-
 builder.Services.AddOptions<StagingSettings>().BindConfiguration(StagingSettings.Prefix);
 builder.Services.AddOptions<DriSettings>().BindConfiguration(DriSettings.Prefix);
 builder.Services.AddOptions<ReconciliationSettings>().BindConfiguration(ReconciliationSettings.Prefix);
@@ -17,7 +15,6 @@ builder.Services.AddOptions<ReconciliationSettings>().BindConfiguration(Reconcil
 builder.Services.AddDriExport();
 builder.Services.AddStagingIngest();
 builder.Services.AddMigration();
-builder.Services.AddReconciliationClient();
 builder.Services.AddReconciliation();
 
 builder.Services.AddHostedService<ProgramHostedService>();

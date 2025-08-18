@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+	<LangVersion>latest</LangVersion>
+	<Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Sparql\GetGroundsForRetentionAsync.sparql" />
+    <EmbeddedResource Include="Sparql\GetLegislationsAsync.sparql" />
+    <EmbeddedResource Include="Sparql\GetVariationsByCodeAsync.sparql" />
+    <EmbeddedResource Include="Sparql\GetBroadestSubsetsAsync.sparql" />
+    <EmbeddedResource Include="Sparql\GetAccessConditionsAsync.sparql" />
+    <EmbeddedResource Include="Sparql\GetSensitivityReviewsByCodeAsync.sparql" />
+    <EmbeddedResource Include="Sparql\GetAssetsByCodeAsync.sparql" />
+    <EmbeddedResource Include="Sparql\GetSubsetsByCodeAsync.sparql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dotNetRdf" />
+	<PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Rdf\Rdf.csproj" />
+  </ItemGroup>
+
+</Project>

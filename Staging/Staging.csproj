@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+	<LangVersion>latest</LangVersion>
+	<Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Sparql\AccessConditionGraph.sparql" />
+    <EmbeddedResource Include="Sparql\AssetGraph.sparql" />
+    <EmbeddedResource Include="Sparql\GetAccessConditions.sparql" />
+    <EmbeddedResource Include="Sparql\GetAsset.sparql" />
+    <EmbeddedResource Include="Sparql\GetGroundsForRetention.sparql" />
+    <EmbeddedResource Include="Sparql\GetLegislations.sparql" />
+    <EmbeddedResource Include="Sparql\GetRetention.sparql" />
+    <EmbeddedResource Include="Sparql\GetSensitivityReview.sparql" />
+    <EmbeddedResource Include="Sparql\GetSubset.sparql" />
+    <EmbeddedResource Include="Sparql\GetVariation.sparql" />
+    <EmbeddedResource Include="Sparql\GroundForRetentionGraph.sparql" />
+    <EmbeddedResource Include="Sparql\LegislationGraph.sparql" />
+    <EmbeddedResource Include="Sparql\ReconciliationResultSet.sparql" />
+    <EmbeddedResource Include="Sparql\SensitivityReviewGraph.sparql" />
+    <EmbeddedResource Include="Sparql\SubsetGraph.sparql" />
+    <EmbeddedResource Include="Sparql\VariationGraph.sparql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dotNetRdf" />
+	<PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+	<PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Rdf\Rdf.csproj" />
+  </ItemGroup>
+</Project>
