@@ -12,6 +12,13 @@ public class ProgramCommandLineProvider : ConfigurationProvider
         Arity = ArgumentArity.ExactlyOne,
         Required = true
     };
+    private static readonly Option<string> sql = new("--sql")
+    {
+        Description = "SQLite connection. Defaults to 'Data Source=dri.sqlite;Mode=ReadOnly'.",
+        DefaultValueFactory = _ => "Data Source=dri.sqlite;Mode=ReadOnly",
+        Arity = ArgumentArity.ExactlyOne,
+        Required = true
+    };
     private static readonly Option<Uri> driSparql = new("--dri-sparql", "-ds")
     {
         Description = "DRI query SPARQL endpoint. Defaults to 'http://localhost:7200/repositories/dri'.",
@@ -81,6 +88,7 @@ public class ProgramCommandLineProvider : ConfigurationProvider
             """)
         {
             reference,
+            sql,
             driSparql,
             sparql,
             sparqlUpdate,
@@ -132,6 +140,10 @@ public class ProgramCommandLineProvider : ConfigurationProvider
             {
                 data.Add($"{StagingSettings.Prefix}:{nameof(StagingSettings.Code)}", code);
                 data.Add($"{DriSettings.Prefix}:{nameof(DriSettings.Code)}", code);
+            }
+            if (parseResult.GetValue(sql) is string sqlConnection)
+            {
+                data.Add($"{DriSettings.Prefix}:{nameof(DriSettings.SqlConnectionString)}", sqlConnection);
             }
             if (parseResult.GetValue(driSparql) is Uri driUri)
             {
