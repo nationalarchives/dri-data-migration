@@ -7,6 +7,10 @@
 
 <section class="row tna-!--margin-top-m tna-column tna-column--full">
     <h1>Asset @Model.Item.Reference.Single() @Model.Item.Name.SingleOrDefault()</h1>
+    <dl class="tna-dl tna-dl--plain">
+        <dt>DRI Id</dt>
+        <dd>@Model.Item.Id.Single()</dd>
+    </dl>
 
     <partial name="RetentionPartial" model="@Model.Item.Retention" />
 

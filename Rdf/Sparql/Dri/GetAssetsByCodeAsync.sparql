@@ -4,7 +4,8 @@ prefix dcterms: <http://purl.org/dc/terms/>
 prefix ex: <http://id.example.com/schema/>
 
 construct {
-    [] ex:assetReference ?reference;
+    ?a ex:assetDriId ?a;
+        ex:assetReference ?reference;
         ex:assetHasSubset [
             ex:subsetReference ?subset
     	];

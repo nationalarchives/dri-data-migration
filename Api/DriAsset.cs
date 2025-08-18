@@ -1,6 +1,8 @@
-﻿namespace Api;
+﻿using System;
 
-public record DriAsset(string Reference, string? Directory, string SubsetReference) : IDriRecord
+namespace Api;
+
+public record DriAsset(Uri Link, string Reference, string? Directory, string SubsetReference) : IDriRecord
 {
-    public string Id => Reference;
+    public string Id => Link.ToString();
 }

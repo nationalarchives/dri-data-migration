@@ -1,13 +1,15 @@
 ﻿prefix ex: <http://id.example.com/schema/>
 
 construct {
-    ?asset ex:assetReference ?reference;
+    ?asset ex:assetDriId ?assetDriId;
+        ex:assetReference ?reference;
         ex:assetHasSubset ?subset;
         ex:assetHasRetention ?retention.
     ?retention ex:importLocation ?importLocation.
 } where {
     bind(@id as ?reference)
-    ?asset ex:assetReference ?reference.
+    ?asset ex:assetDriId ?assetDriId;
+        ex:assetReference ?reference.
     optional { ?asset ex:assetHasSubset ?subset }
     optional {
         ?asset ex:assetHasRetention ?retention.

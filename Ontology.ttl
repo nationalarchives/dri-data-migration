@@ -395,6 +395,13 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset reference".
 
+:assetDriId a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Deliverable unit DRI Id".
+
 :formalBodyName a owl:DatatypeProperty;
 	rdfs:domain :FormalBody;
 	rdfs:range xsd:string;

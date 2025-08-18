@@ -26,6 +26,7 @@ public class AssetIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger
         }
 
         var graph = new Graph();
+        graph.Assert(id, Vocabulary.AssetDriId, new LiteralNode(dri.Id));
         graph.Assert(id, Vocabulary.AssetReference, assetReference);
         graph.Assert(id, Vocabulary.AssetHasSubset, subset);
         graph.Assert(id, Vocabulary.AssetHasRetention, retention);

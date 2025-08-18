@@ -100,7 +100,7 @@ public class DriExporter : IDriExporter
         }, cancellationToken);
 
         return graph.GetTriplesWithPredicate(Vocabulary.AssetReference)
-            .Select(t => t.Subject as IBlankNode)
+            .Select(t => t.Subject as IUriNode)
             .Select(s => AssetBySubject(graph, s!));
     }
 
@@ -190,15 +190,16 @@ public class DriExporter : IDriExporter
         return new DriVariation(id!.Uri, name.AsValuedNode().AsString(), assetReference.AsValuedNode().AsString());
     }
 
-    private static DriAsset AssetBySubject(IGraph graph, IBlankNode subject)
+    private static DriAsset AssetBySubject(IGraph graph, IUriNode subject)
     {
+        var id = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AssetDriId).SingleOrDefault().Object as IUriNode;
         var reference = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AssetReference).SingleOrDefault().Object as ILiteralNode;
         var subset = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AssetHasSubset).SingleOrDefault().Object as IBlankNode;
         var subsetReference = graph.GetTriplesWithSubjectPredicate(subset, Vocabulary.SubsetReference).SingleOrDefault().Object as ILiteralNode;
         var retention = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AssetHasRetention).SingleOrDefault().Object as IBlankNode;
         var location = graph.GetTriplesWithSubjectPredicate(retention, Vocabulary.ImportLocation).SingleOrDefault()?.Object as ILiteralNode;
 
-        return new DriAsset(reference.AsValuedNode().AsString(), location?.AsValuedNode().AsString(), subsetReference.AsValuedNode().AsString());
+        return new DriAsset(id!.Uri, reference.AsValuedNode().AsString(), location?.AsValuedNode().AsString(), subsetReference.AsValuedNode().AsString());
     }
 
     private static DriSubset SusbsetBySubject(IGraph graph, IUriNode subject)

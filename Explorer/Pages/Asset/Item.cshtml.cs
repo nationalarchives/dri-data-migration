@@ -14,6 +14,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
 
         construct {
             ?s a ex:Asset;
+                ex:assetDriId ?assetDriId;
                 ex:assetReference ?assetReference;
                 ex:assetName ?assetName;
                 ex:assetDescription ?assetDescription;
@@ -57,7 +58,8 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:groundForRetentionDescription ?groundForRetentionDescription.
         } where {
             bind(@code as ?assetReference)
-            ?s ex:assetReference ?assetReference;
+            ?s ex:assetDriId ?assetDriId;
+                ex:assetReference ?assetReference;
                 ex:assetHasSubset ?subset.
             ?subset ex:subsetReference ?subsetReference.
             optional {
