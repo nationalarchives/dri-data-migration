@@ -5,6 +5,10 @@
 
 <section class="row tna-!--margin-top-m tna-column tna-column--full">
     <h1>Variation @Model.Item.Name.Single()</h1>
+    <dl class="tna-dl tna-dl--plain">
+        <dt>DRI Id</dt>
+        <dd>@Model.Item.Id.Single()</dd>
+    </dl>
 
     <div class="tna-!--margin-top-m">
         <h2>Asset <a asp-page="/asset/item" asp-route-id="@Model.Item.Asset.Single().Reference.Single()">@Model.Item.Asset.Single().Reference.Single()</a></h2>
