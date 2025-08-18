@@ -5,5 +5,5 @@ namespace Api;
 
 public interface IEtl
 {
-    Task RunAsync(string code, int limit, CancellationToken cancellationToken);
+    Task RunAsync(CancellationToken cancellationToken);
 }

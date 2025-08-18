@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Etl;
 
-public class EtlAccessCondition(ILogger<EtlAccessCondition> logger, IDriExporter driExport,
+public class EtlAccessCondition(ILogger<EtlAccessCondition> logger, IDriRdfExporter driExport,
     IStagingIngest<DriAccessCondition> ingest) : IEtl
 {
-    public async Task RunAsync(string code, int limit, CancellationToken cancellationToken)
+    public async Task RunAsync(CancellationToken cancellationToken)
     {
         var dri = await driExport.GetAccessConditionsAsync(cancellationToken);
 

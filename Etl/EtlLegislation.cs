@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Etl;
 
-public class EtlLegislation(ILogger<EtlLegislation> logger, IDriExporter driExport,
+public class EtlLegislation(ILogger<EtlLegislation> logger, IDriRdfExporter driExport,
     IStagingIngest<DriLegislation> ingest) : IEtl
 {
-    public async Task RunAsync(string code, int limit, CancellationToken cancellationToken)
+    public async Task RunAsync(CancellationToken cancellationToken)
     {
         var dri = await driExport.GetLegislationsAsync(cancellationToken);
 

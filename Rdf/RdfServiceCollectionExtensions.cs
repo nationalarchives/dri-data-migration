@@ -8,7 +8,7 @@ public static class RdfServiceCollectionExtensions
     public static IServiceCollection AddDriExport(this IServiceCollection services)
     {
         services.AddHttpClient<IDriSparqlClient, DriSparqlClient>();
-        services.AddSingleton<IDriExporter, DriExporter>();
+        services.AddSingleton<IDriRdfExporter, DriExporter>();
 
         return services;
     }

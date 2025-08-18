@@ -14,7 +14,7 @@ public class Migration(ILogger<Migration> logger, IOptions<DriSettings> driSetti
         logger.MigrationStarted(driSettings.Value.Code);
         foreach (var etl in etls)
         {
-            await etl.RunAsync(driSettings.Value.Code, driSettings.Value.FetchPageSize, cancellationToken);
+            await etl.RunAsync(cancellationToken);
         }
         logger.MigrationFinished();
     }

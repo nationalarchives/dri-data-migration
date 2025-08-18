@@ -1,5 +1,6 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,15 +11,18 @@ using VDS.RDF.Nodes;
 
 namespace Rdf;
 
-public class DriExporter : IDriExporter
+public class DriExporter : IDriRdfExporter
 {
     private readonly ILogger<DriExporter> logger;
     private readonly IDriSparqlClient sparqlClient;
     private readonly EmbeddedSparqlResource embedded;
+    private readonly DriSettings settings;
 
-    public DriExporter(ILogger<DriExporter> logger, IDriSparqlClient sparqlClient)
+    public DriExporter(ILogger<DriExporter> logger, IOptions<DriSettings> driSettings,
+        IDriSparqlClient sparqlClient)
     {
         this.logger = logger;
+        settings = driSettings.Value;
         this.sparqlClient = sparqlClient;
 
         var currentAssembly = typeof(DriExporter).Assembly;
@@ -70,15 +74,14 @@ public class DriExporter : IDriExporter
             s.Value("label").AsValuedNode().AsString(), s.Value("comment").AsValuedNode().AsString()));
     }
 
-    public async Task<IEnumerable<DriSubset>> GetSubsetsByCodeAsync(
-        string code, int pageSize, int offset, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DriSubset>> GetSubsetsByCodeAsync(int offset, CancellationToken cancellationToken)
     {
         logger.GetSubsetsByCode(offset);
         var sparql = embedded.GetSparql(nameof(GetSubsetsByCodeAsync));
         var graph = await sparqlClient.GetGraphAsync(sparql, new Dictionary<string, object>
         {
-            { "id", code },
-            { "limit", pageSize },
+            { "id", settings.Code },
+            { "limit", settings.FetchPageSize },
             { "offset", offset}
         }, cancellationToken);
 
@@ -87,15 +90,14 @@ public class DriExporter : IDriExporter
             .Select(s => SusbsetBySubject(graph, s));
     }
 
-    public async Task<IEnumerable<DriAsset>> GetAssetsByCodeAsync(string code, int pageSize, int offset,
-        CancellationToken cancellationToken)
+    public async Task<IEnumerable<DriAsset>> GetAssetsByCodeAsync(int offset, CancellationToken cancellationToken)
     {
         logger.GetAssetsByCode(offset);
         var sparql = embedded.GetSparql(nameof(GetAssetsByCodeAsync));
         var graph = await sparqlClient.GetGraphAsync(sparql, new Dictionary<string, object>
         {
-            { "id", code },
-            { "limit", pageSize },
+            { "id", settings.Code },
+            { "limit", settings.FetchPageSize },
             { "offset", offset}
         }, cancellationToken);
 
@@ -104,15 +106,14 @@ public class DriExporter : IDriExporter
             .Select(s => AssetBySubject(graph, s!));
     }
 
-    public async Task<IEnumerable<DriVariation>> GetVariationsByCodeAsync(
-        string code, int pageSize, int offset, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DriVariation>> GetVariationsByCodeAsync(int offset, CancellationToken cancellationToken)
     {
         logger.GetVariationsByCode(offset);
         var sparql = embedded.GetSparql(nameof(GetVariationsByCodeAsync));
         var graph = await sparqlClient.GetGraphAsync(sparql, new Dictionary<string, object>
         {
-            { "id", code },
-            { "limit", pageSize },
+            { "id", settings.Code },
+            { "limit", settings.FetchPageSize },
             { "offset", offset}
         }, cancellationToken);
 
@@ -122,14 +123,14 @@ public class DriExporter : IDriExporter
     }
 
     public async Task<IEnumerable<DriSensitivityReview>> GetSensitivityReviewsByCodeAsync(
-        string code, int pageSize, int offset, CancellationToken cancellationToken)
+        int offset, CancellationToken cancellationToken)
     {
         logger.GetSensitivityReviewsByCode(offset);
         var sparql = embedded.GetSparql(nameof(GetSensitivityReviewsByCodeAsync));
         var graph = await sparqlClient.GetGraphAsync(sparql, new Dictionary<string, object>
         {
-            { "id", code },
-            { "limit", pageSize },
+            { "id", settings.Code },
+            { "limit", settings.FetchPageSize },
             { "offset", offset}
         }, cancellationToken);
 
