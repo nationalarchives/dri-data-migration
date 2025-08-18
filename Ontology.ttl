@@ -38,6 +38,12 @@ this:schema a owl:Ontology;
 	rdfs:label "Variation";
 	rdfs:comment "A variant of an :Asset.".
 
+:Language a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:Language;
+	rdfs:label "Language";
+	rdfs:comment "Language of the :Asset.".
+
 :Image a owl:Class;
 	rdfs:subClassOf :Variation;
 	rdfs:isDefinedBy this:schema;
@@ -166,6 +172,13 @@ this:schema a owl:Ontology;
 	rdfs:range :Subset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has subset".
+
+:assetHasLanguage a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:seeAlso :rico:isOrWasLanguageOf;
+	rdfs:domain :Asset;
+	rdfs:range :Language;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has language".
 
 :assetHasVariation a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	rdfs:seeAlso rico:hasOrHadInstantiation;
@@ -379,6 +392,7 @@ this:schema a owl:Ontology;
 :assetName a owl:DatatypeProperty;
 	rdfs:domain :Asset;
 	rdfs:range xsd:string;
+	rdfs:subPropertyOf :name;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset name".
 
@@ -401,6 +415,20 @@ this:schema a owl:Ontology;
 	rdfs:subPropertyOf :externalIdentifier;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Deliverable unit DRI Id".
+
+:batchDriId a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Batch DRI Id".
+
+:consignmentTdrId a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Consignment TDR Id".
 
 :formalBodyName a owl:DatatypeProperty;
 	rdfs:domain :FormalBody;
@@ -583,3 +611,10 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:date;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Retention review date".
+
+:languageName a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :Language;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Language name".
