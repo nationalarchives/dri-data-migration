@@ -1,4 +1,4 @@
-@prefix :<http://example.com/schema/>.
+@prefix :<http://id.example.com/schema/>.
 @prefix this:<http://id.example.com/>.
 @prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>.
 @prefix owl:<http://www.w3.org/2002/07/owl#>.

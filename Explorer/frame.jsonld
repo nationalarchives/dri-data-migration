@@ -1,6 +1,6 @@
 {
   "@context": {
-    "@vocab": "http://example.com/schema/",
+    "@vocab": "http://id.example.com/schema/",
     "asset": "variationHasAsset",
     "subset": {
       "@id": "assetHasSubset",

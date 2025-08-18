@@ -12,7 +12,7 @@ public class SearchModel(HttpClient httpClient, IConfiguration configuration) : 
 {
     private readonly Uri endpoint = new(configuration.GetConnectionString("Sparql"));
     private readonly string query = """
-        prefix ex: <http://example.com/schema/>
+        prefix ex: <http://id.example.com/schema/>
 
         select ?variationName ?variationDriId ?assetReference ?subsetReference where {
             filter(contains(ucase(?text), ucase(@id)))

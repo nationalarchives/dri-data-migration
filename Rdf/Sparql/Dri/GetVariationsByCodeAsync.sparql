@@ -1,7 +1,7 @@
 ﻿prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 prefix dri: <http://nationalarchives.gov.uk/terms/dri#> 
 prefix dcterms: <http://purl.org/dc/terms/>
-prefix ex: <http://example.com/schema/>
+prefix ex: <http://id.example.com/schema/>
 
 construct {
     ?d ex:variationDriId ?d;

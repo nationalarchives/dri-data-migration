@@ -50,6 +50,13 @@ Content-Type: text/turtle
         ]
     ].
 
+### Index compacting
+POST {{endpoint}}
+Content-Type: application/sparql-query
+Accept: text/turtle
+
+insert data { [] <http://www.ontotext.com/compactIndexes> [] }
+
 ### SameAs check
 POST {{endpoint}}
 Content-Type: application/sparql-query
@@ -66,8 +73,9 @@ construct {
 ### Access conditions count
 POST {{endpoint}}
 Content-Type: application/sparql-query
+Accept: application/sparql-results+json
 
-prefix ex: <http://example.com/schema/>
+prefix ex: <http://id.example.com/schema/>
 
 select (count(?s) as ?x) where {
     ?s ex:accessConditionCode ?code.
@@ -78,7 +86,7 @@ POST {{endpoint}}
 Content-Type: application/sparql-query
 Accept: text/turtle
 
-prefix ex: <http://example.com/schema/>
+prefix ex: <http://id.example.com/schema/>
 
 construct {
     ?s ex:accessConditionCode ?code;
@@ -92,7 +100,7 @@ construct {
 POST {{endpoint}}
 Content-Type: application/sparql-query
 
-prefix ex: <http://example.com/schema/>
+prefix ex: <http://id.example.com/schema/>
 
 select (count(?s) as ?x) where {
     ?s ex:legislationHasUkLegislation ?legislationHasUkLegislation.
@@ -103,7 +111,7 @@ POST {{endpoint}}
 Content-Type: application/sparql-query
 Accept: text/turtle
 
-prefix ex: <http://example.com/schema/>
+prefix ex: <http://id.example.com/schema/>
 
 construct {
     ?s ex:legislationHasUkLegislation ?legislationHasUkLegislation;
@@ -117,7 +125,7 @@ construct {
 POST {{endpoint}}
 Content-Type: application/sparql-query
 
-prefix ex: <http://example.com/schema/>
+prefix ex: <http://id.example.com/schema/>
 
 select (count(?s) as ?x) where {
     ?s ex:groundForRetentionCode ?groundForRetentionCode.
@@ -128,7 +136,7 @@ POST {{endpoint}}
 Content-Type: application/sparql-query
 Accept: text/turtle
 
-prefix ex: <http://example.com/schema/>
+prefix ex: <http://id.example.com/schema/>
 
 construct {
     ?s ex:groundForRetentionCode ?groundForRetentionCode;
@@ -142,7 +150,7 @@ construct {
 POST {{endpoint}}
 Content-Type: application/sparql-query
 
-prefix ex: <http://example.com/schema/>
+prefix ex: <http://id.example.com/schema/>
 
 select (count(distinct ?subsetReference) as ?x) where {
     ?subset ex:subsetReference ?subsetReference.
@@ -152,7 +160,7 @@ select (count(distinct ?subsetReference) as ?x) where {
 POST {{endpoint}}
 Content-Type: application/sparql-query
 
-prefix ex: <http://example.com/schema/>
+prefix ex: <http://id.example.com/schema/>
 
 select ?subsetReference where {
     ?subset ex:subsetReference ?subsetReference.
@@ -162,7 +170,7 @@ select ?subsetReference where {
 POST {{endpoint}}
 Content-Type: application/sparql-query
 
-prefix ex: <http://example.com/schema/>
+prefix ex: <http://id.example.com/schema/>
 
 select (count(?assetReference) as ?x) where {
     ?asset ex:assetReference ?assetReference.
@@ -172,7 +180,7 @@ select (count(?assetReference) as ?x) where {
 POST {{endpoint}}
 Content-Type: application/sparql-query
 
-prefix ex: <http://example.com/schema/>
+prefix ex: <http://id.example.com/schema/>
 
 select (count(?variation) as ?x) where {
     ?variation ex:variationName ?variationName.
@@ -182,7 +190,7 @@ select (count(?variation) as ?x) where {
 POST {{endpoint}}
 Content-Type: application/sparql-query
 
-prefix ex: <http://example.com/schema/>
+prefix ex: <http://id.example.com/schema/>
 
 select (count(?id) as ?x) where {
     ?sr ex:sensitivityReviewDriId ?id.

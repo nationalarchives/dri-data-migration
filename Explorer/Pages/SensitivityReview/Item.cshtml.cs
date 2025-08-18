@@ -11,7 +11,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
 {
     private readonly Uri endpoint = new(configuration.GetConnectionString("Sparql"));
     private readonly string query = """
-        prefix ex: <http://example.com/schema/>
+        prefix ex: <http://id.example.com/schema/>
 
         construct {
             ?sr a ex:SensitivityReview;

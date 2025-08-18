@@ -5,7 +5,7 @@ namespace Api;
 
 public static class Vocabulary
 {
-    public static readonly Uri Namespace = new("http://example.com/schema/");
+    public static readonly Uri Namespace = new("http://id.example.com/schema/");
 
     public static readonly IUriNode Subset = new UriNode(new(Namespace, "Subset"));
     public static readonly IUriNode SubsetName = new UriNode(new(Namespace, "subsetName"));
@@ -17,6 +17,7 @@ public static class Vocabulary
     public static readonly IUriNode SubsetHasRetention = new UriNode(new(Namespace, "subsetHasRetention"));
 
     public static readonly IUriNode Asset = new UriNode(new(Namespace, "Asset"));
+    public static readonly IUriNode AssetDriId = new UriNode(new(Namespace, "assetDriId"));
     public static readonly IUriNode AssetReference = new UriNode(new(Namespace, "assetReference"));
     public static readonly IUriNode AssetName = new UriNode(new(Namespace, "assetName"));
     public static readonly IUriNode AssetHasSubset = new UriNode(new(Namespace, "assetHasSubset"));
