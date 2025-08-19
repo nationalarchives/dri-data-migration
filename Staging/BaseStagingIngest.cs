@@ -24,6 +24,9 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
     private readonly string subsetSparql;
     private readonly string variationSparql;
     private readonly string retentionSparql;
+    private readonly string languageSparql;
+    private readonly string formalBodySparql;
+    private readonly string copyrightSparql;
 
     protected BaseStagingIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger logger, string sparqlFileName)
     {
@@ -41,6 +44,9 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
         subsetSparql = embedded.GetSparql("GetSubset");
         variationSparql = embedded.GetSparql("GetVariation");
         retentionSparql = embedded.GetSparql("GetRetention");
+        languageSparql = embedded.GetSparql("GetLanguage");
+        formalBodySparql = embedded.GetSparql("GetFormalBody");
+        copyrightSparql = embedded.GetSparql("GetCopyright");
     }
 
     internal virtual Task<Graph?> BuildAsync(IGraph existing, T dri, CancellationToken cancellationToken)
@@ -80,6 +86,9 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
         CacheEntityKind.Subset => new(subsetSparql, $"subset-{key}"),
         CacheEntityKind.Variation => new(variationSparql, $"variation-{key}"),
         CacheEntityKind.Retention => new(retentionSparql, $"retention-{key}"),
+        CacheEntityKind.Language => new(languageSparql, $"language-{key}"),
+        CacheEntityKind.FormalBody => new(formalBodySparql, $"formal-body-{key}"),
+        CacheEntityKind.Copyright => new(copyrightSparql, $"copyright-{key}"),
         _ => null
     };
 
@@ -125,7 +134,7 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
 
     internal IUriNode NewId => new UriNode(new Uri(idNamespace, Guid.NewGuid().ToString()));
 
-    internal static string? GetUriFragment(Uri? uri) => uri?.Fragment.Length > 1 ? uri.Fragment.Substring(1) : null;
+    internal static string? GetUriFragment(Uri? uri) => uri?.Fragment.Length > 1 ? uri.Fragment.TrimStart('#') : null;
 
     private sealed record CacheFetchInfo(string Sparql, string Key);
 
@@ -135,6 +144,9 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
         SensititvityReview,
         Subset,
         Variation,
-        Retention
+        Retention,
+        Language,
+        FormalBody,
+        Copyright
     }
 }

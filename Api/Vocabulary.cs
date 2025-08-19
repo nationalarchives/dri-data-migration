@@ -18,12 +18,20 @@ public static class Vocabulary
 
     public static readonly IUriNode Asset = new UriNode(new(Namespace, "Asset"));
     public static readonly IUriNode AssetDriId = new UriNode(new(Namespace, "assetDriId"));
+    public static readonly IUriNode BatchDriId = new UriNode(new(Namespace, "batchDriId"));
+    public static readonly IUriNode ConsignmentTdrId = new UriNode(new(Namespace, "consignmentTdrId"));
+    public static readonly IUriNode AssetDriXml = new UriNode(new(Namespace, "assetDriXml"));
     public static readonly IUriNode AssetReference = new UriNode(new(Namespace, "assetReference"));
     public static readonly IUriNode AssetName = new UriNode(new(Namespace, "assetName"));
+    public static readonly IUriNode AssetDescription = new UriNode(new(Namespace, "assetDescription"));
     public static readonly IUriNode AssetHasSubset = new UriNode(new(Namespace, "assetHasSubset"));
     public static readonly IUriNode AssetHasVariation = new UriNode(new(Namespace, "assetHasVariation"));
     public static readonly IUriNode AssetHasRetention = new UriNode(new(Namespace, "assetHasRetention"));
     public static readonly IUriNode AssetHasSensitivityReview = new UriNode(new(Namespace, "assetHasSensitivityReview"));
+    public static readonly IUriNode AssetHasLanguage = new UriNode(new(Namespace, "assetHasLanguage"));
+    public static readonly IUriNode AssetHasLegalStatus = new UriNode(new(Namespace, "assetHasLegalStatus"));
+    public static readonly IUriNode AssetHasCopyright = new UriNode(new(Namespace, "assetHasCopyright"));
+    public static readonly IUriNode AssetHasCreation = new UriNode(new(Namespace, "assetHasCreation"));
 
     public static readonly IUriNode Variation = new UriNode(new(Namespace, "Variation"));
     public static readonly IUriNode VariationHasAsset = new UriNode(new(Namespace, "variationHasAsset"));
@@ -68,4 +76,18 @@ public static class Vocabulary
 
     public static readonly IUriNode GroundForRetentionCode = new UriNode(new(Namespace, "groundForRetentionCode"));
     public static readonly IUriNode GroundForRetentionDescription = new UriNode(new(Namespace, "groundForRetentionDescription"));
+    
+    public static readonly IUriNode LanguageName = new UriNode(new(Namespace, "languageName"));
+    
+    public static readonly IUriNode CopyrightTitle = new UriNode(new(Namespace, "copyrightTitle"));
+    
+    public static readonly IUriNode RetentionHasFormalBody = new UriNode(new(Namespace, "retentionHasFormalBody"));
+    public static readonly IUriNode CreationHasFormalBody = new UriNode(new(Namespace, "creationHasFormalBody"));
+    
+    public static readonly IUriNode FormalBodyName = new UriNode(new(Namespace, "formalBodyName"));
+    
+    public static readonly IUriNode PublicRecord = new UriNode(new(Namespace, "PublicRecord"));
+    public static readonly IUriNode NotPublicRecord = new UriNode(new(Namespace, "NotPublicRecord"));
+    public static readonly IUriNode WelshPublicRecord = new UriNode(new(Namespace, "WelshPublicRecord"));
+    public static readonly IUriNode NonRecordMaterial = new UriNode(new(Namespace, "NonRecordMaterial"));
 }

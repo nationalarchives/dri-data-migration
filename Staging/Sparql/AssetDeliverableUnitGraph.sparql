@@ -1,0 +1,50 @@
+﻿prefix ex: <http://id.example.com/schema/>
+
+construct {
+    ?asset ex:assetDriId ?assetDriId;
+        ex:assetDriXml ?assetDriXml;
+        ex:assetDescription ?assetDescription;
+        ex:batchDriId ?batchDriId;
+        ex:consignmentTdrId ?consignmentTdrId;
+        ex:assetHasLanguage ?language;
+        ex:assetHasLegalStatus ?legalStatus;
+        ex:assetHasCopyright ?copyright;
+        ex:assetHasRetention ?retention;
+        ex:assetHasCreation ?creation.
+    ?language ex:languageName ?languageName.
+    ?copyright ex:copyrightTitle ?copyrightTitle.
+    ?retention ex:retentionHasFormalBody ?retentionHasFormalBody.
+    ?retentionHasFormalBody ex:formalBodyName ?retentionFormalBodyName.
+    ?creation ex:creationHasFormalBody ?creationHasFormalBody.
+    ?creationHasFormalBody ex:formalBodyName ?creationFormalBodyName.
+} where {
+    bind(@id as ?assetDriId)
+    ?asset ex:assetDriId ?assetDriId.
+    optional { ?asset ex:assetDriXml ?assetDriXml }
+    optional { ?asset ex:assetDescription ?assetDescription }
+    optional { ?asset ex:batchDriId ?batchDriId }
+    optional { ?asset ex:consignmentTdrId ?consignmentTdrId }
+    optional {
+        ?asset ex:assetHasLanguage ?language.
+        ?language ex:languageName ?languageName.
+    }
+    optional {
+        ?asset ex:assetHasCopyright ?copyright.
+        ?copyright ex:copyrightTitle ?copyrightTitle.
+    }
+    optional { ?asset ex:assetHasLegalStatus ?legalStatus }
+    optional {
+        ?asset ex:assetHasRetention ?retention.
+        optional {
+            ?retention ex:retentionHasFormalBody ?retentionHasFormalBody.
+            ?retentionHasFormalBody ex:formalBodyName ?retentionFormalBodyName.
+        }
+    }
+    optional {
+        ?asset ex:assetHasCreation ?creation.
+        optional {
+            ?creation ex:creationHasFormalBody ?creationHasFormalBody.
+            ?creationHasFormalBody ex:formalBodyName ?creationFormalBodyName.
+        }
+    }
+}

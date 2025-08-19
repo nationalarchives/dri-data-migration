@@ -58,4 +58,17 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 18, Level = LogLevel.Information, Message = "Migration finished")]
     internal static partial void MigrationFinished(this ILogger logger);
+
+    [LoggerMessage(EventId = 19, Level = LogLevel.Information, Message = "Ingesting {size} deliverable units")]
+    internal static partial void IngestingDeliverableUnits(this ILogger logger, int size);
+
+    [LoggerMessage(EventId = 20, Level = LogLevel.Information, Message = "Updated {size} deliverable units")]
+    internal static partial void IngestedDeliverableUnits(this ILogger logger, int size);
+
+    [LoggerMessage(EventId = 21, Level = LogLevel.Information, Message = "Fetching deliverable units at {offset}")]
+    internal static partial void GetDeliverableUnits(this ILogger logger, int offset);
+
+    [LoggerMessage(EventId = 22, Level = LogLevel.Information, Message = "Fetching files at {offset}")]
+    internal static partial void GetFiles(this ILogger logger, int offset);
+
 }

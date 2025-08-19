@@ -1,0 +1,8 @@
+﻿prefix ex: <http://id.example.com/schema/>
+            
+construct {
+    ?s ex:copyrightTitle ?copyrightTitle.
+} where {
+    bind(@id as ?copyrightTitle)
+    ?s ex:copyrightTitle ?copyrightTitle.
+}

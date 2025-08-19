@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DriRdf\DriRdf.csproj" />
+    <ProjectReference Include="..\DriSql\DriSql.csproj" />
     <ProjectReference Include="..\Etl\Etl.csproj" />
     <ProjectReference Include="..\Reconciliation\Reconciliation.csproj" />
     <ProjectReference Include="..\Staging\Staging.csproj" />
