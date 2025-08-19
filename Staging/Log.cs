@@ -38,8 +38,8 @@ internal static partial class Log
     [LoggerMessage(EventId = 11, Level = LogLevel.Warning, Message = "Access condition {code} not found")]
     internal static partial void AccessConditionNotFound(this ILogger logger, string code);
 
-    [LoggerMessage(EventId = 12, Level = LogLevel.Warning, Message = "Asset {asset} not found")]
-    internal static partial void VariationNotFound(this ILogger logger, string asset);
+    [LoggerMessage(EventId = 12, Level = LogLevel.Warning, Message = "Variation {variation} not found")]
+    internal static partial void VariationNotFound(this ILogger logger, string variation);
 
     [LoggerMessage(EventId = 13, Level = LogLevel.Warning, Message = "Unable to parse ground for retention code from {groundForRetention}")]
     internal static partial void UnableParseGroundForRetentionUri(this ILogger logger, Uri groundForRetention);
