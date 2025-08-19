@@ -5,7 +5,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class DriSqlServiceCollectionExtensions
 {
-    public static IServiceCollection AddReconciliation(this IServiceCollection services)
+    public static IServiceCollection AddDriSqlExport(this IServiceCollection services)
     {
         services.AddSingleton<IDriSqlExporter, DriExporter>();
 

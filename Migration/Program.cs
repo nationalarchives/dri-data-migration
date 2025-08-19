@@ -12,7 +12,7 @@ builder.Services.AddOptions<StagingSettings>().BindConfiguration(StagingSettings
 builder.Services.AddOptions<DriSettings>().BindConfiguration(DriSettings.Prefix);
 builder.Services.AddOptions<ReconciliationSettings>().BindConfiguration(ReconciliationSettings.Prefix);
 
-builder.Services.AddDriExport();
+builder.Services.AddDriRdfExport();
 builder.Services.AddStagingIngest();
 builder.Services.AddMigration();
 builder.Services.AddReconciliation();
