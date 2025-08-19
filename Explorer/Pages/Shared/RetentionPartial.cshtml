@@ -11,5 +11,12 @@
                 <dd>@Model.Single().ImportLocation.Single()</dd>
             </dl>
         }
+        @if (Model.Single().RetentionBody.Any())
+        {
+            <dl class="tna-dl tna-dl--plain">
+                <dt>Retained by</dt>
+                <dd>@Model.Single().RetentionBody.Single().Name.Single()</dd>
+            </dl>
+        }
     </div>
 }

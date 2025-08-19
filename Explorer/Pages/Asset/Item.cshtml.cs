@@ -17,19 +17,31 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:assetDriId ?assetDriId;
                 ex:assetReference ?assetReference;
                 ex:assetName ?assetName;
+                ex:assetDriXml ?assetDriXml;
                 ex:assetDescription ?assetDescription;
-                ex:assetReference ?assetReference;
+                ex:batchDriId ?batchDriId;
+                ex:consignmentTdrId ?consignmentTdrId;
+                ex:assetHasLanguage ?language;
+                ex:assetHasLegalStatus ?legalStatus;
+                ex:assetHasCopyright ?copyright;
                 ex:assetHasSubset ?subset;
                 ex:assetHasVariation ?variation;
                 ex:assetHasRetention ?retention;
+                ex:assetHasCreation ?creation;
                 ex:assetHasSensitivityReview ?sr.
+            ?language ex:languageName ?languageName.
+            ?copyright ex:copyrightTitle ?copyrightTitle.
+            ?creation ex:creationHasFormalBody ?creationHasFormalBody.
+            ?creationHasFormalBody ex:formalBodyName ?creationFormalBodyName.
             ?subset ex:subsetReference ?subsetReference;
                 ex:subsetHasBroaderSubset ?broader.
             ?broader ex:subsetReference ?broaderSubsetReference.
             ?variation ex:variationName ?variationName;
                 ex:variationDriId ?variationDriId.
             ?retention ex:custodianshipStartAt ?created;
-                ex:importLocation ?importLocation.
+                ex:importLocation ?importLocation;
+                ex:retentionHasFormalBody ?retentionHasFormalBody.
+            ?retentionHasFormalBody ex:formalBodyName ?retentionFormalBodyName.
             ?sr ex:sensitivityReviewDriId ?sensitivityReviewDriId;
                 ex:sensitivityReviewHasAccessCondition ?accessCondition;
                 ex:sensitivityReviewDate ?sensitivityReviewDate;
@@ -67,7 +79,19 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ?broader ex:subsetReference ?broaderSubsetReference.
             }
             optional { ?s ex:assetName ?assetName }
+            optional { ?s ex:assetDriXml ?assetDriXml }
             optional { ?s ex:assetDescription ?assetDescription }
+            optional { ?s ex:batchDriId ?batchDriId }
+            optional { ?s ex:consignmentTdrId ?consignmentTdrId }
+            optional {
+                ?s ex:assetHasLanguage ?language.
+                ?language ex:languageName ?languageName.
+            }
+            optional {
+                ?s ex:assetHasCopyright ?copyright.
+                ?copyright ex:copyrightTitle ?copyrightTitle.
+            }
+            optional { ?s ex:assetHasLegalStatus ?legalStatus }
             optional {
                 ?s ex:assetHasVariation ?variation.
                 ?variation ex:variationName ?variationName;
@@ -75,8 +99,19 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
             }
             optional {
                 ?s ex:assetHasRetention ?retention.
-        	    ?retention ex:importLocation ?importLocation.
+        	    optional { ?retention ex:importLocation ?importLocation }
                 optional { ?retention ex:custodianshipStartAt ?created }
+                optional {
+                    ?retention ex:retentionHasFormalBody ?retentionHasFormalBody.
+                    ?retentionHasFormalBody ex:formalBodyName ?retentionFormalBodyName.
+                }
+            }
+            optional {
+                ?s ex:assetHasCreation ?creation.
+                optional {
+                    ?creation ex:creationHasFormalBody ?creationHasFormalBody.
+                    ?creationHasFormalBody ex:formalBodyName ?creationFormalBodyName.
+                }
             }
             optional {
                 ?s ex:assetHasSensitivityReview ?sr.

@@ -10,6 +10,41 @@
     <dl class="tna-dl tna-dl--plain">
         <dt>DRI Id</dt>
         <dd>@Model.Item.Id.Single()</dd>
+        @if (Model.Item.Description.Any())
+        {
+            <dt>Description</dt>
+            <dd>@Model.Item.Description.Single()</dd>
+        }
+        @if (Model.Item.BatchId.Any())
+        {
+            <dt>Batch Id</dt>
+            <dd>@Model.Item.BatchId.Single()</dd>
+        }
+        @if (Model.Item.ConsignmentId.Any())
+        {
+            <dt>Consignment Id</dt>
+            <dd>@Model.Item.ConsignmentId.Single()</dd>
+        }
+        @if (Model.Item.Language.Any())
+        {
+            <dt>Language</dt>
+            <dd>@Model.Item.Language.Single().Name.Single()</dd>
+        }
+        @if (Model.Item.Copyright.Any())
+        {
+            <dt>Copyright</dt>
+            <dd>@Model.Item.Copyright.Single().Title.Single()</dd>
+        }
+        @if (Model.Item.LegalStatus.Any())
+        {
+            <dt>Legal status</dt>
+            <dd>@Model.Item.LegalStatus.Single()</dd>
+        }
+        @if (Model.Item.Creation.Any())
+        {
+            <dt>Created by</dt>
+            <dd>@Model.Item.Creation.Single().CreationBody.Single().Name.Single()</dd>
+        }
     </dl>
 
     <partial name="RetentionPartial" model="@Model.Item.Retention" />
@@ -19,7 +54,7 @@
         <div class="tna-!--margin-top-m">
             <h2>Variations</h2>
             <ul class="tna-ul tna-ul--dashed">
-                @foreach(var variation in Model.Item.Variations)
+                @foreach (var variation in Model.Item.Variations)
                 {
                     <li>
                         <a asp-page="/variation/item" asp-route-id="@variation.Id.Single()">@variation.Name.Single()</a>
@@ -46,4 +81,12 @@
             </ul>
         </div>
     }
+</section>
+
+<section class="tna-container tna-!--margin-top-m">
+    <div class="tna-column tna-column--full">
+        <div class="tna-form__group">
+            <textarea class="tna-textarea" rows="25" readonly>@System.Text.UTF8Encoding.UTF8.GetString(Convert.FromBase64String(Model.Item.Xml.Single().Value))</textarea>
+        </div>
+    </div>
 </section>
