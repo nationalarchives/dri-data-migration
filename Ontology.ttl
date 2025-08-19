@@ -38,11 +38,57 @@ this:schema a owl:Ontology;
 	rdfs:label "Variation";
 	rdfs:comment "A variant of an :Asset.".
 
+:RedactedVariation a owl:Class;
+	rdfs:subClassOf :Variation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:Instantiation;
+	rdfs:label "Redatced variation";
+	rdfs:comment "A version of a :Variant with sensitive information hidden. More details at https://cdn.nationalarchives.gov.uk/documents/information-management/redaction-considerations.pdf and https://cdn.nationalarchives.gov.uk/documents/information-management/redaction_toolkit.pdf.".
+
 :Language a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:seeAlso rico:Language;
 	rdfs:label "Language";
 	rdfs:comment "Language of the :Asset.".
+
+:Language a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:Language;
+	rdfs:label "Language";
+	rdfs:comment "Language of the :Asset.".
+
+:Copyright a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:conditionsOfUse;
+	rdfs:label "Copyright";
+	rdfs:comment "Copyright of the :Asset. More details at https://cdn.nationalarchives.gov.uk/documents/information-management/copyright-related-rights.pdf and https://cdn.nationalarchives.gov.uk/documents/information-management/use-of-tna-materials.pdf.".
+
+:LegalStatus a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:LegalStatus;
+	rdfs:label "Legal status";
+	rdfs:comment "Legal status of the :Asset. More details at https://www.nationalarchives.gov.uk/information-management/legislation/public-records-act/pra-faqs/.".
+
+:PublicRecord a owl:Class;
+	rdfs:subClassOf :LegalStatus;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Public record".
+
+:NotPublicRecord a owl:Class;
+	rdfs:subClassOf :LegalStatus;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Not public record".
+
+:WelshPublicRecord a owl:Class;
+	rdfs:subClassOf :LegalStatus;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Welsh public record";
+	rdfs:comment "More details at https://www.nationalarchives.gov.uk/information-management/legislation/public-records-act/concordat-welsh-public-records/.".
+
+:NonRecordMaterial a owl:Class;
+	rdfs:subClassOf :LegalStatus;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Non-record material".
 
 :Image a owl:Class;
 	rdfs:subClassOf :Variation;
@@ -64,11 +110,6 @@ this:schema a owl:Ontology;
 	rdfs:seeAlso rico:Place;
 	rdfs:label "Location";
 	rdfs:comment "A location of a thing.".
-
-:FileLocation a owl:Class;
-	rdfs:subClassOf :Location;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "File location".
 
 :FormalBody a owl:Class;
 	rdfs:isDefinedBy this:schema;
@@ -174,11 +215,74 @@ this:schema a owl:Ontology;
 	rdfs:label "Asset has subset".
 
 :assetHasLanguage a owl:ObjectProperty, owl:FunctionalProperty;
-	rdfs:seeAlso :rico:isOrWasLanguageOf;
+	rdfs:seeAlso rico:hasOrHadLanguage;
 	rdfs:domain :Asset;
 	rdfs:range :Language;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has language".
+
+:languageHasAsset a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:seeAlso rico:isOrWasLanguageOf;
+	rdfs:domain :Language;
+	rdfs:range :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Language has asset".
+
+:assetHasCopyright a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:seeAlso rico:hasOrHadAllMembersWithLegalStatus;
+	rdfs:domain :Asset;
+	rdfs:range :Copyright;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has copyright".
+
+:copyrightHasAsset a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:seeAlso rico:isOrWasLegalStatusOfAllMembersOf;
+	rdfs:domain :Copyright;
+	rdfs:range :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Copyright has asset".
+
+:assetHasLegalStatus a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:seeAlso rico:hasOrHadAllMembersWithLegalStatus;
+	rdfs:domain :Asset;
+	rdfs:range :LegalStatus;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has legal status".
+
+:legalStatusHasAsset a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:seeAlso rico:isOrWasLegalStatusOfAllMembersOf;
+	rdfs:domain :LegalStatus;
+	rdfs:range :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Legal status has asset".
+
+:assetHasPublicRecord a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:subPropertyOf :assetHasLegalStatus;
+	rdfs:domain :Asset;
+	rdfs:range :PublicRecord;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has public record".
+
+:assetHasNotPublicRecord a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:subPropertyOf :assetHasLegalStatus;
+	rdfs:domain :Asset;
+	rdfs:range :NotPublicRecord;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has not public record".
+
+:assetHasWelshPublicRecord a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:subPropertyOf :assetHasLegalStatus;
+	rdfs:domain :Asset;
+	rdfs:range :WelshPublicRecord;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has Welsh public record".
+
+:assetHasNonRecordMaterial a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:subPropertyOf :assetHasLegalStatus;
+	rdfs:domain :Asset;
+	rdfs:range :NonRecordMaterial;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has non-record material".
 
 :assetHasVariation a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	rdfs:seeAlso rico:hasOrHadInstantiation;
@@ -195,18 +299,33 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation has asset".
 
-:variationHasFileLocation a owl:ObjectProperty, owl:FunctionalProperty;
+:variationHasRedactedVariation a owl:ObjectProperty;
+	rdfs:seeAlso rico:migratedInto;
 	rdfs:domain :Variation;
-	rdfs:range :FileLocation;
+	rdfs:range :RedactedVariation;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Variation has file location".
+	rdfs:label "Variation has redacted variation".
 
-:creationHasAsset a owl:ObjectProperty, owl:FunctionalProperty;
+:redactedVariationHasVariation a owl:ObjectProperty;
+	rdfs:seeAlso rico:migratedFrom;
+	rdfs:domain :RedactedVariation;
+	rdfs:range :Variation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Redacted variation has variation".
+
+:creationHasAsset a owl:ObjectProperty;
 	rdfs:seeAlso rico:relationHasSource;
 	rdfs:domain :Creation;
 	rdfs:range :Asset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Creation has asset".
+
+:assetHasCreation a owl:ObjectProperty;
+	rdfs:seeAlso rico:thingIsSourceOfRelation;
+	rdfs:domain :Asset;
+	rdfs:range :Creation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has creation".
 
 :creationHasSubset a owl:ObjectProperty, owl:FunctionalProperty;
 	rdfs:seeAlso rico:relationHasSource;
@@ -414,7 +533,13 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:string;
 	rdfs:subPropertyOf :externalIdentifier;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Deliverable unit DRI Id".
+	rdfs:label "Asset DRI Id".
+
+:assetDriXml a owl:DatatypeProperty;
+	rdfs:domain :Asset;
+	rdfs:range xsd:base64Binary;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset DRI XML".
 
 :batchDriId a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :Asset;
@@ -430,7 +555,7 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Consignment TDR Id".
 
-:formalBodyName a owl:DatatypeProperty;
+:formalBodyName a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :FormalBody;
 	rdfs:range xsd:string;
 	rdfs:subPropertyOf :name;
@@ -469,6 +594,12 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation name".
 
+:variationDriXml a owl:DatatypeProperty;
+	rdfs:domain :Variation;
+	rdfs:range xsd:base64Binary;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation DRI XML".
+
 :imagePixelHeight a owl:DatatypeProperty;
 	rdfs:domain :Image;
 	rdfs:range xsd:integer;
@@ -492,12 +623,6 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "e-mail subject".
-
-:smbNetworkShare a owl:DatatypeProperty;
-	rdfs:domain :FileLocation;
-	rdfs:range xsd:string;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "SMB network share".
 
 :sensitivityReviewDate a owl:DatatypeProperty;
 	rdfs:domain :SensitivityReview;
@@ -618,3 +743,10 @@ this:schema a owl:Ontology;
 	rdfs:subPropertyOf :externalIdentifier;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Language name".
+
+:copyrightTitle a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :Copyright;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :name;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Copyright title".
