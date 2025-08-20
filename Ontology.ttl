@@ -41,9 +41,14 @@ this:schema a owl:Ontology;
 :RedactedVariation a owl:Class;
 	rdfs:subClassOf :Variation;
 	rdfs:isDefinedBy this:schema;
-	rdfs:seeAlso rico:Instantiation;
-	rdfs:label "Redatced variation";
+	rdfs:label "Redacted variation";
 	rdfs:comment "A version of a :Variant with sensitive information hidden. More details at https://cdn.nationalarchives.gov.uk/documents/information-management/redaction-considerations.pdf and https://cdn.nationalarchives.gov.uk/documents/information-management/redaction_toolkit.pdf.".
+
+:AlternativeVariation a owl:Class;
+	rdfs:subClassOf :Variation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Alternative variation";
+	rdfs:comment "An alternative version of a :Variant.".
 
 :Language a owl:Class;
 	rdfs:isDefinedBy this:schema;
@@ -185,6 +190,13 @@ this:schema a owl:Ontology;
 	rdfs:seeAlso rico:Activity;
 	rdfs:label "Past sensitivity review".
 
+:CausingSoftware a owl:Class;
+	rdfs:subClassOf :SensitivityReviewRestriction;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:Mechanism;
+	rdfs:label "Causing software";
+	rdfs:comment "Software application that was used to create :Variation.".
+
 
 # Object properties
 
@@ -256,34 +268,6 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Legal status has asset".
 
-:assetHasPublicRecord a owl:ObjectProperty, owl:FunctionalProperty;
-	rdfs:subPropertyOf :assetHasLegalStatus;
-	rdfs:domain :Asset;
-	rdfs:range :PublicRecord;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset has public record".
-
-:assetHasNotPublicRecord a owl:ObjectProperty, owl:FunctionalProperty;
-	rdfs:subPropertyOf :assetHasLegalStatus;
-	rdfs:domain :Asset;
-	rdfs:range :NotPublicRecord;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset has not public record".
-
-:assetHasWelshPublicRecord a owl:ObjectProperty, owl:FunctionalProperty;
-	rdfs:subPropertyOf :assetHasLegalStatus;
-	rdfs:domain :Asset;
-	rdfs:range :WelshPublicRecord;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset has Welsh public record".
-
-:assetHasNonRecordMaterial a owl:ObjectProperty, owl:FunctionalProperty;
-	rdfs:subPropertyOf :assetHasLegalStatus;
-	rdfs:domain :Asset;
-	rdfs:range :NonRecordMaterial;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset has non-record material".
-
 :assetHasVariation a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	rdfs:seeAlso rico:hasOrHadInstantiation;
 	rdfs:domain :Asset;
@@ -312,6 +296,34 @@ this:schema a owl:Ontology;
 	rdfs:range :Variation;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Redacted variation has variation".
+
+:variationHasAlternativeVariation a owl:ObjectProperty;
+	rdfs:seeAlso rico:migratedInto;
+	rdfs:domain :Variation;
+	rdfs:range :AlternativeVariation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation has alternative variation".
+
+:alternativeVariationHasVariation a owl:ObjectProperty;
+	rdfs:seeAlso rico:migratedFrom;
+	rdfs:domain :AlternativeVariation;
+	rdfs:range :Variation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Alternative variation has variation".
+
+:variationHasCausingSoftware a owl:ObjectProperty;
+	rdfs:seeAlso rico:migratedInto;
+	rdfs:domain :Variation;
+	rdfs:range :CausingSoftware;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation has causing software".
+
+:causingSoftwareHasVariation a owl:ObjectProperty;
+	rdfs:seeAlso rico:migratedFrom;
+	rdfs:domain :CausingSoftware;
+	rdfs:range :Variation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Causing software has variation".
 
 :creationHasAsset a owl:ObjectProperty;
 	rdfs:seeAlso rico:relationHasSource;
@@ -600,6 +612,26 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation DRI XML".
 
+:variationNote a owl:DatatypeProperty;
+	rdfs:domain :Variation;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf rdfs:comment;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation note".
+
+:variationRelativeLocation a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :Variation;
+	rdfs:range xsd:anyURI;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation relative location".
+
+:variationSequence a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :Variation;
+	rdfs:range xsd:anyURI;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation sequence";
+	rdfs:comment "This is lieu of relationship describing :Variation that follows another :Variation.".
+
 :imagePixelHeight a owl:DatatypeProperty;
 	rdfs:domain :Image;
 	rdfs:range xsd:integer;
@@ -617,6 +649,18 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:integer;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Number of pages".
+
+:wordCount a owl:DatatypeProperty;
+	rdfs:domain :Document;
+	rdfs:range xsd:integer;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Word count".
+
+:characterCount a owl:DatatypeProperty;
+	rdfs:domain :Document;
+	rdfs:range xsd:integer;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Character count".
 
 :emailSubject a owl:DatatypeProperty;
 	rdfs:domain :Email;
@@ -750,3 +794,10 @@ this:schema a owl:Ontology;
 	rdfs:subPropertyOf :name;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Copyright title".
+
+:causingSoftwareName a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :CausingSoftware;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Causing software name".
