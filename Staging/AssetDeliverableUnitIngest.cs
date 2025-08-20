@@ -20,8 +20,8 @@ public class AssetDeliverableUnitIngest(IMemoryCache cache, ISparqlClient sparql
     {
         logger.BuildingRecord(dri.Id);
 
-        var assetDriId = new LiteralNode(dri.Id);
-        var id = existing.GetTriplesWithPredicateObject(Vocabulary.AssetDriId, assetDriId).FirstOrDefault()?.Subject;
+        var driId = new LiteralNode(dri.Id);
+        var id = existing.GetTriplesWithPredicateObject(Vocabulary.AssetDriId, driId).FirstOrDefault()?.Subject;
         if (id is null)
         {
             logger.AssetNotFound(dri.Id);
@@ -29,7 +29,7 @@ public class AssetDeliverableUnitIngest(IMemoryCache cache, ISparqlClient sparql
         }
 
         var graph = new Graph();
-        graph.Assert(id, Vocabulary.AssetDriId, new LiteralNode(dri.Id));
+        graph.Assert(id, Vocabulary.AssetDriId, driId);
         if (!string.IsNullOrEmpty(dri.Xml))
         {
             var xmlBase64 = Convert.ToBase64String(UTF8Encoding.UTF8.GetBytes(dri.Xml));
@@ -45,7 +45,7 @@ public class AssetDeliverableUnitIngest(IMemoryCache cache, ISparqlClient sparql
         INode id, string xml, CancellationToken cancellationToken)
     {
         var rdf = GetRdf(xml);
-        if (rdf is not null)
+        if (rdf is not null) //TODO: handle null
         {
             var batch = rdf.GetTriplesWithPredicate(batchIdentifier).SingleOrDefault()?.Object;
             if (batch is ILiteralNode batchNode)
@@ -104,7 +104,7 @@ public class AssetDeliverableUnitIngest(IMemoryCache cache, ISparqlClient sparql
         var name = node switch
         {//TODO: handle default
             ILiteralNode literalNode => literalNode.Value,
-            IUriNode uriNode => uriNode.Uri.Segments.Last()
+            IUriNode uriNode => uriNode.Uri.Segments.Last().Replace('_',' ')
         };
 
         var nodeId = await CacheFetchOrNew(cacheEntityKind, name, cancellationToken);

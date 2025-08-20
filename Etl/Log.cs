@@ -71,4 +71,9 @@ internal static partial class Log
     [LoggerMessage(EventId = 22, Level = LogLevel.Information, Message = "Fetching files at {offset}")]
     internal static partial void GetFiles(this ILogger logger, int offset);
 
+    [LoggerMessage(EventId = 23, Level = LogLevel.Information, Message = "Ingesting {size} files")]
+    internal static partial void IngestingFiles(this ILogger logger, int size);
+
+    [LoggerMessage(EventId = 24, Level = LogLevel.Information, Message = "Updated {size} files")]
+    internal static partial void IngestedFiles(this ILogger logger, int size);
 }

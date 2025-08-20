@@ -7,7 +7,7 @@ using System.Data;
 
 namespace DriSql;
 
-public class DriExporter(ILogger<DriExporter> logger, IOptions<DriSettings> options) : IDriSqlExporter
+public class DriExporter(IOptions<DriSettings> options) : IDriSqlExporter
 {
     /* Additional indices created:
     create index xmlmetadata_ix on xmlmetadata (METADATAREF)
@@ -88,8 +88,8 @@ public class DriExporter(ILogger<DriExporter> logger, IOptions<DriSettings> opti
         using var reader = command.ExecuteReader();
         while (reader.Read())
         {
-            yield return new DriVariationFile(reader.GetString("DriFile"),
-                reader.GetString("DriFile"), reader.GetString("Name"),
+            yield return new DriVariationFile(reader.GetString("FILEREF"),
+                reader.GetString("FILELOCATION"), reader.GetString("NAME"),
                 reader.GetString("XMLCLOB"));
         }
     }

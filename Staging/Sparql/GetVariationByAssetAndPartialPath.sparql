@@ -1,0 +1,11 @@
+﻿prefix ex: <http://id.example.com/schema/>
+            
+construct {
+    ?s ex:variationRelativeLocation ?variationRelativeLocation.
+} where {
+    bind(@id0 as ?id0)
+    bind(@id1 as ?id1)
+    ?s ex:variationRelativeLocation ?variationRelativeLocation;
+        ex:variationHasAsset/ex:assetHasSubset/ex:subsetHasBroaderSubset*/ex:subsetReference ?id1.
+    filter strends(str(?variationRelativeLocation), ?id0)
+}

@@ -27,6 +27,8 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
     private readonly string languageSparql;
     private readonly string formalBodySparql;
     private readonly string copyrightSparql;
+    private readonly string causingSoftwareSparql;
+    private readonly string variationByAssetAndPartialPathSparql;
 
     protected BaseStagingIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger logger, string sparqlFileName)
     {
@@ -47,6 +49,8 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
         languageSparql = embedded.GetSparql("GetLanguage");
         formalBodySparql = embedded.GetSparql("GetFormalBody");
         copyrightSparql = embedded.GetSparql("GetCopyright");
+        causingSoftwareSparql = embedded.GetSparql("GetCausingSoftware");
+        variationByAssetAndPartialPathSparql = embedded.GetSparql("GetVariationByAssetAndPartialPath");
     }
 
     internal virtual Task<Graph?> BuildAsync(IGraph existing, T dri, CancellationToken cancellationToken)
@@ -89,19 +93,31 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
         CacheEntityKind.Language => new(languageSparql, $"language-{key}"),
         CacheEntityKind.FormalBody => new(formalBodySparql, $"formal-body-{key}"),
         CacheEntityKind.Copyright => new(copyrightSparql, $"copyright-{key}"),
+        CacheEntityKind.CausingSoftware => new(causingSoftwareSparql, $"causing-software-{key}"),
+        CacheEntityKind.VariationByAssetAndPartialPath => new(variationByAssetAndPartialPathSparql, $"variation-{key}"),
         _ => null
     };
 
-    internal async Task<IUriNode?> CacheFetch(CacheEntityKind kind, string key, CancellationToken cancellationToken)
+    internal async Task<IUriNode?> CacheFetch(CacheEntityKind kind, IEnumerable<string> keys, CancellationToken cancellationToken)
     {
-        var info = ToCacheFetchInfo(kind, key);
+        var info = ToCacheFetchInfo(kind, string.Join('|', keys));
         if (info is null)
         {
             logger.InvalidCacheEntityKind();
             return null;
         }
 
-        var item = (IUriNode?)cache.Get(info.Key) ?? await sparqlClient.GetSubjectAsync(info.Sparql, key, cancellationToken);
+        Dictionary<string, object> parameters;
+        if (keys.Count() == 1)
+        {
+            parameters = new Dictionary<string, object> { ["id"] = keys.First() };
+        }
+        else
+        {
+            parameters = keys.Select((k, i) => new KeyValuePair<string, object>($"id{i}", k)).ToDictionary(kv => kv.Key, kv => kv.Value);
+        }
+
+        var item = (IUriNode?)cache.Get(info.Key) ?? await sparqlClient.GetSubjectAsync(info.Sparql, parameters, cancellationToken);
 
         if (item is null)
         {
@@ -113,6 +129,9 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
             return item;
         });
     }
+
+    internal Task<IUriNode?> CacheFetch(CacheEntityKind kind, string key, CancellationToken cancellationToken) =>
+        CacheFetch(kind, [key], cancellationToken);
 
     internal async Task<IUriNode> CacheFetchOrNew(CacheEntityKind kind, string key, CancellationToken cancellationToken)
     {
@@ -126,8 +145,8 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
         return await cache.GetOrCreateAsync(info.Key, async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromHours(1);
-            var subject = await sparqlClient.GetSubjectAsync(info.Sparql, key, cancellationToken);
-            
+            var subject = await sparqlClient.GetSubjectAsync(info.Sparql, new Dictionary<string, object> { ["id"] = key }, cancellationToken);
+
             return subject ?? NewId;
         });
     }
@@ -147,6 +166,8 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
         Retention,
         Language,
         FormalBody,
-        Copyright
+        Copyright,
+        CausingSoftware,
+        VariationByAssetAndPartialPath
     }
 }
