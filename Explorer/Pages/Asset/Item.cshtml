@@ -38,7 +38,7 @@
         @if (Model.Item.LegalStatus.Any())
         {
             <dt>Legal status</dt>
-            <dd>@Model.Item.LegalStatus.Single()</dd>
+            <dd>@Model.Item.LegalStatus.Single().Uri.Segments.Last()</dd>
         }
         @if (Model.Item.Creation.Any())
         {

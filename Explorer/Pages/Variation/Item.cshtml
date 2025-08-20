@@ -8,7 +8,49 @@
     <dl class="tna-dl tna-dl--plain">
         <dt>DRI Id</dt>
         <dd>@Model.Item.Id.Single()</dd>
+        @if (Model.Item.Note.Any())
+        {
+            <dt>Note</dt>
+            <dd>@Model.Item.Note.Single()</dd>
+        }
+        @if (Model.Item.Location.Any())
+        {
+            <dt>Location</dt>
+            <dd>@Model.Item.Location.Single()</dd>
+        }
+        @if (Model.Item.NumberOfPages.Any())
+        {
+            <dt>Number of pages</dt>
+            <dd>@Model.Item.NumberOfPages.Single()</dd>
+        }
+        @if (Model.Item.WordCount.Any())
+        {
+            <dt>Word count</dt>
+            <dd>@Model.Item.WordCount.Single()</dd>
+        }
+        @if (Model.Item.CharacterCount.Any())
+        {
+            <dt>Character count</dt>
+            <dd>@Model.Item.CharacterCount.Single()</dd>
+        }
     </dl>
+
+    @if (Model.Item.Redacted.Any())
+    {
+        <div class="tna-!--margin-top-m">
+            <h2>Redacted versions</h2>
+            <ul class="tna-ul tna-ul--dashed">
+                @foreach (var redacted in Model.Item.Redacted)
+                {
+                    <li>
+                        <p>
+                            <a asp-page="/variation/item" asp-route-id="@redacted.Id.Single()">@redacted.Name.Single()</a>
+                        </p>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
 
     <div class="tna-!--margin-top-m">
         <h2>Asset <a asp-page="/asset/item" asp-route-id="@Model.Item.Asset.Single().Reference.Single()">@Model.Item.Asset.Single().Reference.Single()</a></h2>
@@ -36,24 +78,49 @@
 <section class="tna-container tna-!--margin-top-m">
     <div class="tna-column tna-column--full">
         <div class="tna-form__group">
-            @{
-                var ldWriter = new VDS.RDF.Writing.JsonLdWriter();
-                var ts = new VDS.RDF.TripleStore();
-                ts.Add(Model.Item.Graph);
-                var input = ldWriter.SerializeStore(ts);
+            <textarea class="tna-textarea" rows="25" readonly>@System.Text.UTF8Encoding.UTF8.GetString(Convert.FromBase64String(Model.Item.Xml.Single().Value))</textarea>
+        </div>
+    </div>
+</section>
 
-                var txt = System.IO.File.ReadAllText("frame.jsonld");
-                var frame = Newtonsoft.Json.Linq.JToken.Parse(txt);
-                var options = new VDS.RDF.JsonLd.JsonLdProcessorOptions()
+<section class="tna-container tna-!--margin-top-m">
+    <div class="tna-column tna-column--full">
+        <div class="tna-form__group">
+            @{
+                var variation = Model.Item;
+                var asset = variation.Asset.Single();
+                var srLast = variation.SensitivityReviews.Single(s => !Model.Item.SensitivityReviews.Any(past => past.Past.SingleOrDefault()?.DriId == s.DriId));
+                var period = srLast.Restriction.SingleOrDefault().EndYear.SingleOrDefault();
+                if (period is null)
                 {
-                    Embed = VDS.RDF.JsonLd.Syntax.JsonLdEmbed.Always
+                    var duration = srLast.Restriction.SingleOrDefault().Duration.SingleOrDefault();
+                    if (duration is not null)
+                    {
+                        period = duration.Value.Days / 365;
+                    }
+                }
+                var simple = new Models.SimpleVariation(asset.Reference.Single(),
+                    asset.Id.Single(), variation.Id.Single(),
+                    asset.Retention.SingleOrDefault()?.RetentionBody.SingleOrDefault()?.Name.SingleOrDefault(),
+                    variation.Name.Single(), asset.Description.SingleOrDefault(),
+                    asset.Copyright.SingleOrDefault()?.Title.SingleOrDefault(),
+                    asset.Creation.SingleOrDefault()?.CreationBody.SingleOrDefault()?.Name.SingleOrDefault(),
+                    variation.Location.SingleOrDefault()?.Value, asset.ConsignmentId.SingleOrDefault(),
+                    asset.BatchId.SingleOrDefault(),
+                    asset.LegalStatus.SingleOrDefault()?.Uri.Segments.Last(),
+                    srLast.AccessCondition.SingleOrDefault()?.Name.SingleOrDefault(),
+                    srLast.Restriction.SingleOrDefault()?.UkLegislations.SelectMany(uk => uk.Reference),
+                    period, srLast.Restriction.SingleOrDefault()?.CalculationStartDate.SingleOrDefault(),
+                    srLast.Restriction.SingleOrDefault()?.ReviewDate.SingleOrDefault(), srLast.Date.SingleOrDefault());
+
+                var options = new System.Text.Json.JsonSerializerOptions()
+                {
+                    PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,
+                    WriteIndented = true,
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
                 };
-                var framed = VDS.RDF.JsonLd.JsonLdProcessor.Frame(input, frame, options);
-                framed.Remove("@context");
-                framed.Remove("@type");
-                var lastSr = framed.Value<Newtonsoft.Json.Linq.JArray>("sensitivityReview").Last;
-                framed.GetValue("sensitivityReview").Replace(lastSr);
-                <textarea class="tna-textarea" rows="25" readonly>@framed.ToString()</textarea>
+                var json = System.Text.Json.JsonSerializer.Serialize(simple, options);
+                <textarea class="tna-textarea" rows="25" readonly>@json</textarea>
             }
         </div>
     </div>

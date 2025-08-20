@@ -15,7 +15,7 @@
     @if (Model.Date.Any())
     {
         <dt>Date</dt>
-        <dd>@Model.Date.Single().ToString(dateFormat)</dd>
+        <dd>@Model.Date.Single().Value.ToString(dateFormat)</dd>
     }
     @if (Model.SensitiveName.Any())
     {
@@ -55,17 +55,17 @@
         if (restriction.ReviewDate.Any())
         {
             <dt>Restriction review date</dt>
-            <dd>@restriction.ReviewDate.Single().ToString(dateFormat)</dd>
+            <dd>@restriction.ReviewDate.Single().Value.ToString(dateFormat)</dd>
         }
         if (restriction.CalculationStartDate.Any())
         {
             <dt>Calculation start</dt>
-            <dd>@restriction.CalculationStartDate.Single().ToString(dateFormat)</dd>
+            <dd>@restriction.CalculationStartDate.Single().Value.ToString(dateFormat)</dd>
         }
         if (restriction.Duration.Any())
         {
             <dt>Restriction duration</dt>
-            <dd>@(restriction.Duration.Single().Days / 365) years</dd>
+            <dd>@(restriction.Duration.Single().Value.Days / 365) years</dd>
         }
         if (restriction.EndYear.Any())
         {

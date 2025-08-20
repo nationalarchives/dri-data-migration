@@ -16,10 +16,35 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
             ?variation a ex:Variation;
                 ex:variationName ?variationName;
                 ex:variationDriId ?variationDriId;
+                ex:variationDriXml ?variationDriXml;
+                ex:variationNote ?variationNote;
+                ex:variationRelativeLocation ?variationRelativeLocation;
+                ex:imagePixelHeight ?imagePixelHeight;
+                ex:imagePixelWidth ?imagePixelWidth;
+                ex:numberOfPages ?numberOfPages;
+                ex:wordCount ?wordCount;
+                ex:characterCount ?characterCount;
+                ex:emailSubject ?emailSubject;
+                ex:variationHasRedactedVariation ?variationHasRedactedVariation;
+                ex:variationHasCausingSoftware ?causingSoftware;
                 ex:variationHasSensitivityReview ?sr;
                 ex:variationHasAsset ?asset.
-            ?asset ex:assetReference ?assetReference;
+            ?variationHasRedactedVariation ex:variationDriId ?redactedVariationDriId;
+                ex:variationName ?redactedVariationName.
+            ?causingSoftware ex:causingSoftwareName ?causingSoftwareName.
+            ?asset ex:assetDriId ?assetDriId;
+                ex:assetReference ?assetReference;
+                ex:assetDescription ?assetDescription;
+                ex:batchDriId ?batchDriId;
+                ex:consignmentTdrId ?consignmentTdrId;
+                ex:assetHasLegalStatus ?legalStatus;
+                ex:assetHasRetention ?retention;
+                ex:assetHasCreation ?creation;
                 ex:assetHasSubset ?subset.
+            ?retention ex:retentionHasFormalBody ?retentionHasFormalBody.
+            ?retentionHasFormalBody ex:formalBodyName ?retentionFormalBodyName.
+            ?creation ex:creationHasFormalBody ?creationHasFormalBody.
+            ?creationHasFormalBody ex:formalBodyName ?creationFormalBodyName.
             ?subset ex:subsetHasBroaderSubset ?broader.
             ?broader ex:subsetReference ?broaderSubsetReference.
             ?sr ex:sensitivityReviewDriId ?sensitivityReviewDriId;
@@ -53,8 +78,45 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
             ?variation ex:variationName ?variationName;
                 ex:variationDriId ?variationDriId;
                 ex:variationHasAsset ?asset.
-            ?asset ex:assetReference ?assetReference;
+            optional { ?variation ex:variationDriXml ?variationDriXml }
+            optional { ?variation ex:variationNote ?variationNote }
+            optional { ?variation ex:variationRelativeLocation ?variationRelativeLocation }
+            optional { ?variation ex:imagePixelHeight ?imagePixelHeight }
+            optional { ?variation ex:imagePixelWidth ?imagePixelWidth }
+            optional { ?variation ex:numberOfPages ?numberOfPages }
+            optional { ?variation ex:wordCount ?wordCount }
+            optional { ?variation ex:characterCount ?characterCount }
+            optional { ?variation ex:emailSubject ?emailSubject }
+            optional { 
+                ?variation ex:variationHasRedactedVariation ?variationHasRedactedVariation.
+                ?variationHasRedactedVariation ex:variationDriId ?redactedVariationDriId;
+                    ex:variationName ?redactedVariationName.
+            }
+            optional {
+                ?variation ex:variationHasCausingSoftware ?causingSoftware.
+                ?causingSoftware ex:causingSoftwareName ?causingSoftwareName.
+            }
+            ?asset ex:assetDriId ?assetDriId;
+                ex:assetReference ?assetReference;
                 ex:assetHasSubset ?subset.
+            optional { ?asset ex:assetDescription ?assetDescription }
+            optional { ?asset ex:batchDriId ?batchDriId }
+            optional { ?asset ex:consignmentTdrId ?consignmentTdrId }
+            optional { ?asset ex:assetHasLegalStatus ?legalStatus }
+            optional {
+                ?asset ex:assetHasRetention ?retention.
+        	    optional {
+                    ?retention ex:retentionHasFormalBody ?retentionHasFormalBody.
+                    ?retentionHasFormalBody ex:formalBodyName ?retentionFormalBodyName.
+                }
+            }
+            optional {
+                ?asset ex:assetHasCreation ?creation.
+                optional {
+                    ?creation ex:creationHasFormalBody ?creationHasFormalBody.
+                    ?creationHasFormalBody ex:formalBodyName ?creationFormalBodyName.
+                }
+            }
             ?subset ex:subsetReference ?subsetReference.
             optional {
                 ?subset ex:subsetHasBroaderSubset* ?broader.
