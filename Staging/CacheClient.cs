@@ -116,23 +116,23 @@ public class CacheClient : ICacheClient
 
     public async Task<Dictionary<string, IUriNode>> AccessConditions(CancellationToken cancellationToken)
     {
-        accessConditions = await GetDictionaryAsync(accessConditions!, cancellationToken);
+        accessConditions = await GetDictionaryAsync(accessConditions!, accessConditionsSparql, cancellationToken);
         return accessConditions;
     }
 
     public async Task<Dictionary<string, IUriNode>> Legislations(CancellationToken cancellationToken)
     {
-        legislations = await GetDictionaryAsync(legislations!, cancellationToken);
+        legislations = await GetDictionaryAsync(legislations!, legislationsSparql, cancellationToken);
         return legislations;
     }
 
     public async Task<Dictionary<string, IUriNode>> GroundsForRetention(CancellationToken cancellationToken)
     {
-        groundsForRetention = await GetDictionaryAsync(groundsForRetention!, cancellationToken);
+        groundsForRetention = await GetDictionaryAsync(groundsForRetention!, groundsForRetentionSparql, cancellationToken);
         return groundsForRetention;
     }
 
-    private async Task<Dictionary<string, IUriNode>> GetDictionaryAsync(Dictionary<string, IUriNode> results, CancellationToken cancellationToken)
+    private async Task<Dictionary<string, IUriNode>> GetDictionaryAsync(Dictionary<string, IUriNode> results, string sparql, CancellationToken cancellationToken)
     {
         if (results.Any())
         {
@@ -140,7 +140,7 @@ public class CacheClient : ICacheClient
         }
         else
         {
-            return await sparqlClient.GetDictionaryAsync(legislationsSparql, cancellationToken);
+            return await sparqlClient.GetDictionaryAsync(sparql, cancellationToken);
         }
     }
 
