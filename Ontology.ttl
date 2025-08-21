@@ -32,6 +32,16 @@ this:schema a owl:Ontology;
 	rdfs:label "Asset";
 	rdfs:comment "A thing describing archived resource.".
 
+:InquiryAsset a owl:Class;
+	rdfs:subClassOf :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Inquiry asset".
+
+:CourtAsset a owl:Class;
+	rdfs:subClassOf :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Court asset".
+
 :Variation a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:seeAlso rico:Instantiation;
@@ -169,6 +179,10 @@ this:schema a owl:Ontology;
 	rdfs:seeAlso rico:Activity;
 	rdfs:label "Past sensitivity review".
 
+:CourtCase a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Court case".
+
 
 # Object properties
 
@@ -239,6 +253,18 @@ this:schema a owl:Ontology;
 	rdfs:range :Asset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Legal status has asset".
+
+:assetHasCourtCase a owl:ObjectProperty;
+	rdfs:domain :Asset;
+	rdfs:range :CourtCase;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has court case".
+
+:courtCaseHasAsset a owl:ObjectProperty;
+	rdfs:domain :CourtCase;
+	rdfs:range :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Court case has asset".
 
 :assetHasVariation a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	rdfs:seeAlso rico:hasOrHadInstantiation;
@@ -540,6 +566,29 @@ this:schema a owl:Ontology;
 	rdfs:label "Asset relation description";
 	rdfs:comment "This is in lieu of the actual relationship since the source data is a free text field.".
 
+:assetPhysicalDescription a owl:DatatypeProperty;
+	rdfs:seeAlso rico:physicalCharacteristicsNote;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Physical description".
+
+:evidenceProviderName a owl:DatatypeProperty;
+	rdfs:domain :InquiryAsset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :name;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Evidence provider name";
+	rdfs:comment "This may need to be remodelled into the entity relationship after looking at the ingested data.".
+
+:investigationName a owl:DatatypeProperty;
+	rdfs:domain :InquiryAsset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :name;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Investigation name";
+	rdfs:comment "This may need to be remodelled into the entity relationship after looking at the ingested data.".
+
 :formalBodyName a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :FormalBody;
 	rdfs:range xsd:string;
@@ -724,3 +773,53 @@ this:schema a owl:Ontology;
 	rdfs:subPropertyOf :name;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Copyright title".
+
+:courtSessionDescription a owl:DatatypeProperty;
+	rdfs:domain :CourtAsset;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Court session description".
+
+:courtSessionDate a owl:DatatypeProperty;
+	rdfs:domain :CourtAsset;
+	rdfs:range xsd:date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Court session date".
+
+:courtCaseReference a owl:DatatypeProperty;
+	rdfs:domain :CourtCase;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Court case reference".
+
+:courtCaseName a owl:DatatypeProperty;
+	rdfs:domain :CourtCase;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :name;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Court case name".
+
+:courtCaseSummaryJudgment a owl:DatatypeProperty;
+	rdfs:domain :CourtCase;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Court case summary judgment".
+
+:courtCaseSummaryReasonsForJudgment a owl:DatatypeProperty;
+	rdfs:domain :CourtCase;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Court case summary reasons for judgment".
+
+:courtCaseHearingStartDate a owl:DatatypeProperty;
+	rdfs:domain :CourtCase;
+	rdfs:range xsd:date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Court case hearing start date".
+
+:courtCaseHearingEndDate a owl:DatatypeProperty;
+	rdfs:domain :CourtCase;
+	rdfs:range xsd:date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Court case hearing end date".
