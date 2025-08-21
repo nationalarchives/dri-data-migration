@@ -32,21 +32,25 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         {
             var xmlBase64 = Convert.ToBase64String(UTF8Encoding.UTF8.GetBytes(dri.Xml));
             graph.Assert(id, Vocabulary.AssetDriXml, new LiteralNode(xmlBase64, new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
-            await ExtractXmlData(graph, existing, id, dri.Xml, cancellationToken);
+            var proceed = await ExtractXmlData(graph, existing, id, dri.Xml, cancellationToken);
+            if (!proceed)
+            {
+                return null;
+            }
         }
         logger.RecordBuilt(dri.Id);
 
         return graph;
     }
 
-    private async Task ExtractXmlData(IGraph graph, IGraph existing,
+    private async Task<bool> ExtractXmlData(IGraph graph, IGraph existing,
         INode id, string xml, CancellationToken cancellationToken)
     {
         var rdf = BaseIngest.GetRdf(xml);
         if (rdf is null)
         {
             logger.AssetXmlMissingRdf(id.AsValuedNode().AsString());
-            return;
+            return false;
         }
 
         BaseIngest.AssertLiteral(graph, id, rdf, batchIdentifier, Vocabulary.BatchDriId);
@@ -81,6 +85,8 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
             };
             graph.Assert(id, Vocabulary.AssetHasLegalStatus, statusType);
         }
+
+        return true;
     }
 
     private static readonly Uri dctermsNamespace = new("http://purl.org/dc/terms/");

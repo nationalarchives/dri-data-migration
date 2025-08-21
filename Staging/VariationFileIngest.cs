@@ -35,20 +35,24 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         {
             var xmlBase64 = Convert.ToBase64String(UTF8Encoding.UTF8.GetBytes(dri.Xml));
             graph.Assert(id, Vocabulary.VariationDriXml, new LiteralNode(xmlBase64, new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
-            await ExtractXmlData(graph, id, dri.Xml, cancellationToken);
+            var proceed = await ExtractXmlData(graph, id, dri.Xml, cancellationToken);
+            if (!proceed)
+            {
+                return null;
+            }
         }
         logger.RecordBuilt(dri.Id);
 
         return graph;
     }
 
-    private async Task ExtractXmlData(IGraph graph, INode id, string xml, CancellationToken cancellationToken)
+    private async Task<bool> ExtractXmlData(IGraph graph, INode id, string xml, CancellationToken cancellationToken)
     {
         var rdf = BaseIngest.GetRdf(xml);
         if (rdf is null)
         {
             logger.VariationXmlMissingRdf(id.AsValuedNode().AsString());
-            return;
+            return false;
         }
 
         BaseIngest.AssertLiteral(graph, id, rdf, note, Vocabulary.VariationNote);
@@ -80,6 +84,8 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
             {
             }
         }
+
+        return true;
     }
 
     private static string GetPartialPath(string path) => path.Substring(path.IndexOf("/content/") + 8);
