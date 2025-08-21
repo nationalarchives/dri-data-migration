@@ -8,17 +8,29 @@ construct {
         ex:batchDriId ?batchDriId;
         ex:consignmentTdrId ?consignmentTdrId;
         ex:assetRelationDescription ?assetRelationDescription;
+        ex:assetPhysicalDescription ?assetPhysicalDescription;
+        ex:evidenceProviderName ?evidenceProviderName;
+        ex:investigationName ?investigationName;
+        ex:courtSessionDescription ?courtSessionDescription;
+        ex:courtSessionDate ?courtSessionDate;
         ex:assetHasLanguage ?language;
         ex:assetHasLegalStatus ?legalStatus;
         ex:assetHasCopyright ?copyright;
         ex:assetHasRetention ?retention;
-        ex:assetHasCreation ?creation.
+        ex:assetHasCreation ?creation;
+        ex:assetHasCourtCase ?courtCase.
     ?language ex:languageName ?languageName.
     ?copyright ex:copyrightTitle ?copyrightTitle.
     ?retention ex:retentionHasFormalBody ?retentionHasFormalBody.
     ?retentionHasFormalBody ex:formalBodyName ?retentionFormalBodyName.
     ?creation ex:creationHasFormalBody ?creationHasFormalBody.
     ?creationHasFormalBody ex:formalBodyName ?creationFormalBodyName.
+    ?courtCase ex:courtCaseReference ?courtCaseReference;
+        ex:courtCaseName ?courtCaseName;
+        ex:courtCaseSummaryJudgment ?courtCaseSummaryJudgment;
+        ex:courtCaseSummaryReasonsForJudgment ?courtCaseSummaryReasonsForJudgment;
+        ex:courtCaseHearingStartDate ?courtCaseHearingStartDate;
+        ex:courtCaseHearingEndDate ?courtCaseHearingEndDate.
 } where {
     bind(@id as ?assetDriId)
     ?asset ex:assetDriId ?assetDriId.
@@ -28,6 +40,11 @@ construct {
     optional { ?asset ex:batchDriId ?batchDriId }
     optional { ?asset ex:consignmentTdrId ?consignmentTdrId }
     optional { ?asset ex:assetRelationDescription ?assetRelationDescription }
+    optional { ?asset ex:assetPhysicalDescription ?assetPhysicalDescription }
+    optional { ?asset ex:evidenceProviderName ?evidenceProviderName }
+    optional { ?asset ex:investigationName ?investigationName }
+    optional { ?asset ex:courtSessionDescription ?courtSessionDescription }
+    optional { ?asset ex:courtSessionDate ?courtSessionDate }
     optional {
         ?asset ex:assetHasLanguage ?language.
         ?language ex:languageName ?languageName.
@@ -50,5 +67,14 @@ construct {
             ?creation ex:creationHasFormalBody ?creationHasFormalBody.
             ?creationHasFormalBody ex:formalBodyName ?creationFormalBodyName.
         }
+    }
+    optional {
+        ?asset ex:assetHasCourtCase ?courtCase.
+        optional { ?courtCase ex:courtCaseReference ?courtCaseReference }
+        optional { ?courtCase ex:courtCaseName ?courtCaseName }
+        optional { ?courtCase ex:courtCaseSummaryJudgment ?courtCaseSummaryJudgment }
+        optional { ?courtCase ex:courtCaseSummaryReasonsForJudgment ?courtCaseSummaryReasonsForJudgment }
+        optional { ?courtCase ex:courtCaseHearingStartDate ?courtCaseHearingStartDate }
+        optional { ?courtCase ex:courtCaseHearingEndDate ?courtCaseHearingEndDate }
     }
 }

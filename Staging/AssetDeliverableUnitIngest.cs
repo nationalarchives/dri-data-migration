@@ -72,6 +72,11 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         BaseIngest.AssertLiteral(graph, id, rdf, description, Vocabulary.AssetDescription);
         BaseIngest.AssertLiteral(graph, id, rdf, formerReferenceDepartment, Vocabulary.AssetPastName);
         BaseIngest.AssertLiteral(graph, id, rdf, relatedMaterial, Vocabulary.AssetRelationDescription);
+        BaseIngest.AssertLiteral(graph, id, rdf, physicalDescription, Vocabulary.AssetPhysicalDescription);
+        BaseIngest.AssertLiteral(graph, id, rdf, evidenceProvidedBy, Vocabulary.EvidenceProviderName);
+        BaseIngest.AssertLiteral(graph, id, rdf, investigation, Vocabulary.InvestigationName);
+        BaseIngest.AssertLiteral(graph, id, rdf, session, Vocabulary.CourtSessionDescription);
+        BaseIngest.AssertLiteral(graph, id, rdf, session_date, Vocabulary.CourtSessionDate);
 
         await BaseIngest.AssertAsync(graph, id, rdf, language, CacheEntityKind.Language,
             Vocabulary.AssetHasLanguage, Vocabulary.LanguageName, cacheClient, cancellationToken);
@@ -111,7 +116,12 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     private static readonly IUriNode relatedMaterial = new UriNode(new($"{BaseIngest.TnaNamespace}relatedMaterial"));
     private static readonly IUriNode legalStatus = new UriNode(new($"{BaseIngest.TnaNamespace}legalStatus"));
     private static readonly IUriNode heldBy = new UriNode(new($"{BaseIngest.TnaNamespace}heldBy"));
-
+    private static readonly IUriNode physicalDescription = new UriNode(new($"{BaseIngest.TnaNamespace}physicalDescription"));
+    private static readonly IUriNode investigation = new UriNode(new($"{BaseIngest.TnaNamespace}investigation"));
+    private static readonly IUriNode evidenceProvidedBy = new UriNode(new($"{BaseIngest.TnaNamespace}evidenceProvidedBy"));
+    private static readonly IUriNode session = new UriNode(new($"{BaseIngest.TnaNamespace}session"));
+    private static readonly IUriNode session_date = new UriNode(new($"{BaseIngest.TnaNamespace}session_date"));
+    
     private static readonly IUriNode description = new UriNode(new(dctermsNamespace, "description"));
     private static readonly IUriNode creator = new UriNode(new(dctermsNamespace, "creator"));
     private static readonly IUriNode language = new UriNode(new(dctermsNamespace, "language"));

@@ -26,6 +26,11 @@ public static class Vocabulary
     public static readonly IUriNode AssetPastName = new UriNode(new(Namespace, "assetPastName"));
     public static readonly IUriNode AssetDescription = new UriNode(new(Namespace, "assetDescription"));
     public static readonly IUriNode AssetRelationDescription = new UriNode(new(Namespace, "assetRelationDescription"));
+    public static readonly IUriNode AssetPhysicalDescription = new UriNode(new(Namespace, "assetPhysicalDescription"));
+    public static readonly IUriNode EvidenceProviderName = new UriNode(new(Namespace, "evidenceProviderName"));
+    public static readonly IUriNode InvestigationName = new UriNode(new(Namespace, "investigationName"));
+    public static readonly IUriNode CourtSessionDescription = new UriNode(new(Namespace, "courtSessionDescription"));
+    public static readonly IUriNode CourtSessionDate = new UriNode(new(Namespace, "courtSessionDate"));
     public static readonly IUriNode AssetHasSubset = new UriNode(new(Namespace, "assetHasSubset"));
     public static readonly IUriNode AssetHasVariation = new UriNode(new(Namespace, "assetHasVariation"));
     public static readonly IUriNode AssetHasRetention = new UriNode(new(Namespace, "assetHasRetention"));
@@ -34,6 +39,7 @@ public static class Vocabulary
     public static readonly IUriNode AssetHasLegalStatus = new UriNode(new(Namespace, "assetHasLegalStatus"));
     public static readonly IUriNode AssetHasCopyright = new UriNode(new(Namespace, "assetHasCopyright"));
     public static readonly IUriNode AssetHasCreation = new UriNode(new(Namespace, "assetHasCreation"));
+    public static readonly IUriNode AssetHasCourtCase = new UriNode(new(Namespace, "assetHasCourtCase"));
 
     public static readonly IUriNode Variation = new UriNode(new(Namespace, "Variation"));
     public static readonly IUriNode VariationHasAsset = new UriNode(new(Namespace, "variationHasAsset"));
@@ -97,4 +103,11 @@ public static class Vocabulary
     public static readonly IUriNode NotPublicRecord = new UriNode(new(Namespace, "NotPublicRecord"));
     public static readonly IUriNode WelshPublicRecord = new UriNode(new(Namespace, "WelshPublicRecord"));
     public static readonly IUriNode NonRecordMaterial = new UriNode(new(Namespace, "NonRecordMaterial"));
+
+    public static readonly IUriNode CourtCaseReference = new UriNode(new(Namespace, "courtCaseReference"));
+    public static readonly IUriNode courtCaseName = new UriNode(new(Namespace, "courtCaseName"));
+    public static readonly IUriNode courtCaseSummaryJudgment = new UriNode(new(Namespace, "courtCaseSummaryJudgment"));
+    public static readonly IUriNode courtCaseSummaryReasonsForJudgment = new UriNode(new(Namespace, "courtCaseSummaryReasonsForJudgment"));
+    public static readonly IUriNode courtCaseHearingStartDate = new UriNode(new(Namespace, "courtCaseHearingStartDate"));
+    public static readonly IUriNode courtCaseHearingEndDate = new UriNode(new(Namespace, "courtCaseHearingEndDate"));
 }
