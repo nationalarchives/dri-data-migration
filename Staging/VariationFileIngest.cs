@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -16,6 +17,8 @@ namespace Staging;
 public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<VariationFileIngest> logger, IOptions<DriSettings> options)
     : BaseStagingIngest<DriVariationFile>(sparqlClient, logger, "VariationFileGraph")
 {
+    private readonly HashSet<string> predicates = [];
+
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriVariationFile dri, CancellationToken cancellationToken)
     {
         logger.BuildingRecord(dri.Id);
@@ -46,6 +49,15 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         return graph;
     }
 
+    internal override void PostIngest()
+    {
+        Console.WriteLine("Distinct RDF predicates:");
+        foreach (var predicate in predicates)
+        {
+            Console.WriteLine(predicate);
+        }
+    }
+
     private async Task<bool> ExtractXmlData(IGraph graph, INode id, string xml, CancellationToken cancellationToken)
     {
         var rdf = BaseIngest.GetRdf(xml);
@@ -54,6 +66,8 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
             logger.VariationXmlMissingRdf(id.AsValuedNode().AsString());
             return false;
         }
+
+        predicates.UnionWith(rdf.Triples.PredicateNodes.Cast<IUriNode>().Select(p => p.Uri.ToString()).ToHashSet());
 
         BaseIngest.AssertLiteral(graph, id, rdf, note, Vocabulary.VariationNote);
 

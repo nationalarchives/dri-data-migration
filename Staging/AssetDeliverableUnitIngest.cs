@@ -1,6 +1,7 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -14,6 +15,8 @@ namespace Staging;
 public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<AssetDeliverableUnitIngest> logger)
     : BaseStagingIngest<DriAssetDeliverableUnit>(sparqlClient, logger, "AssetDeliverableUnitGraph")
 {
+    private readonly HashSet<string> predicates = [];
+
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriAssetDeliverableUnit dri, CancellationToken cancellationToken)
     {
         logger.BuildingRecord(dri.Id);
@@ -43,6 +46,15 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         return graph;
     }
 
+    internal override void PostIngest()
+    {
+        Console.WriteLine("Distinct RDF predicates:");
+        foreach (var predicate in predicates)
+        {
+            Console.WriteLine(predicate);
+        }
+    }
+
     private async Task<bool> ExtractXmlData(IGraph graph, IGraph existing,
         INode id, string xml, CancellationToken cancellationToken)
     {
@@ -52,6 +64,8 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
             logger.AssetXmlMissingRdf(id.AsValuedNode().AsString());
             return false;
         }
+
+        predicates.UnionWith(rdf.Triples.PredicateNodes.Cast<IUriNode>().Select(p => p.Uri.ToString()).ToHashSet());
 
         BaseIngest.AssertLiteral(graph, id, rdf, batchIdentifier, Vocabulary.BatchDriId);
         BaseIngest.AssertLiteral(graph, id, rdf, tdrConsignmentRef, Vocabulary.ConsignmentTdrId);

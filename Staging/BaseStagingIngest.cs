@@ -32,6 +32,8 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
         throw new NotImplementedException();
     }
 
+    internal virtual void PostIngest() { } //TODO: temp, to be removed
+
     public async Task<int> SetAsync(IEnumerable<T> records, CancellationToken cancellationToken)
     {
         var total = 0;
@@ -54,6 +56,7 @@ public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRec
             total++;
             logger.RecordUpdated(dri.Id);
         }
+        PostIngest();
         return total;
     }
 }
