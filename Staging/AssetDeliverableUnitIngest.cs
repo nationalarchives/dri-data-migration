@@ -55,14 +55,16 @@ public class AssetDeliverableUnitIngest(IMemoryCache cache, ISparqlClient sparql
 
             var consignment = rdf.GetTriplesWithPredicate(tdrConsignmentRef).SingleOrDefault()?.Object;
             if (consignment is ILiteralNode consignmentNode)
+        var former = rdf.GetTriplesWithPredicate(formerReferenceDepartment).SingleOrDefault()?.Object;
+        if (former is ILiteralNode formerNode)
             {
-                graph.Assert(id, Vocabulary.ConsignmentTdrId, new LiteralNode(consignmentNode.Value));
+            graph.Assert(id, Vocabulary.AssetPastName, new LiteralNode(formerNode.Value));
             }
 
-            var descr = rdf.GetTriplesWithPredicate(description).SingleOrDefault()?.Object;
-            if (descr is ILiteralNode descrNode)
+        var related = rdf.GetTriplesWithPredicate(relatedMaterial).SingleOrDefault()?.Object;
+        if (related is ILiteralNode relatedNode)
             {
-                graph.Assert(id, Vocabulary.AssetDescription, new LiteralNode(descrNode.Value));
+            graph.Assert(id, Vocabulary.AssetRelationDescription, new LiteralNode(relatedNode.Value));
             }
 
             await AssertAsync(graph, id, rdf, language, CacheEntityKind.Language,
@@ -138,6 +140,8 @@ public class AssetDeliverableUnitIngest(IMemoryCache cache, ISparqlClient sparql
 
     private static readonly IUriNode batchIdentifier = new UriNode(new($"{tnaNamespace}batchIdentifier"));
     private static readonly IUriNode tdrConsignmentRef = new UriNode(new($"{tnaNamespace}tdrConsignmentRef"));
+    private static readonly IUriNode formerReferenceDepartment = new UriNode(new($"{tnaNamespace}formerReferenceDepartment"));
+    private static readonly IUriNode relatedMaterial = new UriNode(new($"{tnaNamespace}relatedMaterial"));
     private static readonly IUriNode legalStatus = new UriNode(new($"{tnaNamespace}legalStatus"));
     private static readonly IUriNode heldBy = new UriNode(new($"{tnaNamespace}heldBy"));
 

@@ -10,6 +10,11 @@
     <dl class="tna-dl tna-dl--plain">
         <dt>DRI Id</dt>
         <dd>@Model.Item.Id.Single()</dd>
+        @if (Model.Item.PastName.Any())
+        {
+            <dt>Past name</dt>
+            <dd>@Model.Item.PastName.Single()</dd>
+        }
         @if (Model.Item.Description.Any())
         {
             <dt>Description</dt>
@@ -24,6 +29,11 @@
         {
             <dt>Consignment Id</dt>
             <dd>@Model.Item.ConsignmentId.Single()</dd>
+        }
+        @if (Model.Item.RelationDescription.Any())
+        {
+            <dt>Relation description</dt>
+            <dd>@Model.Item.RelationDescription.Single()</dd>
         }
         @if (Model.Item.Language.Any())
         {

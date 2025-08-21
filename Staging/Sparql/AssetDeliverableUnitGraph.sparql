@@ -3,9 +3,11 @@
 construct {
     ?asset ex:assetDriId ?assetDriId;
         ex:assetDriXml ?assetDriXml;
+        ex:assetPastName ?assetPastName;
         ex:assetDescription ?assetDescription;
         ex:batchDriId ?batchDriId;
         ex:consignmentTdrId ?consignmentTdrId;
+        ex:assetRelationDescription ?assetRelationDescription;
         ex:assetHasLanguage ?language;
         ex:assetHasLegalStatus ?legalStatus;
         ex:assetHasCopyright ?copyright;
@@ -21,9 +23,11 @@ construct {
     bind(@id as ?assetDriId)
     ?asset ex:assetDriId ?assetDriId.
     optional { ?asset ex:assetDriXml ?assetDriXml }
+    optional { ?asset ex:assetPastName ?assetPastName }
     optional { ?asset ex:assetDescription ?assetDescription }
     optional { ?asset ex:batchDriId ?batchDriId }
     optional { ?asset ex:consignmentTdrId ?consignmentTdrId }
+    optional { ?asset ex:assetRelationDescription ?assetRelationDescription }
     optional {
         ?asset ex:assetHasLanguage ?language.
         ?language ex:languageName ?languageName.

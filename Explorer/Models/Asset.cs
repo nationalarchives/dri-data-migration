@@ -7,11 +7,13 @@ namespace Explorer.Models;
 public class Asset(INode node, IGraph graph) : DynamicNode(node, graph)
 {
     public ICollection<string> Name => new DynamicObjectCollection<string>(this, Vocabulary.AssetName.Uri.ToString());
+    public ICollection<string> PastName => new DynamicObjectCollection<string>(this, Vocabulary.AssetPastName.Uri.ToString());
     public ICollection<string> Description => new DynamicObjectCollection<string>(this, Vocabulary.AssetDescription.Uri.ToString());
     public ICollection<string> Id => new DynamicObjectCollection<string>(this, Vocabulary.AssetDriId.Uri.ToString());
     public ICollection<string> Reference => new DynamicObjectCollection<string>(this, Vocabulary.AssetReference.Uri.ToString());
     public ICollection<string> BatchId => new DynamicObjectCollection<string>(this, Vocabulary.BatchDriId.Uri.ToString());
     public ICollection<string> ConsignmentId => new DynamicObjectCollection<string>(this, Vocabulary.ConsignmentTdrId.Uri.ToString());
+    public ICollection<string> RelationDescription => new DynamicObjectCollection<string>(this, Vocabulary.AssetRelationDescription.Uri.ToString());
     public ICollection<ILiteralNode> Xml => new DynamicObjectCollection<ILiteralNode>(this, Vocabulary.AssetDriXml.Uri.ToString());
     public ICollection<Variation> Variations => new DynamicObjectCollection<Variation>(this, Vocabulary.AssetHasVariation.Uri.ToString());
     public ICollection<Retention> Retention => new DynamicObjectCollection<Retention>(this, Vocabulary.AssetHasRetention.Uri.ToString());

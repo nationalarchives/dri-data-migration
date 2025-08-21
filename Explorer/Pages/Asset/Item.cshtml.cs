@@ -17,10 +17,12 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:assetDriId ?assetDriId;
                 ex:assetReference ?assetReference;
                 ex:assetName ?assetName;
+                ex:assetPastName ?assetPastName;
                 ex:assetDriXml ?assetDriXml;
                 ex:assetDescription ?assetDescription;
                 ex:batchDriId ?batchDriId;
                 ex:consignmentTdrId ?consignmentTdrId;
+                ex:assetRelationDescription ?assetRelationDescription;
                 ex:assetHasLanguage ?language;
                 ex:assetHasLegalStatus ?legalStatus;
                 ex:assetHasCopyright ?copyright;
@@ -79,10 +81,12 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ?broader ex:subsetReference ?broaderSubsetReference.
             }
             optional { ?s ex:assetName ?assetName }
+            optional { ?s ex:assetPastName ?assetPastName }
             optional { ?s ex:assetDriXml ?assetDriXml }
             optional { ?s ex:assetDescription ?assetDescription }
             optional { ?s ex:batchDriId ?batchDriId }
             optional { ?s ex:consignmentTdrId ?consignmentTdrId }
+            optional { ?s ex:assetRelationDescription ?assetRelationDescription }
             optional {
                 ?s ex:assetHasLanguage ?language.
                 ?language ex:languageName ?languageName.
