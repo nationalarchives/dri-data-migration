@@ -1,0 +1,32 @@
+﻿prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix dri: <http://nationalarchives.gov.uk/terms/dri#>
+prefix dcterms: <http://purl.org/dc/terms/>
+prefix ex: <http://id.example.com/schema/>
+
+construct {
+    ?subset ex:subsetReference ?reference;
+    	ex:subsetHasBroaderSubset [
+            ex:subsetReference ?parentReference
+        ];
+        ex:subsetHasRetention [
+            ex:importLocation ?directory
+    	].
+} where {
+    {
+        select * where {
+            bind(@id as ?series)
+            ?subset a dri:DeliverableUnit;
+                dri:isPartOfSeries/rdfs:label ?series;
+                rdfs:label ?reference.
+            optional { ?subset dri:parent/rdfs:label ?parent }
+            optional { ?subset dri:hasDirectory/rdfs:label ?directory }
+            bind(coalesce(?parent, ?directory) as ?parentReference)
+            filter not exists {
+                ?m dri:file ?f;
+        	        dri:parent ?subset.
+            }
+        }
+        order by ?reference
+        limit @limit offset @offset
+    }
+}

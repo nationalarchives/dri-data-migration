@@ -1,0 +1,7 @@
+﻿prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix dri: <http://nationalarchives.gov.uk/terms/dri#> 
+
+select ?legislation ?label where {
+    ?closure dri:exemptionCode ?legislation.
+    optional { ?legislation rdfs:label ?label }
+} group by ?legislation ?label

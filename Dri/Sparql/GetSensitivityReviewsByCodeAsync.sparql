@@ -1,0 +1,74 @@
+﻿prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix prov:  <http://www.w3.org/ns/prov#>
+prefix dri: <http://nationalarchives.gov.uk/terms/dri#> 
+prefix dcterms: <http://purl.org/dc/terms/>
+prefix ex: <http://id.example.com/schema/>
+
+construct {
+    ?closure ex:x-type ?type;
+        ex:x-id ?record;
+        ex:x-reference ?reference;
+        ex:sensitivityReviewDriId ?closure;
+        ex:sensitivityReviewDate ?exemptionAsserted;
+    	ex:sensitivityReviewSensitiveName ?titleAlternative;
+    	ex:sensitivityReviewSensitiveDescription ?descriptionAlternative;
+    	ex:sensitivityReviewHasPastSensitivityReview ?previous;
+    	ex:sensitivityReviewHasSensitivityReviewRestriction [
+            ex:sensitivityReviewRestrictionReviewDate ?reviewDate;
+            ex:sensitivityReviewRestrictionCalculationStartDate ?startDate;
+			ex:sensitivityReviewRestrictionDuration ?closurePeriod;
+        	ex:sensitivityReviewRestrictionDescription ?reasonForChange;
+        	ex:sensitivityReviewRestrictionHasRetentionRestriction [
+         	 	ex:retentionInstrumentNumber ?rINumber;
+            	ex:retentionInstrumentSignatureDate ?rISignedDate;
+            	ex:retentionRestrictionReviewDate ?retentionReconsiderDate;
+            	ex:retentionRestrictionHasGroundForRetention [
+                    ex:groundForRetentionCode ?retentionJustification
+            	]
+        	];
+            ex:sensitivityReviewRestrictionHasLegislation [
+                ex:legislationHasUkLegislation ?legislations
+            ]
+        ];
+        ex:sensitivityReviewHasAccessCondition [
+            ex:accessConditionCode ?closureType
+        ].
+}
+where {
+    {
+        select ?closure ?type ?record ?reference ?exemptionAsserted ?titleAlternative
+            ?descriptionAlternative ?previous ?reviewDate ?startDate ?closurePeriod
+            ?reasonForChange ?rINumber ?rISignedDate ?retentionReconsiderDate ?retentionJustification
+	        (group_concat(?legislation; separator=',') as ?legislations) ?closureType where {
+            bind(@id as ?code)
+            ?closure prov:specializationOf ?record;
+                dri:closureType ?closureType.
+            ?record a ?type;
+                rdfs:label ?reference;
+            	(dri:isPartOfSeries/rdfs:label)|(dri:directory*/rdfs:label) ?code.
+            optional { ?closure dri:closurePeriod ?closurePeriod }
+            optional { ?closure dri:startDate ?startDate }
+            optional { ?closure dri:exemptionAsserted ?exemptionAsserted }
+            optional { ?closure dri:reviewDate ?reviewDate }
+            optional { ?closure dri:retentionReconsiderDate ?retentionReconsiderDate }
+            optional {
+                ?closure dri:exemptionCode ?exemptionCode.
+                bind(str(?exemptionCode) as ?legislation)
+            }
+            optional { ?closure dri:titleAlternative ?titleAlternative }
+            optional { ?closure dri:alternative ?descriptionAlternative }
+            optional { ?closure prov:wasRevisionOf ?previous }
+            optional {
+                ?closure prov:qualifiedInfluence/prov:influencer/rdfs:label ?reasonForChange
+            }
+            optional { ?closure dri:rINumber ?rINumber }
+            optional { ?closure dri:rISignedDate ?rISignedDate }
+    		optional { ?closure dri:retentionJustification ?retentionJustification }
+        }
+        group by ?closure ?type ?record ?reference ?exemptionAsserted ?titleAlternative ?descriptionAlternative
+	        ?previous ?reviewDate ?startDate ?closurePeriod ?reasonForChange ?rINumber ?rISignedDate
+	        ?retentionReconsiderDate ?retentionJustification ?closureType
+        order by ?reference
+        limit @limit offset @offset
+    }
+}
