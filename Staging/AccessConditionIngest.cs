@@ -1,5 +1,4 @@
 ﻿using Api;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading;
@@ -8,14 +7,14 @@ using VDS.RDF;
 
 namespace Staging;
 
-public class AccessConditionIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<AccessConditionIngest> logger)
-    : BaseStagingIngest<DriAccessCondition>(cache, sparqlClient, logger, "AccessConditionGraph")
+public class AccessConditionIngest(ISparqlClient sparqlClient, ILogger<AccessConditionIngest> logger)
+    : BaseStagingIngest<DriAccessCondition>(sparqlClient, logger, "AccessConditionGraph")
 {
     internal override Task<Graph?> BuildAsync(IGraph existing, DriAccessCondition dri, CancellationToken cancellationToken)
     {
         logger.BuildingRecord(dri.Id);
         var code = new LiteralNode(GetUriFragment(dri.Link));
-        var id = existing.GetTriplesWithPredicateObject(Vocabulary.AccessConditionCode, code).FirstOrDefault()?.Subject ?? NewId;
+        var id = existing.GetTriplesWithPredicateObject(Vocabulary.AccessConditionCode, code).FirstOrDefault()?.Subject ?? BaseIngest.NewId;
 
         var graph = new Graph();
         graph.Assert(id, Vocabulary.AccessConditionCode, code);

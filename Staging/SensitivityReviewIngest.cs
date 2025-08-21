@@ -1,5 +1,4 @@
 ﻿using Api;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -12,31 +11,35 @@ using VDS.RDF.Parsing;
 
 namespace Staging;
 
-public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<SensitivityReviewIngest> logger)
-    : BaseStagingIngest<DriSensitivityReview>(cache, sparqlClient, logger, "SensitivityReviewGraph")
+public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<SensitivityReviewIngest> logger)
+    : BaseStagingIngest<DriSensitivityReview>(sparqlClient, logger, "SensitivityReviewGraph")
 {
-    private Dictionary<string, IUriNode>? accessConditions = null;
-    private Dictionary<string, IUriNode>? legislations = null;
-    private Dictionary<string, IUriNode>? grounds = null;
+    private Dictionary<string, IUriNode> legislations;
+    private Dictionary<string, IUriNode> accessConditions;
+    private Dictionary<string, IUriNode> groundsForRetention;
 
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriSensitivityReview dri, CancellationToken cancellationToken)
     {
         logger.BuildingRecord(dri.Id);
         await PreloadAsync(cancellationToken);
 
-        var id = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewDriId).FirstOrDefault()?.Subject ?? NewId;
-        var restriction = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewHasSensitivityReviewRestriction).FirstOrDefault()?.Object ?? NewId;
-        var retentionRestriction = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewRestrictionHasRetentionRestriction).FirstOrDefault()?.Object ?? NewId;
+        var id = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewDriId).FirstOrDefault()?.Subject ?? BaseIngest.NewId;
+        var restriction = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewHasSensitivityReviewRestriction).FirstOrDefault()?.Object ?? BaseIngest.NewId;
+        var retentionRestriction = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewRestrictionHasRetentionRestriction).FirstOrDefault()?.Object ?? BaseIngest.NewId;
 
         var graph = new Graph();
-        
+
         var proceed = await AddSensitivityReview(graph, id, dri, cancellationToken);
         if (!proceed)
         {
             return null;
         }
 
-        AddRestriction(graph, id, restriction, dri);
+        proceed = AddRestriction(graph, id, restriction, dri);
+        if (!proceed)
+        {
+            return null;
+        }
 
         proceed = await AddTargetAssociation(graph, id, dri, cancellationToken);
         if (!proceed)
@@ -56,9 +59,9 @@ public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlCli
 
     private async Task PreloadAsync(CancellationToken cancellationToken)
     {
-        accessConditions ??= await sparqlClient.GetDictionaryAsync(embedded.GetSparql("GetAccessConditions"), cancellationToken);
-        legislations ??= await sparqlClient.GetDictionaryAsync(embedded.GetSparql("GetLegislations"), cancellationToken);
-        grounds ??= await sparqlClient.GetDictionaryAsync(embedded.GetSparql("GetGroundsForRetention"), cancellationToken);
+        accessConditions = await cacheClient.AccessConditions(cancellationToken);
+        legislations = await cacheClient.Legislations(cancellationToken);
+        groundsForRetention = await cacheClient.GroundsForRetention(cancellationToken);
 
         if (accessConditions is null || !accessConditions.Any())
         {
@@ -70,7 +73,7 @@ public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlCli
             logger.MissingLegislations();
             throw new MigrationException();
         }
-        if (grounds is null || !grounds.Any())
+        if (groundsForRetention is null || !groundsForRetention.Any())
         {
             logger.MissingLegislations();
             throw new MigrationException();
@@ -108,7 +111,7 @@ public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlCli
 
         if (dri.PreviousId is not null)
         {
-            var past = await CacheFetchOrNew(CacheEntityKind.SensititvityReview, dri.PreviousId.ToString(), cancellationToken);
+            var past = await cacheClient.CacheFetchOrNew(CacheEntityKind.SensititvityReview, dri.PreviousId.ToString(), cancellationToken);
             graph.Assert(id, Vocabulary.SensitivityReviewHasPastSensitivityReview, past);
             graph.Assert(past, Vocabulary.SensitivityReviewDriId, new LiteralNode(dri.PreviousId.ToString()));
         }
@@ -116,7 +119,7 @@ public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlCli
         return true;
     }
 
-    private void AddRestriction(IGraph graph, INode id, INode restriction, DriSensitivityReview dri)
+    private bool AddRestriction(IGraph graph, INode id, INode restriction, DriSensitivityReview dri)
     {
         var existing = graph.Triples.Count;
 
@@ -146,27 +149,34 @@ public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlCli
         }
         foreach (var legislation in dri.Legislations)
         {
-            graph.Assert(restriction, Vocabulary.SensitivityReviewRestrictionHasLegislation, legislations![legislation.ToString()]);
+            if (!legislations!.TryGetValue(legislation.ToString(), out var legislationNode))
+            {
+                logger.LegislationNotFound(legislation.ToString());
+                return false;
+            }
+            graph.Assert(restriction, Vocabulary.SensitivityReviewRestrictionHasLegislation, legislationNode);
         }
 
         if (existing < graph.Triples.Count)
         {
             graph.Assert(id, Vocabulary.SensitivityReviewHasSensitivityReviewRestriction, restriction);
         }
+
+        return true;
     }
 
     private async Task<bool> AddTargetAssociation(IGraph graph, INode id, DriSensitivityReview dri, CancellationToken cancellationToken)
     {
         if (dri.TargetType.Fragment == "#DeliverableUnit")
         {
-            var asset = await CacheFetch(CacheEntityKind.Asset, dri.TargetReference, cancellationToken);
+            var asset = await cacheClient.CacheFetch(CacheEntityKind.Asset, dri.TargetReference, cancellationToken);
             if (asset is not null)
             {
                 graph.Assert(id, Vocabulary.SensitivityReviewHasAsset, asset);
             }
             else
             {
-                var subset = await CacheFetch(CacheEntityKind.Subset, dri.TargetReference, cancellationToken);
+                var subset = await cacheClient.CacheFetch(CacheEntityKind.Subset, dri.TargetReference, cancellationToken);
                 if (subset is null)
                 {
                     logger.SubsetNotFound(dri.TargetReference);
@@ -177,7 +187,7 @@ public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlCli
         }
         else
         {
-            var variation = await CacheFetch(CacheEntityKind.Variation, dri.TargetId.ToString(), cancellationToken);
+            var variation = await cacheClient.CacheFetch(CacheEntityKind.Variation, dri.TargetId.ToString(), cancellationToken);
             if (variation is null)
             {
                 logger.VariationNotFound(dri.TargetId.ToString());
@@ -214,7 +224,7 @@ public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlCli
                 logger.UnableParseGroundForRetentionUri(dri.GroundForRetention);
                 return false;
             }
-            if (!grounds!.TryGetValue(gCode, out var ground))
+            if (!groundsForRetention!.TryGetValue(gCode, out var ground))
             {
                 logger.GroundForRetentionNotFound(gCode);
                 return false;
@@ -229,7 +239,7 @@ public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlCli
             var asset = graph.GetTriplesWithSubjectPredicate(id, Vocabulary.SensitivityReviewHasAsset).SingleOrDefault()?.Object as IUriNode;
             if (asset is not null)
             {
-                var retention = await CacheFetch(CacheEntityKind.Retention, asset.Uri.ToString(), cancellationToken);
+                var retention = await cacheClient.CacheFetch(CacheEntityKind.Retention, asset.Uri.ToString(), cancellationToken);
                 if (retention is null)
                 {
                     logger.RetentionNotFound(asset.Uri);
@@ -241,7 +251,7 @@ public class SensitivityReviewIngest(IMemoryCache cache, ISparqlClient sparqlCli
             var subset = graph.GetTriplesWithSubjectPredicate(id, Vocabulary.SensitivityReviewHasSubset).SingleOrDefault()?.Object as IUriNode;
             if (subset is not null)
             {
-                var retention = await CacheFetch(CacheEntityKind.Retention, subset.Uri.ToString(), cancellationToken);
+                var retention = await cacheClient.CacheFetch(CacheEntityKind.Retention, subset.Uri.ToString(), cancellationToken);
                 if (retention is null)
                 {
                     logger.RetentionNotFound(subset.Uri);

@@ -1,5 +1,4 @@
 ﻿using Api;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading;
@@ -8,14 +7,14 @@ using VDS.RDF;
 
 namespace Staging;
 
-public class VariationIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<VariationIngest> logger)
-    : BaseStagingIngest<DriVariation>(cache, sparqlClient, logger, "VariationGraph")
+public class VariationIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<VariationIngest> logger)
+    : BaseStagingIngest<DriVariation>(sparqlClient, logger, "VariationGraph")
 {
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriVariation dri, CancellationToken cancellationToken)
     {
         logger.BuildingRecord(dri.Id);
-        var id = existing.GetTriplesWithPredicate(Vocabulary.VariationHasAsset).FirstOrDefault()?.Subject ?? NewId;
-        var asset = await CacheFetch(CacheEntityKind.Asset, dri.AssetReference, cancellationToken);
+        var id = existing.GetTriplesWithPredicate(Vocabulary.VariationHasAsset).FirstOrDefault()?.Subject ?? BaseIngest.NewId;
+        var asset = await cacheClient.CacheFetch(CacheEntityKind.Asset, dri.AssetReference, cancellationToken);
         if (asset is null)
         {
             logger.AssetNotFound(dri.AssetReference);

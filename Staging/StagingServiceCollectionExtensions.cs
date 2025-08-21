@@ -9,6 +9,7 @@ public static class StagingServiceCollectionExtensions
     {
         services.AddMemoryCache();
         services.AddHttpClient<ISparqlClient, StagingSparqlClient>();
+        services.AddSingleton<ICacheClient, CacheClient>();
         services.AddSingleton<IStagingIngest<DriAccessCondition>, AccessConditionIngest>();
         services.AddSingleton<IStagingIngest<DriLegislation>, LegislationIngest>();
         services.AddSingleton<IStagingIngest<DriGroundForRetention>, GroundForRetentionIngest>();

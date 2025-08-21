@@ -1,20 +1,18 @@
 ﻿using Api;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 using VDS.RDF;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 
 namespace Staging;
 
-public class AssetDeliverableUnitIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<AssetDeliverableUnitIngest> logger)
-    : BaseStagingIngest<DriAssetDeliverableUnit>(cache, sparqlClient, logger, "AssetDeliverableUnitGraph")
+public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<AssetDeliverableUnitIngest> logger)
+    : BaseStagingIngest<DriAssetDeliverableUnit>(sparqlClient, logger, "AssetDeliverableUnitGraph")
 {
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriAssetDeliverableUnit dri, CancellationToken cancellationToken)
     {
@@ -44,106 +42,55 @@ public class AssetDeliverableUnitIngest(IMemoryCache cache, ISparqlClient sparql
     private async Task ExtractXmlData(IGraph graph, IGraph existing,
         INode id, string xml, CancellationToken cancellationToken)
     {
-        var rdf = GetRdf(xml);
-        if (rdf is not null) //TODO: handle null
+        var rdf = BaseIngest.GetRdf(xml);
+        if (rdf is null)
         {
-            var batch = rdf.GetTriplesWithPredicate(batchIdentifier).SingleOrDefault()?.Object;
-            if (batch is ILiteralNode batchNode)
-            {
-                graph.Assert(id, Vocabulary.BatchDriId, new LiteralNode(batchNode.Value));
-            }
-
-            var consignment = rdf.GetTriplesWithPredicate(tdrConsignmentRef).SingleOrDefault()?.Object;
-            if (consignment is ILiteralNode consignmentNode)
-        var former = rdf.GetTriplesWithPredicate(formerReferenceDepartment).SingleOrDefault()?.Object;
-        if (former is ILiteralNode formerNode)
-            {
-            graph.Assert(id, Vocabulary.AssetPastName, new LiteralNode(formerNode.Value));
-            }
-
-        var related = rdf.GetTriplesWithPredicate(relatedMaterial).SingleOrDefault()?.Object;
-        if (related is ILiteralNode relatedNode)
-            {
-            graph.Assert(id, Vocabulary.AssetRelationDescription, new LiteralNode(relatedNode.Value));
-            }
-
-            await AssertAsync(graph, id, rdf, language, CacheEntityKind.Language,
-                Vocabulary.AssetHasLanguage, Vocabulary.LanguageName, cancellationToken);
-
-            var retention = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasRetention).SingleOrDefault()?.Object ?? NewId;
-            graph.Assert(id, Vocabulary.AssetHasRetention, retention);
-            await AssertAsync(graph, retention, rdf, heldBy, CacheEntityKind.FormalBody,
-                Vocabulary.RetentionHasFormalBody, Vocabulary.FormalBodyName, cancellationToken);
-
-            var creation = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasCreation).SingleOrDefault()?.Object ?? NewId;
-            graph.Assert(id, Vocabulary.AssetHasCreation, creation);
-            await AssertAsync(graph, creation, rdf, creator, CacheEntityKind.FormalBody,
-                Vocabulary.CreationHasFormalBody, Vocabulary.FormalBodyName, cancellationToken);
-
-
-            await AssertAsync(graph, id, rdf, rights, CacheEntityKind.Copyright,
-                Vocabulary.AssetHasCopyright, Vocabulary.CopyrightTitle, cancellationToken);
-
-            var legal = rdf.GetTriplesWithPredicate(legalStatus).SingleOrDefault()?.Object;
-            if (legal is IUriNode legalUri)
-            {
-                var statusType = legalUri.Uri.Segments.Last() switch
-                {
-                    "Public_Record(s)" => Vocabulary.PublicRecord,
-                    _ => throw new ArgumentException(legalUri.Uri.ToString())
-                };
-                graph.Assert(id, Vocabulary.AssetHasLegalStatus, statusType);
-            }
+            logger.AssetXmlMissingRdf(id.AsValuedNode().AsString());
+            return;
         }
-    }
 
-    private async Task AssertAsync(IGraph graph, INode id, IGraph rdf,
-        IUriNode findPredicate, CacheEntityKind cacheEntityKind,
-        IUriNode immediatePredicate, IUriNode? foundPredicate,
-        CancellationToken cancellationToken)
-    {
-        var node = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
-        var name = node switch
-        {//TODO: handle default
-            ILiteralNode literalNode => literalNode.Value,
-            IUriNode uriNode => uriNode.Uri.Segments.Last().Replace('_',' ')
-        };
+        BaseIngest.AssertLiteral(graph, id, rdf, batchIdentifier, Vocabulary.BatchDriId);
+        BaseIngest.AssertLiteral(graph, id, rdf, tdrConsignmentRef, Vocabulary.ConsignmentTdrId);
+        BaseIngest.AssertLiteral(graph, id, rdf, description, Vocabulary.AssetDescription);
+        BaseIngest.AssertLiteral(graph, id, rdf, formerReferenceDepartment, Vocabulary.AssetPastName);
+        BaseIngest.AssertLiteral(graph, id, rdf, relatedMaterial, Vocabulary.AssetRelationDescription);
 
-        var nodeId = await CacheFetchOrNew(cacheEntityKind, name, cancellationToken);
-        graph.Assert(id, immediatePredicate, nodeId);
-        if (foundPredicate is not null)
+        await BaseIngest.AssertAsync(graph, id, rdf, language, CacheEntityKind.Language,
+            Vocabulary.AssetHasLanguage, Vocabulary.LanguageName, cacheClient, cancellationToken);
+
+        var retention = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasRetention).SingleOrDefault()?.Object ?? BaseIngest.NewId;
+        graph.Assert(id, Vocabulary.AssetHasRetention, retention);
+        await BaseIngest.AssertAsync(graph, retention, rdf, heldBy, CacheEntityKind.FormalBody,
+            Vocabulary.RetentionHasFormalBody, Vocabulary.FormalBodyName, cacheClient, cancellationToken);
+
+        var creation = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasCreation).SingleOrDefault()?.Object ?? BaseIngest.NewId;
+        graph.Assert(id, Vocabulary.AssetHasCreation, creation);
+        await BaseIngest.AssertAsync(graph, creation, rdf, creator, CacheEntityKind.FormalBody,
+            Vocabulary.CreationHasFormalBody, Vocabulary.FormalBodyName, cacheClient, cancellationToken);
+
+        await BaseIngest.AssertAsync(graph, id, rdf, rights, CacheEntityKind.Copyright,
+            Vocabulary.AssetHasCopyright, Vocabulary.CopyrightTitle, cacheClient, cancellationToken);
+
+        var legal = rdf.GetTriplesWithPredicate(legalStatus).SingleOrDefault()?.Object;
+        if (legal is IUriNode legalUri)
         {
-            graph.Assert(nodeId, foundPredicate, new LiteralNode(name));
-        }
-    }
-
-    private IGraph? GetRdf(string xml)
-    {
-        var du = new XmlDocument();
-        du.LoadXml(xml);
-        var rdfElement = du.GetElementsByTagName("rdf:RDF");
-        if (rdfElement.Count == 1)
-        {
-            var rdf = new Graph
+            var statusType = legalUri.Uri.Segments.Last() switch
             {
-                BaseUri = new Uri("http://example.com")
+                "Public_Record(s)" or "Public_record" => Vocabulary.PublicRecord,
+                _ => throw new ArgumentException(legalUri.Uri.ToString())
             };
-            rdf.NamespaceMap.AddNamespace("tna", new Uri("http://nationalarchives.gov.uk/metadata/tna#"));
-            new RdfXmlParser().Load(rdf, new StringReader(rdfElement[0].OuterXml));
-            return rdf;
+            graph.Assert(id, Vocabulary.AssetHasLegalStatus, statusType);
         }
-        return null;
     }
 
-    private static readonly Uri tnaNamespace = new("http://nationalarchives.gov.uk/metadata/tna#");
     private static readonly Uri dctermsNamespace = new("http://purl.org/dc/terms/");
 
-    private static readonly IUriNode batchIdentifier = new UriNode(new($"{tnaNamespace}batchIdentifier"));
-    private static readonly IUriNode tdrConsignmentRef = new UriNode(new($"{tnaNamespace}tdrConsignmentRef"));
-    private static readonly IUriNode formerReferenceDepartment = new UriNode(new($"{tnaNamespace}formerReferenceDepartment"));
-    private static readonly IUriNode relatedMaterial = new UriNode(new($"{tnaNamespace}relatedMaterial"));
-    private static readonly IUriNode legalStatus = new UriNode(new($"{tnaNamespace}legalStatus"));
-    private static readonly IUriNode heldBy = new UriNode(new($"{tnaNamespace}heldBy"));
+    private static readonly IUriNode batchIdentifier = new UriNode(new($"{BaseIngest.TnaNamespace}batchIdentifier"));
+    private static readonly IUriNode tdrConsignmentRef = new UriNode(new($"{BaseIngest.TnaNamespace}tdrConsignmentRef"));
+    private static readonly IUriNode formerReferenceDepartment = new UriNode(new($"{BaseIngest.TnaNamespace}formerReferenceDepartment"));
+    private static readonly IUriNode relatedMaterial = new UriNode(new($"{BaseIngest.TnaNamespace}relatedMaterial"));
+    private static readonly IUriNode legalStatus = new UriNode(new($"{BaseIngest.TnaNamespace}legalStatus"));
+    private static readonly IUriNode heldBy = new UriNode(new($"{BaseIngest.TnaNamespace}heldBy"));
 
     private static readonly IUriNode description = new UriNode(new(dctermsNamespace, "description"));
     private static readonly IUriNode creator = new UriNode(new(dctermsNamespace, "creator"));

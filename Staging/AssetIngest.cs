@@ -1,5 +1,4 @@
 ﻿using Api;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading;
@@ -8,17 +7,17 @@ using VDS.RDF;
 
 namespace Staging;
 
-public class AssetIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<AssetIngest> logger)
-    : BaseStagingIngest<DriAsset>(cache, sparqlClient, logger, "AssetGraph")
+public class AssetIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<AssetIngest> logger)
+    : BaseStagingIngest<DriAsset>(sparqlClient, logger, "AssetGraph")
 {
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriAsset dri, CancellationToken cancellationToken)
     {
         logger.BuildingRecord(dri.Id);
         var assetReference = new LiteralNode(dri.Reference);
-        var id = existing.GetTriplesWithPredicateObject(Vocabulary.AssetReference, assetReference).FirstOrDefault()?.Subject ?? NewId;
-        var retention = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasRetention).FirstOrDefault()?.Object ?? NewId;
+        var id = existing.GetTriplesWithPredicateObject(Vocabulary.AssetReference, assetReference).FirstOrDefault()?.Subject ?? BaseIngest.NewId;
+        var retention = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasRetention).FirstOrDefault()?.Object ?? BaseIngest.NewId;
 
-        var subset = await CacheFetch(CacheEntityKind.Subset, dri.SubsetReference, cancellationToken);
+        var subset = await cacheClient.CacheFetch(CacheEntityKind.Subset, dri.SubsetReference, cancellationToken);
         if (subset is null)
         {
             logger.SubsetNotFound(dri.SubsetReference);

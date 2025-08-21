@@ -1,5 +1,4 @@
 ﻿using Api;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading;
@@ -8,14 +7,14 @@ using VDS.RDF;
 
 namespace Staging;
 
-public class LegislationIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<LegislationIngest> logger)
-    : BaseStagingIngest<DriLegislation>(cache, sparqlClient, logger, "LegislationGraph")
+public class LegislationIngest(ISparqlClient sparqlClient, ILogger<LegislationIngest> logger)
+    : BaseStagingIngest<DriLegislation>(sparqlClient, logger, "LegislationGraph")
 {
     internal override Task<Graph?> BuildAsync(IGraph existing, DriLegislation dri, CancellationToken cancellationToken)
     {
         logger.BuildingRecord(dri.Id);
         var legislation = new UriNode(dri.Link);
-        var id = existing.GetTriplesWithPredicateObject(Vocabulary.LegislationHasUkLegislation, legislation).FirstOrDefault()?.Subject ?? NewId;
+        var id = existing.GetTriplesWithPredicateObject(Vocabulary.LegislationHasUkLegislation, legislation).FirstOrDefault()?.Subject ?? BaseIngest.NewId;
 
         var graph = new Graph();
         graph.Assert(id, Vocabulary.LegislationHasUkLegislation, legislation);

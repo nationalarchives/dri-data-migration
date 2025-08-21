@@ -1,5 +1,4 @@
 ﻿using Api;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading;
@@ -8,15 +7,15 @@ using VDS.RDF;
 
 namespace Staging;
 
-public class SubsetIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogger<SubsetIngest> logger)
-    : BaseStagingIngest<DriSubset>(cache, sparqlClient, logger, "SubsetGraph")
+public class SubsetIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<SubsetIngest> logger)
+    : BaseStagingIngest<DriSubset>(sparqlClient, logger, "SubsetGraph")
 {
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriSubset dri, CancellationToken cancellationToken)
     {
         logger.BuildingRecord(dri.Id);
         var subsetReference = new LiteralNode(dri.Reference);
-        var id = existing.GetTriplesWithPredicateObject(Vocabulary.SubsetReference, subsetReference).FirstOrDefault()?.Subject ?? NewId;
-        var retention = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SubsetHasRetention).FirstOrDefault()?.Object ?? NewId;
+        var id = existing.GetTriplesWithPredicateObject(Vocabulary.SubsetReference, subsetReference).FirstOrDefault()?.Subject ?? BaseIngest.NewId;
+        var retention = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SubsetHasRetention).FirstOrDefault()?.Object ?? BaseIngest.NewId;
 
         var graph = new Graph();
         graph.Assert(id, Vocabulary.SubsetReference, subsetReference);
@@ -27,7 +26,7 @@ public class SubsetIngest(IMemoryCache cache, ISparqlClient sparqlClient, ILogge
         }
         if (!string.IsNullOrEmpty(dri.ParentReference))
         {
-            var broaderId = await CacheFetchOrNew(CacheEntityKind.Subset, dri.ParentReference, cancellationToken);
+            var broaderId = await cacheClient.CacheFetchOrNew(CacheEntityKind.Subset, dri.ParentReference, cancellationToken);
             graph.Assert(id, Vocabulary.SubsetHasBroaderSubset, broaderId);
             graph.Assert(broaderId, Vocabulary.SubsetReference, new LiteralNode(dri.ParentReference));
         }
