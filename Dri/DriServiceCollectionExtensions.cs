@@ -3,11 +3,11 @@ using Dri;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public static class DriRdfServiceCollectionExtensions
+public static class DriServiceCollectionExtensions
 {
     public static IServiceCollection AddDriExport(this IServiceCollection services)
     {
-        services.AddHttpClient<IDriSparqlClient, DriSparqlClient>();
+        services.AddHttpClient<IDriSparqlClient, SparqlClient>();
         services.AddSingleton<IDriRdfExporter, RdfExporter>();
         services.AddSingleton<IDriSqlExporter, SqlExporter>();
 

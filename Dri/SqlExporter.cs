@@ -1,6 +1,5 @@
 ﻿using Api;
 using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Data;
@@ -28,23 +27,23 @@ public class SqlExporter(IOptions<DriSettings> options) : IDriSqlExporter
         order by d.DELIVERABLEUNITREF
         limit $limit offset $offset
         """;
-        /*"""
-        with records(DELIVERABLEUNITREF, CATALOGUEREFERENCE, XMLCLOB, TOPLEVELREF) as (
-        	select d.DELIVERABLEUNITREF, d.CATALOGUEREFERENCE, x.XMLCLOB, d.TOPLEVELREF from deliverableunit d
-        	join xmlmetadata x on x.METADATAREF = d.METADATAREF
-        	where d.DELETED = 'F' and d.DESCRIPTION  = $code
-        	union
-        	select d.DELIVERABLEUNITREF, d.CATALOGUEREFERENCE, x.XMLCLOB, d.TOPLEVELREF from deliverableunit d
-            join deliverableunitmanifestation dm on dm.DELIVERABLEUNITREF = d.DELIVERABLEUNITREF
-            join manifestationfile m on m.MANIFESTATIONREF = dm.MANIFESTATIONREF
-        	join xmlmetadata x on x.METADATAREF = d.METADATAREF
-        	join records r on r.TOPLEVELREF = d.TOPLEVELREF
-        	where d.DELETED = 'F' and dm.DELETED='F' and dm.ACTIVE='T'
-        )
-        select DELIVERABLEUNITREF, CATALOGUEREFERENCE, XMLCLOB from records
-        order by DELIVERABLEUNITREF
-        limit $limit offset $offset
-        """;*/
+    /*"""
+    with records(DELIVERABLEUNITREF, CATALOGUEREFERENCE, XMLCLOB, TOPLEVELREF) as (
+        select d.DELIVERABLEUNITREF, d.CATALOGUEREFERENCE, x.XMLCLOB, d.TOPLEVELREF from deliverableunit d
+        join xmlmetadata x on x.METADATAREF = d.METADATAREF
+        where d.DELETED = 'F' and d.DESCRIPTION  = $code
+        union
+        select d.DELIVERABLEUNITREF, d.CATALOGUEREFERENCE, x.XMLCLOB, d.TOPLEVELREF from deliverableunit d
+        join deliverableunitmanifestation dm on dm.DELIVERABLEUNITREF = d.DELIVERABLEUNITREF
+        join manifestationfile m on m.MANIFESTATIONREF = dm.MANIFESTATIONREF
+        join xmlmetadata x on x.METADATAREF = d.METADATAREF
+        join records r on r.TOPLEVELREF = d.TOPLEVELREF
+        where d.DELETED = 'F' and dm.DELETED='F' and dm.ACTIVE='T'
+    )
+    select DELIVERABLEUNITREF, CATALOGUEREFERENCE, XMLCLOB from records
+    order by DELIVERABLEUNITREF
+    limit $limit offset $offset
+    """;*/
     private readonly string fileXmlSql = """
         select f.FILEREF, f.FILELOCATION, f.NAME, x.XMLCLOB from digitalfile f
         join manifestationfile m on m.FILEREF = f.FILEREF
