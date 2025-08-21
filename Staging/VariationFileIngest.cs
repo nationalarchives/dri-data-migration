@@ -62,12 +62,6 @@ public class VariationFileIngest(IMemoryCache cache, ISparqlClient sparqlClient,
                 graph.Assert(id, Vocabulary.VariationNote, new LiteralNode(commentNode.Value));
             }
 
-            var sequence = rdf.GetTriplesWithPredicate(ordinal).SingleOrDefault()?.Object;
-            if (sequence is ILiteralNode sequenceNode && int.TryParse(sequenceNode.Value, out var position))
-            {
-                graph.Assert(id, Vocabulary.VariationRelativeLocation, new LongNode(position));
-            }
-
             var redacted = rdf.GetTriplesWithPredicate(hasRedactedFile).Select(t => t.Object).Cast<ILiteralNode>();
             foreach (var redactedFile in redacted)
             {
@@ -138,8 +132,6 @@ public class VariationFileIngest(IMemoryCache cache, ISparqlClient sparqlClient,
     private static readonly Uri tnaNamespace = new("http://nationalarchives.gov.uk/metadata/tna#");
 
     private static readonly IUriNode note = new UriNode(new($"{tnaNamespace}note"));
-    private static readonly IUriNode filePathAndName = new UriNode(new($"{tnaNamespace}filePathAndName"));
-    private static readonly IUriNode ordinal = new UriNode(new($"{tnaNamespace}ordinal"));
     private static readonly IUriNode hasRedactedFile = new UriNode(new($"{tnaNamespace}hasRedactedFile"));
     private static readonly IUriNode hasPresentationManifestationFile = new UriNode(new($"{tnaNamespace}hasPresentationManifestationFile"));
 
