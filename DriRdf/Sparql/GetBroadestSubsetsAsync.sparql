@@ -1,8 +1,0 @@
-﻿prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-prefix dri: <http://nationalarchives.gov.uk/terms/dri#>
-
-select distinct ?directory where {
-    ?s a dri:DeliverableUnit;
-        dri:hasDirectory/rdfs:label ?directory.
-    filter not exists { ?s dri:parent/rdfs:label ?parent }
-}
