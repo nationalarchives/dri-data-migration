@@ -50,8 +50,12 @@ public class VariationFileIngest(IMemoryCache cache, ISparqlClient sparqlClient,
         var doc = new XmlDocument();
         doc.LoadXml(xml);
         var rdf = GetRdf(doc);
-        if (rdf is not null) //TODO: handle null
+        if (rdf is null)
         {
+            logger.VariationXmlMissingRdf(id.AsValuedNode().AsString());
+            return;
+        }
+
             var comment = rdf.GetTriplesWithPredicate(note).SingleOrDefault()?.Object;
             if (comment is ILiteralNode commentNode)
             {
@@ -84,17 +88,7 @@ public class VariationFileIngest(IMemoryCache cache, ISparqlClient sparqlClient,
                 {
                     graph.Assert(id, Vocabulary.VariationHasAlternativeVariation, alternativeVariation);
                 }
-            }
-        }
-
-        var properties = doc.GetElementsByTagName("FileProperty");
-        if (properties is not null) //TODO: handle null
-        {
-            var mgr = new XmlNamespaceManager(doc.NameTable);
-            mgr.AddNamespace("ex", doc.FirstChild.NamespaceURI);
-            for (int i = 0; i < properties.Count; i++)
-            {//TODO: handle null
-                var predicate = properties.Item(i).SelectSingleNode("ex:FilePropertyName", mgr).InnerText switch
+            else
                 {
                     "Title" or "Creation Date" or "Encrypted" or "Creator" or "Number of Images" => null,
                     "Creating Application" => Vocabulary.VariationHasCausingSoftware,

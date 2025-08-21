@@ -40,15 +40,8 @@ public static class Vocabulary
     public static readonly IUriNode VariationName = new UriNode(new(Namespace, "variationName"));
     public static readonly IUriNode VariationNote = new UriNode(new(Namespace, "variationNote"));
     public static readonly IUriNode VariationRelativeLocation = new UriNode(new(Namespace, "variationRelativeLocation"));
-    public static readonly IUriNode ImagePixelHeight = new UriNode(new(Namespace, "imagePixelHeight"));
-    public static readonly IUriNode ImagePixelWidth = new UriNode(new(Namespace, "imagePixelWidth"));
-    public static readonly IUriNode NumberOfPages = new UriNode(new(Namespace, "numberOfPages"));
-    public static readonly IUriNode WordCount = new UriNode(new(Namespace, "wordCount"));
-    public static readonly IUriNode CharacterCount = new UriNode(new(Namespace, "characterCount"));
-    public static readonly IUriNode EmailSubject = new UriNode(new(Namespace, "emailSubject"));
     public static readonly IUriNode VariationHasRedactedVariation = new UriNode(new(Namespace, "variationHasRedactedVariation"));
     public static readonly IUriNode VariationHasAlternativeVariation = new UriNode(new(Namespace, "variationHasAlternativeVariation"));
-    public static readonly IUriNode VariationHasCausingSoftware = new UriNode(new(Namespace, "variationHasCausingSoftware"));
     public static readonly IUriNode VariationHasSensitivityReview = new UriNode(new(Namespace, "variationHasSensitivityReview"));
 
     public static readonly IUriNode CustodianshipStartAt = new UriNode(new(Namespace, "custodianshipStartAt"));
@@ -97,8 +90,6 @@ public static class Vocabulary
     public static readonly IUriNode CreationHasFormalBody = new UriNode(new(Namespace, "creationHasFormalBody"));
     
     public static readonly IUriNode FormalBodyName = new UriNode(new(Namespace, "formalBodyName"));
-    
-    public static readonly IUriNode CausingSoftwareName = new UriNode(new(Namespace, "causingSoftwareName"));
     
     public static readonly IUriNode PublicRecord = new UriNode(new(Namespace, "PublicRecord"));
     public static readonly IUriNode NotPublicRecord = new UriNode(new(Namespace, "NotPublicRecord"));

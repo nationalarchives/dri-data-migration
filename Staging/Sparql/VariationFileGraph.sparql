@@ -5,30 +5,12 @@ construct {
         ex:variationDriXml ?variationDriXml;
         ex:variationNote ?variationNote;
         ex:variationRelativeLocation ?variationRelativeLocation;
-        ex:imagePixelHeight ?imagePixelHeight;
-        ex:imagePixelWidth ?imagePixelWidth;
-        ex:numberOfPages ?numberOfPages;
-        ex:wordCount ?wordCount;
-        ex:characterCount ?characterCount;
-        ex:emailSubject ?emailSubject;
-        ex:variationHasRedactedVariation ?variationHasRedactedVariation;
-        ex:variationHasCausingSoftware ?causingSoftware.
-    ?causingSoftware ex:causingSoftwareName ?causingSoftwareName.
+        ex:variationHasRedactedVariation ?variationHasRedactedVariation.
 } where {
     bind(@id as ?variationDriId)
     ?variation ex:variationDriId ?variationDriId.
     optional { ?variation ex:variationDriXml ?variationDriXml }
     optional { ?variation ex:variationNote ?variationNote }
     optional { ?variation ex:variationRelativeLocation ?variationRelativeLocation }
-    optional { ?variation ex:imagePixelHeight ?imagePixelHeight }
-    optional { ?variation ex:imagePixelWidth ?imagePixelWidth }
-    optional { ?variation ex:numberOfPages ?numberOfPages }
-    optional { ?variation ex:wordCount ?wordCount }
-    optional { ?variation ex:characterCount ?characterCount }
-    optional { ?variation ex:emailSubject ?emailSubject }
     optional { ?variation ex:variationHasRedactedVariation ?variationHasRedactedVariation }
-    optional {
-        ?variation ex:variationHasCausingSoftware ?causingSoftware.
-        ?causingSoftware ex:causingSoftwareName ?causingSoftwareName.
-    }
 }

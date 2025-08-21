@@ -19,19 +19,11 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:variationDriXml ?variationDriXml;
                 ex:variationNote ?variationNote;
                 ex:variationRelativeLocation ?variationRelativeLocation;
-                ex:imagePixelHeight ?imagePixelHeight;
-                ex:imagePixelWidth ?imagePixelWidth;
-                ex:numberOfPages ?numberOfPages;
-                ex:wordCount ?wordCount;
-                ex:characterCount ?characterCount;
-                ex:emailSubject ?emailSubject;
                 ex:variationHasRedactedVariation ?variationHasRedactedVariation;
-                ex:variationHasCausingSoftware ?causingSoftware;
                 ex:variationHasSensitivityReview ?sr;
                 ex:variationHasAsset ?asset.
             ?variationHasRedactedVariation ex:variationDriId ?redactedVariationDriId;
                 ex:variationName ?redactedVariationName.
-            ?causingSoftware ex:causingSoftwareName ?causingSoftwareName.
             ?asset ex:assetDriId ?assetDriId;
                 ex:assetReference ?assetReference;
                 ex:assetDescription ?assetDescription;
@@ -81,20 +73,10 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
             optional { ?variation ex:variationDriXml ?variationDriXml }
             optional { ?variation ex:variationNote ?variationNote }
             optional { ?variation ex:variationRelativeLocation ?variationRelativeLocation }
-            optional { ?variation ex:imagePixelHeight ?imagePixelHeight }
-            optional { ?variation ex:imagePixelWidth ?imagePixelWidth }
-            optional { ?variation ex:numberOfPages ?numberOfPages }
-            optional { ?variation ex:wordCount ?wordCount }
-            optional { ?variation ex:characterCount ?characterCount }
-            optional { ?variation ex:emailSubject ?emailSubject }
             optional { 
                 ?variation ex:variationHasRedactedVariation ?variationHasRedactedVariation.
                 ?variationHasRedactedVariation ex:variationDriId ?redactedVariationDriId;
                     ex:variationName ?redactedVariationName.
-            }
-            optional {
-                ?variation ex:variationHasCausingSoftware ?causingSoftware.
-                ?causingSoftware ex:causingSoftwareName ?causingSoftwareName.
             }
             ?asset ex:assetDriId ?assetDriId;
                 ex:assetReference ?assetReference;

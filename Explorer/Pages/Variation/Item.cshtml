@@ -16,22 +16,7 @@
         @if (Model.Item.Location.Any())
         {
             <dt>Location</dt>
-            <dd>@Model.Item.Location.Single()</dd>
-        }
-        @if (Model.Item.NumberOfPages.Any())
-        {
-            <dt>Number of pages</dt>
-            <dd>@Model.Item.NumberOfPages.Single()</dd>
-        }
-        @if (Model.Item.WordCount.Any())
-        {
-            <dt>Word count</dt>
-            <dd>@Model.Item.WordCount.Single()</dd>
-        }
-        @if (Model.Item.CharacterCount.Any())
-        {
-            <dt>Character count</dt>
-            <dd>@Model.Item.CharacterCount.Single()</dd>
+            <dd>@Model.Item.Location.Single().Value</dd>
         }
     </dl>
 
