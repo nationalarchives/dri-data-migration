@@ -1,11 +1,15 @@
 ﻿prefix ex: <http://id.example.com/schema/>
-            
+
 construct {
-    ?s ex:variationRelativeLocation ?variationRelativeLocation.
+    ?s ex:variationRelativeLocation ?id0
 } where {
     bind(@id0 as ?id0)
     bind(@id1 as ?id1)
-    ?s ex:variationRelativeLocation ?variationRelativeLocation;
-        ex:variationHasAsset/ex:assetHasSubset/ex:subsetHasBroaderSubset*/ex:subsetReference ?id1.
-    filter strends(str(?variationRelativeLocation), ?id0)
+    ?s ex:variationHasAsset/ex:assetHasSubset/ex:subsetHasBroaderSubset*/ex:subsetReference ?id1.
+    optional { ?s ex:variationRelativeLocation ?variationRelativeLocation }
+    optional {
+        ?s ex:variationName ?variationName;
+            ex:variationHasAsset/ex:assetHasRetention/ex:importLocation ?importLocation.
+    }
+    filter strends(coalesce(str(?variationRelativeLocation), concat(?importLocation,'/',?variationName)), ?id0)
 }
