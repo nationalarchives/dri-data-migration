@@ -96,7 +96,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
             graph.Assert(id, Vocabulary.SensitivityReviewSensitiveDescription, new LiteralNode(dri.SensitiveDescription));
         }
 
-        var acCode = GetUriFragment(dri.AccessCondition);
+        var acCode = BaseIngest.GetUriFragment(dri.AccessCondition);
         if (acCode is null)
         {
             logger.UnableParseAccessConditionUri(dri.AccessCondition);
@@ -134,7 +134,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         if (dri.RestrictionDuration.HasValue)
         {
             var yearType = new string[] { "D", "U" };
-            if (yearType.Contains(GetUriFragment(dri.AccessCondition)))
+            if (yearType.Contains(BaseIngest.GetUriFragment(dri.AccessCondition)))
             {
                 graph.Assert(restriction, Vocabulary.SensitivityReviewRestrictionEndYear, new LongNode(dri.RestrictionDuration.Value));
             }
@@ -218,7 +218,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         }
         if (dri.GroundForRetention is not null)
         {
-            var gCode = GetUriFragment(dri.GroundForRetention);
+            var gCode = BaseIngest.GetUriFragment(dri.GroundForRetention);
             if (gCode is null)
             {
                 logger.UnableParseGroundForRetentionUri(dri.GroundForRetention);

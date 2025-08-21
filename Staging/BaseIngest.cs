@@ -17,6 +17,8 @@ public static class BaseIngest
 
     public static IUriNode NewId => new UriNode(new Uri(idNamespace, Guid.NewGuid().ToString()));
 
+    public static string? GetUriFragment(Uri? uri) => uri?.Fragment.Length > 1 ? uri.Fragment.TrimStart('#') : null;
+
     public static void AssertLiteral(IGraph graph, INode id, IGraph rdf,
         IUriNode findPredicate, IUriNode immediatePredicate)
     {
