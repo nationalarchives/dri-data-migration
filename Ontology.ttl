@@ -95,27 +95,6 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Non-record material".
 
-:Image a owl:Class;
-	rdfs:subClassOf :Variation;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Image".
-
-:Document a owl:Class;
-	rdfs:subClassOf :Variation;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Document".
-
-:Email a owl:Class;
-	rdfs:subClassOf :Variation;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "e-mail".
-
-:Location a owl:Class;
-	rdfs:isDefinedBy this:schema;
-	rdfs:seeAlso rico:Place;
-	rdfs:label "Location";
-	rdfs:comment "A location of a thing.".
-
 :FormalBody a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:seeAlso rico:Agent;
@@ -189,13 +168,6 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:seeAlso rico:Activity;
 	rdfs:label "Past sensitivity review".
-
-:CausingSoftware a owl:Class;
-	rdfs:subClassOf :SensitivityReviewRestriction;
-	rdfs:isDefinedBy this:schema;
-	rdfs:seeAlso rico:Mechanism;
-	rdfs:label "Causing software";
-	rdfs:comment "Software application that was used to create :Variation.".
 
 
 # Object properties
@@ -310,20 +282,6 @@ this:schema a owl:Ontology;
 	rdfs:range :Variation;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Alternative variation has variation".
-
-:variationHasCausingSoftware a owl:ObjectProperty;
-	rdfs:seeAlso rico:migratedInto;
-	rdfs:domain :Variation;
-	rdfs:range :CausingSoftware;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Variation has causing software".
-
-:causingSoftwareHasVariation a owl:ObjectProperty;
-	rdfs:seeAlso rico:migratedFrom;
-	rdfs:domain :CausingSoftware;
-	rdfs:range :Variation;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Causing software has variation".
 
 :creationHasAsset a owl:ObjectProperty;
 	rdfs:seeAlso rico:relationHasSource;
@@ -527,6 +485,14 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset name".
 
+:assetPastName a owl:DatatypeProperty;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :name;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset past name";
+	rdfs:comment "This is in lieu of previous names relationship.".
+
 :assetDescription a owl:DatatypeProperty;
 	rdfs:domain :Asset;
 	rdfs:range xsd:string;
@@ -566,6 +532,13 @@ this:schema a owl:Ontology;
 	rdfs:subPropertyOf :externalIdentifier;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Consignment TDR Id".
+
+:assetRelationDescription a owl:DatatypeProperty;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset relation description";
+	rdfs:comment "This is in lieu of the actual relationship since the source data is a free text field.".
 
 :formalBodyName a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :FormalBody;
@@ -624,49 +597,6 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:anyURI;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation relative location".
-
-:variationSequence a owl:DatatypeProperty, owl:FunctionalProperty;
-	rdfs:domain :Variation;
-	rdfs:range xsd:anyURI;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Variation sequence";
-	rdfs:comment "This is lieu of relationship describing :Variation that follows another :Variation.".
-
-:imagePixelHeight a owl:DatatypeProperty;
-	rdfs:domain :Image;
-	rdfs:range xsd:integer;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Image pixel height".
-
-:imagePixelWidth a owl:DatatypeProperty;
-	rdfs:domain :Image;
-	rdfs:range xsd:integer;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Image pixel width".
-
-:numberOfPages a owl:DatatypeProperty;
-	rdfs:domain :Document;
-	rdfs:range xsd:integer;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Number of pages".
-
-:wordCount a owl:DatatypeProperty;
-	rdfs:domain :Document;
-	rdfs:range xsd:integer;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Word count".
-
-:characterCount a owl:DatatypeProperty;
-	rdfs:domain :Document;
-	rdfs:range xsd:integer;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Character count".
-
-:emailSubject a owl:DatatypeProperty;
-	rdfs:domain :Email;
-	rdfs:range xsd:string;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "e-mail subject".
 
 :sensitivityReviewDate a owl:DatatypeProperty;
 	rdfs:domain :SensitivityReview;
@@ -794,10 +724,3 @@ this:schema a owl:Ontology;
 	rdfs:subPropertyOf :name;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Copyright title".
-
-:causingSoftwareName a owl:DatatypeProperty, owl:FunctionalProperty;
-	rdfs:domain :CausingSoftware;
-	rdfs:range xsd:string;
-	rdfs:subPropertyOf :externalIdentifier;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Causing software name".
