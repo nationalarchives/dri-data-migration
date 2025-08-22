@@ -14,7 +14,7 @@ internal static partial class Log
     [LoggerMessage(EventId = 3, Level = LogLevel.Trace, Message = "Record {id} updated")]
     internal static partial void RecordUpdated(this ILogger logger, string id);
 
-    [LoggerMessage(EventId = 4, Level = LogLevel.Warning, Message = "Record {id} not ingested because graph couldn't be counstructed")]
+    [LoggerMessage(EventId = 4, Level = LogLevel.Warning, Message = "Record {id} not ingested because graph couldn't be constructed")]
     internal static partial void RecordNotIngestedNoGraph(this ILogger logger, string id);
 
     [LoggerMessage(EventId = 5, Level = LogLevel.Warning, Message = "Subset {subset} not found")]
