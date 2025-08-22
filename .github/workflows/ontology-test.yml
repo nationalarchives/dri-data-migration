@@ -32,4 +32,4 @@ jobs:
       - name: Test
         run: |
             cd Tests
-            dotnet run --no-restore --project "Rdf.Tests" --filter "TestCategory=Ontology" --configuration Release
+            dotnet run --no-restore --project "Ontology.Tests" --configuration Release
