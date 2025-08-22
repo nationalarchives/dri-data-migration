@@ -30,6 +30,16 @@
             <dt>Relation description</dt>
             <dd>@Model.Item.RelationDescription.Single()</dd>
         }
+        @if (Model.Item.PhysicalDescription.Any())
+        {
+            <dt>Physical description</dt>
+            <dd>@Model.Item.PhysicalDescription.Single()</dd>
+        }
+        @if (Model.Item.UseRestrictionDescription.Any())
+        {
+            <dt>Usage restriction description</dt>
+            <dd>@Model.Item.UseRestrictionDescription.Single()</dd>
+        }
         @if (Model.Item.Language.Any())
         {
             <dt>Language</dt>
@@ -51,6 +61,69 @@
             <dd>@Model.Item.Creation.Single().CreationBody.Single().Name.Single()</dd>
         }
     </dl>
+    @if (Model.Item.EvidenceProvider.Any() || Model.Item.Investigation.Any())
+    {
+        <div class="tna-!--margin-top-m">
+            <h2>Inquiry</h2>
+            <dl class="tna-dl tna-dl--plain">
+                @if (Model.Item.Investigation.Any())
+                {
+                    <dt>Investigation</dt>
+                    <dd>@Model.Item.Investigation.Single()</dd>
+                }
+                @if (Model.Item.EvidenceProvider.Any())
+                {
+                    <dt>Evidence provider</dt>
+                    <dd>@Model.Item.EvidenceProvider.Single()</dd>
+                }
+            </dl>
+        </div>
+    }
+    @if (Model.Item.CourtCases.Any())
+    {
+        <div class="tna-!--margin-top-m">
+            <h2>Court case</h2>
+            <ul class="tna-ul tna-ul--dashed">
+                @foreach (var courtCase in Model.Item.CourtCases)
+                {
+                    <li>
+                        <dl class="tna-dl tna-dl--plain">
+                            @if (courtCase.Reference.Any())
+                            {
+                                <dt>Reference</dt>
+                                <dd>@courtCase.Reference.Single()</dd>
+                            }
+                            @if (courtCase.Name.Any())
+                            {
+                                <dt>Name</dt>
+                                <dd>@courtCase.Name.Single()</dd>
+                            }
+                            @if (courtCase.SummaryJudgment.Any())
+                            {
+                                <dt>Summary judgment</dt>
+                                <dd>@courtCase.SummaryJudgment.Single()</dd>
+                            }
+                            @if (courtCase.SummaryReasonsForJudgment.Any())
+                            {
+                                <dt>Summary reasons for judgment</dt>
+                                <dd>@courtCase.SummaryReasonsForJudgment.Single()</dd>
+                            }
+                            @if (courtCase.HearingStartDate.Any())
+                            {
+                                <dt>Hearing start date</dt>
+                                <dd>@courtCase.HearingStartDate.Single().Value.ToString("dd MMMM yyyy")</dd>
+                            }
+                            @if (courtCase.HearingStartDate.Any())
+                            {
+                                <dt>Hearing end date</dt>
+                                <dd>@courtCase.HearingEndDate.Single().Value.ToString("dd MMMM yyyy")</dd>
+                            }
+    </dl>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
 
     <partial name="RetentionPartial" model="@Model.Item.Retention" />
 

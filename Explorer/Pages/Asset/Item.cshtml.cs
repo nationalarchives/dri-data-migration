@@ -5,7 +5,7 @@ using VDS.RDF;
 using VDS.RDF.Query;
 
 namespace Explorer.Pages.Asset;
-//http://localhost:5093/asset/ACE%2F1%2FFRC%2FZ - multiple sr check
+
 public class ItemModel(HttpClient httpClient, IConfiguration configuration) : PageModel
 {
     private readonly Uri endpoint = new(configuration.GetConnectionString("Sparql"));
@@ -22,6 +22,11 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:batchDriId ?batchDriId;
                 ex:consignmentTdrId ?consignmentTdrId;
                 ex:assetRelationDescription ?assetRelationDescription;
+                ex:assetPhysicalDescription ?assetPhysicalDescription;
+                ex:assetUseRestrictionDescription ?assetUseRestrictionDescription;
+                ex:evidenceProviderName ?evidenceProviderName;
+                ex:investigationName ?investigationName;
+                ex:courtSessionDescription ?courtSessionDescription;
                 ex:assetHasLanguage ?language;
                 ex:assetHasLegalStatus ?legalStatus;
                 ex:assetHasCopyright ?copyright;
@@ -29,6 +34,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:assetHasVariation ?variation;
                 ex:assetHasRetention ?retention;
                 ex:assetHasCreation ?creation;
+                ex:assetHasCourtCase ?courtCase;
                 ex:assetHasSensitivityReview ?sr.
             ?language ex:languageName ?languageName.
             ?copyright ex:copyrightTitle ?copyrightTitle.
@@ -43,32 +49,19 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:importLocation ?importLocation;
                 ex:retentionHasFormalBody ?retentionHasFormalBody.
             ?retentionHasFormalBody ex:formalBodyName ?retentionFormalBodyName.
+            ?courtCase ex:courtCaseReference ?courtCaseReference;
+                ex:courtCaseName ?courtCaseName;
+                ex:courtCaseSummaryJudgment ?courtCaseSummaryJudgment;
+                ex:courtCaseSummaryReasonsForJudgment ?courtCaseSummaryReasonsForJudgment;
+                ex:courtCaseHearingStartDate ?courtCaseHearingStartDate;
+                ex:courtCaseHearingEndDate ?courtCaseHearingEndDate.
             ?sr ex:sensitivityReviewDriId ?sensitivityReviewDriId;
                 ex:sensitivityReviewHasAccessCondition ?accessCondition;
                 ex:sensitivityReviewDate ?sensitivityReviewDate;
                 ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName;
                 ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription;
-                ex:sensitivityReviewHasPastSensitivityReview ?pastSensitivityReview;
-                ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
-            ?accessCondition ex:accessConditionCode ?accessConditionCode;
-                ex:accessConditionName ?accessConditionName.
+                ex:sensitivityReviewHasPastSensitivityReview ?pastSensitivityReview.
             ?pastSensitivityReview ex:sensitivityReviewDriId ?pastSensitivityReviewDriId.
-            ?restriction ex:sensitivityReviewRestrictionReviewDate ?sensitivityReviewRestrictionReviewDate;
-                ex:sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionCalculationStartDate;
-                ex:sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionDuration;
-                ex:sensitivityReviewRestrictionEndYear ?sensitivityReviewRestrictionEndYear;
-                ex:sensitivityReviewRestrictionDescription ?sensitivityReviewRestrictionDescription;
-                ex:sensitivityReviewRestrictionHasLegislation ?legislation;
-                ex:sensitivityReviewRestrictionHasRetentionRestriction ?retentionRestriction.
-            ?legislation ex:legislationHasUkLegislation ?legislationHasUkLegislation;
-                ex:legislationSectionReference ?legislationSectionReference.
-            ?retentionRestriction ex:retentionInstrumentNumber ?retentionInstrumentNumber;
-                ex:retentionInstrumentSignatureDate ?retentionInstrumentSignatureDate;
-                ex:retentionRestrictionReviewDate ?retentionRestrictionReviewDate;
-                ex:retentionRestrictionHasGroundForRetention ?retentionRestrictionHasGroundForRetention;
-                ex:retentionRestrictionHasRetention ?retention.
-            ?retentionRestrictionHasGroundForRetention ex:groundForRetentionCode ?groundForRetentionCode;
-                ex:groundForRetentionDescription ?groundForRetentionDescription.
         } where {
             bind(@code as ?assetReference)
             ?s ex:assetDriId ?assetDriId;
@@ -85,6 +78,12 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
             optional { ?s ex:batchDriId ?batchDriId }
             optional { ?s ex:consignmentTdrId ?consignmentTdrId }
             optional { ?s ex:assetRelationDescription ?assetRelationDescription }
+            optional { ?s ex:assetPhysicalDescription ?assetPhysicalDescription }
+            optional { ?s ex:assetUseRestrictionDescription ?assetUseRestrictionDescription }
+            optional { ?s ex:evidenceProviderName ?evidenceProviderName }
+            optional { ?s ex:investigationName ?investigationName }
+            optional { ?s ex:courtSessionDescription ?courtSessionDescription }
+            optional { ?s ex:courtSessionDate ?courtSessionDate }
             optional {
                 ?s ex:assetHasLanguage ?language.
                 ?language ex:languageName ?languageName.
@@ -116,14 +115,18 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 }
             }
             optional {
+                ?s ex:assetHasCourtCase ?courtCase.
+                optional { ?courtCase ex:courtCaseReference ?courtCaseReference }
+                optional { ?courtCase ex:courtCaseName ?courtCaseName }
+                optional { ?courtCase ex:courtCaseSummaryJudgment ?courtCaseSummaryJudgment }
+                optional { ?courtCase ex:courtCaseSummaryReasonsForJudgment ?courtCaseSummaryReasonsForJudgment }
+                optional { ?courtCase ex:courtCaseHearingStartDate ?courtCaseHearingStartDate }
+                optional { ?courtCase ex:courtCaseHearingEndDate ?courtCaseHearingEndDate }
+            }
+            optional {
                 ?s ex:assetHasSensitivityReview ?sr.
         	    ?sr ex:sensitivityReviewDriId ?sensitivityReviewDriId.
-                filter not exists { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?sr }
-                optional { 
-                    ?sr ex:sensitivityReviewHasAccessCondition ?accessCondition.
-                    ?accessCondition ex:accessConditionCode ?accessConditionCode;
-                        ex:accessConditionName ?accessConditionName.
-                }
+                #filter not exists { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?sr }
                 optional { ?sr ex:sensitivityReviewDate ?sensitivityReviewDate }
             	optional { ?sr ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName }
             	optional { ?sr ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription }
