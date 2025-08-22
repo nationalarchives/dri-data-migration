@@ -56,7 +56,6 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:courtCaseHearingStartDate ?courtCaseHearingStartDate;
                 ex:courtCaseHearingEndDate ?courtCaseHearingEndDate.
             ?sr ex:sensitivityReviewDriId ?sensitivityReviewDriId;
-                ex:sensitivityReviewHasAccessCondition ?accessCondition;
                 ex:sensitivityReviewDate ?sensitivityReviewDate;
                 ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName;
                 ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription;
@@ -133,35 +132,6 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 optional {
                     ?sr ex:sensitivityReviewHasPastSensitivityReview ?pastSensitivityReview.
                     ?pastSensitivityReview ex:sensitivityReviewDriId ?pastSensitivityReviewDriId.
-                }
-                optional { 
-                    ?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
-                    optional { ?restriction ex:sensitivityReviewRestrictionReviewDate ?sensitivityReviewRestrictionReviewDate }
-                    optional { ?restriction ex:sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionCalculationStartDate }
-                    optional { ?restriction ex:sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionDuration }
-                    optional { ?restriction ex:sensitivityReviewRestrictionEndYear ?sensitivityReviewRestrictionEndYear }
-                    optional { ?restriction ex:sensitivityReviewRestrictionDescription ?sensitivityReviewRestrictionDescription }
-                    optional {
-                        ?restriction ex:sensitivityReviewRestrictionHasLegislation ?legislation.
-                        ?legislation ex:legislationHasUkLegislation ?legislationHasUkLegislation.
-                        optional { ?legislation ex:legislationSectionReference ?legislationSectionReference }
-                    }
-                    optional {
-                        ?restriction ex:sensitivityReviewRestrictionHasRetentionRestriction ?retentionRestriction.
-                        optional { ?retentionRestriction ex:retentionInstrumentNumber ?retentionInstrumentNumber }
-                        optional { ?retentionRestriction ex:retentionInstrumentSignatureDate ?retentionInstrumentSignatureDate }
-                        optional { ?retentionRestriction ex:retentionRestrictionReviewDate ?retentionRestrictionReviewDate }
-                        optional {
-                            ?retentionRestriction ex:retentionRestrictionHasGroundForRetention ?retentionRestrictionHasGroundForRetention.
-                            ?retentionRestrictionHasGroundForRetention ex:groundForRetentionCode ?groundForRetentionCode;
-                                ex:groundForRetentionDescription ?groundForRetentionDescription.
-                        }
-                        optional {
-                            ?retentionRestriction ex:retentionRestrictionHasRetention ?retention.
-                            optional { ?asset ex:assetHasRetention ?retention }
-                            optional { ?subset ex:subsetHasRetention ?retention }
-                        }
-                    }
                 }
             }
         }
