@@ -3,7 +3,6 @@
 construct {
     ?asset ex:assetDriId ?assetDriId;
         ex:assetDriXml ?assetDriXml;
-        ex:assetPastName ?assetPastName;
         ex:assetDescription ?assetDescription;
         ex:batchDriId ?batchDriId;
         ex:consignmentTdrId ?consignmentTdrId;
@@ -36,7 +35,6 @@ construct {
     bind(@id as ?assetDriId)
     ?asset ex:assetDriId ?assetDriId.
     optional { ?asset ex:assetDriXml ?assetDriXml }
-    optional { ?asset ex:assetPastName ?assetPastName }
     optional { ?asset ex:assetDescription ?assetDescription }
     optional { ?asset ex:batchDriId ?batchDriId }
     optional { ?asset ex:consignmentTdrId ?consignmentTdrId }

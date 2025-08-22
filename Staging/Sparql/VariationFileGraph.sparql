@@ -3,6 +3,7 @@
 construct {
     ?variation ex:variationDriId ?variationDriId;
         ex:variationDriXml ?variationDriXml;
+        ex:variationPastName ?variationPastName;
         ex:variationNote ?variationNote;
         ex:variationRelativeLocation ?variationRelativeLocation;
         ex:variationHasRedactedVariation ?variationHasRedactedVariation.
@@ -10,6 +11,7 @@ construct {
     bind(@id as ?variationDriId)
     ?variation ex:variationDriId ?variationDriId.
     optional { ?variation ex:variationDriXml ?variationDriXml }
+    optional { ?variation ex:variationPastName ?variationPastName }
     optional { ?variation ex:variationNote ?variationNote }
     optional { ?variation ex:variationRelativeLocation ?variationRelativeLocation }
     optional { ?variation ex:variationHasRedactedVariation ?variationHasRedactedVariation }
