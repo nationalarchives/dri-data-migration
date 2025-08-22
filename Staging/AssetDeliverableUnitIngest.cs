@@ -35,7 +35,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         {
             var xmlBase64 = Convert.ToBase64String(UTF8Encoding.UTF8.GetBytes(dri.Xml));
             graph.Assert(id, Vocabulary.AssetDriXml, new LiteralNode(xmlBase64, new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
-            var proceed = await ExtractXmlData(graph, existing, id, dri.Xml, cancellationToken);
+            var proceed = await ExtractXmlData(graph, existing, id, dri.Xml, dri.Reference, cancellationToken);
             if (!proceed)
             {
                 return null;
@@ -56,7 +56,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     }
 
     private async Task<bool> ExtractXmlData(IGraph graph, IGraph existing,
-        INode id, string xml, CancellationToken cancellationToken)
+        INode id, string xml, string assetReference, CancellationToken cancellationToken)
     {
         var rdf = BaseIngest.GetRdf(xml);
         if (rdf is null)
@@ -76,6 +76,9 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         BaseIngest.AssertLiteral(graph, id, rdf, investigation, Vocabulary.InvestigationName);
         BaseIngest.AssertLiteral(graph, id, rdf, session, Vocabulary.CourtSessionDescription);
         BaseIngest.AssertLiteral(graph, id, rdf, session_date, Vocabulary.CourtSessionDate);
+        BaseIngest.AssertLiteral(graph, id, rdf, restrictionOnUse, Vocabulary.AssetUseRestrictionDescription);
+
+        await AddCourtCases(graph, rdf, id, assetReference, cancellationToken);
 
         await BaseIngest.AssertAsync(graph, id, rdf, language, CacheEntityKind.Language,
             Vocabulary.AssetHasLanguage, Vocabulary.LanguageName, cacheClient, cancellationToken);
@@ -98,13 +101,32 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         {
             var statusType = legalUri.Uri.Segments.Last() switch
             {
-                "Public_Record(s)" or "Public_record" => Vocabulary.PublicRecord,
+                "Public_Record(s)" or "Public_record" or "Public_Record" => Vocabulary.PublicRecord,
                 _ => throw new ArgumentException(legalUri.Uri.ToString())
             };
             graph.Assert(id, Vocabulary.AssetHasLegalStatus, statusType);
         }
 
         return true;
+    }
+
+    private async Task AddCourtCases(IGraph graph, IGraph rdf, INode id, string assetReference, CancellationToken cancellationToken)
+    {
+        var caseIndex = 1;
+        var courtCase = await BaseIngest.AssertAsync(graph, id, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_id_{caseIndex}")),
+                CacheEntityKind.CourtCaseByCaseAndAsset, Vocabulary.AssetHasCourtCase, Vocabulary.CourtCaseReference, cacheClient, cancellationToken, assetReference);
+        while (courtCase is not null)
+        {
+            BaseIngest.AssertLiteral(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_name_{caseIndex}")), Vocabulary.CourtCaseName);
+            BaseIngest.AssertLiteral(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_summary_{caseIndex}_judgment")), Vocabulary.CourtCaseSummaryJudgment);
+            BaseIngest.AssertLiteral(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_summary_{caseIndex}_reasons_for_judgment")), Vocabulary.CourtCaseSummaryReasonsForJudgment);
+            BaseIngest.AssertDate(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}hearing_start_date_{caseIndex}")), "dd/MM/yyyy", Vocabulary.CourtCaseHearingStartDate);
+            BaseIngest.AssertDate(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}hearing_end_date_{caseIndex}")), "dd/MM/yyyy", Vocabulary.CourtCaseHearingEndDate);
+
+            caseIndex++;
+            courtCase = await BaseIngest.AssertAsync(graph, id, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_id_{caseIndex}")),
+                CacheEntityKind.CourtCaseByCaseAndAsset, Vocabulary.AssetHasCourtCase, Vocabulary.CourtCaseReference, cacheClient, cancellationToken, assetReference);
+        }
     }
 
     private static readonly Uri dctermsNamespace = new("http://purl.org/dc/terms/");
@@ -119,7 +141,8 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     private static readonly IUriNode evidenceProvidedBy = new UriNode(new($"{BaseIngest.TnaNamespace}evidenceProvidedBy"));
     private static readonly IUriNode session = new UriNode(new($"{BaseIngest.TnaNamespace}session"));
     private static readonly IUriNode session_date = new UriNode(new($"{BaseIngest.TnaNamespace}session_date"));
-    
+    private static readonly IUriNode restrictionOnUse = new UriNode(new($"{BaseIngest.TnaNamespace}restrictionOnUse"));
+
     private static readonly IUriNode description = new UriNode(new(dctermsNamespace, "description"));
     private static readonly IUriNode creator = new UriNode(new(dctermsNamespace, "creator"));
     private static readonly IUriNode language = new UriNode(new(dctermsNamespace, "language"));

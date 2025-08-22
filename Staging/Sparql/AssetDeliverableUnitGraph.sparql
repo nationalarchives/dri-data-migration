@@ -9,6 +9,7 @@ construct {
         ex:consignmentTdrId ?consignmentTdrId;
         ex:assetRelationDescription ?assetRelationDescription;
         ex:assetPhysicalDescription ?assetPhysicalDescription;
+        ex:assetUseRestrictionDescription ?assetUseRestrictionDescription;
         ex:evidenceProviderName ?evidenceProviderName;
         ex:investigationName ?investigationName;
         ex:courtSessionDescription ?courtSessionDescription;
@@ -41,6 +42,7 @@ construct {
     optional { ?asset ex:consignmentTdrId ?consignmentTdrId }
     optional { ?asset ex:assetRelationDescription ?assetRelationDescription }
     optional { ?asset ex:assetPhysicalDescription ?assetPhysicalDescription }
+    optional { ?asset ex:assetUseRestrictionDescription ?assetUseRestrictionDescription }
     optional { ?asset ex:evidenceProviderName ?evidenceProviderName }
     optional { ?asset ex:investigationName ?investigationName }
     optional { ?asset ex:courtSessionDescription ?courtSessionDescription }

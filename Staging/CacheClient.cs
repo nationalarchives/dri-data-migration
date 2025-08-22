@@ -26,6 +26,7 @@ public class CacheClient : ICacheClient
     private readonly string copyrightSparql;
     private readonly string causingSoftwareSparql;
     private readonly string variationByPartialPathAndAssetSparql;
+    private readonly string courtCaseByCaseAndAssetSparql;
 
     private readonly string accessConditionsSparql;
     private readonly string legislationsSparql;
@@ -55,6 +56,7 @@ public class CacheClient : ICacheClient
         copyrightSparql = embedded.GetSparql("GetCopyright");
         causingSoftwareSparql = embedded.GetSparql("GetCausingSoftware");
         variationByPartialPathAndAssetSparql = embedded.GetSparql("GetVariationByPartialPathAndAsset");
+        courtCaseByCaseAndAssetSparql = embedded.GetSparql("GetCourtCaseByCaseAndAsset");
 
         accessConditionsSparql = embedded.GetSparql("GetAccessConditions");
         legislationsSparql = embedded.GetSparql("GetLegislations");
@@ -123,24 +125,9 @@ public class CacheClient : ICacheClient
             return subject ?? BaseIngest.NewId;
         });
     }
-    
-    public async Task<IUriNode> CacheFetchOrNew(CacheEntityKind kind, string key, CancellationToken cancellationToken)
-    {
-        var info = ToCacheFetchInfo(kind, key);
-        if (info is null)
-        {
-            logger.InvalidCacheEntityKind();
-            return BaseIngest.NewId;
-        }
 
-        return await cache.GetOrCreateAsync(info.Key, async entry =>
-        {
-            entry.SlidingExpiration = TimeSpan.FromHours(1);
-            var subject = await sparqlClient.GetSubjectAsync(info.Sparql, new Dictionary<string, object> { ["id"] = key }, cancellationToken);
-
-            return subject ?? BaseIngest.NewId;
-        });
-    }
+    public Task<IUriNode> CacheFetchOrNew(CacheEntityKind kind, string key, CancellationToken cancellationToken) =>
+        CacheFetchOrNew(kind, [key], cancellationToken);
 
     public async Task<Dictionary<string, IUriNode>> AccessConditions(CancellationToken cancellationToken)
     {
@@ -186,6 +173,7 @@ public class CacheClient : ICacheClient
         CacheEntityKind.Copyright => new(copyrightSparql, $"copyright-{key}"),
         CacheEntityKind.CausingSoftware => new(causingSoftwareSparql, $"causing-software-{key}"),
         CacheEntityKind.VariationByPartialPathAndAsset => new(variationByPartialPathAndAssetSparql, $"variation-{key}"),
+        CacheEntityKind.CourtCaseByCaseAndAsset => new(courtCaseByCaseAndAssetSparql, $"court-case-{key}"),
         _ => null
     };
 

@@ -1,11 +1,13 @@
 ﻿using Api;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using VDS.RDF;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 
 namespace Staging;
@@ -29,28 +31,47 @@ public static class BaseIngest
         }
     }
 
-    public static async Task AssertAsync(IGraph graph, INode id, IGraph rdf,
-        IUriNode findPredicate, CacheEntityKind cacheEntityKind,
-        IUriNode immediatePredicate, IUriNode? foundPredicate,
-        ICacheClient cacheClient, CancellationToken cancellationToken)
+    public static void AssertDate(IGraph graph, INode id, IGraph rdf,
+        IUriNode findPredicate, string format, IUriNode immediatePredicate)
     {
-        var node = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
-        if (node is not null)
+        var found = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
+        if (found is ILiteralNode foundNode && !string.IsNullOrWhiteSpace(foundNode.Value))
         {
-            var name = node switch
-            {//TODO: handle default
-                ILiteralNode literalNode => literalNode.Value,
-                IUriNode uriNode => uriNode.Uri.Segments.Last().Replace('_', ' '),
-                _ => throw new ArgumentException(node.ToString())
-            };
-
-            var nodeId = await cacheClient.CacheFetchOrNew(cacheEntityKind, name, cancellationToken);
-            graph.Assert(id, immediatePredicate, nodeId);
-            if (foundPredicate is not null)
+            if (DateTimeOffset.TryParseExact(foundNode.Value, format, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt))
             {
-                graph.Assert(nodeId, foundPredicate, new LiteralNode(name));
+                graph.Assert(id, immediatePredicate, new DateNode(dt));
+            }
+            else
+            {//TODO: handle different format
             }
         }
+    }
+
+    public static async Task<IUriNode?> AssertAsync(IGraph graph, INode id, IGraph rdf,
+        IUriNode findPredicate, CacheEntityKind cacheEntityKind,
+        IUriNode immediatePredicate, IUriNode? foundPredicate,
+        ICacheClient cacheClient, CancellationToken cancellationToken,
+        string? additionalCacheParameter = null)
+    {
+        var node = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
+        if (node is null)
+        {
+            return null;
+        }
+        var name = node switch
+        {//TODO: handle default
+            ILiteralNode literalNode => literalNode.Value,
+            IUriNode uriNode => uriNode.Uri.Segments.Last().Replace('_', ' '),
+            _ => throw new ArgumentException(node.ToString())
+        };
+        var parameters = additionalCacheParameter is null ? [name] : new string[] { name, additionalCacheParameter };
+        var nodeId = await cacheClient.CacheFetchOrNew(cacheEntityKind, parameters, cancellationToken);
+        graph.Assert(id, immediatePredicate, nodeId);
+        if (foundPredicate is not null)
+        {
+            graph.Assert(nodeId, foundPredicate, new LiteralNode(name));
+        }
+        return nodeId;
     }
 
     public static IGraph? GetRdf(string xml)

@@ -21,7 +21,8 @@
     <EmbeddedResource Include="Sparql\GetSensitivityReview.sparql" />
     <EmbeddedResource Include="Sparql\GetLanguage.sparql" />
     <EmbeddedResource Include="Sparql\GetSubset.sparql" />
-    <EmbeddedResource Include="Sparql\GetVariationByAssetAndPartialPath.sparql" />
+    <EmbeddedResource Include="Sparql\GetCourtCaseByCaseAndAsset.sparql" />
+    <EmbeddedResource Include="Sparql\GetVariationByPartialPathAndAsset.sparql" />
     <EmbeddedResource Include="Sparql\GetVariation.sparql" />
     <EmbeddedResource Include="Sparql\GroundForRetentionGraph.sparql" />
     <EmbeddedResource Include="Sparql\LegislationGraph.sparql" />

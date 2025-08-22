@@ -26,6 +26,7 @@ public static class Vocabulary
     public static readonly IUriNode AssetDescription = new UriNode(new(Namespace, "assetDescription"));
     public static readonly IUriNode AssetRelationDescription = new UriNode(new(Namespace, "assetRelationDescription"));
     public static readonly IUriNode AssetPhysicalDescription = new UriNode(new(Namespace, "assetPhysicalDescription"));
+    public static readonly IUriNode AssetUseRestrictionDescription = new UriNode(new(Namespace, "assetUseRestrictionDescription"));
     public static readonly IUriNode EvidenceProviderName = new UriNode(new(Namespace, "evidenceProviderName"));
     public static readonly IUriNode InvestigationName = new UriNode(new(Namespace, "investigationName"));
     public static readonly IUriNode CourtSessionDescription = new UriNode(new(Namespace, "courtSessionDescription"));
