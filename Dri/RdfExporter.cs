@@ -137,7 +137,13 @@ public class RdfExporter : IDriRdfExporter
 
         return graph.GetTriplesWithPredicate(Vocabulary.SensitivityReviewDriId)
             .Select(t => t.Subject as IUriNode)
-            .Select(s => SensitivityReviewBySubject(graph, s!));
+            .Select(s => SensitivityReviewBySubject(graph, s!))
+            .Where(s => s.TargetType.Fragment switch
+                {
+                    "#File" => true,
+                    "#DeliverableUnit" => !string.IsNullOrWhiteSpace(s.SensitiveName) || !string.IsNullOrWhiteSpace(s.SensitiveDescription),
+                    _ => true
+                });
     }
 
     private static DriSensitivityReview SensitivityReviewBySubject(IGraph graph, IUriNode subject)
@@ -154,6 +160,14 @@ public class RdfExporter : IDriRdfExporter
         var sensitiveName = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewSensitiveName).SingleOrDefault()?.Object as ILiteralNode;
         var sensitiveDescription = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewSensitiveDescription).SingleOrDefault()?.Object as ILiteralNode;
         var past = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewHasPastSensitivityReview).SingleOrDefault()?.Object as IUriNode;
+        if (targetType!.Uri.Fragment == "#DeliverableUnit")
+        {
+            return new DriSensitivityReview(id!.Uri, reference.AsValuedNode().AsString(), targetId!.Uri, targetType!.Uri,
+                null, [], null, past?.Uri, sensitiveName?.AsValuedNode().AsString(), sensitiveDescription?.AsValuedNode().AsString(),
+                date?.AsValuedNode().AsDateTimeOffset(), null, null, null,
+                null, null, null, null);
+        }
+
         var restriction = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewHasSensitivityReviewRestriction).SingleOrDefault().Object as IBlankNode;
         var reviewDate = graph.GetTriplesWithSubjectPredicate(restriction, Vocabulary.SensitivityReviewRestrictionReviewDate).SingleOrDefault()?.Object as ILiteralNode;
         var startDate = graph.GetTriplesWithSubjectPredicate(restriction, Vocabulary.SensitivityReviewRestrictionCalculationStartDate).SingleOrDefault()?.Object as ILiteralNode;
@@ -169,7 +183,6 @@ public class RdfExporter : IDriRdfExporter
         var accessCode = graph.GetTriplesWithSubjectPredicate(condition, Vocabulary.AccessConditionCode).SingleOrDefault().Object as IUriNode;
         var legislation = graph.GetTriplesWithSubjectPredicate(restriction, Vocabulary.SensitivityReviewRestrictionHasLegislation).SingleOrDefault().Object as IBlankNode;
         var legislations = graph.GetTriplesWithSubjectPredicate(legislation, Vocabulary.LegislationHasUkLegislation).SingleOrDefault()?.Object as ILiteralNode;
-
         var legislationUris = legislations is null ? [] :
             legislations.AsValuedNode().AsString().Split(',', StringSplitOptions.RemoveEmptyEntries).Select(l => new Uri(l));
 

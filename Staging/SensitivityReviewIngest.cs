@@ -96,19 +96,21 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
             graph.Assert(id, Vocabulary.SensitivityReviewSensitiveDescription, new LiteralNode(dri.SensitiveDescription));
         }
 
-        var acCode = BaseIngest.GetUriFragment(dri.AccessCondition);
-        if (acCode is null)
+        if (dri.AccessCondition is not null)
         {
-            logger.UnableParseAccessConditionUri(dri.AccessCondition);
-            return false;
+            var acCode = BaseIngest.GetUriFragment(dri.AccessCondition);
+            if (acCode is null)
+            {
+                logger.UnableParseAccessConditionUri(dri.AccessCondition);
+                return false;
+            }
+            if (!accessConditions!.TryGetValue(acCode, out var ac))
+            {
+                logger.AccessConditionNotFound(acCode);
+                return false;
+            }
+            graph.Assert(id, Vocabulary.SensitivityReviewHasAccessCondition, ac);
         }
-        if (!accessConditions!.TryGetValue(acCode, out var ac))
-        {
-            logger.AccessConditionNotFound(acCode);
-            return false;
-        }
-        graph.Assert(id, Vocabulary.SensitivityReviewHasAccessCondition, ac);
-
         if (dri.PreviousId is not null)
         {
             var past = await cacheClient.CacheFetchOrNew(CacheEntityKind.SensititvityReview, dri.PreviousId.ToString(), cancellationToken);
