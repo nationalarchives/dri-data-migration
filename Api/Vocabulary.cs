@@ -105,9 +105,9 @@ public static class Vocabulary
     public static readonly IUriNode NonRecordMaterial = new UriNode(new(Namespace, "NonRecordMaterial"));
 
     public static readonly IUriNode CourtCaseReference = new UriNode(new(Namespace, "courtCaseReference"));
-    public static readonly IUriNode courtCaseName = new UriNode(new(Namespace, "courtCaseName"));
-    public static readonly IUriNode courtCaseSummaryJudgment = new UriNode(new(Namespace, "courtCaseSummaryJudgment"));
-    public static readonly IUriNode courtCaseSummaryReasonsForJudgment = new UriNode(new(Namespace, "courtCaseSummaryReasonsForJudgment"));
-    public static readonly IUriNode courtCaseHearingStartDate = new UriNode(new(Namespace, "courtCaseHearingStartDate"));
-    public static readonly IUriNode courtCaseHearingEndDate = new UriNode(new(Namespace, "courtCaseHearingEndDate"));
+    public static readonly IUriNode CourtCaseName = new UriNode(new(Namespace, "courtCaseName"));
+    public static readonly IUriNode CourtCaseSummaryJudgment = new UriNode(new(Namespace, "courtCaseSummaryJudgment"));
+    public static readonly IUriNode CourtCaseSummaryReasonsForJudgment = new UriNode(new(Namespace, "courtCaseSummaryReasonsForJudgment"));
+    public static readonly IUriNode CourtCaseHearingStartDate = new UriNode(new(Namespace, "courtCaseHearingStartDate"));
+    public static readonly IUriNode CourtCaseHearingEndDate = new UriNode(new(Namespace, "courtCaseHearingEndDate"));
 }
