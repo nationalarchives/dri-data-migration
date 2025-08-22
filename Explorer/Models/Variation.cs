@@ -11,11 +11,7 @@ public class Variation(INode node, IGraph graph) : DynamicNode(node, graph)
     public ICollection<ILiteralNode> Xml => new DynamicObjectCollection<ILiteralNode>(this, Vocabulary.VariationDriXml.Uri.ToString());
     public ICollection<string> Note => new DynamicObjectCollection<string>(this, Vocabulary.VariationNote.Uri.ToString());
     public ICollection<ILiteralNode> Location => new DynamicObjectCollection<ILiteralNode>(this, Vocabulary.VariationRelativeLocation.Uri.ToString());
-    public ICollection<long> NumberOfPages => new DynamicObjectCollection<long>(this, Vocabulary.NumberOfPages.Uri.ToString());
-    public ICollection<long> WordCount => new DynamicObjectCollection<long>(this, Vocabulary.WordCount.Uri.ToString());
-    public ICollection<long> CharacterCount => new DynamicObjectCollection<long>(this, Vocabulary.CharacterCount.Uri.ToString());
     public ICollection<Asset> Asset => new DynamicObjectCollection<Asset>(this, Vocabulary.VariationHasAsset.Uri.ToString());
     public ICollection<Variation> Redacted => new DynamicObjectCollection<Variation>(this, Vocabulary.VariationHasRedactedVariation.Uri.ToString());
-    public ICollection<CausingSoftware> Software => new DynamicObjectCollection<CausingSoftware>(this, Vocabulary.VariationHasCausingSoftware.Uri.ToString());
     public ICollection<SensitivityReview> SensitivityReviews => new DynamicObjectCollection<SensitivityReview>(this, Vocabulary.VariationHasSensitivityReview.Uri.ToString());
 }
