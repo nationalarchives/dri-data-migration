@@ -8,6 +8,7 @@ public class Variation(INode node, IGraph graph) : DynamicNode(node, graph)
 {
     public ICollection<string> Id => new DynamicObjectCollection<string>(this, Vocabulary.VariationDriId.Uri.ToString());
     public ICollection<string> Name => new DynamicObjectCollection<string>(this, Vocabulary.VariationName.Uri.ToString());
+    public ICollection<string> PastName => new DynamicObjectCollection<string>(this, Vocabulary.VariationPastName.Uri.ToString());
     public ICollection<ILiteralNode> Xml => new DynamicObjectCollection<ILiteralNode>(this, Vocabulary.VariationDriXml.Uri.ToString());
     public ICollection<string> Note => new DynamicObjectCollection<string>(this, Vocabulary.VariationNote.Uri.ToString());
     public ICollection<ILiteralNode> Location => new DynamicObjectCollection<ILiteralNode>(this, Vocabulary.VariationRelativeLocation.Uri.ToString());

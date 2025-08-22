@@ -70,6 +70,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         predicates.UnionWith(rdf.Triples.PredicateNodes.Cast<IUriNode>().Select(p => p.Uri.ToString()).ToHashSet());
 
         BaseIngest.AssertLiteral(graph, id, rdf, note, Vocabulary.VariationNote);
+        BaseIngest.AssertLiteral(graph, id, rdf, formerReferenceDepartment, Vocabulary.VariationPastName);
 
         var redacted = rdf.GetTriplesWithPredicate(hasRedactedFile).Select(t => t.Object).Cast<ILiteralNode>();
         foreach (var redactedFile in redacted)
@@ -107,4 +108,5 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
     private static readonly IUriNode note = new UriNode(new($"{BaseIngest.TnaNamespace}note"));
     private static readonly IUriNode hasRedactedFile = new UriNode(new($"{BaseIngest.TnaNamespace}hasRedactedFile"));
     private static readonly IUriNode hasPresentationManifestationFile = new UriNode(new($"{BaseIngest.TnaNamespace}hasPresentationManifestationFile"));
+    private static readonly IUriNode formerReferenceDepartment = new UriNode(new($"{BaseIngest.TnaNamespace}formerReferenceDepartment"));
 }

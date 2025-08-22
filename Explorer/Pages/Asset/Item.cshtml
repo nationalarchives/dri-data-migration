@@ -10,11 +10,6 @@
     <dl class="tna-dl tna-dl--plain">
         <dt>DRI Id</dt>
         <dd>@Model.Item.Id.Single()</dd>
-        @if (Model.Item.PastName.Any())
-        {
-            <dt>Past name</dt>
-            <dd>@Model.Item.PastName.Single()</dd>
-        }
         @if (Model.Item.Description.Any())
         {
             <dt>Description</dt>

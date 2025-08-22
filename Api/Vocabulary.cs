@@ -23,7 +23,6 @@ public static class Vocabulary
     public static readonly IUriNode AssetDriXml = new UriNode(new(Namespace, "assetDriXml"));
     public static readonly IUriNode AssetReference = new UriNode(new(Namespace, "assetReference"));
     public static readonly IUriNode AssetName = new UriNode(new(Namespace, "assetName"));
-    public static readonly IUriNode AssetPastName = new UriNode(new(Namespace, "assetPastName"));
     public static readonly IUriNode AssetDescription = new UriNode(new(Namespace, "assetDescription"));
     public static readonly IUriNode AssetRelationDescription = new UriNode(new(Namespace, "assetRelationDescription"));
     public static readonly IUriNode AssetPhysicalDescription = new UriNode(new(Namespace, "assetPhysicalDescription"));
@@ -46,6 +45,7 @@ public static class Vocabulary
     public static readonly IUriNode VariationDriId = new UriNode(new(Namespace, "variationDriId"));
     public static readonly IUriNode VariationDriXml = new UriNode(new(Namespace, "variationDriXml"));
     public static readonly IUriNode VariationName = new UriNode(new(Namespace, "variationName"));
+    public static readonly IUriNode VariationPastName = new UriNode(new(Namespace, "variationPastName"));
     public static readonly IUriNode VariationNote = new UriNode(new(Namespace, "variationNote"));
     public static readonly IUriNode VariationRelativeLocation = new UriNode(new(Namespace, "variationRelativeLocation"));
     public static readonly IUriNode VariationHasRedactedVariation = new UriNode(new(Namespace, "variationHasRedactedVariation"));

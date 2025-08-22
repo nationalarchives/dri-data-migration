@@ -511,14 +511,6 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset name".
 
-:assetPastName a owl:DatatypeProperty;
-	rdfs:domain :Asset;
-	rdfs:range xsd:string;
-	rdfs:subPropertyOf :name;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset past name";
-	rdfs:comment "This is in lieu of previous names relationship.".
-
 :assetDescription a owl:DatatypeProperty;
 	rdfs:domain :Asset;
 	rdfs:range xsd:string;
@@ -627,6 +619,14 @@ this:schema a owl:Ontology;
 	rdfs:subPropertyOf :name;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation name".
+
+:variationPastName a owl:DatatypeProperty;
+	rdfs:domain :Variation;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :name;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation past name";
+	rdfs:comment "This is in lieu of previous names relationship.".
 
 :variationDriXml a owl:DatatypeProperty;
 	rdfs:domain :Variation;
