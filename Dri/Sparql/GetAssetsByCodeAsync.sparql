@@ -16,9 +16,17 @@ construct {
     {
         select * where {
             bind(@id as ?code)
-            ?a a dri:DeliverableUnit;
-    	        rdfs:label ?reference;
-    	        dri:isPartOfSeries/rdfs:label ?code.
+            bind(replace(@id,' ','_') as ?code2)
+            ?a rdfs:label ?reference;
+            {
+                ?a a dri:DeliverableUnit;
+    	            dri:isPartOfSeries/rdfs:label ?code.
+            }
+            union
+            {
+                ?a a dri:DeliverableUnit;
+    	            dri:isPartOfSeries/rdfs:label ?code2.
+            }
             optional { ?a dri:parent/dri:hasDirectory/rdfs:label ?directory }
             optional { ?a dri:parent/rdfs:label ?parentLabel }
             filter exists {
