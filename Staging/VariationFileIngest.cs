@@ -71,6 +71,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
 
         BaseIngest.AssertLiteral(graph, id, rdf, note, Vocabulary.VariationNote);
         BaseIngest.AssertLiteral(graph, id, rdf, formerReferenceDepartment, Vocabulary.VariationPastName);
+        BaseIngest.AssertLiteral(graph, id, rdf, physicalCondition, Vocabulary.VariationPhysicalConditionDescription);
 
         var redacted = rdf.GetTriplesWithPredicate(hasRedactedFile).Select(t => t.Object).Cast<ILiteralNode>();
         foreach (var redactedFile in redacted)
@@ -109,4 +110,5 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
     private static readonly IUriNode hasRedactedFile = new UriNode(new($"{BaseIngest.TnaNamespace}hasRedactedFile"));
     private static readonly IUriNode hasPresentationManifestationFile = new UriNode(new($"{BaseIngest.TnaNamespace}hasPresentationManifestationFile"));
     private static readonly IUriNode formerReferenceDepartment = new UriNode(new($"{BaseIngest.TnaNamespace}formerReferenceDepartment"));
+    private static readonly IUriNode physicalCondition = new UriNode(new($"{BaseIngest.TnaNamespace}physicalCondition"));
 }

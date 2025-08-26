@@ -20,6 +20,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:variationPastName ?variationPastName;
                 ex:variationNote ?variationNote;
                 ex:variationRelativeLocation ?variationRelativeLocation;
+                ex:variationPhysicalConditionDescription ?variationPhysicalConditionDescription;
                 ex:variationHasRedactedVariation ?variationHasRedactedVariation;
                 ex:variationHasSensitivityReview ?sr;
                 ex:variationHasAsset ?asset.
@@ -75,6 +76,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
             optional { ?variation ex:variationPastName ?variationPastName }
             optional { ?variation ex:variationNote ?variationNote }
             optional { ?variation ex:variationRelativeLocation ?variationRelativeLocation }
+            optional { ?variation ex:variationPhysicalConditionDescription ?variationPhysicalConditionDescription }
             optional { 
                 ?variation ex:variationHasRedactedVariation ?variationHasRedactedVariation.
                 ?variationHasRedactedVariation ex:variationDriId ?redactedVariationDriId;

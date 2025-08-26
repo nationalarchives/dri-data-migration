@@ -654,6 +654,13 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation relative location".
 
+:variationPhysicalConditionDescription a owl:DatatypeProperty;
+	rdfs:seeAlso rico:qualityOfRepresentationNote;
+	rdfs:domain :Variation;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation physical condition description".
+
 :sensitivityReviewDate a owl:DatatypeProperty;
 	rdfs:domain :SensitivityReview;
 	rdfs:range xsd:date;

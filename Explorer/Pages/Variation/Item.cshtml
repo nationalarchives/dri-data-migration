@@ -23,6 +23,11 @@
             <dt>Location</dt>
             <dd>@Model.Item.Location.Single().Value</dd>
         }
+        @if (Model.Item.PhysicalConditionDescription.Any())
+        {
+            <dt>Physical condition description</dt>
+            <dd>@Model.Item.PhysicalConditionDescription.Single()</dd>
+        }
     </dl>
 
     @if (Model.Item.Redacted.Any())
