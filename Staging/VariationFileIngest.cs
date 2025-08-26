@@ -15,7 +15,7 @@ using VDS.RDF.Parsing;
 namespace Staging;
 
 public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<VariationFileIngest> logger, IOptions<DriSettings> options)
-    : BaseStagingIngest<DriVariationFile>(sparqlClient, logger, "VariationFileGraph")
+    : StagingIngest<DriVariationFile>(sparqlClient, logger, "VariationFileGraph")
 {
     private readonly HashSet<string> predicates = [];
 

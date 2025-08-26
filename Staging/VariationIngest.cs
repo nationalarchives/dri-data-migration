@@ -8,7 +8,7 @@ using VDS.RDF;
 namespace Staging;
 
 public class VariationIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<VariationIngest> logger)
-    : BaseStagingIngest<DriVariation>(sparqlClient, logger, "VariationGraph")
+    : StagingIngest<DriVariation>(sparqlClient, logger, "VariationGraph")
 {
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriVariation dri, CancellationToken cancellationToken)
     {

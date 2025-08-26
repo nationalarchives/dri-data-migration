@@ -12,7 +12,7 @@ using VDS.RDF.Parsing;
 namespace Staging;
 
 public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<SensitivityReviewIngest> logger)
-    : BaseStagingIngest<DriSensitivityReview>(sparqlClient, logger, "SensitivityReviewGraph")
+    : StagingIngest<DriSensitivityReview>(sparqlClient, logger, "SensitivityReviewGraph")
 {
     private Dictionary<string, IUriNode> legislations;
     private Dictionary<string, IUriNode> accessConditions;

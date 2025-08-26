@@ -13,7 +13,7 @@ using VDS.RDF.Parsing;
 namespace Staging;
 
 public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<AssetDeliverableUnitIngest> logger)
-    : BaseStagingIngest<DriAssetDeliverableUnit>(sparqlClient, logger, "AssetDeliverableUnitGraph")
+    : StagingIngest<DriAssetDeliverableUnit>(sparqlClient, logger, "AssetDeliverableUnitGraph")
 {
     private readonly HashSet<string> predicates = [];
 

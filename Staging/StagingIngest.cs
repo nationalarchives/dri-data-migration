@@ -10,19 +10,19 @@ using VDS.RDF;
 
 namespace Staging;
 
-public abstract class BaseStagingIngest<T> : IStagingIngest<T> where T : IDriRecord
+public abstract class StagingIngest<T> : IStagingIngest<T> where T : IDriRecord
 {
     internal readonly ISparqlClient sparqlClient;
     private readonly ILogger logger;
     private readonly string graphSparql;
 
-    protected BaseStagingIngest(ISparqlClient sparqlClient, ILogger logger, string sparqlFileName)
+    protected StagingIngest(ISparqlClient sparqlClient, ILogger logger, string sparqlFileName)
     {
         this.sparqlClient = sparqlClient;
         this.logger = logger;
 
-        var currentAssembly = typeof(BaseStagingIngest<>).Assembly;
-        var baseName = $"{typeof(BaseStagingIngest<>).Namespace}.Sparql";
+        var currentAssembly = typeof(StagingIngest<>).Assembly;
+        var baseName = $"{typeof(StagingIngest<>).Namespace}.Sparql";
         var embedded = new EmbeddedSparqlResource(currentAssembly, baseName);
         graphSparql = embedded.GetSparql(sparqlFileName);
     }
