@@ -26,9 +26,8 @@ public class SubsetIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, 
         }
         if (!string.IsNullOrEmpty(dri.ParentReference))
         {
-            var broaderId = await cacheClient.CacheFetchOrNew(CacheEntityKind.Subset, dri.ParentReference, cancellationToken);
+            var broaderId = await cacheClient.CacheFetchOrNew(CacheEntityKind.Subset, dri.ParentReference, Vocabulary.SubsetReference, cancellationToken);
             graph.Assert(id, Vocabulary.SubsetHasBroaderSubset, broaderId);
-            graph.Assert(broaderId, Vocabulary.SubsetReference, new LiteralNode(dri.ParentReference));
         }
         logger.RecordBuilt(dri.Id);
 

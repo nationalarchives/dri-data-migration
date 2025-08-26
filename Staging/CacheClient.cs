@@ -70,14 +70,14 @@ public class CacheClient : ICacheClient
             return null;
         }
 
-        Dictionary<string, object> parameters;
+        Dictionary<string, string> parameters;
         if (keys.Count() == 1)
         {
-            parameters = new Dictionary<string, object> { ["id"] = keys.First() };
+            parameters = new Dictionary<string, string> { ["id"] = keys.First() };
         }
         else
         {
-            parameters = keys.Select((k, i) => new KeyValuePair<string, object>($"id{i}", k)).ToDictionary(kv => kv.Key, kv => kv.Value);
+            parameters = keys.Select((k, i) => new KeyValuePair<string, string>($"id{i}", k)).ToDictionary(kv => kv.Key, kv => kv.Value);
         }
 
         var item = (IUriNode?)cache.Get(info.Key) ?? await sparqlClient.GetSubjectAsync(info.Sparql, parameters, cancellationToken);
@@ -96,7 +96,7 @@ public class CacheClient : ICacheClient
     public Task<IUriNode?> CacheFetch(CacheEntityKind kind, string key, CancellationToken cancellationToken) =>
         CacheFetch(kind, [key], cancellationToken);
 
-    public async Task<IUriNode> CacheFetchOrNew(CacheEntityKind kind, IEnumerable<string> keys, CancellationToken cancellationToken)
+    public async Task<IUriNode> CacheFetchOrNew(CacheEntityKind kind, IEnumerable<string> keys, IUriNode predicate, CancellationToken cancellationToken)
     {
         var info = ToCacheFetchInfo(kind, string.Join('|', keys));
         if (info is null)
@@ -105,27 +105,35 @@ public class CacheClient : ICacheClient
             return BaseIngest.NewId;
         }
 
-        Dictionary<string, object> parameters;
+        Dictionary<string, string> parameters;
         if (keys.Count() == 1)
         {
-            parameters = new Dictionary<string, object> { ["id"] = keys.First() };
+            parameters = new Dictionary<string, string> { ["id"] = keys.First() };
         }
         else
         {
-            parameters = keys.Select((k, i) => new KeyValuePair<string, object>($"id{i}", k)).ToDictionary(kv => kv.Key, kv => kv.Value);
+            parameters = keys.Select((k, i) => new KeyValuePair<string, string>($"id{i}", k)).ToDictionary(kv => kv.Key, kv => kv.Value);
         }
 
         return await cache.GetOrCreateAsync(info.Key, async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromHours(1);
             var subject = await sparqlClient.GetSubjectAsync(info.Sparql, parameters, cancellationToken);
+            if (subject is null)
+            {
 
-            return subject ?? BaseIngest.NewId;
+                subject = BaseIngest.NewId;
+                var node = new LiteralNode(parameters.First().Value);
+                var triple = new Triple(subject, predicate, node);
+                await sparqlClient.UpdateAsync(triple, cancellationToken);
+            }
+
+            return subject!;
         });
     }
 
-    public Task<IUriNode> CacheFetchOrNew(CacheEntityKind kind, string key, CancellationToken cancellationToken) =>
-        CacheFetchOrNew(kind, [key], cancellationToken);
+    public Task<IUriNode> CacheFetchOrNew(CacheEntityKind kind, string key, IUriNode predicate, CancellationToken cancellationToken) =>
+        CacheFetchOrNew(kind, [key], predicate, cancellationToken);
 
     public async Task<Dictionary<string, IUriNode>> AccessConditions(CancellationToken cancellationToken)
     {

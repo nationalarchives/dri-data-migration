@@ -113,8 +113,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     private async Task AddCourtCases(IGraph graph, IGraph rdf, INode id, string assetReference, CancellationToken cancellationToken)
     {
         var caseIndex = 1;
-        var courtCase = await BaseIngest.AssertAsync(graph, id, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_id_{caseIndex}")),
-                CacheEntityKind.CourtCaseByCaseAndAsset, Vocabulary.AssetHasCourtCase, Vocabulary.CourtCaseReference, cacheClient, cancellationToken, assetReference);
+        var courtCase = await FetchCourtCaseId(graph, rdf, id, caseIndex, assetReference, cancellationToken);
         while (courtCase is not null)
         {
             BaseIngest.AssertLiteral(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_name_{caseIndex}")), Vocabulary.CourtCaseName);
@@ -124,9 +123,20 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
             BaseIngest.AssertDate(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}hearing_end_date_{caseIndex}")), "dd/MM/yyyy", Vocabulary.CourtCaseHearingEndDate);
 
             caseIndex++;
-            courtCase = await BaseIngest.AssertAsync(graph, id, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_id_{caseIndex}")),
-                CacheEntityKind.CourtCaseByCaseAndAsset, Vocabulary.AssetHasCourtCase, Vocabulary.CourtCaseReference, cacheClient, cancellationToken, assetReference);
+            courtCase = await FetchCourtCaseId(graph, rdf, id, caseIndex, assetReference, cancellationToken);
         }
+    }
+
+    private async Task<IUriNode?> FetchCourtCaseId(IGraph graph, IGraph rdf, INode id, int caseIndex, string assetReference, CancellationToken cancellationToken)
+    {
+        var foundCase = rdf.GetTriplesWithPredicate(new UriNode(new($"{BaseIngest.TnaNamespace}case_id_{caseIndex}"))).SingleOrDefault()?.Object;
+        if (foundCase is ILiteralNode caseNode && !string.IsNullOrWhiteSpace(caseNode.Value))
+        {
+            var caseId = await cacheClient.CacheFetchOrNew(CacheEntityKind.VariationByPartialPathAndAsset, [caseNode.Value, assetReference], Vocabulary.VariationRelativeLocation, cancellationToken);
+            graph.Assert(id, Vocabulary.AssetHasCourtCase, caseId);
+        }
+
+        return null;
     }
 
     private static readonly Uri dctermsNamespace = new("http://purl.org/dc/terms/");

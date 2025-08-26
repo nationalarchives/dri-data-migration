@@ -11,7 +11,6 @@ construct {
         ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription;
         ex:sensitivityReviewHasPastSensitivityReview ?pastSensitivityReview;
         ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
-    ?pastSensitivityReview ex:sensitivityReviewDriId ?pastSensitivityReviewDriId.
     ?restriction ex:sensitivityReviewRestrictionReviewDate ?sensitivityReviewRestrictionReviewDate;
         ex:sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionCalculationStartDate;
         ex:sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionDuration;
@@ -36,10 +35,7 @@ construct {
     optional { ?sr ex:sensitivityReviewDate ?sensitivityReviewDate }
     optional { ?sr ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName }
     optional { ?sr ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription }
-    optional {
-        ?sr ex:sensitivityReviewHasPastSensitivityReview ?pastSensitivityReview.
-        ?pastSensitivityReview ex:sensitivityReviewDriId ?pastSensitivityReviewDriId.
-    }
+    optional { ?sr ex:sensitivityReviewHasPastSensitivityReview ?pastSensitivityReview }
     optional { 
         ?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
         optional { ?restriction ex:sensitivityReviewRestrictionReviewDate ?sensitivityReviewRestrictionReviewDate }

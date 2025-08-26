@@ -49,9 +49,8 @@ public static class BaseIngest
 
     public static async Task<IUriNode?> AssertAsync(IGraph graph, INode id, IGraph rdf,
         IUriNode findPredicate, CacheEntityKind cacheEntityKind,
-        IUriNode immediatePredicate, IUriNode? foundPredicate,
-        ICacheClient cacheClient, CancellationToken cancellationToken,
-        string? additionalCacheParameter = null)
+        IUriNode immediatePredicate, IUriNode foundPredicate,
+        ICacheClient cacheClient, CancellationToken cancellationToken)
     {
         var node = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
         if (node is null)
@@ -59,18 +58,18 @@ public static class BaseIngest
             return null;
         }
         var name = node switch
-        {//TODO: handle default
+        {
             ILiteralNode literalNode => literalNode.Value,
             IUriNode uriNode => uriNode.Uri.Segments.Last().Replace('_', ' '),
-            _ => throw new ArgumentException(node.ToString())
+            _ => null
         };
-        var parameters = additionalCacheParameter is null ? [name] : new string[] { name, additionalCacheParameter };
-        var nodeId = await cacheClient.CacheFetchOrNew(cacheEntityKind, parameters, cancellationToken);
-        graph.Assert(id, immediatePredicate, nodeId);
-        if (foundPredicate is not null)
+        if (string.IsNullOrWhiteSpace(name))
         {
-            graph.Assert(nodeId, foundPredicate, new LiteralNode(name));
+            return null;
         }
+        var nodeId = await cacheClient.CacheFetchOrNew(cacheEntityKind, [name], foundPredicate, cancellationToken);
+        graph.Assert(id, immediatePredicate, nodeId);
+        
         return nodeId;
     }
 

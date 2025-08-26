@@ -19,14 +19,9 @@ construct {
         ex:assetHasRetention ?retention;
         ex:assetHasCreation ?creation;
         ex:assetHasCourtCase ?courtCase.
-    ?language ex:languageName ?languageName.
-    ?copyright ex:copyrightTitle ?copyrightTitle.
     ?retention ex:retentionHasFormalBody ?retentionHasFormalBody.
-    ?retentionHasFormalBody ex:formalBodyName ?retentionFormalBodyName.
     ?creation ex:creationHasFormalBody ?creationHasFormalBody.
-    ?creationHasFormalBody ex:formalBodyName ?creationFormalBodyName.
-    ?courtCase ex:courtCaseReference ?courtCaseReference;
-        ex:courtCaseName ?courtCaseName;
+    ?courtCase ex:courtCaseName ?courtCaseName;
         ex:courtCaseSummaryJudgment ?courtCaseSummaryJudgment;
         ex:courtCaseSummaryReasonsForJudgment ?courtCaseSummaryReasonsForJudgment;
         ex:courtCaseHearingStartDate ?courtCaseHearingStartDate;
@@ -45,32 +40,19 @@ construct {
     optional { ?asset ex:investigationName ?investigationName }
     optional { ?asset ex:courtSessionDescription ?courtSessionDescription }
     optional { ?asset ex:courtSessionDate ?courtSessionDate }
-    optional {
-        ?asset ex:assetHasLanguage ?language.
-        ?language ex:languageName ?languageName.
-    }
-    optional {
-        ?asset ex:assetHasCopyright ?copyright.
-        ?copyright ex:copyrightTitle ?copyrightTitle.
-    }
+    optional { ?asset ex:assetHasLanguage ?language }
+    optional { ?asset ex:assetHasCopyright ?copyright }
     optional { ?asset ex:assetHasLegalStatus ?legalStatus }
     optional {
         ?asset ex:assetHasRetention ?retention.
-        optional {
-            ?retention ex:retentionHasFormalBody ?retentionHasFormalBody.
-            ?retentionHasFormalBody ex:formalBodyName ?retentionFormalBodyName.
-        }
+        optional { ?retention ex:retentionHasFormalBody ?retentionHasFormalBody }
     }
     optional {
         ?asset ex:assetHasCreation ?creation.
-        optional {
-            ?creation ex:creationHasFormalBody ?creationHasFormalBody.
-            ?creationHasFormalBody ex:formalBodyName ?creationFormalBodyName.
-        }
+        optional { ?creation ex:creationHasFormalBody ?creationHasFormalBody }
     }
     optional {
         ?asset ex:assetHasCourtCase ?courtCase.
-        optional { ?courtCase ex:courtCaseReference ?courtCaseReference }
         optional { ?courtCase ex:courtCaseName ?courtCaseName }
         optional { ?courtCase ex:courtCaseSummaryJudgment ?courtCaseSummaryJudgment }
         optional { ?courtCase ex:courtCaseSummaryReasonsForJudgment ?courtCaseSummaryReasonsForJudgment }

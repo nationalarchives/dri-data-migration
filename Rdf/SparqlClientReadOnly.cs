@@ -38,9 +38,9 @@ public abstract class SparqlClientReadOnly(HttpClient httpClient, Uri sparqlConn
     public async Task<SparqlResultSet> GetResultSetAsync(string sparql, CancellationToken cancellationToken) =>
         await client.QueryWithResultSetAsync(sparql, cancellationToken);
 
-    public async Task<IUriNode?> GetSubjectAsync(string sparql, Dictionary<string, object> parameters, CancellationToken cancellationToken)
+    public async Task<IUriNode?> GetSubjectAsync(string sparql, Dictionary<string, string> parameters, CancellationToken cancellationToken)
     {
-        var graph = await GetGraphAsync(sparql, parameters, cancellationToken);
+        var graph = await GetGraphAsync(sparql, parameters.ToDictionary(kv => kv.Key, kv => (object)kv.Value), cancellationToken);
 
         return graph.Triples.SubjectNodes.Cast<IUriNode>().SingleOrDefault();
     }
