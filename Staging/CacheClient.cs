@@ -24,7 +24,6 @@ public class CacheClient : ICacheClient
     private readonly string languageSparql;
     private readonly string formalBodySparql;
     private readonly string copyrightSparql;
-    private readonly string causingSoftwareSparql;
     private readonly string variationByPartialPathAndAssetSparql;
     private readonly string courtCaseByCaseAndAssetSparql;
 
@@ -54,7 +53,6 @@ public class CacheClient : ICacheClient
         languageSparql = embedded.GetSparql("GetLanguage");
         formalBodySparql = embedded.GetSparql("GetFormalBody");
         copyrightSparql = embedded.GetSparql("GetCopyright");
-        causingSoftwareSparql = embedded.GetSparql("GetCausingSoftware");
         variationByPartialPathAndAssetSparql = embedded.GetSparql("GetVariationByPartialPathAndAsset");
         courtCaseByCaseAndAssetSparql = embedded.GetSparql("GetCourtCaseByCaseAndAsset");
 
@@ -171,7 +169,6 @@ public class CacheClient : ICacheClient
         CacheEntityKind.Language => new(languageSparql, $"language-{key}"),
         CacheEntityKind.FormalBody => new(formalBodySparql, $"formal-body-{key}"),
         CacheEntityKind.Copyright => new(copyrightSparql, $"copyright-{key}"),
-        CacheEntityKind.CausingSoftware => new(causingSoftwareSparql, $"causing-software-{key}"),
         CacheEntityKind.VariationByPartialPathAndAsset => new(variationByPartialPathAndAssetSparql, $"variation-{key}"),
         CacheEntityKind.CourtCaseByCaseAndAsset => new(courtCaseByCaseAndAssetSparql, $"court-case-{key}"),
         _ => null

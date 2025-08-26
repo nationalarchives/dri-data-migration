@@ -1,8 +1,0 @@
-﻿prefix ex: <http://id.example.com/schema/>
-            
-construct {
-    ?s ex:causingSoftwareName ?causingSoftwareName.
-} where {
-    bind(@id as ?causingSoftwareName)
-    ?s ex:causingSoftwareName ?causingSoftwareName.
-}
