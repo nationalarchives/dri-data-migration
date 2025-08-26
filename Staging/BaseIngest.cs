@@ -15,7 +15,7 @@ namespace Staging;
 public static class BaseIngest
 {
     public static readonly Uri TnaNamespace = new("http://nationalarchives.gov.uk/metadata/tna#");
-    private static readonly Uri idNamespace = new(Vocabulary.Namespace.AbsoluteUri);
+    private static readonly Uri idNamespace = new("http://id.example.com/");
 
     public static IUriNode NewId => new UriNode(new Uri(idNamespace, Guid.NewGuid().ToString()));
 
@@ -25,7 +25,7 @@ public static class BaseIngest
         IUriNode findPredicate, IUriNode immediatePredicate)
     {
         var found = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
-        if (found is ILiteralNode foundNode)
+        if (found is ILiteralNode foundNode && !string.IsNullOrWhiteSpace(foundNode.Value))
         {
             graph.Assert(id, immediatePredicate, new LiteralNode(foundNode.Value));
         }
@@ -43,6 +43,7 @@ public static class BaseIngest
             }
             else
             {//TODO: handle different format
+                throw new ArgumentException(foundNode.Value);
             }
         }
     }
