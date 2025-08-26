@@ -13,6 +13,7 @@
     <EmbeddedResource Include="Sparql\GetAccessConditions.sparql" />
     <EmbeddedResource Include="Sparql\GetAsset.sparql" />
     <EmbeddedResource Include="Sparql\GetCopyright.sparql" />
+    <EmbeddedResource Include="Sparql\GetInquiryAppearanceByWitnessAndDescription.sparql" />
     <EmbeddedResource Include="Sparql\GetGroundsForRetention.sparql" />
     <EmbeddedResource Include="Sparql\GetFormalBody.sparql" />
     <EmbeddedResource Include="Sparql\GetLegislations.sparql" />

@@ -31,6 +31,8 @@ public static class Vocabulary
     public static readonly IUriNode InvestigationName = new UriNode(new(Namespace, "investigationName"));
     public static readonly IUriNode CourtSessionDescription = new UriNode(new(Namespace, "courtSessionDescription"));
     public static readonly IUriNode CourtSessionDate = new UriNode(new(Namespace, "courtSessionDate"));
+    public static readonly IUriNode InquirySessionDescription = new UriNode(new(Namespace, "inquirySessionDescription"));
+    public static readonly IUriNode InquiryHearingDate = new UriNode(new(Namespace, "inquiryHearingDate"));
     public static readonly IUriNode AssetHasSubset = new UriNode(new(Namespace, "assetHasSubset"));
     public static readonly IUriNode AssetHasVariation = new UriNode(new(Namespace, "assetHasVariation"));
     public static readonly IUriNode AssetHasRetention = new UriNode(new(Namespace, "assetHasRetention"));
@@ -40,6 +42,8 @@ public static class Vocabulary
     public static readonly IUriNode AssetHasCopyright = new UriNode(new(Namespace, "assetHasCopyright"));
     public static readonly IUriNode AssetHasCreation = new UriNode(new(Namespace, "assetHasCreation"));
     public static readonly IUriNode AssetHasCourtCase = new UriNode(new(Namespace, "assetHasCourtCase"));
+    public static readonly IUriNode AssetHasUkGovernmentWebArchive = new UriNode(new(Namespace, "assetHasUkGovernmentWebArchive"));
+    public static readonly IUriNode InquiryAssetHasInquiryAppearance = new UriNode(new(Namespace, "inquiryAssetHasInquiryAppearance"));
 
     public static readonly IUriNode Variation = new UriNode(new(Namespace, "Variation"));
     public static readonly IUriNode VariationHasAsset = new UriNode(new(Namespace, "variationHasAsset"));
@@ -112,4 +116,7 @@ public static class Vocabulary
     public static readonly IUriNode CourtCaseSummaryReasonsForJudgment = new UriNode(new(Namespace, "courtCaseSummaryReasonsForJudgment"));
     public static readonly IUriNode CourtCaseHearingStartDate = new UriNode(new(Namespace, "courtCaseHearingStartDate"));
     public static readonly IUriNode CourtCaseHearingEndDate = new UriNode(new(Namespace, "courtCaseHearingEndDate"));
+
+    public static readonly IUriNode InquiryWitnessName = new UriNode(new(Namespace, "inquiryWitnessName"));
+    public static readonly IUriNode InquiryWitnessAppearanceDescription = new UriNode(new(Namespace, "inquiryWitnessAppearanceDescription"));
 }

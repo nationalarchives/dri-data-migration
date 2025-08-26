@@ -11,5 +11,6 @@ public enum CacheEntityKind
     FormalBody,
     Copyright,
     VariationByPartialPathAndAsset,
-    CourtCaseByCaseAndAsset
+    CourtCaseByCaseAndAsset,
+    InquiryAppearanceByWitnessAndDescription
 }

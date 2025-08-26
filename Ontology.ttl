@@ -42,6 +42,14 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Court asset".
 
+:InquiryAppearance a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Inquiry appearance".
+
+:UKGovernmentWebArchive a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "UK government web archive (https://www.nationalarchives.gov.uk/webarchive/)".
+
 :Variation a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:seeAlso rico:Instantiation;
@@ -265,6 +273,25 @@ this:schema a owl:Ontology;
 	rdfs:range :Asset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Court case has asset".
+
+:inquiryAssetHasInquiryAppearance a owl:ObjectProperty;
+	rdfs:domain :InquiryAsset;
+	rdfs:range :InquiryAppearance;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Inquiry asset has inquiry appearance".
+
+:inquiryAppearanceHasInquiryAsset a owl:ObjectProperty;
+	owl:inverseOf :inquiryAssetHasInquiryAppearance;
+	rdfs:domain :InquiryAppearance;
+	rdfs:range :InquiryAsset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Inquiry appearance has inquiry asset".
+
+:assetHasUkGovernmentWebArchive a owl:ObjectProperty;
+	rdfs:domain :Asset;
+	rdfs:range :UKGovernmentWebArchive;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has UK government web archive".
 
 :assetHasVariation a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	rdfs:seeAlso rico:hasOrHadInstantiation;
@@ -588,6 +615,30 @@ this:schema a owl:Ontology;
 	rdfs:label "Investigation name";
 	rdfs:comment "This may need to be remodelled into the entity relationship after looking at the ingested data.".
 
+:inquirySessionDescription a owl:DatatypeProperty;
+	rdfs:domain :InquiryAsset;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Inquiry session description".
+
+:inquiryHearingDate a owl:DatatypeProperty;
+	rdfs:domain :InquiryAsset;
+	rdfs:range xsd:date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Inquiry hearing date".
+
+:courtSessionDescription a owl:DatatypeProperty;
+	rdfs:domain :CourtAsset;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Court session description".
+
+:courtSessionDate a owl:DatatypeProperty;
+	rdfs:domain :CourtAsset;
+	rdfs:range xsd:date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Court session date".
+
 :formalBodyName a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :FormalBody;
 	rdfs:range xsd:string;
@@ -788,18 +839,6 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Copyright title".
 
-:courtSessionDescription a owl:DatatypeProperty;
-	rdfs:domain :CourtAsset;
-	rdfs:range xsd:string;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Court session description".
-
-:courtSessionDate a owl:DatatypeProperty;
-	rdfs:domain :CourtAsset;
-	rdfs:range xsd:date;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Court session date".
-
 :courtCaseReference a owl:DatatypeProperty;
 	rdfs:domain :CourtCase;
 	rdfs:range xsd:string;
@@ -837,3 +876,17 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:date;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Court case hearing end date".
+
+:inquiryWitnessName a owl:DatatypeProperty;
+	rdfs:domain :InquiryAppearance;
+	rdfs:subPropertyOf :name;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Inquiry witness name".
+
+:inquiryWitnessAppearanceDescription a owl:DatatypeProperty;
+	rdfs:domain :InquiryAppearance;
+	rdfs:subPropertyOf :name;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Inquiry witness appearance description".

@@ -26,6 +26,7 @@ public class CacheClient : ICacheClient
     private readonly string copyrightSparql;
     private readonly string variationByPartialPathAndAssetSparql;
     private readonly string courtCaseByCaseAndAssetSparql;
+    private readonly string inquiryAppearanceByWitnessAndDescriptionSparql;
 
     private readonly string accessConditionsSparql;
     private readonly string legislationsSparql;
@@ -55,6 +56,7 @@ public class CacheClient : ICacheClient
         copyrightSparql = embedded.GetSparql("GetCopyright");
         variationByPartialPathAndAssetSparql = embedded.GetSparql("GetVariationByPartialPathAndAsset");
         courtCaseByCaseAndAssetSparql = embedded.GetSparql("GetCourtCaseByCaseAndAsset");
+        inquiryAppearanceByWitnessAndDescriptionSparql = embedded.GetSparql("GetInquiryAppearanceByWitnessAndDescription");
 
         accessConditionsSparql = embedded.GetSparql("GetAccessConditions");
         legislationsSparql = embedded.GetSparql("GetLegislations");
@@ -121,7 +123,6 @@ public class CacheClient : ICacheClient
             var subject = await sparqlClient.GetSubjectAsync(info.Sparql, parameters, cancellationToken);
             if (subject is null)
             {
-
                 subject = BaseIngest.NewId;
                 var node = new LiteralNode(parameters.First().Value);
                 var triple = new Triple(subject, predicate, node);
@@ -179,6 +180,7 @@ public class CacheClient : ICacheClient
         CacheEntityKind.Copyright => new(copyrightSparql, $"copyright-{key}"),
         CacheEntityKind.VariationByPartialPathAndAsset => new(variationByPartialPathAndAssetSparql, $"variation-{key}"),
         CacheEntityKind.CourtCaseByCaseAndAsset => new(courtCaseByCaseAndAssetSparql, $"court-case-{key}"),
+        CacheEntityKind.InquiryAppearanceByWitnessAndDescription => new(inquiryAppearanceByWitnessAndDescriptionSparql, $"inquiry-appearance-{key}"),
         _ => null
     };
 

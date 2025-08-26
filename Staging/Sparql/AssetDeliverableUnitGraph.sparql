@@ -13,12 +13,16 @@ construct {
         ex:investigationName ?investigationName;
         ex:courtSessionDescription ?courtSessionDescription;
         ex:courtSessionDate ?courtSessionDate;
+        ex:inquirySessionDescription ?inquirySessionDescription;
+        ex:inquiryHearingDate ?inquiryHearingDate;
+        ex:assetHasUkGovernmentWebArchive ?assetHasUkGovernmentWebArchive;
         ex:assetHasLanguage ?language;
         ex:assetHasLegalStatus ?legalStatus;
         ex:assetHasCopyright ?copyright;
         ex:assetHasRetention ?retention;
         ex:assetHasCreation ?creation;
-        ex:assetHasCourtCase ?courtCase.
+        ex:assetHasCourtCase ?courtCase;
+        ex:inquiryAssetHasInquiryAppearance ?inquiryAppearance.
     ?retention ex:retentionHasFormalBody ?retentionHasFormalBody.
     ?creation ex:creationHasFormalBody ?creationHasFormalBody.
     ?courtCase ex:courtCaseName ?courtCaseName;
@@ -26,6 +30,8 @@ construct {
         ex:courtCaseSummaryReasonsForJudgment ?courtCaseSummaryReasonsForJudgment;
         ex:courtCaseHearingStartDate ?courtCaseHearingStartDate;
         ex:courtCaseHearingEndDate ?courtCaseHearingEndDate.
+    ?inquiryAppearance ex:inquiryWitnessName ?inquiryWitnessName;
+        ex:inquiryWitnessAppearanceDescription ?inquiryWitnessAppearanceDescription.
 } where {
     bind(@id as ?assetDriId)
     ?asset ex:assetDriId ?assetDriId.
@@ -40,6 +46,9 @@ construct {
     optional { ?asset ex:investigationName ?investigationName }
     optional { ?asset ex:courtSessionDescription ?courtSessionDescription }
     optional { ?asset ex:courtSessionDate ?courtSessionDate }
+    optional { ?asset ex:inquirySessionDescription ?inquirySessionDescription }
+    optional { ?asset ex:inquiryHearingDate ?inquiryHearingDate }
+    optional { ?asset ex:assetHasUkGovernmentWebArchive ?assetHasUkGovernmentWebArchive }
     optional { ?asset ex:assetHasLanguage ?language }
     optional { ?asset ex:assetHasCopyright ?copyright }
     optional { ?asset ex:assetHasLegalStatus ?legalStatus }
@@ -58,5 +67,10 @@ construct {
         optional { ?courtCase ex:courtCaseSummaryReasonsForJudgment ?courtCaseSummaryReasonsForJudgment }
         optional { ?courtCase ex:courtCaseHearingStartDate ?courtCaseHearingStartDate }
         optional { ?courtCase ex:courtCaseHearingEndDate ?courtCaseHearingEndDate }
+    }
+    optional {
+        ?asset ex:inquiryAssetHasInquiryAppearance ?inquiryAppearance.
+        optional { ?inquiryAppearance ex:inquiryWitnessName ?inquiryWitnessName }
+        optional { ?inquiryAppearance ex:inquiryWitnessAppearanceDescription ?inquiryWitnessAppearanceDescription }
     }
 }

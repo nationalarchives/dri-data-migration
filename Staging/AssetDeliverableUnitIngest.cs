@@ -74,11 +74,15 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         BaseIngest.AssertLiteral(graph, id, rdf, physicalDescription, Vocabulary.AssetPhysicalDescription);
         BaseIngest.AssertLiteral(graph, id, rdf, evidenceProvidedBy, Vocabulary.EvidenceProviderName);
         BaseIngest.AssertLiteral(graph, id, rdf, investigation, Vocabulary.InvestigationName);
-        BaseIngest.AssertLiteral(graph, id, rdf, session, Vocabulary.CourtSessionDescription);
-        BaseIngest.AssertLiteral(graph, id, rdf, session_date, Vocabulary.CourtSessionDate);
+        BaseIngest.AssertDate(graph, id, rdf, session_date, "dd/MM/yyyy", Vocabulary.CourtSessionDate);
+        BaseIngest.AssertDate(graph, id, rdf, hearing_date, "dd/MM/yyyy", Vocabulary.InquiryHearingDate);
         BaseIngest.AssertLiteral(graph, id, rdf, restrictionOnUse, Vocabulary.AssetUseRestrictionDescription);
 
-        await AddCourtCases(graph, rdf, id, assetReference, cancellationToken);
+        AddWebArchive(graph, rdf, id);
+
+        await AddCourtCasesAsync(graph, rdf, id, assetReference, cancellationToken);
+        
+        await AddWitnessAsync(graph, rdf, id, cancellationToken);
 
         await BaseIngest.AssertAsync(graph, id, rdf, language, CacheEntityKind.Language,
             Vocabulary.AssetHasLanguage, Vocabulary.LanguageName, cacheClient, cancellationToken);
@@ -118,12 +122,57 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         return true;
     }
 
-    private async Task AddCourtCases(IGraph graph, IGraph rdf, INode id, string assetReference, CancellationToken cancellationToken)
+    private static void AddWebArchive(IGraph graph, IGraph rdf, INode id)
     {
+        var foundWebArchive = rdf.GetTriplesWithPredicate(webArchiveUrl).SingleOrDefault()?.Object;
+        if (foundWebArchive is ILiteralNode webArchiveNode && !string.IsNullOrWhiteSpace(webArchiveNode.Value))
+        {
+            graph.Assert(id, Vocabulary.AssetHasUkGovernmentWebArchive, new UriNode(new Uri(webArchiveNode.AsValuedNode().AsString())));
+        }
+    }
+
+    private async Task AddWitnessAsync(IGraph graph, IGraph rdf, INode id, CancellationToken cancellationToken)
+    {
+        var found = false;
+        var witnessIndex = 1;
+        var foundWitness = await FetchWitnessIdAsync(graph, rdf, id, witnessIndex, cancellationToken);
+        while (foundWitness is not null)
+        {
+            found = true;
+            witnessIndex++;
+            foundWitness = await FetchWitnessIdAsync(graph, rdf, id, witnessIndex, cancellationToken);
+        }
+        if (found)
+        {
+            BaseIngest.AssertLiteral(graph, id, rdf, session, Vocabulary.InquirySessionDescription);
+        }
+    }
+
+    private async Task<IUriNode?> FetchWitnessIdAsync(IGraph graph, IGraph rdf, INode id, int witnessIndex, CancellationToken cancellationToken)
+    {
+        var foundWitness = rdf.GetTriplesWithPredicate(new UriNode(new($"{BaseIngest.TnaNamespace}witness_list_{witnessIndex}"))).SingleOrDefault()?.Object;
+        if (foundWitness is ILiteralNode witnessNode && !string.IsNullOrWhiteSpace(witnessNode.Value))
+        {
+            var foundDescription = rdf.GetTriplesWithPredicate(new UriNode(new($"{BaseIngest.TnaNamespace}subject_role_{witnessIndex}"))).SingleOrDefault()?.Object as ILiteralNode;
+            var witnessId = await cacheClient.CacheFetchOrNew(CacheEntityKind.InquiryAppearanceByWitnessAndDescription, [witnessNode.Value, foundDescription.Value], Vocabulary.InquiryWitnessName, cancellationToken);
+            graph.Assert(witnessId, Vocabulary.InquiryWitnessName, new LiteralNode(witnessNode.Value));
+            graph.Assert(witnessId, Vocabulary.InquiryWitnessAppearanceDescription, new LiteralNode(foundDescription.Value));
+            graph.Assert(id, Vocabulary.InquiryAssetHasInquiryAppearance, witnessId);
+
+            return witnessId;
+        }
+
+        return null;
+    }
+
+    private async Task AddCourtCasesAsync(IGraph graph, IGraph rdf, INode id, string assetReference, CancellationToken cancellationToken)
+    {
+        var found = false;
         var caseIndex = 1;
-        var courtCase = await FetchCourtCaseId(graph, rdf, id, caseIndex, assetReference, cancellationToken);
+        var courtCase = await FetchCourtCaseIdAsync(graph, rdf, id, caseIndex, assetReference, cancellationToken);
         while (courtCase is not null)
         {
+            found = true;
             BaseIngest.AssertLiteral(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_name_{caseIndex}")), Vocabulary.CourtCaseName);
             BaseIngest.AssertLiteral(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_summary_{caseIndex}_judgment")), Vocabulary.CourtCaseSummaryJudgment);
             BaseIngest.AssertLiteral(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_summary_{caseIndex}_reasons_for_judgment")), Vocabulary.CourtCaseSummaryReasonsForJudgment);
@@ -131,11 +180,15 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
             BaseIngest.AssertDate(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}hearing_end_date_{caseIndex}")), "dd/MM/yyyy", Vocabulary.CourtCaseHearingEndDate);
 
             caseIndex++;
-            courtCase = await FetchCourtCaseId(graph, rdf, id, caseIndex, assetReference, cancellationToken);
+            courtCase = await FetchCourtCaseIdAsync(graph, rdf, id, caseIndex, assetReference, cancellationToken);
+        }
+        if (found)
+        {
+            BaseIngest.AssertLiteral(graph, id, rdf, session, Vocabulary.CourtSessionDescription);
         }
     }
 
-    private async Task<IUriNode?> FetchCourtCaseId(IGraph graph, IGraph rdf, INode id, int caseIndex, string assetReference, CancellationToken cancellationToken)
+    private async Task<IUriNode?> FetchCourtCaseIdAsync(IGraph graph, IGraph rdf, INode id, int caseIndex, string assetReference, CancellationToken cancellationToken)
     {
         var foundCase = rdf.GetTriplesWithPredicate(new UriNode(new($"{BaseIngest.TnaNamespace}case_id_{caseIndex}"))).SingleOrDefault()?.Object;
         if (foundCase is ILiteralNode caseNode && !string.IsNullOrWhiteSpace(caseNode.Value))
@@ -160,6 +213,8 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     private static readonly IUriNode session = new UriNode(new($"{BaseIngest.TnaNamespace}session"));
     private static readonly IUriNode session_date = new UriNode(new($"{BaseIngest.TnaNamespace}session_date"));
     private static readonly IUriNode restrictionOnUse = new UriNode(new($"{BaseIngest.TnaNamespace}restrictionOnUse"));
+    private static readonly IUriNode hearing_date = new UriNode(new($"{BaseIngest.TnaNamespace}hearing_date"));
+    private static readonly IUriNode webArchiveUrl = new UriNode(new($"{BaseIngest.TnaNamespace}webArchiveUrl"));
 
     private static readonly IUriNode description = new UriNode(new(dctermsNamespace, "description"));
     private static readonly IUriNode creator = new UriNode(new(dctermsNamespace, "creator"));
