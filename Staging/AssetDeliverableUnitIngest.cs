@@ -93,8 +93,15 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         await BaseIngest.AssertAsync(graph, creation, rdf, creator, CacheEntityKind.FormalBody,
             Vocabulary.CreationHasFormalBody, Vocabulary.FormalBodyName, cacheClient, cancellationToken);
 
-        await BaseIngest.AssertAsync(graph, id, rdf, rights, CacheEntityKind.Copyright,
-            Vocabulary.AssetHasCopyright, Vocabulary.CopyrightTitle, cacheClient, cancellationToken);
+        var copyrights = rdf.GetTriplesWithPredicate(rights).Select(t => t.Object)
+            .Where(o => !string.IsNullOrWhiteSpace(o.ToString())).Cast<IUriNode>();
+        foreach (var copyright in copyrights)
+        {
+            var title = copyright.Uri.Segments.Last().Replace('_', ' ');
+            var copyrightId = await cacheClient.CacheFetchOrNew(CacheEntityKind.Copyright, title, Vocabulary.CopyrightTitle, cancellationToken);
+            graph.Assert(id, Vocabulary.AssetHasCopyright, copyrightId);
+
+        }
 
         var legal = rdf.GetTriplesWithPredicate(legalStatus).SingleOrDefault()?.Object;
         if (legal is IUriNode legalUri)

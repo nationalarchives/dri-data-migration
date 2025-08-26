@@ -45,10 +45,17 @@
             <dt>Language</dt>
             <dd>@Model.Item.Language.Single().Name.Single()</dd>
         }
-        @if (Model.Item.Copyright.Any())
+        @if (Model.Item.Copyrights.Any())
         {
             <dt>Copyright</dt>
-            <dd>@Model.Item.Copyright.Single().Title.Single()</dd>
+            <dd>
+                <ul class="tna-ul tna-ul--dashed">
+                    @foreach (var copyright in Model.Item.Copyrights)
+                    {
+                        <li>@copyright.Title.Single()</li>
+                    }
+                </ul>
+            </dd>
         }
         @if (Model.Item.LegalStatus.Any())
         {
@@ -118,7 +125,7 @@
                                 <dt>Hearing end date</dt>
                                 <dd>@courtCase.HearingEndDate.Single().Value.ToString("dd MMMM yyyy")</dd>
                             }
-    </dl>
+                        </dl>
                     </li>
                 }
             </ul>
