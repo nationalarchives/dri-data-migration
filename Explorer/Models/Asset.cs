@@ -27,6 +27,6 @@ public class Asset(INode node, IGraph graph) : DynamicNode(node, graph)
     public ICollection<Subset> Subset => new DynamicObjectCollection<Subset>(this, Vocabulary.AssetHasSubset.Uri.ToString());
     public ICollection<Language> Language => new DynamicObjectCollection<Language>(this, Vocabulary.AssetHasLanguage.Uri.ToString());
     public ICollection<Copyright> Copyrights => new DynamicObjectCollection<Copyright>(this, Vocabulary.AssetHasCopyright.Uri.ToString());
-    public ICollection<CourtCase> CourtCases => new DynamicObjectCollection<CourtCase>(this, Vocabulary.AssetHasCourtCase.Uri.ToString());
+    public ICollection<CourtCase> CourtCases => new DynamicObjectCollection<CourtCase>(this, Vocabulary.CourtAssetHasCourtCase.Uri.ToString());
     public ICollection<IUriNode> LegalStatus => new DynamicObjectCollection<IUriNode>(this, Vocabulary.AssetHasLegalStatus.Uri.ToString());
 }

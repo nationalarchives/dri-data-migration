@@ -262,17 +262,18 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Legal status has asset".
 
-:assetHasCourtCase a owl:ObjectProperty;
-	rdfs:domain :Asset;
+:courtAssetHasCourtCase a owl:ObjectProperty;
+	rdfs:domain :CourtAsset;
 	rdfs:range :CourtCase;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset has court case".
+	rdfs:label "Court asset has court case".
 
-:courtCaseHasAsset a owl:ObjectProperty;
+:courtCaseHasCourtAsset a owl:ObjectProperty;
+	owl:inverseOf :courtAssetHasCourtCase;
 	rdfs:domain :CourtCase;
-	rdfs:range :Asset;
+	rdfs:range :CourtAsset;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Court case has asset".
+	rdfs:label "Court case has court asset".
 
 :inquiryAssetHasInquiryAppearance a owl:ObjectProperty;
 	rdfs:domain :InquiryAsset;

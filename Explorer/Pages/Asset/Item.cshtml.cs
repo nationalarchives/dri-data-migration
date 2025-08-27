@@ -34,7 +34,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:assetHasVariation ?variation;
                 ex:assetHasRetention ?retention;
                 ex:assetHasCreation ?creation;
-                ex:assetHasCourtCase ?courtCase;
+                ex:courtAssetHasCourtCase ?courtCase;
                 ex:assetHasSensitivityReview ?sr.
             ?language ex:languageName ?languageName.
             ?copyright ex:copyrightTitle ?copyrightTitle.
@@ -114,7 +114,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 }
             }
             optional {
-                ?s ex:assetHasCourtCase ?courtCase.
+                ?s ex:courtAssetHasCourtCase ?courtCase.
                 optional { ?courtCase ex:courtCaseReference ?courtCaseReference }
                 optional { ?courtCase ex:courtCaseName ?courtCaseName }
                 optional { ?courtCase ex:courtCaseSummaryJudgment ?courtCaseSummaryJudgment }

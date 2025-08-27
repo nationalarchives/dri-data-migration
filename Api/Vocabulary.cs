@@ -41,8 +41,8 @@ public static class Vocabulary
     public static readonly IUriNode AssetHasLegalStatus = new UriNode(new(Namespace, "assetHasLegalStatus"));
     public static readonly IUriNode AssetHasCopyright = new UriNode(new(Namespace, "assetHasCopyright"));
     public static readonly IUriNode AssetHasCreation = new UriNode(new(Namespace, "assetHasCreation"));
-    public static readonly IUriNode AssetHasCourtCase = new UriNode(new(Namespace, "assetHasCourtCase"));
     public static readonly IUriNode AssetHasUkGovernmentWebArchive = new UriNode(new(Namespace, "assetHasUkGovernmentWebArchive"));
+    public static readonly IUriNode CourtAssetHasCourtCase = new UriNode(new(Namespace, "courtAssetHasCourtCase"));
     public static readonly IUriNode InquiryAssetHasInquiryAppearance = new UriNode(new(Namespace, "inquiryAssetHasInquiryAppearance"));
 
     public static readonly IUriNode Variation = new UriNode(new(Namespace, "Variation"));

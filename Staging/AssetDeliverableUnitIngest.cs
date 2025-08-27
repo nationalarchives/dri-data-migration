@@ -194,7 +194,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         if (foundCase is ILiteralNode caseNode && !string.IsNullOrWhiteSpace(caseNode.Value))
         {
             var caseId = await cacheClient.CacheFetchOrNew(CacheEntityKind.VariationByPartialPathAndAsset, [caseNode.Value, assetReference], Vocabulary.VariationRelativeLocation, cancellationToken);
-            graph.Assert(id, Vocabulary.AssetHasCourtCase, caseId);
+            graph.Assert(id, Vocabulary.CourtAssetHasCourtCase, caseId);
         }
 
         return null;
