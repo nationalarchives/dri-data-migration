@@ -137,7 +137,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
             var yearType = new string[] { "D", "U" };
             if (yearType.Contains(BaseIngest.GetUriFragment(dri.AccessCondition)))
             {
-                graph.Assert(restriction, Vocabulary.SensitivityReviewRestrictionEndYear, new LongNode(dri.RestrictionDuration.Value));
+                graph.Assert(restriction, Vocabulary.SensitivityReviewRestrictionEndYear, new LiteralNode(dri.RestrictionDuration.Value.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
             }
             else
             {
