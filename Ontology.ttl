@@ -228,6 +228,7 @@ this:schema a owl:Ontology;
 	rdfs:label "Asset has language".
 
 :languageHasAsset a owl:ObjectProperty, owl:FunctionalProperty;
+	owl:inverseOf :assetHasLanguage;
 	rdfs:seeAlso rico:isOrWasLanguageOf;
 	rdfs:domain :Language;
 	rdfs:range :Asset;
@@ -242,6 +243,7 @@ this:schema a owl:Ontology;
 	rdfs:label "Asset has copyright".
 
 :copyrightHasAsset a owl:ObjectProperty, owl:FunctionalProperty;
+	owl:inverseOf :assetHasCopyright;
 	rdfs:seeAlso rico:isOrWasLegalStatusOfAllMembersOf;
 	rdfs:domain :Copyright;
 	rdfs:range :Asset;
@@ -256,6 +258,7 @@ this:schema a owl:Ontology;
 	rdfs:label "Asset has legal status".
 
 :legalStatusHasAsset a owl:ObjectProperty, owl:FunctionalProperty;
+	owl:inverseOf :assetHasLegalStatus;
 	rdfs:seeAlso rico:isOrWasLegalStatusOfAllMembersOf;
 	rdfs:domain :LegalStatus;
 	rdfs:range :Asset;
@@ -317,6 +320,7 @@ this:schema a owl:Ontology;
 	rdfs:label "Variation has redacted variation".
 
 :redactedVariationHasVariation a owl:ObjectProperty;
+	owl:inverseOf :variationHasRedactedVariation;
 	rdfs:seeAlso rico:migratedFrom;
 	rdfs:domain :RedactedVariation;
 	rdfs:range :Variation;
@@ -331,6 +335,7 @@ this:schema a owl:Ontology;
 	rdfs:label "Variation has alternative variation".
 
 :alternativeVariationHasVariation a owl:ObjectProperty;
+	owl:inverseOf :variationHasAlternativeVariation;
 	rdfs:seeAlso rico:migratedFrom;
 	rdfs:domain :AlternativeVariation;
 	rdfs:range :Variation;
@@ -345,6 +350,7 @@ this:schema a owl:Ontology;
 	rdfs:label "Creation has asset".
 
 :assetHasCreation a owl:ObjectProperty;
+	owl:inverseOf :creationHasAsset;
 	rdfs:seeAlso rico:thingIsSourceOfRelation;
 	rdfs:domain :Asset;
 	rdfs:range :Creation;
