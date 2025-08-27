@@ -220,14 +220,14 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has subset".
 
-:assetHasLanguage a owl:ObjectProperty, owl:FunctionalProperty;
+:assetHasLanguage a owl:ObjectProperty;
 	rdfs:seeAlso rico:hasOrHadLanguage;
 	rdfs:domain :Asset;
 	rdfs:range :Language;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has language".
 
-:languageHasAsset a owl:ObjectProperty, owl:FunctionalProperty;
+:languageHasAsset a owl:ObjectProperty;
 	owl:inverseOf :assetHasLanguage;
 	rdfs:seeAlso rico:isOrWasLanguageOf;
 	rdfs:domain :Language;
@@ -235,14 +235,14 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Language has asset".
 
-:assetHasCopyright a owl:ObjectProperty, owl:FunctionalProperty;
+:assetHasCopyright a owl:ObjectProperty;
 	rdfs:seeAlso rico:hasOrHadAllMembersWithLegalStatus;
 	rdfs:domain :Asset;
 	rdfs:range :Copyright;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has copyright".
 
-:copyrightHasAsset a owl:ObjectProperty, owl:FunctionalProperty;
+:copyrightHasAsset a owl:ObjectProperty;
 	owl:inverseOf :assetHasCopyright;
 	rdfs:seeAlso rico:isOrWasLegalStatusOfAllMembersOf;
 	rdfs:domain :Copyright;
@@ -250,14 +250,14 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Copyright has asset".
 
-:assetHasLegalStatus a owl:ObjectProperty, owl:FunctionalProperty;
+:assetHasLegalStatus a owl:ObjectProperty;
 	rdfs:seeAlso rico:hasOrHadAllMembersWithLegalStatus;
 	rdfs:domain :Asset;
 	rdfs:range :LegalStatus;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has legal status".
 
-:legalStatusHasAsset a owl:ObjectProperty, owl:FunctionalProperty;
+:legalStatusHasAsset a owl:ObjectProperty;
 	owl:inverseOf :assetHasLegalStatus;
 	rdfs:seeAlso rico:isOrWasLegalStatusOfAllMembersOf;
 	rdfs:domain :LegalStatus;
