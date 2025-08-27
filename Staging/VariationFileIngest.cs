@@ -130,7 +130,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
                 if (date is not null)
                 {
                     graph.Assert(datedNode, Vocabulary.DatedNoteHasDate, noteDate);
-                    if (TryParseDate(date.Value, out var dt))
+                    if (BaseIngest.TryParseDate(date.Value, out var dt))
                     {
                         graph.Assert(noteDate, Vocabulary.Year, new LiteralNode(dt.Year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
                         graph.Assert(noteDate, Vocabulary.Month, new LiteralNode(dt.Month.ToString(), new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
@@ -143,22 +143,6 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
                 }
             }
         }
-    }
-
-    private static bool TryParseDate(string date, out DateTimeOffset dt)
-    {
-        if (DateTimeOffset.TryParse(date, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt1))
-        {
-            dt = dt1;
-            return true;
-        }
-        if (DateTimeOffset.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt2))
-        {
-            dt = dt2;
-            return true;
-        }
-        dt = default;
-        return false;
     }
 
     private static string GetPartialPath(string path) => path.Substring(path.IndexOf("/content/") + 8);

@@ -91,4 +91,21 @@ public static class BaseIngest
         }
         return null;
     }
+
+    public static bool TryParseDate(string date, out DateTimeOffset dt)
+    {
+        if (DateTimeOffset.TryParse(date, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt1))
+        {
+            dt = dt1;
+            return true;
+        }
+        if (DateTimeOffset.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt2))
+        {
+            dt = dt2;
+            return true;
+        }
+
+        dt = default;
+        return false;
+    }
 }

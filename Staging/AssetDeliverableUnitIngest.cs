@@ -144,7 +144,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
             var end = rdf.GetTriplesWithSubjectPredicate(foundCoverage, endDate).FirstOrDefault()?.Object as ILiteralNode;
             if (start is not null && !string.IsNullOrWhiteSpace(start.Value))
             {
-                if (DateTimeOffset.TryParse(start.Value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dtStart))
+                if (BaseIngest.TryParseDate(start.Value, out var dtStart))
                 {
                     graph.Assert(originDateSpan, Vocabulary.Year, new LiteralNode(dtStart.Year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
                     graph.Assert(originDateSpan, Vocabulary.Month, new LiteralNode(dtStart.Month.ToString(), new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
@@ -156,7 +156,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
                 }
                 if (end is not null && !string.IsNullOrWhiteSpace(end.Value))
                 {
-                    if (DateTimeOffset.TryParse(end.Value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dtEnd))
+                    if (BaseIngest.TryParseDate(end.Value, out var dtEnd))
                     {
                         var diff = dtEnd.AddDays(-dtStart.Day).AddMonths(-dtStart.Month);
                         var year = diff.Year - dtStart.Year == 0 ? string.Empty : $"{diff.Year - dtStart.Year}Y";
