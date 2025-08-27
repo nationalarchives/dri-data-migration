@@ -599,12 +599,12 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Physical description".
 
-:assetUseRestrictionDescription a owl:DatatypeProperty;
+:assetUsageRestrictionDescription a owl:DatatypeProperty;
 	rdfs:seeAlso rico:conditionsOfUse;
 	rdfs:domain :Asset;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset use restriction description".
+	rdfs:label "Asset usage restriction description".
 
 :evidenceProviderName a owl:DatatypeProperty;
 	rdfs:domain :InquiryAsset;

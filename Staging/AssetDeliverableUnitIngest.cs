@@ -76,7 +76,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         BaseIngest.AssertLiteral(graph, id, rdf, investigation, Vocabulary.InvestigationName);
         BaseIngest.AssertDate(graph, id, rdf, session_date, "dd/MM/yyyy", Vocabulary.CourtSessionDate);
         BaseIngest.AssertDate(graph, id, rdf, hearing_date, "dd/MM/yyyy", Vocabulary.InquiryHearingDate);
-        BaseIngest.AssertLiteral(graph, id, rdf, restrictionOnUse, Vocabulary.AssetUseRestrictionDescription);
+        BaseIngest.AssertLiteral(graph, id, rdf, restrictionOnUse, Vocabulary.AssetUsageRestrictionDescription);
 
         AddWebArchive(graph, rdf, id);
 
@@ -104,7 +104,6 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
             var title = copyright.Uri.Segments.Last().Replace('_', ' ');
             var copyrightId = await cacheClient.CacheFetchOrNew(CacheEntityKind.Copyright, title, Vocabulary.CopyrightTitle, cancellationToken);
             graph.Assert(id, Vocabulary.AssetHasCopyright, copyrightId);
-
         }
 
         var legal = rdf.GetTriplesWithPredicate(legalStatus).SingleOrDefault()?.Object;

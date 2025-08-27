@@ -23,7 +23,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:consignmentTdrId ?consignmentTdrId;
                 ex:assetRelationDescription ?assetRelationDescription;
                 ex:assetPhysicalDescription ?assetPhysicalDescription;
-                ex:assetUseRestrictionDescription ?assetUseRestrictionDescription;
+                ex:assetUsageRestrictionDescription ?assetUsageRestrictionDescription;
                 ex:evidenceProviderName ?evidenceProviderName;
                 ex:investigationName ?investigationName;
                 ex:courtSessionDescription ?courtSessionDescription;
@@ -78,7 +78,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
             optional { ?s ex:consignmentTdrId ?consignmentTdrId }
             optional { ?s ex:assetRelationDescription ?assetRelationDescription }
             optional { ?s ex:assetPhysicalDescription ?assetPhysicalDescription }
-            optional { ?s ex:assetUseRestrictionDescription ?assetUseRestrictionDescription }
+            optional { ?s ex:assetUsageRestrictionDescription ?assetUsageRestrictionDescription }
             optional { ?s ex:evidenceProviderName ?evidenceProviderName }
             optional { ?s ex:investigationName ?investigationName }
             optional { ?s ex:courtSessionDescription ?courtSessionDescription }
