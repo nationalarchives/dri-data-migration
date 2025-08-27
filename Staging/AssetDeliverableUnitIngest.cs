@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -81,8 +82,11 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         AddWebArchive(graph, rdf, id);
 
         await AddCourtCasesAsync(graph, rdf, id, assetReference, cancellationToken);
-        
+
         await AddWitnessAsync(graph, rdf, id, cancellationToken);
+
+        var originDateSpan = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateSpan).SingleOrDefault()?.Object ?? BaseIngest.NewId;
+        AddOriginDateSpan(graph, rdf, id, originDateSpan);
 
         await BaseIngest.AssertAsync(graph, id, rdf, language, CacheEntityKind.Language,
             Vocabulary.AssetHasLanguage, Vocabulary.LanguageName, cacheClient, cancellationToken);
@@ -127,6 +131,45 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         if (foundWebArchive is ILiteralNode webArchiveNode && !string.IsNullOrWhiteSpace(webArchiveNode.Value))
         {
             graph.Assert(id, Vocabulary.AssetHasUkGovernmentWebArchive, new UriNode(new Uri(webArchiveNode.AsValuedNode().AsString())));
+        }
+    }
+
+    private static void AddOriginDateSpan(IGraph graph, IGraph rdf, INode id, INode originDateSpan)
+    {
+        var foundCoverage = rdf.GetTriplesWithPredicate(coverage).FirstOrDefault()?.Object;
+        if (foundCoverage is not null)
+        {
+            graph.Assert(id, Vocabulary.AssetHasOriginDateSpan, originDateSpan);
+            var start = rdf.GetTriplesWithSubjectPredicate(foundCoverage, startDate).FirstOrDefault()?.Object as ILiteralNode;
+            var end = rdf.GetTriplesWithSubjectPredicate(foundCoverage, endDate).FirstOrDefault()?.Object as ILiteralNode;
+            if (start is not null && !string.IsNullOrWhiteSpace(start.Value))
+            {
+                if (DateTimeOffset.TryParse(start.Value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dtStart))
+                {
+                    graph.Assert(originDateSpan, Vocabulary.Year, new LiteralNode(dtStart.Year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
+                    graph.Assert(originDateSpan, Vocabulary.Month, new LiteralNode(dtStart.Month.ToString(), new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
+                    graph.Assert(originDateSpan, Vocabulary.Day, new LiteralNode(dtStart.Day.ToString(), new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
+                }
+                else
+                {
+                    throw new ArgumentException(start.Value);
+                }
+                if (end is not null && !string.IsNullOrWhiteSpace(end.Value))
+                {
+                    if (DateTimeOffset.TryParse(end.Value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dtEnd))
+                    {
+                        var diff = dtEnd.AddDays(-dtStart.Day).AddMonths(-dtStart.Month);
+                        var year = diff.Year - dtStart.Year == 0 ? string.Empty : $"{diff.Year - dtStart.Year}Y";
+                        var month = diff.Month == 0 ? string.Empty : $"{diff.Month}M";
+                        var day = diff.Day == 0 ? string.Empty : $"{diff.Day}D";
+                        graph.Assert(originDateSpan, Vocabulary.Duration, new LiteralNode($"P{year}{month}{day}", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDuration)));
+                    }
+                    else
+                    {
+                        throw new ArgumentException(end.Value);
+                    }
+                }
+            }
         }
     }
 
@@ -214,9 +257,12 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     private static readonly IUriNode restrictionOnUse = new UriNode(new($"{BaseIngest.TnaNamespace}restrictionOnUse"));
     private static readonly IUriNode hearing_date = new UriNode(new($"{BaseIngest.TnaNamespace}hearing_date"));
     private static readonly IUriNode webArchiveUrl = new UriNode(new($"{BaseIngest.TnaNamespace}webArchiveUrl"));
+    private static readonly IUriNode startDate = new UriNode(new($"{BaseIngest.TnaNamespace}startDate"));
+    private static readonly IUriNode endDate = new UriNode(new($"{BaseIngest.TnaNamespace}endDate"));
 
     private static readonly IUriNode description = new UriNode(new(dctermsNamespace, "description"));
     private static readonly IUriNode creator = new UriNode(new(dctermsNamespace, "creator"));
     private static readonly IUriNode language = new UriNode(new(dctermsNamespace, "language"));
     private static readonly IUriNode rights = new UriNode(new(dctermsNamespace, "rights"));
+    private static readonly IUriNode coverage = new UriNode(new(dctermsNamespace, "coverage"));
 }

@@ -62,4 +62,9 @@ internal static partial class Log
     [LoggerMessage(EventId = 19, Level = LogLevel.Warning, Message = "Legislation {code} not found")]
     internal static partial void LegislationNotFound(this ILogger logger, string code);
 
+    [LoggerMessage(EventId = 20, Level = LogLevel.Warning, Message = "Redacted variation {asset} on {path} not found")]
+    internal static partial void RedactedVariationMissing(this ILogger logger, string asset, string path);
+
+    [LoggerMessage(EventId = 21, Level = LogLevel.Warning, Message = "Alternative variation {asset} on {path} not found")]
+    internal static partial void AlternativeVariationMissing(this ILogger logger, string asset, string path);
 }

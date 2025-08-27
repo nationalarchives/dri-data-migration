@@ -21,10 +21,15 @@ construct {
         ex:assetHasCopyright ?copyright;
         ex:assetHasRetention ?retention;
         ex:assetHasCreation ?creation;
+        ex:assetHasOriginDateSpan ?originDateSpan;
         ex:courtAssetHasCourtCase ?courtCase;
         ex:inquiryAssetHasInquiryAppearance ?inquiryAppearance.
     ?retention ex:retentionHasFormalBody ?retentionHasFormalBody.
     ?creation ex:creationHasFormalBody ?creationHasFormalBody.
+    ?originDateSpan ex:year ?year;
+        ex:month ?month;
+        ex:day ?day;
+        ex:duration ?duration.
     ?courtCase ex:courtCaseName ?courtCaseName;
         ex:courtCaseSummaryJudgment ?courtCaseSummaryJudgment;
         ex:courtCaseSummaryReasonsForJudgment ?courtCaseSummaryReasonsForJudgment;
@@ -59,6 +64,13 @@ construct {
     optional {
         ?asset ex:assetHasCreation ?creation.
         optional { ?creation ex:creationHasFormalBody ?creationHasFormalBody }
+    }
+    optional {
+        ?asset ex:assetHasOriginDateSpan ?originDateSpan.
+        optional { ?originDateSpan ex:year ?year }
+        optional { ?originDateSpan ex:month ?month }
+        optional { ?originDateSpan ex:day ?day }
+        optional { ?originDateSpan ex:duration ?duration }
     }
     optional {
         ?asset ex:courtAssetHasCourtCase ?courtCase.

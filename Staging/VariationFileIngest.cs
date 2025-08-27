@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -38,7 +39,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         {
             var xmlBase64 = Convert.ToBase64String(UTF8Encoding.UTF8.GetBytes(dri.Xml));
             graph.Assert(id, Vocabulary.VariationDriXml, new LiteralNode(xmlBase64, new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
-            var proceed = await ExtractXmlData(graph, id, dri.Xml, cancellationToken);
+            var proceed = await ExtractXmlData(graph, existing, id, dri.Xml, cancellationToken);
             if (!proceed)
             {
                 return null;
@@ -58,7 +59,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         }
     }
 
-    private async Task<bool> ExtractXmlData(IGraph graph, INode id, string xml, CancellationToken cancellationToken)
+    private async Task<bool> ExtractXmlData(IGraph graph, IGraph existing, INode id, string xml, CancellationToken cancellationToken)
     {
         var rdf = BaseIngest.GetRdf(xml);
         if (rdf is null)
@@ -72,18 +73,28 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         BaseIngest.AssertLiteral(graph, id, rdf, note, Vocabulary.VariationNote);
         BaseIngest.AssertLiteral(graph, id, rdf, formerReferenceDepartment, Vocabulary.VariationPastName);
         BaseIngest.AssertLiteral(graph, id, rdf, physicalCondition, Vocabulary.VariationPhysicalConditionDescription);
+        BaseIngest.AssertLiteral(graph, id, rdf, googleId, Vocabulary.VariationReferenceGoogleId);
+        BaseIngest.AssertLiteral(graph, id, rdf, googleParentId, Vocabulary.VariationReferenceParentGoogleId);
+
+        var datedNote = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.VariationHasDatedNote).SingleOrDefault()?.Object ?? BaseIngest.NewId;
+        if (datedNote is not null)
+        {
+            var noteDate = existing.GetTriplesWithSubjectPredicate(datedNote, Vocabulary.DatedNoteHasDate).SingleOrDefault()?.Object ?? BaseIngest.NewId;
+            AddDatedNote(graph, rdf, id, datedNote, noteDate);
+        }
 
         var redacted = rdf.GetTriplesWithPredicate(hasRedactedFile).Select(t => t.Object).Cast<ILiteralNode>();
         foreach (var redactedFile in redacted)
         {
             var partialPath = GetPartialPath(HttpUtility.UrlDecode(redactedFile.Value));
             var redactedVariation = await cacheClient.CacheFetch(CacheEntityKind.VariationByPartialPathAndAsset, [partialPath, options.Value.Code], cancellationToken);
-            if (redactedVariation is not null) //TODO: handle null
+            if (redactedVariation is not null)
             {
                 graph.Assert(id, Vocabulary.VariationHasRedactedVariation, redactedVariation);
             }
             else
             {
+                logger.RedactedVariationMissing(options.Value.Code, partialPath);
             }
         }
 
@@ -92,16 +103,62 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         {
             var partialPath = GetPartialPath(HttpUtility.UrlDecode(alternativeFile.Value));
             var alternativeVariation = await cacheClient.CacheFetch(CacheEntityKind.VariationByPartialPathAndAsset, [partialPath, options.Value.Code], cancellationToken);
-            if (alternativeVariation is not null) //TODO: handle null
+            if (alternativeVariation is not null)
             {
                 graph.Assert(id, Vocabulary.VariationHasAlternativeVariation, alternativeVariation);
             }
             else
             {
+                logger.AlternativeVariationMissing(options.Value.Code, partialPath);
             }
         }
 
         return true;
+    }
+
+    private static void AddDatedNote(IGraph graph, IGraph rdf, INode id, INode datedNode, INode noteDate)
+    {
+        var foundNote = rdf.GetTriplesWithPredicate(archivistNote).FirstOrDefault()?.Object;
+        if (foundNote is not null)
+        {
+            graph.Assert(id, Vocabulary.VariationHasDatedNote, datedNode);
+            var info = rdf.GetTriplesWithSubjectPredicate(foundNote, archivistNoteInfo).FirstOrDefault()?.Object as ILiteralNode;
+            if (info is not null && !string.IsNullOrWhiteSpace(info.Value))
+            {
+                graph.Assert(datedNode, Vocabulary.ArchivistNote, new LiteralNode(info.Value));
+                var date = rdf.GetTriplesWithSubjectPredicate(foundNote, archivistNoteDate).FirstOrDefault()?.Object as ILiteralNode;
+                if (date is not null)
+                {
+                    graph.Assert(datedNode, Vocabulary.DatedNoteHasDate, noteDate);
+                    if (TryParseDate(date.Value, out var dt))
+                    {
+                        graph.Assert(noteDate, Vocabulary.Year, new LiteralNode(dt.Year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
+                        graph.Assert(noteDate, Vocabulary.Month, new LiteralNode(dt.Month.ToString(), new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
+                        graph.Assert(noteDate, Vocabulary.Day, new LiteralNode(dt.Day.ToString(), new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
+                    }
+                    else
+                    {
+                        throw new ArgumentException(date.Value);
+                    }
+                }
+            }
+        }
+    }
+
+    private static bool TryParseDate(string date, out DateTimeOffset dt)
+    {
+        if (DateTimeOffset.TryParse(date, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt1))
+        {
+            dt = dt1;
+            return true;
+        }
+        if (DateTimeOffset.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt2))
+        {
+            dt = dt2;
+            return true;
+        }
+        dt = default;
+        return false;
     }
 
     private static string GetPartialPath(string path) => path.Substring(path.IndexOf("/content/") + 8);
@@ -111,4 +168,9 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
     private static readonly IUriNode hasPresentationManifestationFile = new UriNode(new($"{BaseIngest.TnaNamespace}hasPresentationManifestationFile"));
     private static readonly IUriNode formerReferenceDepartment = new UriNode(new($"{BaseIngest.TnaNamespace}formerReferenceDepartment"));
     private static readonly IUriNode physicalCondition = new UriNode(new($"{BaseIngest.TnaNamespace}physicalCondition"));
+    private static readonly IUriNode googleId = new UriNode(new($"{BaseIngest.TnaNamespace}googleId"));
+    private static readonly IUriNode googleParentId = new UriNode(new($"{BaseIngest.TnaNamespace}googleParentId"));
+    private static readonly IUriNode archivistNote = new UriNode(new($"{BaseIngest.TnaNamespace}archivistNote"));
+    private static readonly IUriNode archivistNoteInfo = new UriNode(new($"{BaseIngest.TnaNamespace}archivistNoteInfo"));
+    private static readonly IUriNode archivistNoteDate = new UriNode(new($"{BaseIngest.TnaNamespace}archivistNoteDate"));
 }

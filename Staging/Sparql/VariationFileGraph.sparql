@@ -7,7 +7,16 @@ construct {
         ex:variationNote ?variationNote;
         ex:variationRelativeLocation ?variationRelativeLocation;
         ex:variationPhysicalConditionDescription ?variationPhysicalConditionDescription;
-        ex:variationHasRedactedVariation ?variationHasRedactedVariation.
+        ex:variationReferenceGoogleId ?variationReferenceGoogleId;
+        ex:variationReferenceParentGoogleId ?variationReferenceParentGoogleId;
+        ex:variationHasRedactedVariation ?variationHasRedactedVariation;
+        ex:variationHasAlternativeVariation ?variationHasAlternativeVariation;
+        ex:variationHasDatedNote ?datedNote.
+    ?datedNote ex:archivistNote ?archivistNote;
+        ex:datedNoteHasDate ?date.
+    ?date ex:year ?year;
+          ex:month ?month;
+          ex:day ?day.
 } where {
     bind(@id as ?variationDriId)
     ?variation ex:variationDriId ?variationDriId.
@@ -16,5 +25,18 @@ construct {
     optional { ?variation ex:variationNote ?variationNote }
     optional { ?variation ex:variationRelativeLocation ?variationRelativeLocation }
     optional { ?variation ex:variationPhysicalConditionDescription ?variationPhysicalConditionDescription }
+    optional { ?variation ex:variationReferenceGoogleId ?variationReferenceGoogleId }
+    optional { ?variation ex:variationReferenceParentGoogleId ?variationReferenceParentGoogleId }
     optional { ?variation ex:variationHasRedactedVariation ?variationHasRedactedVariation }
+    optional { ?variation ex:variationHasAlternativeVariation ?variationHasAlternativeVariation }
+    optional {
+        ?variation ex:variationHasDatedNote ?datedNote.
+        optional { ?datedNote ex:archivistNote ?archivistNote }
+        optional {
+            ?datedNote ex:datedNoteHasDate ?date.
+            optional { ?date ex:year ?year }
+            optional { ?date ex:month ?month }
+            optional { ?date ex:day ?day }
+        }
+    }
 }

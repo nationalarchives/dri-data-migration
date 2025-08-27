@@ -191,6 +191,21 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Court case".
 
+:Date a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Date";
+	rdfs:comment "Allows to describe start point in time.".
+
+:DateSpan a owl:Class;
+	rdfs:subClassOf :Date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Date span";
+	rdfs:comment "Adds duration to :Date.".
+
+:DatedNote a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Dated note".
+
 
 # Object properties
 
@@ -296,6 +311,12 @@ this:schema a owl:Ontology;
 	rdfs:range :UKGovernmentWebArchive;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has UK government web archive".
+
+:assetHasOriginDateSpan a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:domain :Asset;
+	rdfs:range :DateSpan;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has origin date span".
 
 :assetHasVariation a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	rdfs:seeAlso rico:hasOrHadInstantiation;
@@ -441,7 +462,7 @@ this:schema a owl:Ontology;
 	rdfs:domain :Variation;
 	rdfs:range :SensitivityReview;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Variation has Sensitivity review".
+	rdfs:label "Variation has sensitivity review".
 
 :sensitivityReviewHasVariation a owl:ObjectProperty, owl:FunctionalProperty;
 	owl:inverseOf :variationHasSensitivityReview;
@@ -449,6 +470,12 @@ this:schema a owl:Ontology;
 	rdfs:range :Variation;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Sensitivity review has variation".
+
+:variationHasDatedNote a owl:ObjectProperty;
+	rdfs:domain :Variation;
+	rdfs:range :DatedNote;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation has dated note".
 
 :sensitivityReviewHasSubset a owl:ObjectProperty, owl:FunctionalProperty;
 	rdfs:domain :SensitivityReview;
@@ -506,6 +533,13 @@ this:schema a owl:Ontology;
 	rdfs:range :Retention;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Retention restriction has retention".
+
+:datedNoteHasDate a owl:ObjectProperty;
+	rdfs:domain :DatedNote;
+	rdfs:range :Date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Dated note has date".
+
 
 
 ## Data type properties
@@ -700,6 +734,7 @@ this:schema a owl:Ontology;
 	rdfs:label "Variation DRI XML".
 
 :variationNote a owl:DatatypeProperty;
+	rdfs:seeAlso rico:note;
 	rdfs:domain :Variation;
 	rdfs:range xsd:string;
 	rdfs:subPropertyOf rdfs:comment;
@@ -718,6 +753,20 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation physical condition description".
+
+:variationReferenceGoogleId a owl:DatatypeProperty;
+	rdfs:domain :Variation;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation reference Google Id".
+
+:variationReferenceParentGoogleId a owl:DatatypeProperty;
+	rdfs:domain :Variation;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation reference parent Google Id".
 
 :sensitivityReviewDate a owl:DatatypeProperty;
 	rdfs:domain :SensitivityReview;
@@ -897,3 +946,34 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Inquiry witness appearance description".
+
+:archivistNote a owl:DatatypeProperty;
+	rdfs:seeAlso rico:note;
+	rdfs:domain :DatedNote;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Archivist note".
+
+:year a owl:DatatypeProperty;
+	rdfs:domain :Date;
+	rdfs:range xsd:gYear;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Year".
+
+:month a owl:DatatypeProperty;
+	rdfs:domain :Date;
+	rdfs:range xsd:gMonth;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Year".
+
+:day a owl:DatatypeProperty;
+	rdfs:domain :Date;
+	rdfs:range xsd:gDay;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Day".
+
+:duration a owl:DatatypeProperty;
+	rdfs:domain :DateSpan;
+	rdfs:range xsd:duration;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Duration".

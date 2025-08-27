@@ -41,6 +41,7 @@ public static class Vocabulary
     public static readonly IUriNode AssetHasLegalStatus = new UriNode(new(Namespace, "assetHasLegalStatus"));
     public static readonly IUriNode AssetHasCopyright = new UriNode(new(Namespace, "assetHasCopyright"));
     public static readonly IUriNode AssetHasCreation = new UriNode(new(Namespace, "assetHasCreation"));
+    public static readonly IUriNode AssetHasOriginDateSpan = new UriNode(new(Namespace, "assetHasOriginDateSpan"));
     public static readonly IUriNode AssetHasUkGovernmentWebArchive = new UriNode(new(Namespace, "assetHasUkGovernmentWebArchive"));
     public static readonly IUriNode CourtAssetHasCourtCase = new UriNode(new(Namespace, "courtAssetHasCourtCase"));
     public static readonly IUriNode InquiryAssetHasInquiryAppearance = new UriNode(new(Namespace, "inquiryAssetHasInquiryAppearance"));
@@ -59,6 +60,7 @@ public static class Vocabulary
     public static readonly IUriNode VariationHasRedactedVariation = new UriNode(new(Namespace, "variationHasRedactedVariation"));
     public static readonly IUriNode VariationHasAlternativeVariation = new UriNode(new(Namespace, "variationHasAlternativeVariation"));
     public static readonly IUriNode VariationHasSensitivityReview = new UriNode(new(Namespace, "variationHasSensitivityReview"));
+    public static readonly IUriNode VariationHasDatedNote = new UriNode(new(Namespace, "variationHasDatedNote"));
 
     public static readonly IUriNode CustodianshipStartAt = new UriNode(new(Namespace, "custodianshipStartAt"));
     public static readonly IUriNode ImportLocation = new UriNode(new(Namespace, "importLocation"));
@@ -121,4 +123,13 @@ public static class Vocabulary
 
     public static readonly IUriNode InquiryWitnessName = new UriNode(new(Namespace, "inquiryWitnessName"));
     public static readonly IUriNode InquiryWitnessAppearanceDescription = new UriNode(new(Namespace, "inquiryWitnessAppearanceDescription"));
+    
+    public static readonly IUriNode DatedNoteHasDate = new UriNode(new(Namespace, "datedNoteHasDate"));
+    public static readonly IUriNode ArchivistNote = new UriNode(new(Namespace, "archivistNote"));
+
+    public static readonly IUriNode Year = new UriNode(new(Namespace, "year"));
+    public static readonly IUriNode Month = new UriNode(new(Namespace, "month"));
+    public static readonly IUriNode Day = new UriNode(new(Namespace, "day"));
+
+    public static readonly IUriNode Duration = new UriNode(new(Namespace, "duration"));
 }
