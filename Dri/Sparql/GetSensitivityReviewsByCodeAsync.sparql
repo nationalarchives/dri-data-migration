@@ -64,6 +64,19 @@ where {
             optional { ?closure dri:rINumber ?rINumber }
             optional { ?closure dri:rISignedDate ?rISignedDate }
     		optional { ?closure dri:retentionJustification ?retentionJustification }
+            filter exists {
+                {
+                    ?record dri:titleAlternative ?titleAlternative
+                }
+                union
+                {
+                    ?record dri:alternative ?descriptionAlternative
+                }
+                union
+                {
+                    ?record a dri:File.
+                }
+            }
         }
         group by ?closure ?type ?record ?reference ?exemptionAsserted ?titleAlternative ?descriptionAlternative
 	        ?previous ?reviewDate ?startDate ?closurePeriod ?reasonForChange ?rINumber ?rISignedDate

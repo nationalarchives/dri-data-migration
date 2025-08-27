@@ -137,13 +137,7 @@ public class RdfExporter : IDriRdfExporter
 
         return graph.GetTriplesWithPredicate(Vocabulary.SensitivityReviewDriId)
             .Select(t => t.Subject as IUriNode)
-            .Select(s => SensitivityReviewBySubject(graph, s!))
-            .Where(s => s.TargetType.Fragment switch
-                {
-                    "#File" => true,
-                    "#DeliverableUnit" => !string.IsNullOrWhiteSpace(s.SensitiveName) || !string.IsNullOrWhiteSpace(s.SensitiveDescription),
-                    _ => true
-                });
+            .Select(s => SensitivityReviewBySubject(graph, s!));
     }
 
     private static DriSensitivityReview SensitivityReviewBySubject(IGraph graph, IUriNode subject)
