@@ -47,6 +47,11 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Film asset".
 
+:PhotoAsset a owl:Class;
+	rdfs:subClassOf :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Photo asset".
+
 :InquiryAppearance a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Inquiry appearance".
@@ -734,6 +739,12 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:duration;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Film duration".
+
+:photographerDescription a owl:DatatypeProperty;
+	rdfs:domain :PhotoAsset;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Photographer description".
 
 :formalBodyName a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :FormalBody;

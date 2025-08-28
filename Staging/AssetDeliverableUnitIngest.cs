@@ -84,6 +84,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         BaseIngest.AssertLiteral(graph, id, rdf, internalDepartment, Vocabulary.AssetSourceInternalName);
         BaseIngest.AssertLiteral(graph, id, rdf, filmMaker, Vocabulary.FilmProductionCompanyName);
         BaseIngest.AssertLiteral(graph, id, rdf, filmName, Vocabulary.FilmTitle);
+        BaseIngest.AssertLiteral(graph, id, rdf, photographer, Vocabulary.PhotographerDescription);
 
         AddFilmDuration(graph, rdf, id);
         AddWebArchive(graph, rdf, id);
@@ -290,6 +291,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     private static readonly IUriNode durationMins = new UriNode(new($"{BaseIngest.TnaNamespace}durationMins"));
     private static readonly IUriNode filmMaker = new UriNode(new($"{BaseIngest.TnaNamespace}filmMaker"));
     private static readonly IUriNode filmName = new UriNode(new($"{BaseIngest.TnaNamespace}filmName"));
+    private static readonly IUriNode photographer = new UriNode(new($"{BaseIngest.TnaNamespace}photographer"));
 
     private static readonly IUriNode description = new UriNode(new(dctermsNamespace, "description"));
     private static readonly IUriNode creator = new UriNode(new(dctermsNamespace, "creator"));

@@ -16,6 +16,7 @@ construct {
         ex:filmProductionCompanyName ?filmProductionCompanyName;
         ex:filmTitle ?filmTitle;
         ex:filmDuration ?filmDuration;
+        ex:photographerDescription ?photographerDescription;
         ex:evidenceProviderName ?evidenceProviderName;
         ex:investigationName ?investigationName;
         ex:courtSessionDescription ?courtSessionDescription;
@@ -64,6 +65,7 @@ construct {
     optional { ?asset ex:filmProductionCompanyName ?filmProductionCompanyName }
     optional { ?asset ex:filmTitle ?filmTitle }
     optional { ?asset ex:filmDuration ?filmDuration }
+    optional { ?asset ex:photographerDescription ?photographerDescription }
     optional { ?asset ex:evidenceProviderName ?evidenceProviderName }
     optional { ?asset ex:investigationName ?investigationName }
     optional { ?asset ex:courtSessionDescription ?courtSessionDescription }

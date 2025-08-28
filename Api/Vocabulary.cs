@@ -40,6 +40,7 @@ public static class Vocabulary
     public static readonly IUriNode FilmProductionCompanyName = new UriNode(new(Namespace, "filmProductionCompanyName"));
     public static readonly IUriNode FilmTitle = new UriNode(new(Namespace, "filmTitle"));
     public static readonly IUriNode FilmDuration = new UriNode(new(Namespace, "filmDuration"));
+    public static readonly IUriNode PhotographerDescription = new UriNode(new(Namespace, "photographerDescription"));
     public static readonly IUriNode AssetHasSubset = new UriNode(new(Namespace, "assetHasSubset"));
     public static readonly IUriNode AssetHasVariation = new UriNode(new(Namespace, "assetHasVariation"));
     public static readonly IUriNode AssetHasRetention = new UriNode(new(Namespace, "assetHasRetention"));
