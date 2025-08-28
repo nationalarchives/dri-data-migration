@@ -28,12 +28,18 @@ public static class Vocabulary
     public static readonly IUriNode AssetRelationDescription = new UriNode(new(Namespace, "assetRelationDescription"));
     public static readonly IUriNode AssetPhysicalDescription = new UriNode(new(Namespace, "assetPhysicalDescription"));
     public static readonly IUriNode AssetUsageRestrictionDescription = new UriNode(new(Namespace, "assetUsageRestrictionDescription"));
+    public static readonly IUriNode AssetTag = new UriNode(new(Namespace, "assetTag"));
+    public static readonly IUriNode AssetSummary = new UriNode(new(Namespace, "assetSummary"));
+    public static readonly IUriNode AssetSourceInternalName = new UriNode(new(Namespace, "assetSourceInternalName"));
     public static readonly IUriNode EvidenceProviderName = new UriNode(new(Namespace, "evidenceProviderName"));
     public static readonly IUriNode InvestigationName = new UriNode(new(Namespace, "investigationName"));
     public static readonly IUriNode CourtSessionDescription = new UriNode(new(Namespace, "courtSessionDescription"));
     public static readonly IUriNode CourtSessionDate = new UriNode(new(Namespace, "courtSessionDate"));
     public static readonly IUriNode InquirySessionDescription = new UriNode(new(Namespace, "inquirySessionDescription"));
     public static readonly IUriNode InquiryHearingDate = new UriNode(new(Namespace, "inquiryHearingDate"));
+    public static readonly IUriNode FilmProductionCompanyName = new UriNode(new(Namespace, "filmProductionCompanyName"));
+    public static readonly IUriNode FilmTitle = new UriNode(new(Namespace, "filmTitle"));
+    public static readonly IUriNode FilmDuration = new UriNode(new(Namespace, "filmDuration"));
     public static readonly IUriNode AssetHasSubset = new UriNode(new(Namespace, "assetHasSubset"));
     public static readonly IUriNode AssetHasVariation = new UriNode(new(Namespace, "assetHasVariation"));
     public static readonly IUriNode AssetHasRetention = new UriNode(new(Namespace, "assetHasRetention"));
@@ -42,7 +48,8 @@ public static class Vocabulary
     public static readonly IUriNode AssetHasLegalStatus = new UriNode(new(Namespace, "assetHasLegalStatus"));
     public static readonly IUriNode AssetHasCopyright = new UriNode(new(Namespace, "assetHasCopyright"));
     public static readonly IUriNode AssetHasCreation = new UriNode(new(Namespace, "assetHasCreation"));
-    public static readonly IUriNode AssetHasOriginDateSpan = new UriNode(new(Namespace, "assetHasOriginDateSpan"));
+    public static readonly IUriNode AssetHasOriginDateStart = new UriNode(new(Namespace, "assetHasOriginDateStart"));
+    public static readonly IUriNode AssetHasOriginDateEnd = new UriNode(new(Namespace, "assetHasOriginDateEnd"));
     public static readonly IUriNode AssetHasUkGovernmentWebArchive = new UriNode(new(Namespace, "assetHasUkGovernmentWebArchive"));
     public static readonly IUriNode CourtAssetHasCourtCase = new UriNode(new(Namespace, "courtAssetHasCourtCase"));
     public static readonly IUriNode InquiryAssetHasInquiryAppearance = new UriNode(new(Namespace, "inquiryAssetHasInquiryAppearance"));
@@ -131,6 +138,4 @@ public static class Vocabulary
     public static readonly IUriNode Year = new UriNode(new(Namespace, "year"));
     public static readonly IUriNode Month = new UriNode(new(Namespace, "month"));
     public static readonly IUriNode Day = new UriNode(new(Namespace, "day"));
-
-    public static readonly IUriNode Duration = new UriNode(new(Namespace, "duration"));
 }
