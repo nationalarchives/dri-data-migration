@@ -83,19 +83,9 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
     private async Task<bool> AddSensitivityReview(IGraph graph, INode id, DriSensitivityReview dri, CancellationToken cancellationToken)
     {
         graph.Assert(id, Vocabulary.SensitivityReviewDriId, new LiteralNode(dri.Id));
-        if (dri.Date.HasValue)
-        {
-            graph.Assert(id, Vocabulary.SensitivityReviewDate, new DateNode(dri.Date.Value));
-        }
-        if (!string.IsNullOrEmpty(dri.SensitiveName))
-        {
-            graph.Assert(id, Vocabulary.SensitivityReviewSensitiveName, new LiteralNode(dri.SensitiveName));
-        }
-        if (!string.IsNullOrEmpty(dri.SensitiveDescription))
-        {
-            graph.Assert(id, Vocabulary.SensitivityReviewSensitiveDescription, new LiteralNode(dri.SensitiveDescription));
-        }
-
+        BaseIngest.AssertDate(graph, id, dri.Date, Vocabulary.SensitivityReviewDate);
+        BaseIngest.AssertLiteral(graph, id, dri.SensitiveName, Vocabulary.SensitivityReviewSensitiveName);
+        BaseIngest.AssertLiteral(graph, id, dri.SensitiveDescription, Vocabulary.SensitivityReviewSensitiveDescription);
         if (dri.AccessCondition is not null)
         {
             var acCode = BaseIngest.GetUriFragment(dri.AccessCondition);
@@ -124,14 +114,8 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
     {
         var existing = graph.Triples.Count;
 
-        if (dri.ReviewDate.HasValue)
-        {
-            graph.Assert(restriction, Vocabulary.SensitivityReviewRestrictionReviewDate, new DateNode(dri.ReviewDate.Value));
-        }
-        if (dri.RestrictionStartDate.HasValue)
-        {
-            graph.Assert(restriction, Vocabulary.SensitivityReviewRestrictionCalculationStartDate, new DateNode(dri.RestrictionStartDate.Value));
-        }
+        BaseIngest.AssertDate(graph, restriction, dri.ReviewDate, Vocabulary.SensitivityReviewRestrictionReviewDate);
+        BaseIngest.AssertDate(graph, restriction, dri.RestrictionStartDate, Vocabulary.SensitivityReviewRestrictionCalculationStartDate);
         if (dri.RestrictionDuration.HasValue)
         {
             var yearType = new string[] { "D", "U" };
@@ -144,10 +128,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
                 graph.Assert(restriction, Vocabulary.SensitivityReviewRestrictionDuration, new LiteralNode($"P{dri.RestrictionDuration.Value}Y", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDuration)));
             }
         }
-        if (!string.IsNullOrEmpty(dri.RestrictionDescription))
-        {
-            graph.Assert(restriction, Vocabulary.SensitivityReviewRestrictionDescription, new LiteralNode(dri.RestrictionDescription));
-        }
+        BaseIngest.AssertLiteral(graph, restriction, dri.RestrictionDescription, Vocabulary.SensitivityReviewRestrictionDescription);
         foreach (var legislation in dri.Legislations)
         {
             if (!legislations!.TryGetValue(legislation.ToString(), out var legislationNode))
@@ -209,14 +190,8 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         {
             graph.Assert(retentionRestriction, Vocabulary.RetentionInstrumentNumber, new LongNode(dri.InstrumentNumber.Value));
         }
-        if (dri.InstrumentSignedDate.HasValue)
-        {
-            graph.Assert(retentionRestriction, Vocabulary.RetentionInstrumentSignatureDate, new DateNode(dri.InstrumentSignedDate.Value));
-        }
-        if (dri.RestrictionReviewDate.HasValue)
-        {
-            graph.Assert(retentionRestriction, Vocabulary.RetentionRestrictionReviewDate, new DateNode(dri.RestrictionReviewDate.Value));
-        }
+        BaseIngest.AssertDate(graph, retentionRestriction, dri.InstrumentSignedDate, Vocabulary.RetentionInstrumentSignatureDate);
+        BaseIngest.AssertDate(graph, retentionRestriction, dri.RestrictionReviewDate, Vocabulary.RetentionRestrictionReviewDate);
         if (dri.GroundForRetention is not null)
         {
             var gCode = BaseIngest.GetUriFragment(dri.GroundForRetention);

@@ -18,10 +18,7 @@ public class LegislationIngest(ISparqlClient sparqlClient, ILogger<LegislationIn
 
         var graph = new Graph();
         graph.Assert(id, Vocabulary.LegislationHasUkLegislation, legislation);
-        if (!string.IsNullOrEmpty(dri.Section))
-        {
-            graph.Assert(id, Vocabulary.LegislationSectionReference, new LiteralNode(dri.Section));
-        }
+        BaseIngest.AssertLiteral(graph, id, dri.Section, Vocabulary.LegislationSectionReference);
         logger.RecordBuilt(dri.Id);
 
         return Task.FromResult((Graph?)graph);

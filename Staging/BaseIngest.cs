@@ -21,6 +21,14 @@ public static class BaseIngest
 
     public static string? GetUriFragment(Uri? uri) => uri?.Fragment.Length > 1 ? uri.Fragment.TrimStart('#') : null;
 
+    public static void AssertLiteral(IGraph graph, INode id, string? value, IUriNode immediatePredicate)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            graph.Assert(id, immediatePredicate, new LiteralNode(value));
+        }
+    }
+
     public static void AssertLiteral(IGraph graph, INode id, IGraph rdf,
         IUriNode findPredicate, IUriNode immediatePredicate)
     {
@@ -28,6 +36,14 @@ public static class BaseIngest
         if (found is ILiteralNode foundNode && !string.IsNullOrWhiteSpace(foundNode.Value))
         {
             graph.Assert(id, immediatePredicate, new LiteralNode(foundNode.Value));
+        }
+    }
+
+    public static void AssertDate(IGraph graph, INode id, DateTimeOffset? value, IUriNode immediatePredicate)
+    {
+        if (value.HasValue)
+        {
+            graph.Assert(id, immediatePredicate, new DateNode(value.Value));
         }
     }
 
