@@ -42,6 +42,11 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Court asset".
 
+:FilmAsset a owl:Class;
+	rdfs:subClassOf :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Film asset".
+
 :InquiryAppearance a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Inquiry appearance".
@@ -196,12 +201,6 @@ this:schema a owl:Ontology;
 	rdfs:label "Date";
 	rdfs:comment "Allows to describe start point in time.".
 
-:DateSpan a owl:Class;
-	rdfs:subClassOf :Date;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Date span";
-	rdfs:comment "Adds duration to :Date.".
-
 :DatedNote a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Dated note".
@@ -312,11 +311,17 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has UK government web archive".
 
-:assetHasOriginDateSpan a owl:ObjectProperty, owl:FunctionalProperty;
+:assetHasOriginDateStart a owl:ObjectProperty, owl:FunctionalProperty;
 	rdfs:domain :Asset;
-	rdfs:range :DateSpan;
+	rdfs:range :Date;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset has origin date span".
+	rdfs:label "Asset has origin date start".
+
+:assetHasOriginDateEnd a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:domain :Asset;
+	rdfs:range :Date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has origin date end".
 
 :assetHasVariation a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	rdfs:seeAlso rico:hasOrHadInstantiation;
@@ -573,6 +578,7 @@ this:schema a owl:Ontology;
 	rdfs:comment "Unique reference of the :Subset. It is a catalogue reference.".
 
 :assetName a owl:DatatypeProperty;
+	rdfs:seeAlso rico:title;
 	rdfs:domain :Asset;
 	rdfs:range xsd:string;
 	rdfs:subPropertyOf :name;
@@ -598,6 +604,13 @@ this:schema a owl:Ontology;
 	rdfs:subPropertyOf :externalIdentifier;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset past reference".
+
+:assetTag a owl:DatatypeProperty;
+	rdfs:seeAlso rico:classification;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset tag".
 
 :assetDriId a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :Asset;
@@ -647,6 +660,22 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset usage restriction description".
 
+:assetSummary a owl:DatatypeProperty;
+	rdfs:seeAlso rico:generalDescription;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf rdfs:comment;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset summary".
+
+:assetSourceInternalName a owl:DatatypeProperty;
+	rdfs:seeAlso rico:recordResourceSourceOfInformation;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :name;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset source internal name".
+
 :evidenceProviderName a owl:DatatypeProperty;
 	rdfs:domain :InquiryAsset;
 	rdfs:range xsd:string;
@@ -687,6 +716,25 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Court session date".
 
+:filmProductionCompanyName a owl:DatatypeProperty;
+	rdfs:domain :FilmAsset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :name;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Film production company name".
+
+:filmTitle a owl:DatatypeProperty;
+	rdfs:domain :FilmAsset;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Film title".
+
+:filmDuration a owl:DatatypeProperty;
+	rdfs:domain :FilmAsset;
+	rdfs:range xsd:duration;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Film duration".
+
 :formalBodyName a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :FormalBody;
 	rdfs:range xsd:string;
@@ -720,6 +768,7 @@ this:schema a owl:Ontology;
 	rdfs:label "Variation DRI Id".
 
 :variationName a owl:DatatypeProperty;
+	rdfs:seeAlso rico:title;
 	rdfs:domain :Variation;
 	rdfs:range xsd:string;
 	rdfs:subPropertyOf :name;
@@ -978,9 +1027,3 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:gDay;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Day".
-
-:duration a owl:DatatypeProperty;
-	rdfs:domain :DateSpan;
-	rdfs:range xsd:duration;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Duration".

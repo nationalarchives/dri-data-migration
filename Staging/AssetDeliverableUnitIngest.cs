@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -49,7 +50,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     internal override void PostIngest()
     {
         Console.WriteLine("Distinct RDF predicates:");
-        foreach (var predicate in predicates)
+        foreach (var predicate in predicates.OrderBy(p => p))
         {
             Console.WriteLine(predicate);
         }
@@ -73,20 +74,22 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         BaseIngest.AssertLiteral(graph, id, rdf, relatedMaterial, Vocabulary.AssetRelationDescription);
         BaseIngest.AssertLiteral(graph, id, rdf, physicalDescription, Vocabulary.AssetPhysicalDescription);
         BaseIngest.AssertLiteral(graph, id, rdf, evidenceProvidedBy, Vocabulary.EvidenceProviderName);
-        BaseIngest.AssertLiteral(graph, id, rdf, investigation, Vocabulary.InvestigationName);
+        BaseIngest.AssertLiteral(graph, id, rdf, investigation, Vocabulary.InvestigationName); //TODO: check if can be turned into entities
         BaseIngest.AssertDate(graph, id, rdf, session_date, Vocabulary.CourtSessionDate);
         BaseIngest.AssertDate(graph, id, rdf, hearing_date, Vocabulary.InquiryHearingDate);
         BaseIngest.AssertLiteral(graph, id, rdf, restrictionOnUse, Vocabulary.AssetUsageRestrictionDescription);
         BaseIngest.AssertLiteral(graph, id, rdf, formerReferenceTNA, Vocabulary.AssetPastReference);
+        BaseIngest.AssertLiteral(graph, id, rdf, classification, Vocabulary.AssetTag);
+        BaseIngest.AssertLiteral(graph, id, rdf, summary, Vocabulary.AssetSummary);
+        BaseIngest.AssertLiteral(graph, id, rdf, internalDepartment, Vocabulary.AssetSourceInternalName);
+        BaseIngest.AssertLiteral(graph, id, rdf, filmMaker, Vocabulary.FilmProductionCompanyName);
+        BaseIngest.AssertLiteral(graph, id, rdf, filmName, Vocabulary.FilmTitle);
 
+        AddFilmDuration(graph, rdf, id);
         AddWebArchive(graph, rdf, id);
-
         await AddCourtCasesAsync(graph, rdf, id, assetReference, cancellationToken);
-
         await AddWitnessAsync(graph, rdf, id, cancellationToken);
-
-        var originDateSpan = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateSpan).SingleOrDefault()?.Object ?? BaseIngest.NewId;
-        AddOriginDateSpan(graph, rdf, id, originDateSpan);
+        AddOriginDates(graph, rdf, id, existing);
 
         await BaseIngest.AssertAsync(graph, id, rdf, language, CacheEntityKind.Language,
             Vocabulary.AssetHasLanguage, Vocabulary.LanguageName, cacheClient, cancellationToken);
@@ -126,6 +129,25 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         return true;
     }
 
+    private static void AddFilmDuration(IGraph graph, IGraph rdf, INode id)
+    {
+        var foundDuration = rdf.GetTriplesWithPredicate(durationMins).SingleOrDefault()?.Object;
+        if (foundDuration is ILiteralNode durationNode && !string.IsNullOrWhiteSpace(durationNode.Value))
+        {
+            if (TimeSpan.TryParse(durationNode.Value, CultureInfo.InvariantCulture, out var ts))
+            {
+                var hours = ts.Hours == 0 ? string.Empty : $"{ts.Hours}H";
+                var minutes = ts.Minutes == 0 ? string.Empty : $"{ts.Minutes}M";
+                var seconds = ts.Seconds == 0 ? string.Empty : $"{ts.Seconds}S";
+                graph.Assert(id, Vocabulary.FilmDuration, new LiteralNode($"PT{hours}{minutes}{seconds}", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDuration)));
+            }
+            else
+            {
+                throw new ArgumentException(durationNode.Value);
+            }
+        }
+    }
+
     private static void AddWebArchive(IGraph graph, IGraph rdf, INode id)
     {
         var foundWebArchive = rdf.GetTriplesWithPredicate(webArchiveUrl).SingleOrDefault()?.Object;
@@ -135,35 +157,36 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         }
     }
 
-    private static void AddOriginDateSpan(IGraph graph, IGraph rdf, INode id, INode originDateSpan)
+    private static void AddOriginDates(IGraph graph, IGraph rdf, INode id, IGraph existing)
     {
         var foundCoverage = rdf.GetTriplesWithPredicate(coverage).FirstOrDefault()?.Object;
         if (foundCoverage is not null)
         {
-            graph.Assert(id, Vocabulary.AssetHasOriginDateSpan, originDateSpan);
             var start = rdf.GetTriplesWithSubjectPredicate(foundCoverage, startDate).FirstOrDefault()?.Object as ILiteralNode;
-            var end = rdf.GetTriplesWithSubjectPredicate(foundCoverage, endDate).FirstOrDefault()?.Object as ILiteralNode;
             if (start is not null && !string.IsNullOrWhiteSpace(start.Value))
             {
+                var dateStart = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateStart).SingleOrDefault()?.Object ?? BaseIngest.NewId;
+                graph.Assert(id, Vocabulary.AssetHasOriginDateStart, dateStart); //TODO: could be overengineering
                 if (BaseIngest.TryParseDate(start.Value, out var dtStart))
                 {
-                    graph.Assert(originDateSpan, Vocabulary.Year, new LiteralNode(dtStart.Year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
-                    graph.Assert(originDateSpan, Vocabulary.Month, new LiteralNode(dtStart.Month.ToString(), new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
-                    graph.Assert(originDateSpan, Vocabulary.Day, new LiteralNode(dtStart.Day.ToString(), new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
+                    graph.Assert(dateStart, Vocabulary.Year, new LiteralNode(dtStart.Year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
+                    graph.Assert(dateStart, Vocabulary.Month, new LiteralNode($"--{dtStart.Month}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
+                    graph.Assert(dateStart, Vocabulary.Day, new LiteralNode($"---{dtStart.Day}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
                 }
                 else
                 {
                     throw new ArgumentException(start.Value);
                 }
+                var end = rdf.GetTriplesWithSubjectPredicate(foundCoverage, endDate).FirstOrDefault()?.Object as ILiteralNode;
                 if (end is not null && !string.IsNullOrWhiteSpace(end.Value))
                 {
+                    var dateEnd = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateEnd).SingleOrDefault()?.Object ?? BaseIngest.NewId;
+                    graph.Assert(id, Vocabulary.AssetHasOriginDateEnd, dateEnd); //TODO: could be overengineering
                     if (BaseIngest.TryParseDate(end.Value, out var dtEnd))
                     {
-                        var diff = dtEnd.AddDays(-dtStart.Day).AddMonths(-dtStart.Month);
-                        var year = diff.Year - dtStart.Year == 0 ? string.Empty : $"{diff.Year - dtStart.Year}Y";
-                        var month = diff.Month == 0 ? string.Empty : $"{diff.Month}M";
-                        var day = diff.Day == 0 ? string.Empty : $"{diff.Day}D";
-                        graph.Assert(originDateSpan, Vocabulary.Duration, new LiteralNode($"P{year}{month}{day}", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDuration)));
+                        graph.Assert(dateEnd, Vocabulary.Year, new LiteralNode(dtEnd.Year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
+                        graph.Assert(dateEnd, Vocabulary.Month, new LiteralNode($"--{dtEnd.Month}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
+                        graph.Assert(dateEnd, Vocabulary.Day, new LiteralNode($"---{dtEnd.Day}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
                     }
                     else
                     {
@@ -178,7 +201,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     {
         var found = false;
         var witnessIndex = 1;
-        var foundWitness = await FetchWitnessIdAsync(graph, rdf, id, witnessIndex, cancellationToken);
+        var foundWitness = await FetchWitnessIdAsync(graph, rdf, id, witnessIndex, cancellationToken); //TODO: check if names could be split on ',' and 'and' and turned into entities
         while (foundWitness is not null)
         {
             found = true;
@@ -261,6 +284,12 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     private static readonly IUriNode startDate = new UriNode(new($"{BaseIngest.TnaNamespace}startDate"));
     private static readonly IUriNode endDate = new UriNode(new($"{BaseIngest.TnaNamespace}endDate"));
     private static readonly IUriNode formerReferenceTNA = new UriNode(new($"{BaseIngest.TnaNamespace}formerReferenceTNA"));
+    private static readonly IUriNode classification = new UriNode(new($"{BaseIngest.TnaNamespace}classification"));
+    private static readonly IUriNode summary = new UriNode(new($"{BaseIngest.TnaNamespace}summary"));
+    private static readonly IUriNode internalDepartment = new UriNode(new($"{BaseIngest.TnaNamespace}internalDepartment"));
+    private static readonly IUriNode durationMins = new UriNode(new($"{BaseIngest.TnaNamespace}durationMins"));
+    private static readonly IUriNode filmMaker = new UriNode(new($"{BaseIngest.TnaNamespace}filmMaker"));
+    private static readonly IUriNode filmName = new UriNode(new($"{BaseIngest.TnaNamespace}filmName"));
 
     private static readonly IUriNode description = new UriNode(new(dctermsNamespace, "description"));
     private static readonly IUriNode creator = new UriNode(new(dctermsNamespace, "creator"));

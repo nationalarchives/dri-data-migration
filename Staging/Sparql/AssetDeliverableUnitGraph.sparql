@@ -10,6 +10,12 @@ construct {
         ex:assetRelationDescription ?assetRelationDescription;
         ex:assetPhysicalDescription ?assetPhysicalDescription;
         ex:assetUsageRestrictionDescription ?assetUsageRestrictionDescription;
+        ex:assetTag ?assetTag;
+        ex:assetSummary ?assetSummary;
+        ex:assetSourceInternalName ?assetSourceInternalName;
+        ex:filmProductionCompanyName ?filmProductionCompanyName;
+        ex:filmTitle ?filmTitle;
+        ex:filmDuration ?filmDuration;
         ex:evidenceProviderName ?evidenceProviderName;
         ex:investigationName ?investigationName;
         ex:courtSessionDescription ?courtSessionDescription;
@@ -22,15 +28,18 @@ construct {
         ex:assetHasCopyright ?copyright;
         ex:assetHasRetention ?retention;
         ex:assetHasCreation ?creation;
-        ex:assetHasOriginDateSpan ?originDateSpan;
+        ex:assetHasOriginDateStart ?originDateStart;
+        ex:assetHasOriginDateEnd ?originDateEnd;
         ex:courtAssetHasCourtCase ?courtCase;
         ex:inquiryAssetHasInquiryAppearance ?inquiryAppearance.
     ?retention ex:retentionHasFormalBody ?retentionHasFormalBody.
     ?creation ex:creationHasFormalBody ?creationHasFormalBody.
-    ?originDateSpan ex:year ?year;
+    ?originDateStart ex:year ?year;
         ex:month ?month;
-        ex:day ?day;
-        ex:duration ?duration.
+        ex:day ?day.
+    ?originDateEnd ex:year ?year;
+        ex:month ?month;
+        ex:day ?day.
     ?courtCase ex:courtCaseName ?courtCaseName;
         ex:courtCaseSummaryJudgment ?courtCaseSummaryJudgment;
         ex:courtCaseSummaryReasonsForJudgment ?courtCaseSummaryReasonsForJudgment;
@@ -49,6 +58,12 @@ construct {
     optional { ?asset ex:assetRelationDescription ?assetRelationDescription }
     optional { ?asset ex:assetPhysicalDescription ?assetPhysicalDescription }
     optional { ?asset ex:assetUsageRestrictionDescription ?assetUsageRestrictionDescription }
+    optional { ?asset ex:assetTag ?assetTag }
+    optional { ?asset ex:assetSummary ?assetSummary }
+    optional { ?asset ex:assetSourceInternalName ?assetSourceInternalName }
+    optional { ?asset ex:filmProductionCompanyName ?filmProductionCompanyName }
+    optional { ?asset ex:filmTitle ?filmTitle }
+    optional { ?asset ex:filmDuration ?filmDuration }
     optional { ?asset ex:evidenceProviderName ?evidenceProviderName }
     optional { ?asset ex:investigationName ?investigationName }
     optional { ?asset ex:courtSessionDescription ?courtSessionDescription }
@@ -68,11 +83,16 @@ construct {
         optional { ?creation ex:creationHasFormalBody ?creationHasFormalBody }
     }
     optional {
-        ?asset ex:assetHasOriginDateSpan ?originDateSpan.
-        optional { ?originDateSpan ex:year ?year }
-        optional { ?originDateSpan ex:month ?month }
-        optional { ?originDateSpan ex:day ?day }
-        optional { ?originDateSpan ex:duration ?duration }
+        ?asset ex:assetHasOriginDateStart ?originDateStart.
+        optional { ?originDateStart ex:year ?year }
+        optional { ?originDateStart ex:month ?month }
+        optional { ?originDateStart ex:day ?day }
+    }
+    optional {
+        ?asset ex:assetHasOriginDateEnd ?originDateEnd.
+        optional { ?originDateEnd ex:year ?year }
+        optional { ?originDateEnd ex:month ?month }
+        optional { ?originDateEnd ex:day ?day }
     }
     optional {
         ?asset ex:courtAssetHasCourtCase ?courtCase.
