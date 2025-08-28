@@ -117,6 +117,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
             {
                 "Public_Record(s)" or "Public_record" or "Public_Record" => Vocabulary.PublicRecord,
                 "Welsh_Public_Record(s)" => Vocabulary.WelshPublicRecord,
+                "Not_Public_Record(s)" => Vocabulary.NotPublicRecord,
                 _ => throw new ArgumentException(legalUri.Uri.ToString())
             };
             graph.Assert(id, Vocabulary.AssetHasLegalStatus, statusType);
