@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -78,6 +77,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         BaseIngest.AssertDate(graph, id, rdf, session_date, Vocabulary.CourtSessionDate);
         BaseIngest.AssertDate(graph, id, rdf, hearing_date, Vocabulary.InquiryHearingDate);
         BaseIngest.AssertLiteral(graph, id, rdf, restrictionOnUse, Vocabulary.AssetUsageRestrictionDescription);
+        BaseIngest.AssertLiteral(graph, id, rdf, formerReferenceTNA, Vocabulary.AssetPastReference);
 
         AddWebArchive(graph, rdf, id);
 
@@ -259,6 +259,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     private static readonly IUriNode webArchiveUrl = new UriNode(new($"{BaseIngest.TnaNamespace}webArchiveUrl"));
     private static readonly IUriNode startDate = new UriNode(new($"{BaseIngest.TnaNamespace}startDate"));
     private static readonly IUriNode endDate = new UriNode(new($"{BaseIngest.TnaNamespace}endDate"));
+    private static readonly IUriNode formerReferenceTNA = new UriNode(new($"{BaseIngest.TnaNamespace}formerReferenceTNA"));
 
     private static readonly IUriNode description = new UriNode(new(dctermsNamespace, "description"));
     private static readonly IUriNode creator = new UriNode(new(dctermsNamespace, "creator"));

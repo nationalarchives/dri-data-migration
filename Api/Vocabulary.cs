@@ -22,6 +22,7 @@ public static class Vocabulary
     public static readonly IUriNode ConsignmentTdrId = new UriNode(new(Namespace, "consignmentTdrId"));
     public static readonly IUriNode AssetDriXml = new UriNode(new(Namespace, "assetDriXml"));
     public static readonly IUriNode AssetReference = new UriNode(new(Namespace, "assetReference"));
+    public static readonly IUriNode AssetPastReference = new UriNode(new(Namespace, "assetPastReference"));
     public static readonly IUriNode AssetName = new UriNode(new(Namespace, "assetName"));
     public static readonly IUriNode AssetDescription = new UriNode(new(Namespace, "assetDescription"));
     public static readonly IUriNode AssetRelationDescription = new UriNode(new(Namespace, "assetRelationDescription"));
