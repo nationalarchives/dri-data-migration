@@ -75,8 +75,8 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         BaseIngest.AssertLiteral(graph, id, rdf, physicalDescription, Vocabulary.AssetPhysicalDescription);
         BaseIngest.AssertLiteral(graph, id, rdf, evidenceProvidedBy, Vocabulary.EvidenceProviderName);
         BaseIngest.AssertLiteral(graph, id, rdf, investigation, Vocabulary.InvestigationName);
-        BaseIngest.AssertDate(graph, id, rdf, session_date, "dd/MM/yyyy", Vocabulary.CourtSessionDate);
-        BaseIngest.AssertDate(graph, id, rdf, hearing_date, "dd/MM/yyyy", Vocabulary.InquiryHearingDate);
+        BaseIngest.AssertDate(graph, id, rdf, session_date, Vocabulary.CourtSessionDate);
+        BaseIngest.AssertDate(graph, id, rdf, hearing_date, Vocabulary.InquiryHearingDate);
         BaseIngest.AssertLiteral(graph, id, rdf, restrictionOnUse, Vocabulary.AssetUsageRestrictionDescription);
 
         AddWebArchive(graph, rdf, id);
@@ -218,8 +218,8 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
             BaseIngest.AssertLiteral(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_name_{caseIndex}")), Vocabulary.CourtCaseName);
             BaseIngest.AssertLiteral(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_summary_{caseIndex}_judgment")), Vocabulary.CourtCaseSummaryJudgment);
             BaseIngest.AssertLiteral(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_summary_{caseIndex}_reasons_for_judgment")), Vocabulary.CourtCaseSummaryReasonsForJudgment);
-            BaseIngest.AssertDate(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}hearing_start_date_{caseIndex}")), "dd/MM/yyyy", Vocabulary.CourtCaseHearingStartDate);
-            BaseIngest.AssertDate(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}hearing_end_date_{caseIndex}")), "dd/MM/yyyy", Vocabulary.CourtCaseHearingEndDate);
+            BaseIngest.AssertDate(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}hearing_start_date_{caseIndex}")), Vocabulary.CourtCaseHearingStartDate);
+            BaseIngest.AssertDate(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}hearing_end_date_{caseIndex}")), Vocabulary.CourtCaseHearingEndDate);
 
             caseIndex++;
             courtCase = await FetchCourtCaseIdAsync(graph, rdf, id, caseIndex, assetReference, cancellationToken);

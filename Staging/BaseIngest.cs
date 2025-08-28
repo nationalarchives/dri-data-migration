@@ -32,17 +32,17 @@ public static class BaseIngest
     }
 
     public static void AssertDate(IGraph graph, INode id, IGraph rdf,
-        IUriNode findPredicate, string format, IUriNode immediatePredicate)
+        IUriNode findPredicate, IUriNode immediatePredicate)
     {
         var found = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
         if (found is ILiteralNode foundNode && !string.IsNullOrWhiteSpace(foundNode.Value))
         {
-            if (DateTimeOffset.TryParseExact(foundNode.Value, format, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt))
+            if (TryParseDate(foundNode.Value, out var dt))
             {
                 graph.Assert(id, immediatePredicate, new DateNode(dt));
             }
             else
-            {//TODO: handle different format
+            {
                 throw new ArgumentException(foundNode.Value);
             }
         }
@@ -94,6 +94,11 @@ public static class BaseIngest
 
     public static bool TryParseDate(string date, out DateTimeOffset dt)
     {
+        if (string.IsNullOrWhiteSpace(date))
+        {
+            dt = default;
+            return false;
+        }
         if (DateTimeOffset.TryParse(date, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt1))
         {
             dt = dt1;
