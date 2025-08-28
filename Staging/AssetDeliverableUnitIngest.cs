@@ -134,7 +134,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         var foundDuration = rdf.GetTriplesWithPredicate(durationMins).SingleOrDefault()?.Object;
         if (foundDuration is ILiteralNode durationNode && !string.IsNullOrWhiteSpace(durationNode.Value))
         {
-            if (TimeSpan.TryParse(durationNode.Value, CultureInfo.InvariantCulture, out var ts))
+            if (TimeSpan.TryParseExact(durationNode.Value, "mm\\:ss", CultureInfo.InvariantCulture, out var ts))
             {
                 var hours = ts.Hours == 0 ? string.Empty : $"{ts.Hours}H";
                 var minutes = ts.Minutes == 0 ? string.Empty : $"{ts.Minutes}M";
