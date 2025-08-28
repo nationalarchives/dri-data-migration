@@ -52,7 +52,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
     internal override void PostIngest()
     {
         Console.WriteLine("Distinct RDF predicates:");
-        foreach (var predicate in predicates)
+        foreach (var predicate in predicates.OrderBy(p => p))
         {
             Console.WriteLine(predicate);
         }
@@ -79,7 +79,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         if (datedNote is not null)
         {
             var noteDate = existing.GetTriplesWithSubjectPredicate(datedNote, Vocabulary.DatedNoteHasDate).SingleOrDefault()?.Object ?? BaseIngest.NewId;
-            AddDatedNote(graph, rdf, id, datedNote, noteDate);
+            AddDatedNote(graph, rdf, id, datedNote, noteDate); //TODO: could be overengineering
         }
 
         var redacted = rdf.GetTriplesWithPredicate(hasRedactedFile).Select(t => t.Object).Cast<ILiteralNode>();
@@ -124,16 +124,20 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
             var info = rdf.GetTriplesWithSubjectPredicate(foundNote, archivistNoteInfo).FirstOrDefault()?.Object as ILiteralNode;
             if (info is not null && !string.IsNullOrWhiteSpace(info.Value))
             {
-                graph.Assert(datedNode, Vocabulary.ArchivistNote, new LiteralNode(info.Value));
+                graph.Assert(datedNode, Vocabulary.ArchivistNote, new LiteralNode(info.Value)); //TODO: review notes to check if can be better modelled
                 var date = rdf.GetTriplesWithSubjectPredicate(foundNote, archivistNoteDate).FirstOrDefault()?.Object as ILiteralNode;
-                if (date is not null)
+                if (date is not null && !string.IsNullOrWhiteSpace(date.Value))
                 {
                     graph.Assert(datedNode, Vocabulary.DatedNoteHasDate, noteDate);
                     if (BaseIngest.TryParseDate(date.Value, out var dt))
                     {
                         graph.Assert(noteDate, Vocabulary.Year, new LiteralNode(dt.Year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
-                        graph.Assert(noteDate, Vocabulary.Month, new LiteralNode(dt.Month.ToString(), new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
-                        graph.Assert(noteDate, Vocabulary.Day, new LiteralNode(dt.Day.ToString(), new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
+                        graph.Assert(noteDate, Vocabulary.Month, new LiteralNode($"--{dt.Month}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
+                        graph.Assert(noteDate, Vocabulary.Day, new LiteralNode($"---{dt.Day}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
+                    }
+                    else if (int.TryParse(date.Value, out var year))
+                    {
+                        graph.Assert(noteDate, Vocabulary.Year, new LiteralNode(year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
                     }
                     else
                     {
