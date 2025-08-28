@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -28,7 +27,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         var id = existing.GetTriplesWithPredicateObject(Vocabulary.VariationDriId, driId).FirstOrDefault()?.Subject;
         if (id is null)
         {
-            logger.VariationNotFound(dri.Id);
+            logger.VariationNotFound(dri.Name, dri.Location); //TODO: sensitive information?
             return null;
         }
 
