@@ -23,7 +23,7 @@ public static class BaseIngest
 
     public static void AssertLiteral(IGraph graph, INode id, string? value, IUriNode immediatePredicate)
     {
-        if (string.IsNullOrWhiteSpace(value))
+        if (!string.IsNullOrWhiteSpace(value))
         {
             graph.Assert(id, immediatePredicate, new LiteralNode(value));
         }
