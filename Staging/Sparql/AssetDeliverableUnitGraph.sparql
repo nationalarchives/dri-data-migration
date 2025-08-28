@@ -11,7 +11,6 @@ construct {
         ex:assetPhysicalDescription ?assetPhysicalDescription;
         ex:assetUsageRestrictionDescription ?assetUsageRestrictionDescription;
         ex:assetTag ?assetTag;
-        ex:assetSummary ?assetSummary;
         ex:assetSourceInternalName ?assetSourceInternalName;
         ex:filmProductionCompanyName ?filmProductionCompanyName;
         ex:filmTitle ?filmTitle;
@@ -60,7 +59,6 @@ construct {
     optional { ?asset ex:assetPhysicalDescription ?assetPhysicalDescription }
     optional { ?asset ex:assetUsageRestrictionDescription ?assetUsageRestrictionDescription }
     optional { ?asset ex:assetTag ?assetTag }
-    optional { ?asset ex:assetSummary ?assetSummary }
     optional { ?asset ex:assetSourceInternalName ?assetSourceInternalName }
     optional { ?asset ex:filmProductionCompanyName ?filmProductionCompanyName }
     optional { ?asset ex:filmTitle ?filmTitle }

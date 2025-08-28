@@ -591,8 +591,10 @@ this:schema a owl:Ontology;
 	rdfs:label "Asset name".
 
 :assetDescription a owl:DatatypeProperty;
+	rdfs:seeAlso rico:generalDescription;
 	rdfs:domain :Asset;
 	rdfs:range xsd:string;
+	rdfs:subPropertyOf rdfs:comment;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset description".
 
@@ -664,14 +666,6 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset usage restriction description".
-
-:assetSummary a owl:DatatypeProperty;
-	rdfs:seeAlso rico:generalDescription;
-	rdfs:domain :Asset;
-	rdfs:range xsd:string;
-	rdfs:subPropertyOf rdfs:comment;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset summary".
 
 :assetSourceInternalName a owl:DatatypeProperty;
 	rdfs:seeAlso rico:recordResourceSourceOfInformation;

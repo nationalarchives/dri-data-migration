@@ -71,6 +71,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         BaseIngest.AssertLiteral(graph, id, rdf, batchIdentifier, Vocabulary.BatchDriId);
         BaseIngest.AssertLiteral(graph, id, rdf, tdrConsignmentRef, Vocabulary.ConsignmentTdrId);
         BaseIngest.AssertLiteral(graph, id, rdf, description, Vocabulary.AssetDescription);
+        BaseIngest.AssertLiteral(graph, id, rdf, summary, Vocabulary.AssetDescription);
         BaseIngest.AssertLiteral(graph, id, rdf, relatedMaterial, Vocabulary.AssetRelationDescription);
         BaseIngest.AssertLiteral(graph, id, rdf, physicalDescription, Vocabulary.AssetPhysicalDescription);
         BaseIngest.AssertLiteral(graph, id, rdf, evidenceProvidedBy, Vocabulary.EvidenceProviderName);
@@ -80,7 +81,6 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         BaseIngest.AssertLiteral(graph, id, rdf, restrictionOnUse, Vocabulary.AssetUsageRestrictionDescription);
         BaseIngest.AssertLiteral(graph, id, rdf, formerReferenceTNA, Vocabulary.AssetPastReference);
         BaseIngest.AssertLiteral(graph, id, rdf, classification, Vocabulary.AssetTag);
-        BaseIngest.AssertLiteral(graph, id, rdf, summary, Vocabulary.AssetSummary);
         BaseIngest.AssertLiteral(graph, id, rdf, internalDepartment, Vocabulary.AssetSourceInternalName);
         BaseIngest.AssertLiteral(graph, id, rdf, filmMaker, Vocabulary.FilmProductionCompanyName);
         BaseIngest.AssertLiteral(graph, id, rdf, filmName, Vocabulary.FilmTitle);
