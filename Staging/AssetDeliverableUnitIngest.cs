@@ -170,12 +170,21 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     {
         void Assert(IUriNode predicate, INode dateId, string date)
         {
-            graph.Assert(id, predicate, dateId); //TODO: could be overengineering
+            graph.Assert(id, predicate, dateId);
             if (BaseIngest.TryParseDate(date, out var dt))
             {
                 graph.Assert(dateId, Vocabulary.Year, new LiteralNode(dt.Year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
                 graph.Assert(dateId, Vocabulary.Month, new LiteralNode($"--{dt.Month}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
                 graph.Assert(dateId, Vocabulary.Day, new LiteralNode($"---{dt.Day}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
+            }
+            else if (int.TryParse(date, out var year))
+            {
+                graph.Assert(dateId, Vocabulary.Year, new LiteralNode(year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
+            }
+            else if (date.IndexOf('[') == 0 && date.IndexOf(']') == date.Length - 1 &&
+                int.TryParse(date.Remove(date.Length - 1, 1).Remove(0, 1), out var year2))
+            {
+                graph.Assert(dateId, Vocabulary.Year, new LiteralNode(year2.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
             }
             else
             {

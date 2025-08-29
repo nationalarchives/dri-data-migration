@@ -87,7 +87,7 @@ public static class BaseIngest
         }
         var nodeId = await cacheClient.CacheFetchOrNew(cacheEntityKind, [name], foundPredicate, cancellationToken);
         graph.Assert(id, immediatePredicate, nodeId);
-        
+
         return nodeId;
     }
 
@@ -116,6 +116,7 @@ public static class BaseIngest
             dt = default;
             return false;
         }
+        date = date.Replace(" Sept ", " Sep ");
         if (DateTimeOffset.TryParse(date, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt1))
         {
             dt = dt1;
@@ -124,6 +125,16 @@ public static class BaseIngest
         if (DateTimeOffset.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt2))
         {
             dt = dt2;
+            return true;
+        }
+        if (DateTimeOffset.TryParseExact(date, "\\[yyyy MMM d\\]", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt3))
+        {
+            dt = dt3;
+            return true;
+        }
+        if (DateTimeOffset.TryParseExact(date, "\\[yyyy MMMM d\\]", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt4))
+        {
+            dt = dt4;
             return true;
         }
 
