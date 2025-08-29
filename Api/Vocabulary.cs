@@ -40,6 +40,9 @@ public static class Vocabulary
     public static readonly IUriNode FilmTitle = new UriNode(new(Namespace, "filmTitle"));
     public static readonly IUriNode FilmDuration = new UriNode(new(Namespace, "filmDuration"));
     public static readonly IUriNode PhotographerDescription = new UriNode(new(Namespace, "photographerDescription"));
+    public static readonly IUriNode ImageSequenceStart = new UriNode(new(Namespace, "imageSequenceStart"));
+    public static readonly IUriNode ImageSequenceEnd = new UriNode(new(Namespace, "imageSequenceEnd"));
+    public static readonly IUriNode PaperNumber = new UriNode(new(Namespace, "paperNumber"));
     public static readonly IUriNode AssetHasSubset = new UriNode(new(Namespace, "assetHasSubset"));
     public static readonly IUriNode AssetHasVariation = new UriNode(new(Namespace, "assetHasVariation"));
     public static readonly IUriNode AssetHasRetention = new UriNode(new(Namespace, "assetHasRetention"));
@@ -47,6 +50,7 @@ public static class Vocabulary
     public static readonly IUriNode AssetHasLanguage = new UriNode(new(Namespace, "assetHasLanguage"));
     public static readonly IUriNode AssetHasLegalStatus = new UriNode(new(Namespace, "assetHasLegalStatus"));
     public static readonly IUriNode AssetHasCopyright = new UriNode(new(Namespace, "assetHasCopyright"));
+    public static readonly IUriNode AssetHasAssociatedGeographicalPlace = new UriNode(new(Namespace, "assetHasAssociatedGeographicalPlace"));
     public static readonly IUriNode AssetHasCreation = new UriNode(new(Namespace, "assetHasCreation"));
     public static readonly IUriNode AssetHasOriginDateStart = new UriNode(new(Namespace, "assetHasOriginDateStart"));
     public static readonly IUriNode AssetHasOriginDateEnd = new UriNode(new(Namespace, "assetHasOriginDateEnd"));
@@ -65,10 +69,16 @@ public static class Vocabulary
     public static readonly IUriNode VariationPhysicalConditionDescription = new UriNode(new(Namespace, "variationPhysicalConditionDescription"));
     public static readonly IUriNode VariationReferenceGoogleId = new UriNode(new(Namespace, "variationReferenceGoogleId"));
     public static readonly IUriNode VariationReferenceParentGoogleId = new UriNode(new(Namespace, "variationReferenceParentGoogleId"));
+    public static readonly IUriNode ScannerOperatorIdentifier = new UriNode(new(Namespace, "scannerOperatorIdentifier"));
+    public static readonly IUriNode ScannerIdentifier = new UriNode(new(Namespace, "scannerIdentifier"));
     public static readonly IUriNode VariationHasRedactedVariation = new UriNode(new(Namespace, "variationHasRedactedVariation"));
     public static readonly IUriNode VariationHasAlternativeVariation = new UriNode(new(Namespace, "variationHasAlternativeVariation"));
     public static readonly IUriNode VariationHasSensitivityReview = new UriNode(new(Namespace, "variationHasSensitivityReview"));
     public static readonly IUriNode VariationHasDatedNote = new UriNode(new(Namespace, "variationHasDatedNote"));
+    public static readonly IUriNode ScannedVariationHasScannerGeographicalPlace = new UriNode(new(Namespace, "scannedVariationHasScannerGeographicalPlace"));
+    public static readonly IUriNode ScannedVariationHasImageSplit = new UriNode(new(Namespace, "scannedVariationHasImageSplit"));
+    public static readonly IUriNode ScannedVariationHasImageCrop = new UriNode(new(Namespace, "scannedVariationHasImageCrop"));
+    public static readonly IUriNode ScannedVariationHasImageDeskew = new UriNode(new(Namespace, "scannedVariationHasImageDeskew"));
 
     public static readonly IUriNode CustodianshipStartAt = new UriNode(new(Namespace, "custodianshipStartAt"));
     public static readonly IUriNode ImportLocation = new UriNode(new(Namespace, "importLocation"));
@@ -138,4 +148,12 @@ public static class Vocabulary
     public static readonly IUriNode Year = new UriNode(new(Namespace, "year"));
     public static readonly IUriNode Month = new UriNode(new(Namespace, "month"));
     public static readonly IUriNode Day = new UriNode(new(Namespace, "day"));
+    
+    public static readonly IUriNode GeographicalPlaceName = new UriNode(new(Namespace, "geographicalPlaceName"));
+
+    public static readonly IUriNode ImageSplit = new UriNode(new(Namespace, "ImageSplit"));
+    public static readonly IUriNode AutoImageCrop = new UriNode(new(Namespace, "AutoImageCrop"));
+    public static readonly IUriNode ManualImageCrop = new UriNode(new(Namespace, "ManualImageCrop"));
+    public static readonly IUriNode AutoImageDeskew = new UriNode(new(Namespace, "AutoImageDeskew"));
+    public static readonly IUriNode ManualImageDeskew = new UriNode(new(Namespace, "ManualImageDeskew"));
 }

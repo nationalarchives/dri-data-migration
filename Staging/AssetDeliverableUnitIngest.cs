@@ -85,6 +85,9 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         BaseIngest.AssertLiteral(graph, id, rdf, filmMaker, Vocabulary.FilmProductionCompanyName);
         BaseIngest.AssertLiteral(graph, id, rdf, filmName, Vocabulary.FilmTitle);
         BaseIngest.AssertLiteral(graph, id, rdf, photographer, Vocabulary.PhotographerDescription);
+        BaseIngest.AssertInt(graph, id, rdf, startImageNumber, Vocabulary.ImageSequenceStart, logger);
+        BaseIngest.AssertInt(graph, id, rdf, endImageNumber, Vocabulary.ImageSequenceEnd, logger);
+        BaseIngest.AssertLiteral(graph, id, rdf, paperNumber, Vocabulary.PaperNumber);
 
         AddFilmDuration(graph, rdf, id);
         AddWebArchive(graph, rdf, id);
@@ -94,6 +97,9 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
 
         await BaseIngest.AssertAsync(graph, id, rdf, language, CacheEntityKind.Language,
             Vocabulary.AssetHasLanguage, Vocabulary.LanguageName, cacheClient, cancellationToken);
+
+        await BaseIngest.AssertAsync(graph, id, rdf, counties, CacheEntityKind.GeographicalPlace,
+            Vocabulary.AssetHasAssociatedGeographicalPlace, Vocabulary.GeographicalPlaceName, cacheClient, cancellationToken);
 
         var retention = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasRetention).SingleOrDefault()?.Object ?? BaseIngest.NewId;
         graph.Assert(id, Vocabulary.AssetHasRetention, retention);
@@ -265,6 +271,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     }
 
     private static readonly Uri dctermsNamespace = new("http://purl.org/dc/terms/");
+    private static readonly Uri transNamespace = new("http://nationalarchives.gov.uk/dri/transcription");
 
     private static readonly IUriNode batchIdentifier = new UriNode(new($"{BaseIngest.TnaNamespace}batchIdentifier"));
     private static readonly IUriNode tdrConsignmentRef = new UriNode(new($"{BaseIngest.TnaNamespace}tdrConsignmentRef"));
@@ -296,4 +303,10 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     private static readonly IUriNode language = new UriNode(new(dctermsNamespace, "language"));
     private static readonly IUriNode rights = new UriNode(new(dctermsNamespace, "rights"));
     private static readonly IUriNode coverage = new UriNode(new(dctermsNamespace, "coverage"));
+
+    //Local names of predicates are constructed by concatenation with the last path segment due to the lack of end forward slash in the XML namespace declaration.
+    private static readonly IUriNode paperNumber = new UriNode(new($"{transNamespace}paperNumber"));
+    private static readonly IUriNode counties = new UriNode(new($"{transNamespace}counties"));
+    private static readonly IUriNode startImageNumber = new UriNode(new($"{transNamespace}startImageNumber"));
+    private static readonly IUriNode endImageNumber = new UriNode(new($"{transNamespace}endImageNumber"));
 }

@@ -22,10 +22,14 @@ construct {
         ex:courtSessionDate ?courtSessionDate;
         ex:inquirySessionDescription ?inquirySessionDescription;
         ex:inquiryHearingDate ?inquiryHearingDate;
+        ex:imageSequenceStart ?imageSequenceStart;
+        ex:imageSequenceEnd ?imageSequenceEnd;
+        ex:paperNumber ?paperNumber;
         ex:assetHasUkGovernmentWebArchive ?assetHasUkGovernmentWebArchive;
         ex:assetHasLanguage ?language;
         ex:assetHasLegalStatus ?legalStatus;
         ex:assetHasCopyright ?copyright;
+        ex:assetHasAssociatedGeographicalPlace ?associatedGeographicalPlace;
         ex:assetHasRetention ?retention;
         ex:assetHasCreation ?creation;
         ex:assetHasOriginDateStart ?originDateStart;
@@ -70,9 +74,13 @@ construct {
     optional { ?asset ex:courtSessionDate ?courtSessionDate }
     optional { ?asset ex:inquirySessionDescription ?inquirySessionDescription }
     optional { ?asset ex:inquiryHearingDate ?inquiryHearingDate }
+    optional { ?asset ex:imageSequenceStart ?imageSequenceStart }
+    optional { ?asset ex:imageSequenceEnd ?imageSequenceEnd }
+    optional { ?asset ex:paperNumber ?paperNumber }
     optional { ?asset ex:assetHasUkGovernmentWebArchive ?assetHasUkGovernmentWebArchive }
     optional { ?asset ex:assetHasLanguage ?language }
     optional { ?asset ex:assetHasCopyright ?copyright }
+    optional { ?asset ex:assetHasAssociatedGeographicalPlace ?associatedGeographicalPlace }
     optional { ?asset ex:assetHasLegalStatus ?legalStatus }
     optional {
         ?asset ex:assetHasRetention ?retention.

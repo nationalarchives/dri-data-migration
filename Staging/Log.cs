@@ -4,7 +4,7 @@ using System;
 namespace Staging;
 
 internal static partial class Log
-{
+{//TODO: always include record id in the log
     [LoggerMessage(EventId = 1, Level = LogLevel.Trace, Message = "Building record {id}")]
     internal static partial void BuildingRecord(this ILogger logger, string id);
 
@@ -80,9 +80,18 @@ internal static partial class Log
     [LoggerMessage(EventId = 25, Level = LogLevel.Warning, Message = "Unrecognized {date} date format")]
     internal static partial void UnrecognizedDateFormat(this ILogger logger, string date);
 
-    [LoggerMessage(EventId = 26, Level = LogLevel.Warning, Message = "Unrecognized {date} dated note format")]
-    internal static partial void UnrecognizedDatedNoteFormat(this ILogger logger, string date);
+    [LoggerMessage(EventId = 26, Level = LogLevel.Warning, Message = "Unrecognized {date} year, month, day format")]
+    internal static partial void UnrecognizedYearMonthDayFormat(this ILogger logger, string date);
 
-    [LoggerMessage(EventId = 27, Level = LogLevel.Warning, Message = "Unrecognized {date} origin date format")]
-    internal static partial void UnrecognizedOriginDateFormat(this ILogger logger, string date);
+    [LoggerMessage(EventId = 27, Level = LogLevel.Warning, Message = "Unrecognized {split} image split value")]
+    internal static partial void UnrecognizedImageSplitValue(this ILogger logger, string split);
+
+    [LoggerMessage(EventId = 28, Level = LogLevel.Warning, Message = "Unrecognized {crop} image crop value")]
+    internal static partial void UnrecognizedImageCropValue(this ILogger logger, string crop);
+
+    [LoggerMessage(EventId = 29, Level = LogLevel.Warning, Message = "Unrecognized {deskew} image deskew value")]
+    internal static partial void UnrecognizedImageDeskewValue(this ILogger logger, string deskew);
+
+    [LoggerMessage(EventId = 30, Level = LogLevel.Warning, Message = "Invalid {integer} integer value")]
+    internal static partial void InvalidIntegerValue(this ILogger logger, string integer);
 }

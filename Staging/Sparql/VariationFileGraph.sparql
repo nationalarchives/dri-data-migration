@@ -9,6 +9,12 @@ construct {
         ex:variationPhysicalConditionDescription ?variationPhysicalConditionDescription;
         ex:variationReferenceGoogleId ?variationReferenceGoogleId;
         ex:variationReferenceParentGoogleId ?variationReferenceParentGoogleId;
+        ex:scannerOperatorIdentifier ?scannerOperatorIdentifier;
+        ex:scannerIdentifier ?scannerIdentifier;
+        ex:scannedVariationHasScannerGeographicalPlace ?scannedVariationHasScannerGeographicalPlace;
+        ex:scannedVariationHasImageSplit ?scannedVariationHasImageSplit;
+        ex:scannedVariationHasImageCrop ?scannedVariationHasImageCrop;
+        ex:scannedVariationHasImageDeskew ?scannedVariationHasImageDeskew;
         ex:variationHasRedactedVariation ?variationHasRedactedVariation;
         ex:variationHasAlternativeVariation ?variationHasAlternativeVariation;
         ex:variationHasDatedNote ?datedNote.
@@ -27,6 +33,8 @@ construct {
     optional { ?variation ex:variationPhysicalConditionDescription ?variationPhysicalConditionDescription }
     optional { ?variation ex:variationReferenceGoogleId ?variationReferenceGoogleId }
     optional { ?variation ex:variationReferenceParentGoogleId ?variationReferenceParentGoogleId }
+    optional { ?variation ex:scannerOperatorIdentifier ?scannerOperatorIdentifier }
+    optional { ?variation ex:scannerIdentifier ?scannerIdentifier }
     optional { ?variation ex:variationHasRedactedVariation ?variationHasRedactedVariation }
     optional { ?variation ex:variationHasAlternativeVariation ?variationHasAlternativeVariation }
     optional {

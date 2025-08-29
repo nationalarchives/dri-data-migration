@@ -74,6 +74,13 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         BaseIngest.AssertLiteral(graph, id, rdf, physicalCondition, Vocabulary.VariationPhysicalConditionDescription);
         BaseIngest.AssertLiteral(graph, id, rdf, googleId, Vocabulary.VariationReferenceGoogleId);
         BaseIngest.AssertLiteral(graph, id, rdf, googleParentId, Vocabulary.VariationReferenceParentGoogleId);
+        BaseIngest.AssertLiteral(graph, id, rdf, scanId, Vocabulary.ScannerIdentifier);
+        BaseIngest.AssertLiteral(graph, id, rdf, scanOperator, Vocabulary.ScannerOperatorIdentifier);
+
+        await BaseIngest.AssertAsync(graph, id, rdf, scanLocation, CacheEntityKind.GeographicalPlace,
+            Vocabulary.ScannedVariationHasScannerGeographicalPlace, Vocabulary.GeographicalPlaceName, cacheClient, cancellationToken);
+
+        AddImageNodes(graph, rdf, id);
 
         var datedNote = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.VariationHasDatedNote).SingleOrDefault()?.Object ?? BaseIngest.NewId;
         if (datedNote is not null)
@@ -115,6 +122,61 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         return true;
     }
 
+    private void AddImageNodes(IGraph graph, IGraph rdf, INode id)
+    {
+        var foundImageSplit = rdf.GetTriplesWithPredicate(imageSplit).FirstOrDefault()?.Object;
+        if (foundImageSplit is ILiteralNode imageSplitNode && !string.IsNullOrWhiteSpace(imageSplitNode.Value) &&
+            imageSplitNode.Value != "no")
+        {
+            if (imageSplitNode.Value == "yes")
+            {
+                graph.Assert(id, Vocabulary.ScannedVariationHasImageSplit, Vocabulary.ImageSplit);
+            }
+            else
+            {
+                logger.UnrecognizedImageSplitValue(imageSplitNode.Value);
+            }
+        }
+        var foundImageCrop = rdf.GetTriplesWithPredicate(imageCrop).FirstOrDefault()?.Object;
+        if (foundImageCrop is ILiteralNode imageCropNode && !string.IsNullOrWhiteSpace(imageCropNode.Value) &&
+            imageCropNode.Value != "none")
+        {
+            var crop = imageCropNode.Value switch
+            {
+                "auto" => Vocabulary.AutoImageCrop,
+                "manual" => Vocabulary.ManualImageCrop,
+                _ => null
+            };
+            if (crop is not null)
+            {
+                graph.Assert(id, Vocabulary.ScannedVariationHasImageCrop, crop);
+            }
+            else
+            {
+                logger.UnrecognizedImageCropValue(imageCropNode.Value);
+            }
+        }
+        var foundImageDeskew = rdf.GetTriplesWithPredicate(imageDeskew).FirstOrDefault()?.Object;
+        if (foundImageDeskew is ILiteralNode imageDeskewNode && !string.IsNullOrWhiteSpace(imageDeskewNode.Value) &&
+            imageDeskewNode.Value != "none")
+        {
+            var deskew = imageDeskewNode.Value switch
+            {
+                "auto" => Vocabulary.AutoImageDeskew,
+                "manual" => Vocabulary.ManualImageDeskew,
+                _ => null
+            };
+            if (deskew is not null)
+            {
+                graph.Assert(id, Vocabulary.ScannedVariationHasImageDeskew, deskew);
+            }
+            else
+            {
+                logger.UnrecognizedImageDeskewValue(imageDeskewNode.Value);
+            }
+        }
+    }
+
     private void AddDatedNote(IGraph graph, IGraph rdf, INode id, INode datedNode, INode noteDate)
     {
         var foundNote = rdf.GetTriplesWithPredicate(archivistNote).FirstOrDefault()?.Object;
@@ -146,4 +208,10 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
     private static readonly IUriNode archivistNote = new UriNode(new($"{BaseIngest.TnaNamespace}archivistNote"));
     private static readonly IUriNode archivistNoteInfo = new UriNode(new($"{BaseIngest.TnaNamespace}archivistNoteInfo"));
     private static readonly IUriNode archivistNoteDate = new UriNode(new($"{BaseIngest.TnaNamespace}archivistNoteDate"));
+    private static readonly IUriNode scanOperator = new UriNode(new($"{BaseIngest.TnaNamespace}scanOperator"));
+    private static readonly IUriNode scanId = new UriNode(new($"{BaseIngest.TnaNamespace}scanId"));
+    private static readonly IUriNode scanLocation = new UriNode(new($"{BaseIngest.TnaNamespace}scanLocation"));
+    private static readonly IUriNode imageSplit = new UriNode(new($"{BaseIngest.TnaNamespace}imageSplit"));
+    private static readonly IUriNode imageCrop = new UriNode(new($"{BaseIngest.TnaNamespace}imageCrop"));
+    private static readonly IUriNode imageDeskew = new UriNode(new($"{BaseIngest.TnaNamespace}imageDeskew"));
 }

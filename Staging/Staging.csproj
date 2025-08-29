@@ -16,6 +16,7 @@
     <EmbeddedResource Include="Sparql\GetInquiryAppearanceByWitnessAndDescription.sparql" />
     <EmbeddedResource Include="Sparql\GetGroundsForRetention.sparql" />
     <EmbeddedResource Include="Sparql\GetFormalBody.sparql" />
+    <EmbeddedResource Include="Sparql\GetGeographicalPlace.sparql" />
     <EmbeddedResource Include="Sparql\GetLegislations.sparql" />
     <EmbeddedResource Include="Sparql\GetRetention.sparql" />
     <EmbeddedResource Include="Sparql\GetSensitivityReview.sparql" />

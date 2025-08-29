@@ -40,6 +40,23 @@ public static class BaseIngest
         }
     }
 
+    public static void AssertInt(IGraph graph, INode id, IGraph rdf,
+        IUriNode findPredicate, IUriNode immediatePredicate, ILogger logger)
+    {
+        var found = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
+        if (found is ILiteralNode foundNode && !string.IsNullOrWhiteSpace(foundNode.Value))
+        {
+            if (int.TryParse(foundNode.Value, out var value))
+            {
+                graph.Assert(id, immediatePredicate, new LongNode(value));
+            }
+            else
+            {
+                logger.InvalidIntegerValue(foundNode.Value);
+            }
+        }
+    }
+
     public static void AssertDate(IGraph graph, INode id, DateTimeOffset? value, IUriNode immediatePredicate)
     {
         if (value.HasValue)

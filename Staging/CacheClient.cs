@@ -27,6 +27,7 @@ public class CacheClient : ICacheClient
     private readonly string variationByPartialPathAndAssetSparql;
     private readonly string courtCaseByCaseAndAssetSparql;
     private readonly string inquiryAppearanceByWitnessAndDescriptionSparql;
+    private readonly string geographicalPlaceSparql;
 
     private readonly string accessConditionsSparql;
     private readonly string legislationsSparql;
@@ -57,6 +58,7 @@ public class CacheClient : ICacheClient
         variationByPartialPathAndAssetSparql = embedded.GetSparql("GetVariationByPartialPathAndAsset");
         courtCaseByCaseAndAssetSparql = embedded.GetSparql("GetCourtCaseByCaseAndAsset");
         inquiryAppearanceByWitnessAndDescriptionSparql = embedded.GetSparql("GetInquiryAppearanceByWitnessAndDescription");
+        geographicalPlaceSparql = embedded.GetSparql("GetGeographicalPlace");
 
         accessConditionsSparql = embedded.GetSparql("GetAccessConditions");
         legislationsSparql = embedded.GetSparql("GetLegislations");
@@ -181,6 +183,7 @@ public class CacheClient : ICacheClient
         CacheEntityKind.VariationByPartialPathAndAsset => new(variationByPartialPathAndAssetSparql, $"variation-{key}"),
         CacheEntityKind.CourtCaseByCaseAndAsset => new(courtCaseByCaseAndAssetSparql, $"court-case-{key}"),
         CacheEntityKind.InquiryAppearanceByWitnessAndDescription => new(inquiryAppearanceByWitnessAndDescriptionSparql, $"inquiry-appearance-{key}"),
+        CacheEntityKind.GeographicalPlace => new(geographicalPlaceSparql, $"geographical-place-{key}"),
         _ => null
     };
 

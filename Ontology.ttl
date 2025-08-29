@@ -52,6 +52,16 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Photo asset".
 
+:ScannedAsset a owl:Class;
+	rdfs:subClassOf :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Scanned asset".
+
+:PaperAsset a owl:Class;
+	rdfs:subClassOf :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Paper asset".
+
 :InquiryAppearance a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Inquiry appearance".
@@ -77,6 +87,11 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Alternative variation";
 	rdfs:comment "An alternative version of a :Variant.".
+
+:ScannedVariation a owl:Class;
+	rdfs:subClassOf :Variation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Scanned variation".
 
 :Language a owl:Class;
 	rdfs:isDefinedBy this:schema;
@@ -210,6 +225,46 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Dated note".
 
+:GeographicalPlace a owl:Class;
+	rdfs:seeAlso rico:PhysicalLocation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Geographical place".
+
+:ImageSplit a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Image split";
+	rdfs:comment "Additional information about it found in 'Metadata Fields for Digitised records.xlsx'.".
+
+:ImageCrop a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Image crop";
+	rdfs:comment "Additional information about it found in 'Metadata Fields for Digitised records.xlsx'.".
+
+:AutoImageCrop a owl:Class;
+	rdfs:subClassOf :ImageCrop;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Auto image crop".
+
+:ManualImageCrop a owl:Class;
+	rdfs:subClassOf :ImageCrop;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Manual image crop".
+
+:ImageDeskew a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Image deskew";
+	rdfs:comment "Additional information about it found in 'Metadata Fields for Digitised records.xlsx'.".
+
+:AutoImageDeskew a owl:Class;
+	rdfs:subClassOf :ImageDeskew;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Auto image deskew".
+
+:ManualImageDeskew a owl:Class;
+	rdfs:subClassOf :ImageDeskew;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Manual image deskew".
+
 
 # Object properties
 
@@ -283,6 +338,19 @@ this:schema a owl:Ontology;
 	rdfs:range :Asset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Legal status has asset".
+
+:assetHasAssociatedGeographicalPlace a owl:ObjectProperty;
+	rdfs:domain :Asset;
+	rdfs:range :GeographicalPlace;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has associated geographical place".
+
+:associatedGeographicalPlaceHasAsset a owl:ObjectProperty;
+	owl:inverseOf :assetHasAssociatedGeographicalPlace;
+	rdfs:domain :GeographicalPlace;
+	rdfs:range :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Associated geographical place has asset".
 
 :courtAssetHasCourtCase a owl:ObjectProperty;
 	rdfs:domain :CourtAsset;
@@ -372,6 +440,37 @@ this:schema a owl:Ontology;
 	rdfs:range :Variation;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Alternative variation has variation".
+
+:scannedVariationHasScannerGeographicalPlace a owl:ObjectProperty;
+	rdfs:domain :ScannedVariation;
+	rdfs:range :GeographicalPlace;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Scanned variation has scanner geographical place".
+
+:scannerGeographicalPlaceHasScannedVariation a owl:ObjectProperty;
+	owl:inverseOf :scannedVariationHasScannerGeographicalPlace;
+	rdfs:domain :GeographicalPlace;
+	rdfs:range :ScannedVariation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Scanner geographical place has scanned variation".
+
+:scannedVariationHasImageSplit a owl:ObjectProperty;
+	rdfs:domain :ScannedVariation;
+	rdfs:range :ImageSplit;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Scanned variation has image split".
+
+:scannedVariationHasImageCrop a owl:ObjectProperty;
+	rdfs:domain :ScannedVariation;
+	rdfs:range :ImageCrop;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Scanned variation has image crop".
+
+:scannedVariationHasImageDeskew a owl:ObjectProperty;
+	rdfs:domain :ScannedVariation;
+	rdfs:range :ImageDeskew;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Scanned variation has image deskew".
 
 :creationHasAsset a owl:ObjectProperty;
 	rdfs:seeAlso rico:relationHasSource;
@@ -549,7 +648,6 @@ this:schema a owl:Ontology;
 	rdfs:range :Date;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Dated note has date".
-
 
 
 ## Data type properties
@@ -740,6 +838,25 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Photographer description".
 
+:imageSequenceStart a owl:DatatypeProperty;
+	rdfs:domain :ScannedAsset;
+	rdfs:range xsd:integer;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Image sequence start".
+
+:imageSequenceEnd a owl:DatatypeProperty;
+	rdfs:domain :ScannedAsset;
+	rdfs:range xsd:integer;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Image sequence end".
+
+:paperNumber a owl:DatatypeProperty;
+	rdfs:domain :PaperAsset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Paper number".
+
 :formalBodyName a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :FormalBody;
 	rdfs:range xsd:string;
@@ -828,6 +945,20 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation reference parent Google Id".
+
+:scannerOperatorIdentifier a owl:DatatypeProperty;
+	rdfs:domain :ScannedVariation;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Scanner operator identifier".
+
+:scannerIdentifier a owl:DatatypeProperty;
+	rdfs:domain :ScannedVariation;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Scanner identifier".
 
 :sensitivityReviewDate a owl:DatatypeProperty;
 	rdfs:domain :SensitivityReview;
@@ -1025,10 +1156,18 @@ this:schema a owl:Ontology;
 	rdfs:domain :Date;
 	rdfs:range xsd:gMonth;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Year".
+	rdfs:label "Month".
 
 :day a owl:DatatypeProperty;
 	rdfs:domain :Date;
 	rdfs:range xsd:gDay;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Day".
+
+:geographicalPlaceName a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:seeAlso rico:location;
+	rdfs:domain :GeographicalPlace;
+	rdfs:subPropertyOf :name;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Geographical place name".
