@@ -119,7 +119,8 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         {
             var statusType = legalUri.Uri.Segments.Last() switch
             {
-                "Public_Record(s)" or "Public_record" or "Public_Record" => Vocabulary.PublicRecord,
+                "Public_Record(s)" or "Public_record" or "Public_Record" or "PublicRecord" =>
+                    Vocabulary.PublicRecord,
                 "Welsh_Public_Record(s)" => Vocabulary.WelshPublicRecord,
                 "Not_Public_Record(s)" => Vocabulary.NotPublicRecord,
                 _ => throw new ArgumentException(legalUri.Uri.ToString())
