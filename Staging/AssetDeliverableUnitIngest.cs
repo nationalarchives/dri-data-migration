@@ -161,39 +161,43 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
 
     private static void AddOriginDates(IGraph graph, IGraph rdf, INode id, IGraph existing)
     {
+        void Assert(IUriNode predicate, INode dateId, string date)
+        {
+            graph.Assert(id, predicate, dateId); //TODO: could be overengineering
+            if (BaseIngest.TryParseDate(date, out var dt))
+            {
+                graph.Assert(dateId, Vocabulary.Year, new LiteralNode(dt.Year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
+                graph.Assert(dateId, Vocabulary.Month, new LiteralNode($"--{dt.Month}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
+                graph.Assert(dateId, Vocabulary.Day, new LiteralNode($"---{dt.Day}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
+            }
+            else
+            {
+                throw new ArgumentException(date);
+            }
+        }
+
         var foundCoverage = rdf.GetTriplesWithPredicate(coverage).FirstOrDefault()?.Object;
+        var dateStart = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateStart).SingleOrDefault()?.Object ?? BaseIngest.NewId;
+        var dateEnd = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateEnd).SingleOrDefault()?.Object ?? BaseIngest.NewId;
         if (foundCoverage is not null)
         {
             var start = rdf.GetTriplesWithSubjectPredicate(foundCoverage, startDate).FirstOrDefault()?.Object as ILiteralNode;
             if (start is not null && !string.IsNullOrWhiteSpace(start.Value))
             {
-                var dateStart = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateStart).SingleOrDefault()?.Object ?? BaseIngest.NewId;
-                graph.Assert(id, Vocabulary.AssetHasOriginDateStart, dateStart); //TODO: could be overengineering
-                if (BaseIngest.TryParseDate(start.Value, out var dtStart))
-                {
-                    graph.Assert(dateStart, Vocabulary.Year, new LiteralNode(dtStart.Year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
-                    graph.Assert(dateStart, Vocabulary.Month, new LiteralNode($"--{dtStart.Month}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
-                    graph.Assert(dateStart, Vocabulary.Day, new LiteralNode($"---{dtStart.Day}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
-                }
-                else
-                {
-                    throw new ArgumentException(start.Value);
-                }
+                Assert(Vocabulary.AssetHasOriginDateStart, dateStart, start.Value);
                 var end = rdf.GetTriplesWithSubjectPredicate(foundCoverage, endDate).FirstOrDefault()?.Object as ILiteralNode;
                 if (end is not null && !string.IsNullOrWhiteSpace(end.Value))
                 {
-                    var dateEnd = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateEnd).SingleOrDefault()?.Object ?? BaseIngest.NewId;
-                    graph.Assert(id, Vocabulary.AssetHasOriginDateEnd, dateEnd); //TODO: could be overengineering
-                    if (BaseIngest.TryParseDate(end.Value, out var dtEnd))
-                    {
-                        graph.Assert(dateEnd, Vocabulary.Year, new LiteralNode(dtEnd.Year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
-                        graph.Assert(dateEnd, Vocabulary.Month, new LiteralNode($"--{dtEnd.Month}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
-                        graph.Assert(dateEnd, Vocabulary.Day, new LiteralNode($"---{dtEnd.Day}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
-                    }
-                    else
-                    {
-                        throw new ArgumentException(end.Value);
-                    }
+                    Assert(Vocabulary.AssetHasOriginDateEnd, dateEnd, end.Value);
+                }
+            }
+            else
+            {
+                var singleDate = rdf.GetTriplesWithSubjectPredicate(foundCoverage, fullDate).FirstOrDefault()?.Object as ILiteralNode;
+                if (singleDate is not null && !string.IsNullOrWhiteSpace(singleDate.Value))
+                {
+                    Assert(Vocabulary.AssetHasOriginDateStart, dateStart, singleDate.Value);
+                    Assert(Vocabulary.AssetHasOriginDateEnd, dateEnd, singleDate.Value);
                 }
             }
         }
@@ -293,6 +297,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     private static readonly IUriNode filmMaker = new UriNode(new($"{BaseIngest.TnaNamespace}filmMaker"));
     private static readonly IUriNode filmName = new UriNode(new($"{BaseIngest.TnaNamespace}filmName"));
     private static readonly IUriNode photographer = new UriNode(new($"{BaseIngest.TnaNamespace}photographer"));
+    private static readonly IUriNode fullDate = new UriNode(new($"{BaseIngest.TnaNamespace}fullDate"));
 
     private static readonly IUriNode description = new UriNode(new(dctermsNamespace, "description"));
     private static readonly IUriNode creator = new UriNode(new(dctermsNamespace, "creator"));
