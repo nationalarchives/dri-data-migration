@@ -65,6 +65,30 @@ public static class BaseIngest
         }
     }
 
+    public static void AssertYearMonthDay(IGraph graph, IUriNode predicate, INode id, INode dateId, string date, ILogger logger)
+    {
+        graph.Assert(id, predicate, dateId);
+        if (TryParseDate(date, out var dt))
+        {
+            graph.Assert(dateId, Vocabulary.Year, new LiteralNode(dt.Year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
+            graph.Assert(dateId, Vocabulary.Month, new LiteralNode($"--{dt.Month}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
+            graph.Assert(dateId, Vocabulary.Day, new LiteralNode($"---{dt.Day}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
+        }
+        else if (int.TryParse(date, out var year))
+        {
+            graph.Assert(dateId, Vocabulary.Year, new LiteralNode(year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
+        }
+        else if (date.IndexOf('[') == 0 && date.IndexOf(']') == date.Length - 1 &&
+            int.TryParse(date.Remove(date.Length - 1, 1).Remove(0, 1), out var year2))
+        {
+            graph.Assert(dateId, Vocabulary.Year, new LiteralNode(year2.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
+        }
+        else
+        {
+            logger.UnrecognizedYearMonthDayFormat(date);
+        }
+    }
+
     public static async Task<IUriNode?> AssertAsync(IGraph graph, INode id, IGraph rdf,
         IUriNode findPredicate, CacheEntityKind cacheEntityKind,
         IUriNode immediatePredicate, IUriNode foundPredicate,

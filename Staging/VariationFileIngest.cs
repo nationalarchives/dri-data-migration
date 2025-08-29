@@ -128,21 +128,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
                 var date = rdf.GetTriplesWithSubjectPredicate(foundNote, archivistNoteDate).FirstOrDefault()?.Object as ILiteralNode;
                 if (date is not null && !string.IsNullOrWhiteSpace(date.Value))
                 {
-                    graph.Assert(datedNode, Vocabulary.DatedNoteHasDate, noteDate);
-                    if (BaseIngest.TryParseDate(date.Value, out var dt))
-                    {
-                        graph.Assert(noteDate, Vocabulary.Year, new LiteralNode(dt.Year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
-                        graph.Assert(noteDate, Vocabulary.Month, new LiteralNode($"--{dt.Month}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
-                        graph.Assert(noteDate, Vocabulary.Day, new LiteralNode($"---{dt.Day}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
-                    }
-                    else if (int.TryParse(date.Value, out var year))
-                    {
-                        graph.Assert(noteDate, Vocabulary.Year, new LiteralNode(year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
-                    }
-                    else
-                    {
-                        logger.UnrecognizedDatedNoteFormat(date.Value);
-                    }
+                    BaseIngest.AssertYearMonthDay(graph, Vocabulary.DatedNoteHasDate, datedNode, noteDate, date.Value, logger);
                 }
             }
         }
