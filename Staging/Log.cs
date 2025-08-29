@@ -71,4 +71,18 @@ internal static partial class Log
     [LoggerMessage(EventId = 22, Level = LogLevel.Warning, Message = "Associated variation {id} {variation} not found")]
     internal static partial void AssociatedVariationNotFound(this ILogger logger, string id, string variation);
 
+    [LoggerMessage(EventId = 23, Level = LogLevel.Warning, Message = "Unrecognized {status} legal status")]
+    internal static partial void UnrecognizedLegalStatus(this ILogger logger, string status);
+
+    [LoggerMessage(EventId = 24, Level = LogLevel.Warning, Message = "Unrecognized {duration} film duration format")]
+    internal static partial void UnrecognizedFilmDurationFormat(this ILogger logger, string duration);
+
+    [LoggerMessage(EventId = 25, Level = LogLevel.Warning, Message = "Unrecognized {date} date format")]
+    internal static partial void UnrecognizedDateFormat(this ILogger logger, string date);
+
+    [LoggerMessage(EventId = 26, Level = LogLevel.Warning, Message = "Unrecognized {date} dated note format")]
+    internal static partial void UnrecognizedDatedNoteFormat(this ILogger logger, string date);
+
+    [LoggerMessage(EventId = 27, Level = LogLevel.Warning, Message = "Unrecognized {date} origin date format")]
+    internal static partial void UnrecognizedOriginDateFormat(this ILogger logger, string date);
 }

@@ -115,7 +115,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         return true;
     }
 
-    private static void AddDatedNote(IGraph graph, IGraph rdf, INode id, INode datedNode, INode noteDate)
+    private void AddDatedNote(IGraph graph, IGraph rdf, INode id, INode datedNode, INode noteDate)
     {
         var foundNote = rdf.GetTriplesWithPredicate(archivistNote).FirstOrDefault()?.Object;
         if (foundNote is not null)
@@ -141,7 +141,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
                     }
                     else
                     {
-                        throw new ArgumentException(date.Value);
+                        logger.UnrecognizedDatedNoteFormat(date.Value);
                     }
                 }
             }

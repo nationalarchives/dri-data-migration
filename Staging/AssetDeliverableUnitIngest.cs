@@ -76,8 +76,8 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         BaseIngest.AssertLiteral(graph, id, rdf, physicalDescription, Vocabulary.AssetPhysicalDescription);
         BaseIngest.AssertLiteral(graph, id, rdf, evidenceProvidedBy, Vocabulary.EvidenceProviderName);
         BaseIngest.AssertLiteral(graph, id, rdf, investigation, Vocabulary.InvestigationName); //TODO: check if can be turned into entities
-        BaseIngest.AssertDate(graph, id, rdf, session_date, Vocabulary.CourtSessionDate);
-        BaseIngest.AssertDate(graph, id, rdf, hearing_date, Vocabulary.InquiryHearingDate);
+        BaseIngest.AssertDate(graph, id, rdf, session_date, Vocabulary.CourtSessionDate, logger);
+        BaseIngest.AssertDate(graph, id, rdf, hearing_date, Vocabulary.InquiryHearingDate, logger);
         BaseIngest.AssertLiteral(graph, id, rdf, restrictionOnUse, Vocabulary.AssetUsageRestrictionDescription);
         BaseIngest.AssertLiteral(graph, id, rdf, formerReferenceTNA, Vocabulary.AssetPastReference);
         BaseIngest.AssertLiteral(graph, id, rdf, classification, Vocabulary.AssetTag);
@@ -123,15 +123,22 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
                     Vocabulary.PublicRecord,
                 "Welsh_Public_Record(s)" => Vocabulary.WelshPublicRecord,
                 "Not_Public_Record(s)" => Vocabulary.NotPublicRecord,
-                _ => throw new ArgumentException(legalUri.Uri.ToString())
+                _ => null
             };
-            graph.Assert(id, Vocabulary.AssetHasLegalStatus, statusType);
+            if (statusType is null)
+            {
+                logger.UnrecognizedLegalStatus(legalUri.Uri.ToString());
+            }
+            else
+            {
+                graph.Assert(id, Vocabulary.AssetHasLegalStatus, statusType);
+            }
         }
 
         return true;
     }
 
-    private static void AddFilmDuration(IGraph graph, IGraph rdf, INode id)
+    private void AddFilmDuration(IGraph graph, IGraph rdf, INode id)
     {
         var foundDuration = rdf.GetTriplesWithPredicate(durationMins).SingleOrDefault()?.Object;
         if (foundDuration is ILiteralNode durationNode && !string.IsNullOrWhiteSpace(durationNode.Value))
@@ -145,7 +152,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
             }
             else
             {
-                throw new ArgumentException(durationNode.Value);
+                logger.UnrecognizedFilmDurationFormat(durationNode.Value);
             }
         }
     }
@@ -159,7 +166,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         }
     }
 
-    private static void AddOriginDates(IGraph graph, IGraph rdf, INode id, IGraph existing)
+    private void AddOriginDates(IGraph graph, IGraph rdf, INode id, IGraph existing)
     {
         void Assert(IUriNode predicate, INode dateId, string date)
         {
@@ -172,7 +179,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
             }
             else
             {
-                throw new ArgumentException(date);
+                logger.UnrecognizedOriginDateFormat(date);
             }
         }
 
@@ -248,8 +255,8 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
             BaseIngest.AssertLiteral(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_name_{caseIndex}")), Vocabulary.CourtCaseName);
             BaseIngest.AssertLiteral(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_summary_{caseIndex}_judgment")), Vocabulary.CourtCaseSummaryJudgment);
             BaseIngest.AssertLiteral(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_summary_{caseIndex}_reasons_for_judgment")), Vocabulary.CourtCaseSummaryReasonsForJudgment);
-            BaseIngest.AssertDate(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}hearing_start_date_{caseIndex}")), Vocabulary.CourtCaseHearingStartDate);
-            BaseIngest.AssertDate(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}hearing_end_date_{caseIndex}")), Vocabulary.CourtCaseHearingEndDate);
+            BaseIngest.AssertDate(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}hearing_start_date_{caseIndex}")), Vocabulary.CourtCaseHearingStartDate, logger);
+            BaseIngest.AssertDate(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}hearing_end_date_{caseIndex}")), Vocabulary.CourtCaseHearingEndDate, logger);
 
             caseIndex++;
             courtCase = await FetchCourtCaseIdAsync(graph, rdf, id, caseIndex, assetReference, cancellationToken);

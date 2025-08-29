@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Api;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -24,8 +25,12 @@ public abstract class SparqlClientReadOnly(HttpClient httpClient, Uri sparqlConn
             {
                 string txt => new LiteralNode(txt),
                 int number => new LongNode(number),
-                _ => throw new ArgumentException($"Unrecognized type of {kv.Key}", nameof(parameters))
+                _ => null
             };
+            if (literal is null)
+            {
+                throw new MigrationException($"Unrecognized type of {kv.Key} {kv.Value} parameter");
+            }
             parameterizedString.SetParameter(kv.Key, literal);
         }
 

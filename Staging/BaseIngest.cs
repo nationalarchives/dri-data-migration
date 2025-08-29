@@ -1,4 +1,5 @@
 ﻿using Api;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Globalization;
 using System.IO;
@@ -48,7 +49,7 @@ public static class BaseIngest
     }
 
     public static void AssertDate(IGraph graph, INode id, IGraph rdf,
-        IUriNode findPredicate, IUriNode immediatePredicate)
+        IUriNode findPredicate, IUriNode immediatePredicate, ILogger logger)
     {
         var found = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
         if (found is ILiteralNode foundNode && !string.IsNullOrWhiteSpace(foundNode.Value))
@@ -59,7 +60,7 @@ public static class BaseIngest
             }
             else
             {
-                throw new ArgumentException(foundNode.Value);
+                logger.UnrecognizedDateFormat(foundNode.Value);
             }
         }
     }
