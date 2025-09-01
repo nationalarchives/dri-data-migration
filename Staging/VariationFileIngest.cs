@@ -1,12 +1,7 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
 using VDS.RDF;
 using VDS.RDF.Nodes;
@@ -70,6 +65,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         predicates.UnionWith(rdf.Triples.PredicateNodes.Cast<IUriNode>().Select(p => p.Uri.ToString()).ToHashSet());
 
         BaseIngest.AssertLiteral(graph, id, rdf, note, Vocabulary.VariationNote);
+        BaseIngest.AssertLiteral(graph, id, rdf, curatedDateNote, Vocabulary.VariationNote);
         BaseIngest.AssertLiteral(graph, id, rdf, formerReferenceDepartment, Vocabulary.VariationPastName);
         BaseIngest.AssertLiteral(graph, id, rdf, physicalCondition, Vocabulary.VariationPhysicalConditionDescription);
         BaseIngest.AssertLiteral(graph, id, rdf, googleId, Vocabulary.VariationReferenceGoogleId);
@@ -199,6 +195,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
     private static string GetPartialPath(string path) => path.Substring(path.IndexOf("/content/") + 8);
 
     private static readonly IUriNode note = new UriNode(new($"{BaseIngest.TnaNamespace}note"));
+    private static readonly IUriNode curatedDateNote = new UriNode(new($"{BaseIngest.TnaNamespace}curatedDateNote"));
     private static readonly IUriNode hasRedactedFile = new UriNode(new($"{BaseIngest.TnaNamespace}hasRedactedFile"));
     private static readonly IUriNode hasPresentationManifestationFile = new UriNode(new($"{BaseIngest.TnaNamespace}hasPresentationManifestationFile"));
     private static readonly IUriNode formerReferenceDepartment = new UriNode(new($"{BaseIngest.TnaNamespace}formerReferenceDepartment"));
