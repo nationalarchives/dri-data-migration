@@ -2,11 +2,9 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
@@ -130,24 +128,6 @@ public static class BaseIngest
         graph.Assert(id, immediatePredicate, nodeId);
 
         return nodeId;
-    }
-
-    public static IGraph? GetRdf(string xml)
-    {
-        var doc = new XmlDocument();
-        doc.LoadXml(xml);
-        var rdfElement = doc.GetElementsByTagName("rdf:RDF");
-        if (rdfElement.Count == 1)
-        {
-            var rdf = new Graph
-            {
-                BaseUri = new Uri("http://example.com")
-            };
-            rdf.NamespaceMap.AddNamespace("tna", TnaNamespace);
-            new RdfXmlParser().Load(rdf, new StringReader(rdfElement[0].OuterXml));
-            return rdf;
-        }
-        return null;
     }
 
     public static bool TryParseDate(string date, out DateTimeOffset dt)

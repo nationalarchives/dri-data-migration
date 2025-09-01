@@ -60,7 +60,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
 
     private async Task<bool> ExtractXmlData(IGraph graph, IGraph existing, INode id, string xml, CancellationToken cancellationToken)
     {
-        var rdf = BaseIngest.GetRdf(xml);
+        var rdf = RdfXmlLoader.GetRdf(xml, logger);
         if (rdf is null)
         {
             logger.VariationXmlMissingRdf(id.AsValuedNode().AsString());

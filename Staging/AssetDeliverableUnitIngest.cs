@@ -59,7 +59,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     private async Task<bool> ExtractXmlData(IGraph graph, IGraph existing,
         INode id, string xml, string assetReference, CancellationToken cancellationToken)
     {
-        var rdf = BaseIngest.GetRdf(xml);
+        var rdf = RdfXmlLoader.GetRdf(xml, logger);
         if (rdf is null)
         {
             logger.AssetXmlMissingRdf(id.AsValuedNode().AsString());
