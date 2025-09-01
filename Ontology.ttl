@@ -217,9 +217,16 @@ this:schema a owl:Ontology;
 	rdfs:label "Court case".
 
 :Date a owl:Class;
+	rdfs:seeAlso rico:Date;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Date";
-	rdfs:comment "Allows to describe start point in time.".
+	rdfs:comment "Allows to describe date using year, month and day.".
+
+:ApproximateDate a owl:Class;
+	rdfs:subClassOf :Date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Approximate date";
+	rdfs:comment "Applicable when date is not exact (eg. circa 1966).".
 
 :DatedNote a owl:Class;
 	rdfs:isDefinedBy this:schema;
@@ -385,6 +392,7 @@ this:schema a owl:Ontology;
 	rdfs:label "Asset has UK government web archive".
 
 :assetHasOriginDateStart a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:seeAlso rico:isBeginningDateOf;
 	rdfs:domain :Asset;
 	rdfs:range :Date;
 	rdfs:isDefinedBy this:schema;
@@ -395,6 +403,18 @@ this:schema a owl:Ontology;
 	rdfs:range :Date;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has origin date end".
+
+:assetHasOriginApproximateDateStart a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:domain :Asset;
+	rdfs:range :ApproximateDate;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has origin approximate date start".
+
+:assetHasOriginApproximateDateEnd a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:domain :Asset;
+	rdfs:range :ApproximateDate;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has origin approximate date end".
 
 :assetHasVariation a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	rdfs:seeAlso rico:hasOrHadInstantiation;
@@ -695,6 +715,14 @@ this:schema a owl:Ontology;
 	rdfs:subPropertyOf rdfs:comment;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset description".
+
+:assetSummary a owl:DatatypeProperty;
+	rdfs:seeAlso rico:scopeAndContent;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf rdfs:comment;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset summary".
 
 :assetReference a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :Asset;
