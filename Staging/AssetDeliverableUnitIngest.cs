@@ -9,7 +9,7 @@ using VDS.RDF.Parsing;
 namespace Staging;
 
 public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<AssetDeliverableUnitIngest> logger)
-    : StagingIngest<DriAssetDeliverableUnit>(sparqlClient, logger, "AssetDeliverableUnitGraph")
+    : StagingIngest<DriAssetDeliverableUnit>(sparqlClient, logger, cacheClient, "AssetDeliverableUnitGraph")
 {
     private readonly HashSet<string> predicates = [];
 
@@ -29,7 +29,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         graph.Assert(id, Vocabulary.AssetDriId, driId);
         if (!string.IsNullOrEmpty(dri.Xml))
         {
-            var xmlBase64 = Convert.ToBase64String(UTF8Encoding.UTF8.GetBytes(dri.Xml));
+            var xmlBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(dri.Xml));
             graph.Assert(id, Vocabulary.AssetDriXml, new LiteralNode(xmlBase64, new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
             var proceed = await ExtractXmlData(graph, existing, id, dri.Xml, dri.Reference, cancellationToken);
             if (!proceed)
@@ -63,27 +63,37 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
 
         predicates.UnionWith(rdf.Triples.PredicateNodes.Cast<IUriNode>().Select(p => p.Uri.ToString()).ToHashSet());
 
-        BaseIngest.AssertLiteral(graph, id, rdf, batchIdentifier, Vocabulary.BatchDriId);
-        BaseIngest.AssertLiteral(graph, id, rdf, tdrConsignmentRef, Vocabulary.ConsignmentTdrId);
-        BaseIngest.AssertLiteral(graph, id, rdf, description, Vocabulary.AssetDescription);
-        BaseIngest.AssertLiteral(graph, id, rdf, summary, Vocabulary.AssetDescription);
-        BaseIngest.AssertLiteral(graph, id, rdf, administrativeBackground, Vocabulary.AssetSummary);
-        BaseIngest.AssertLiteral(graph, id, rdf, relatedMaterial, Vocabulary.AssetRelationDescription);
-        BaseIngest.AssertLiteral(graph, id, rdf, physicalDescription, Vocabulary.AssetPhysicalDescription);
-        BaseIngest.AssertLiteral(graph, id, rdf, evidenceProvidedBy, Vocabulary.EvidenceProviderName);
-        BaseIngest.AssertLiteral(graph, id, rdf, investigation, Vocabulary.InvestigationName); //TODO: check if can be turned into entities
-        BaseIngest.AssertDate(graph, id, rdf, session_date, Vocabulary.CourtSessionDate, logger);
-        BaseIngest.AssertDate(graph, id, rdf, hearing_date, Vocabulary.InquiryHearingDate, logger);
-        BaseIngest.AssertLiteral(graph, id, rdf, restrictionOnUse, Vocabulary.AssetUsageRestrictionDescription);
-        BaseIngest.AssertLiteral(graph, id, rdf, formerReferenceTNA, Vocabulary.AssetPastReference);
-        BaseIngest.AssertLiteral(graph, id, rdf, classification, Vocabulary.AssetTag);
-        BaseIngest.AssertLiteral(graph, id, rdf, internalDepartment, Vocabulary.AssetSourceInternalName);
-        BaseIngest.AssertLiteral(graph, id, rdf, filmMaker, Vocabulary.FilmProductionCompanyName);
-        BaseIngest.AssertLiteral(graph, id, rdf, filmName, Vocabulary.FilmTitle);
-        BaseIngest.AssertLiteral(graph, id, rdf, photographer, Vocabulary.PhotographerDescription);
-        BaseIngest.AssertInt(graph, id, rdf, startImageNumber, Vocabulary.ImageSequenceStart, logger);
-        BaseIngest.AssertInt(graph, id, rdf, endImageNumber, Vocabulary.ImageSequenceEnd, logger);
-        BaseIngest.AssertLiteral(graph, id, rdf, paperNumber, Vocabulary.PaperNumber);
+        GraphAssert.Text(graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
+        {
+            [batchIdentifier] = Vocabulary.BatchDriId,
+            [tdrConsignmentRef] = Vocabulary.ConsignmentTdrId,
+            [description] = Vocabulary.AssetDescription,
+            [summary] = Vocabulary.AssetDescription,
+            [administrativeBackground] = Vocabulary.AssetSummary,
+            [relatedMaterial] = Vocabulary.AssetRelationDescription,
+            [physicalDescription] = Vocabulary.AssetPhysicalDescription,
+            [evidenceProvidedBy] = Vocabulary.EvidenceProviderName, //TODO: check if can be split
+            [investigation] = Vocabulary.InvestigationName,//TODO: check if can be turned into entities
+            [restrictionOnUse] = Vocabulary.AssetUsageRestrictionDescription,
+            [formerReferenceTNA] = Vocabulary.AssetPastReference,
+            [classification] = Vocabulary.AssetTag,
+            [internalDepartment] = Vocabulary.AssetSourceInternalName,
+            [filmMaker] = Vocabulary.FilmProductionCompanyName,
+            [filmName] = Vocabulary.FilmTitle,
+            [photographer] = Vocabulary.PhotographerDescription,
+            [paperNumber] = Vocabulary.PaperNumber
+        });
+        GraphAssert.Text(graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
+        {
+            [session_date] = Vocabulary.CourtSessionDate,
+            [hearing_date] = Vocabulary.InquiryHearingDate
+        });
+
+        assert.Integer(graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
+        {
+            [startImageNumber] = Vocabulary.ImageSequenceStart,
+            [endImageNumber] = Vocabulary.ImageSequenceEnd
+        });
 
         AddFilmDuration(graph, rdf, id);
         AddWebArchive(graph, rdf, id);
@@ -91,51 +101,24 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         await AddWitnessAsync(graph, rdf, id, cancellationToken);
         AddOriginDates(graph, rdf, id, existing);
 
-        await BaseIngest.AssertAsync(graph, id, rdf, language, CacheEntityKind.Language,
-            Vocabulary.AssetHasLanguage, Vocabulary.LanguageName, cacheClient, cancellationToken);
+        await assert.ExistingOrNewWithRelationshipAsync(graph, id, rdf, language, CacheEntityKind.Language,
+            Vocabulary.AssetHasLanguage, Vocabulary.LanguageName, cancellationToken);
 
-        await BaseIngest.AssertAsync(graph, id, rdf, counties, CacheEntityKind.GeographicalPlace,
-            Vocabulary.AssetHasAssociatedGeographicalPlace, Vocabulary.GeographicalPlaceName, cacheClient, cancellationToken);
+        await assert.ExistingOrNewWithRelationshipAsync(graph, id, rdf, counties, CacheEntityKind.GeographicalPlace,
+            Vocabulary.AssetHasAssociatedGeographicalPlace, Vocabulary.GeographicalPlaceName, cancellationToken);
 
-        var retention = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasRetention).SingleOrDefault()?.Object ?? BaseIngest.NewId;
+        var retention = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasRetention).SingleOrDefault()?.Object ?? CacheClient.NewId;
         graph.Assert(id, Vocabulary.AssetHasRetention, retention);
-        await BaseIngest.AssertAsync(graph, retention, rdf, heldBy, CacheEntityKind.FormalBody,
-            Vocabulary.RetentionHasFormalBody, Vocabulary.FormalBodyName, cacheClient, cancellationToken);
+        await assert.ExistingOrNewWithRelationshipAsync(graph, retention, rdf, heldBy, CacheEntityKind.FormalBody,
+            Vocabulary.RetentionHasFormalBody, Vocabulary.FormalBodyName, cancellationToken);
 
-        var creation = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasCreation).SingleOrDefault()?.Object ?? BaseIngest.NewId;
+        var creation = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasCreation).SingleOrDefault()?.Object ?? CacheClient.NewId;
         graph.Assert(id, Vocabulary.AssetHasCreation, creation);
-        await BaseIngest.AssertAsync(graph, creation, rdf, creator, CacheEntityKind.FormalBody,
-            Vocabulary.CreationHasFormalBody, Vocabulary.FormalBodyName, cacheClient, cancellationToken);
+        await assert.ExistingOrNewWithRelationshipAsync(graph, creation, rdf, creator, CacheEntityKind.FormalBody,
+            Vocabulary.CreationHasFormalBody, Vocabulary.FormalBodyName, cancellationToken);
 
-        var copyrights = rdf.GetTriplesWithPredicate(rights).Select(t => t.Object)
-            .Where(o => !string.IsNullOrWhiteSpace(o.ToString())).Cast<IUriNode>();
-        foreach (var copyright in copyrights)
-        {
-            var title = copyright.Uri.Segments.Last().Replace('_', ' ');
-            var copyrightId = await cacheClient.CacheFetchOrNew(CacheEntityKind.Copyright, title, Vocabulary.CopyrightTitle, cancellationToken);
-            graph.Assert(id, Vocabulary.AssetHasCopyright, copyrightId);
-        }
-
-        var legal = rdf.GetTriplesWithPredicate(legalStatus).SingleOrDefault()?.Object;
-        if (legal is IUriNode legalUri)
-        {
-            var statusType = legalUri.Uri.Segments.Last() switch
-            {
-                "Public_Record(s)" or "Public_record" or "Public_Record" or "PublicRecord" =>
-                    Vocabulary.PublicRecord,
-                "Welsh_Public_Record(s)" => Vocabulary.WelshPublicRecord,
-                "Not_Public_Record(s)" => Vocabulary.NotPublicRecord,
-                _ => null
-            };
-            if (statusType is null)
-            {
-                logger.UnrecognizedLegalStatus(legalUri.Uri.ToString());
-            }
-            else
-            {
-                graph.Assert(id, Vocabulary.AssetHasLegalStatus, statusType);
-            }
-        }
+        await AddCopyrightAsync(graph, rdf, id, cancellationToken);
+        AddLegalStatus(graph, rdf, id);
 
         return true;
     }
@@ -173,20 +156,20 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         var foundCoverage = rdf.GetTriplesWithPredicate(coverage).FirstOrDefault()?.Object;
         var dateStart = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateStart).SingleOrDefault()?.Object ??
             existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginApproximateDateStart).SingleOrDefault()?.Object ??
-            BaseIngest.NewId;
+            CacheClient.NewId;
         var dateEnd = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateEnd).SingleOrDefault()?.Object ??
             existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginApproximateDateEnd).SingleOrDefault()?.Object ??
-            BaseIngest.NewId;
+            CacheClient.NewId;
         if (foundCoverage is not null)
         {
             var start = rdf.GetTriplesWithSubjectPredicate(foundCoverage, startDate).FirstOrDefault()?.Object as ILiteralNode;
             if (start is not null && !string.IsNullOrWhiteSpace(start.Value))
             {
-                BaseIngest.AssertYearMonthDay(graph, Vocabulary.AssetHasOriginDateStart, id, dateStart, start.Value, logger);
+                assert.YearMonthDay(graph, Vocabulary.AssetHasOriginDateStart, id, dateStart, start.Value);
                 var end = rdf.GetTriplesWithSubjectPredicate(foundCoverage, endDate).FirstOrDefault()?.Object as ILiteralNode;
                 if (end is not null && !string.IsNullOrWhiteSpace(end.Value))
                 {
-                    BaseIngest.AssertYearMonthDay(graph, Vocabulary.AssetHasOriginDateEnd, id, dateEnd, end.Value, logger);
+                    assert.YearMonthDay(graph, Vocabulary.AssetHasOriginDateEnd, id, dateEnd, end.Value);
                 }
             }
             else
@@ -198,17 +181,17 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
                     var yearRangeMatch = DateRegex.YearRange().Match(singleDate.Value);
                     if (yearRangeMatch.Success)
                     {
-                        BaseIngest.AssertYearMonthDay(graph, Vocabulary.AssetHasOriginApproximateDateStart, id, dateStart, yearRangeMatch.Groups["start"].Value, logger);
-                        BaseIngest.AssertYearMonthDay(graph, Vocabulary.AssetHasOriginApproximateDateEnd, id, dateEnd, yearRangeMatch.Groups["end"].Value, logger);
+                        assert.YearMonthDay(graph, Vocabulary.AssetHasOriginApproximateDateStart, id, dateStart, yearRangeMatch.Groups["start"].Value);
+                        assert.YearMonthDay(graph, Vocabulary.AssetHasOriginApproximateDateEnd, id, dateEnd, yearRangeMatch.Groups["end"].Value);
                     }
                     else if (singleDate.Value.StartsWith("c ") || singleDate.Value.StartsWith("[c "))
                     {
-                        BaseIngest.AssertYearMonthDay(graph, Vocabulary.AssetHasOriginApproximateDateStart, id, dateStart, singleDate.Value.Replace("c ", string.Empty), logger);
+                        assert.YearMonthDay(graph, Vocabulary.AssetHasOriginApproximateDateStart, id, dateStart, singleDate.Value.Replace("c ", string.Empty));
                     }
                     else
                     {
-                        BaseIngest.AssertYearMonthDay(graph, Vocabulary.AssetHasOriginDateStart, id, dateStart, singleDate.Value, logger);
-                        BaseIngest.AssertYearMonthDay(graph, Vocabulary.AssetHasOriginDateEnd, id, dateEnd, singleDate.Value, logger);
+                        assert.YearMonthDay(graph, Vocabulary.AssetHasOriginDateStart, id, dateStart, singleDate.Value);
+                        assert.YearMonthDay(graph, Vocabulary.AssetHasOriginDateEnd, id, dateEnd, singleDate.Value);
                     }
                 }
             }
@@ -228,19 +211,19 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         }
         if (found)
         {
-            BaseIngest.AssertLiteral(graph, id, rdf, session, Vocabulary.InquirySessionDescription);
+            GraphAssert.Text(graph, id, rdf, session, Vocabulary.InquirySessionDescription);
         }
     }
 
     private async Task<IUriNode?> FetchWitnessIdAsync(IGraph graph, IGraph rdf, INode id, int witnessIndex, CancellationToken cancellationToken)
     {
-        var foundWitness = rdf.GetTriplesWithPredicate(new UriNode(new($"{BaseIngest.TnaNamespace}witness_list_{witnessIndex}"))).SingleOrDefault()?.Object;
+        var foundWitness = rdf.GetTriplesWithPredicate(new UriNode(new($"{Vocabulary.TnaNamespace}witness_list_{witnessIndex}"))).SingleOrDefault()?.Object;
         if (foundWitness is ILiteralNode witnessNode && !string.IsNullOrWhiteSpace(witnessNode.Value))
         {
-            var foundDescription = rdf.GetTriplesWithPredicate(new UriNode(new($"{BaseIngest.TnaNamespace}subject_role_{witnessIndex}"))).SingleOrDefault()?.Object as ILiteralNode;
+            var foundDescription = rdf.GetTriplesWithPredicate(new UriNode(new($"{Vocabulary.TnaNamespace}subject_role_{witnessIndex}"))).SingleOrDefault()?.Object as ILiteralNode;
             var witnessId = await cacheClient.CacheFetchOrNew(CacheEntityKind.InquiryAppearanceByWitnessAndDescription, [witnessNode.Value, foundDescription.Value], Vocabulary.InquiryWitnessName, cancellationToken);
-            graph.Assert(witnessId, Vocabulary.InquiryWitnessName, new LiteralNode(witnessNode.Value));
-            graph.Assert(witnessId, Vocabulary.InquiryWitnessAppearanceDescription, new LiteralNode(foundDescription.Value));
+            GraphAssert.Text(graph, witnessId, witnessNode.Value, Vocabulary.InquiryWitnessName); //TODO: check if can be split
+            GraphAssert.Text(graph, witnessId, foundDescription.Value, Vocabulary.InquiryWitnessAppearanceDescription);
             graph.Assert(id, Vocabulary.InquiryAssetHasInquiryAppearance, witnessId);
 
             return witnessId;
@@ -257,24 +240,30 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         while (courtCase is not null)
         {
             found = true;
-            BaseIngest.AssertLiteral(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_name_{caseIndex}")), Vocabulary.CourtCaseName);
-            BaseIngest.AssertLiteral(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_summary_{caseIndex}_judgment")), Vocabulary.CourtCaseSummaryJudgment);
-            BaseIngest.AssertLiteral(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}case_summary_{caseIndex}_reasons_for_judgment")), Vocabulary.CourtCaseSummaryReasonsForJudgment);
-            BaseIngest.AssertDate(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}hearing_start_date_{caseIndex}")), Vocabulary.CourtCaseHearingStartDate, logger);
-            BaseIngest.AssertDate(graph, courtCase, rdf, new UriNode(new($"{BaseIngest.TnaNamespace}hearing_end_date_{caseIndex}")), Vocabulary.CourtCaseHearingEndDate, logger);
+            GraphAssert.Text(graph, courtCase, rdf, new Dictionary<IUriNode, IUriNode>()
+            {
+                [new UriNode(new($"{Vocabulary.TnaNamespace}case_name_{caseIndex}"))] = Vocabulary.CourtCaseName,
+                [new UriNode(new($"{Vocabulary.TnaNamespace}case_summary_{caseIndex}_judgment"))] = Vocabulary.CourtCaseSummaryJudgment,
+                [new UriNode(new($"{Vocabulary.TnaNamespace}case_summary_{caseIndex}_reasons_for_judgment"))] = Vocabulary.CourtCaseSummaryReasonsForJudgment
+            });
+            assert.Date(graph, courtCase, rdf, new Dictionary<IUriNode, IUriNode>()
+            {
+                [new UriNode(new($"{Vocabulary.TnaNamespace}hearing_start_date_{caseIndex}"))] = Vocabulary.CourtCaseHearingStartDate,
+                [new UriNode(new($"{Vocabulary.TnaNamespace}hearing_end_date_{caseIndex}"))] = Vocabulary.CourtCaseHearingEndDate
+            });
 
             caseIndex++;
             courtCase = await FetchCourtCaseIdAsync(graph, rdf, id, caseIndex, assetReference, cancellationToken);
         }
         if (found)
         {
-            BaseIngest.AssertLiteral(graph, id, rdf, session, Vocabulary.CourtSessionDescription);
+            GraphAssert.Text(graph, id, rdf, session, Vocabulary.CourtSessionDescription);
         }
     }
 
     private async Task<IUriNode?> FetchCourtCaseIdAsync(IGraph graph, IGraph rdf, INode id, int caseIndex, string assetReference, CancellationToken cancellationToken)
     {
-        var foundCase = rdf.GetTriplesWithPredicate(new UriNode(new($"{BaseIngest.TnaNamespace}case_id_{caseIndex}"))).SingleOrDefault()?.Object;
+        var foundCase = rdf.GetTriplesWithPredicate(new UriNode(new($"{Vocabulary.TnaNamespace}case_id_{caseIndex}"))).SingleOrDefault()?.Object;
         if (foundCase is ILiteralNode caseNode && !string.IsNullOrWhiteSpace(caseNode.Value))
         {
             var caseId = await cacheClient.CacheFetchOrNew(CacheEntityKind.VariationByPartialPathAndAsset, [caseNode.Value, assetReference], Vocabulary.VariationRelativeLocation, cancellationToken);
@@ -284,35 +273,71 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         return null;
     }
 
+    private async Task AddCopyrightAsync(IGraph graph, IGraph rdf, INode id, CancellationToken cancellationToken)
+    {
+        var copyrights = rdf.GetTriplesWithPredicate(rights).Select(t => t.Object)
+            .Where(o => !string.IsNullOrWhiteSpace(o.ToString())).Cast<IUriNode>();
+        foreach (var copyright in copyrights)
+        {
+            var title = copyright.Uri.Segments.Last().Replace('_', ' ');
+            var copyrightId = await cacheClient.CacheFetchOrNew(CacheEntityKind.Copyright, title, Vocabulary.CopyrightTitle, cancellationToken);
+            graph.Assert(id, Vocabulary.AssetHasCopyright, copyrightId);
+        }
+    }
+
+    private void AddLegalStatus(IGraph graph, IGraph rdf, INode id)
+    {
+        var legal = rdf.GetTriplesWithPredicate(legalStatus).SingleOrDefault()?.Object;
+        if (legal is IUriNode legalUri)
+        {
+            var statusType = legalUri.Uri.Segments.Last() switch
+            {
+                "Public_Record(s)" or "Public_record" or "Public_Record" or "PublicRecord" =>
+                    Vocabulary.PublicRecord,
+                "Welsh_Public_Record(s)" => Vocabulary.WelshPublicRecord,
+                "Not_Public_Record(s)" => Vocabulary.NotPublicRecord,
+                _ => null
+            };
+            if (statusType is null)
+            {
+                logger.UnrecognizedLegalStatus(legalUri.Uri.ToString());
+            }
+            else
+            {
+                graph.Assert(id, Vocabulary.AssetHasLegalStatus, statusType);
+            }
+        }
+    }
+
     private static readonly Uri dctermsNamespace = new("http://purl.org/dc/terms/");
     private static readonly Uri transNamespace = new("http://nationalarchives.gov.uk/dri/transcription");
 
-    private static readonly IUriNode batchIdentifier = new UriNode(new($"{BaseIngest.TnaNamespace}batchIdentifier"));
-    private static readonly IUriNode tdrConsignmentRef = new UriNode(new($"{BaseIngest.TnaNamespace}tdrConsignmentRef"));
-    private static readonly IUriNode relatedMaterial = new UriNode(new($"{BaseIngest.TnaNamespace}relatedMaterial"));
-    private static readonly IUriNode legalStatus = new UriNode(new($"{BaseIngest.TnaNamespace}legalStatus"));
-    private static readonly IUriNode heldBy = new UriNode(new($"{BaseIngest.TnaNamespace}heldBy"));
-    private static readonly IUriNode physicalDescription = new UriNode(new($"{BaseIngest.TnaNamespace}physicalDescription"));
-    private static readonly IUriNode investigation = new UriNode(new($"{BaseIngest.TnaNamespace}investigation"));
-    private static readonly IUriNode evidenceProvidedBy = new UriNode(new($"{BaseIngest.TnaNamespace}evidenceProvidedBy"));
-    private static readonly IUriNode session = new UriNode(new($"{BaseIngest.TnaNamespace}session"));
-    private static readonly IUriNode session_date = new UriNode(new($"{BaseIngest.TnaNamespace}session_date"));
-    private static readonly IUriNode restrictionOnUse = new UriNode(new($"{BaseIngest.TnaNamespace}restrictionOnUse"));
-    private static readonly IUriNode hearing_date = new UriNode(new($"{BaseIngest.TnaNamespace}hearing_date"));
-    private static readonly IUriNode webArchiveUrl = new UriNode(new($"{BaseIngest.TnaNamespace}webArchiveUrl"));
-    private static readonly IUriNode startDate = new UriNode(new($"{BaseIngest.TnaNamespace}startDate"));
-    private static readonly IUriNode endDate = new UriNode(new($"{BaseIngest.TnaNamespace}endDate"));
-    private static readonly IUriNode formerReferenceTNA = new UriNode(new($"{BaseIngest.TnaNamespace}formerReferenceTNA"));
-    private static readonly IUriNode classification = new UriNode(new($"{BaseIngest.TnaNamespace}classification"));
-    private static readonly IUriNode summary = new UriNode(new($"{BaseIngest.TnaNamespace}summary"));
-    private static readonly IUriNode internalDepartment = new UriNode(new($"{BaseIngest.TnaNamespace}internalDepartment"));
-    private static readonly IUriNode durationMins = new UriNode(new($"{BaseIngest.TnaNamespace}durationMins"));
-    private static readonly IUriNode filmMaker = new UriNode(new($"{BaseIngest.TnaNamespace}filmMaker"));
-    private static readonly IUriNode filmName = new UriNode(new($"{BaseIngest.TnaNamespace}filmName"));
-    private static readonly IUriNode photographer = new UriNode(new($"{BaseIngest.TnaNamespace}photographer"));
-    private static readonly IUriNode fullDate = new UriNode(new($"{BaseIngest.TnaNamespace}fullDate"));
-    private static readonly IUriNode dateRange = new UriNode(new($"{BaseIngest.TnaNamespace}dateRange"));
-    private static readonly IUriNode administrativeBackground = new UriNode(new($"{BaseIngest.TnaNamespace}administrativeBackground"));
+    private static readonly IUriNode batchIdentifier = new UriNode(new($"{Vocabulary.TnaNamespace}batchIdentifier"));
+    private static readonly IUriNode tdrConsignmentRef = new UriNode(new($"{Vocabulary.TnaNamespace}tdrConsignmentRef"));
+    private static readonly IUriNode relatedMaterial = new UriNode(new($"{Vocabulary.TnaNamespace}relatedMaterial"));
+    private static readonly IUriNode legalStatus = new UriNode(new($"{Vocabulary.TnaNamespace}legalStatus"));
+    private static readonly IUriNode heldBy = new UriNode(new($"{Vocabulary.TnaNamespace}heldBy"));
+    private static readonly IUriNode physicalDescription = new UriNode(new($"{Vocabulary.TnaNamespace}physicalDescription"));
+    private static readonly IUriNode investigation = new UriNode(new($"{Vocabulary.TnaNamespace}investigation"));
+    private static readonly IUriNode evidenceProvidedBy = new UriNode(new($"{Vocabulary.TnaNamespace}evidenceProvidedBy"));
+    private static readonly IUriNode session = new UriNode(new($"{Vocabulary.TnaNamespace}session"));
+    private static readonly IUriNode session_date = new UriNode(new($"{Vocabulary.TnaNamespace}session_date"));
+    private static readonly IUriNode restrictionOnUse = new UriNode(new($"{Vocabulary.TnaNamespace}restrictionOnUse"));
+    private static readonly IUriNode hearing_date = new UriNode(new($"{Vocabulary.TnaNamespace}hearing_date"));
+    private static readonly IUriNode webArchiveUrl = new UriNode(new($"{Vocabulary.TnaNamespace}webArchiveUrl"));
+    private static readonly IUriNode startDate = new UriNode(new($"{Vocabulary.TnaNamespace}startDate"));
+    private static readonly IUriNode endDate = new UriNode(new($"{Vocabulary.TnaNamespace}endDate"));
+    private static readonly IUriNode formerReferenceTNA = new UriNode(new($"{Vocabulary.TnaNamespace}formerReferenceTNA"));
+    private static readonly IUriNode classification = new UriNode(new($"{Vocabulary.TnaNamespace}classification"));
+    private static readonly IUriNode summary = new UriNode(new($"{Vocabulary.TnaNamespace}summary"));
+    private static readonly IUriNode internalDepartment = new UriNode(new($"{Vocabulary.TnaNamespace}internalDepartment"));
+    private static readonly IUriNode durationMins = new UriNode(new($"{Vocabulary.TnaNamespace}durationMins"));
+    private static readonly IUriNode filmMaker = new UriNode(new($"{Vocabulary.TnaNamespace}filmMaker"));
+    private static readonly IUriNode filmName = new UriNode(new($"{Vocabulary.TnaNamespace}filmName"));
+    private static readonly IUriNode photographer = new UriNode(new($"{Vocabulary.TnaNamespace}photographer"));
+    private static readonly IUriNode fullDate = new UriNode(new($"{Vocabulary.TnaNamespace}fullDate"));
+    private static readonly IUriNode dateRange = new UriNode(new($"{Vocabulary.TnaNamespace}dateRange"));
+    private static readonly IUriNode administrativeBackground = new UriNode(new($"{Vocabulary.TnaNamespace}administrativeBackground"));
 
     private static readonly IUriNode description = new UriNode(new(dctermsNamespace, "description"));
     private static readonly IUriNode creator = new UriNode(new(dctermsNamespace, "creator"));

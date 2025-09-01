@@ -1,9 +1,6 @@
 ﻿using Api;
 using Microsoft.Extensions.Options;
 using Rdf;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using VDS.RDF;
 using VDS.RDF.Update;
 

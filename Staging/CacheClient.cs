@@ -2,11 +2,6 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Rdf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using VDS.RDF;
 
 namespace Staging;
@@ -32,6 +27,8 @@ public class CacheClient : ICacheClient
     private readonly string accessConditionsSparql;
     private readonly string legislationsSparql;
     private readonly string groundsForRetentionSparql;
+
+    private static readonly Uri idNamespace = new("http://id.example.com/");
 
     private Dictionary<string, IUriNode>? accessConditions = [];
     private Dictionary<string, IUriNode>? legislations = [];
@@ -106,7 +103,7 @@ public class CacheClient : ICacheClient
         if (info is null)
         {
             logger.InvalidCacheEntityKind();
-            return BaseIngest.NewId;
+            return NewId;
         }
 
         Dictionary<string, string> parameters;
@@ -125,7 +122,7 @@ public class CacheClient : ICacheClient
             var subject = await sparqlClient.GetSubjectAsync(info.Sparql, parameters, cancellationToken);
             if (subject is null)
             {
-                subject = BaseIngest.NewId;
+                subject = NewId;
                 var node = new LiteralNode(parameters.First().Value);
                 var triple = new Triple(subject, predicate, node);
                 await sparqlClient.UpdateAsync(triple, cancellationToken);
@@ -188,4 +185,6 @@ public class CacheClient : ICacheClient
     };
 
     private sealed record CacheFetchInfo(string Sparql, string Key);
+
+    public static IUriNode NewId => new UriNode(new Uri(idNamespace, Guid.NewGuid().ToString()));
 }

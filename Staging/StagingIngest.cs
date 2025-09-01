@@ -8,13 +8,15 @@ namespace Staging;
 public abstract class StagingIngest<T> : IStagingIngest<T> where T : IDriRecord
 {
     internal readonly ISparqlClient sparqlClient;
+    internal readonly GraphAssert assert;
     private readonly ILogger logger;
     private readonly string graphSparql;
 
-    protected StagingIngest(ISparqlClient sparqlClient, ILogger logger, string sparqlFileName)
+    protected StagingIngest(ISparqlClient sparqlClient, ILogger logger, ICacheClient cacheClient, string sparqlFileName)
     {
         this.sparqlClient = sparqlClient;
         this.logger = logger;
+        assert = new GraphAssert(logger, cacheClient);
 
         var currentAssembly = typeof(StagingIngest<>).Assembly;
         var baseName = $"{typeof(StagingIngest<>).Namespace}.Sparql";
@@ -54,4 +56,6 @@ public abstract class StagingIngest<T> : IStagingIngest<T> where T : IDriRecord
         PostIngest();
         return total;
     }
+
+    public string? GetUriFragment(Uri? uri) => uri?.Fragment.Length > 1 ? uri.Fragment.TrimStart('#') : null;
 }

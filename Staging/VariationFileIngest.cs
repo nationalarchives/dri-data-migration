@@ -10,7 +10,7 @@ using VDS.RDF.Parsing;
 namespace Staging;
 
 public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<VariationFileIngest> logger, IOptions<DriSettings> options)
-    : StagingIngest<DriVariationFile>(sparqlClient, logger, "VariationFileGraph")
+    : StagingIngest<DriVariationFile>(sparqlClient, logger, cacheClient, "VariationFileGraph")
 {
     private readonly HashSet<string> predicates = [];
 
@@ -31,7 +31,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         graph.Assert(id, Vocabulary.VariationRelativeLocation, new LiteralNode($"{dri.Location}/{dri.Name}", new Uri(XmlSpecsHelper.XmlSchemaDataTypeAnyUri)));
         if (!string.IsNullOrEmpty(dri.Xml))
         {
-            var xmlBase64 = Convert.ToBase64String(UTF8Encoding.UTF8.GetBytes(dri.Xml));
+            var xmlBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(dri.Xml));
             graph.Assert(id, Vocabulary.VariationDriXml, new LiteralNode(xmlBase64, new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
             var proceed = await ExtractXmlData(graph, existing, id, dri.Xml, cancellationToken);
             if (!proceed)
@@ -64,24 +64,27 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
 
         predicates.UnionWith(rdf.Triples.PredicateNodes.Cast<IUriNode>().Select(p => p.Uri.ToString()).ToHashSet());
 
-        BaseIngest.AssertLiteral(graph, id, rdf, note, Vocabulary.VariationNote);
-        BaseIngest.AssertLiteral(graph, id, rdf, curatedDateNote, Vocabulary.VariationNote);
-        BaseIngest.AssertLiteral(graph, id, rdf, formerReferenceDepartment, Vocabulary.VariationPastName);
-        BaseIngest.AssertLiteral(graph, id, rdf, physicalCondition, Vocabulary.VariationPhysicalConditionDescription);
-        BaseIngest.AssertLiteral(graph, id, rdf, googleId, Vocabulary.VariationReferenceGoogleId);
-        BaseIngest.AssertLiteral(graph, id, rdf, googleParentId, Vocabulary.VariationReferenceParentGoogleId);
-        BaseIngest.AssertLiteral(graph, id, rdf, scanId, Vocabulary.ScannerIdentifier);
-        BaseIngest.AssertLiteral(graph, id, rdf, scanOperator, Vocabulary.ScannerOperatorIdentifier);
+        GraphAssert.Text(graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
+        {
+            [note] = Vocabulary.VariationNote,
+            [curatedDateNote] = Vocabulary.VariationNote,
+            [formerReferenceDepartment] = Vocabulary.VariationPastName,
+            [physicalCondition] = Vocabulary.VariationPhysicalConditionDescription,
+            [googleId] = Vocabulary.VariationReferenceGoogleId,
+            [googleParentId] = Vocabulary.VariationReferenceParentGoogleId,
+            [scanId] = Vocabulary.ScannerIdentifier,
+            [scanOperator] = Vocabulary.ScannerOperatorIdentifier
+        });
 
-        await BaseIngest.AssertAsync(graph, id, rdf, scanLocation, CacheEntityKind.GeographicalPlace,
-            Vocabulary.ScannedVariationHasScannerGeographicalPlace, Vocabulary.GeographicalPlaceName, cacheClient, cancellationToken);
+        await assert.ExistingOrNewWithRelationshipAsync(graph, id, rdf, scanLocation, CacheEntityKind.GeographicalPlace,
+            Vocabulary.ScannedVariationHasScannerGeographicalPlace, Vocabulary.GeographicalPlaceName, cancellationToken);
 
         AddImageNodes(graph, rdf, id);
 
-        var datedNote = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.VariationHasDatedNote).SingleOrDefault()?.Object ?? BaseIngest.NewId;
+        var datedNote = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.VariationHasDatedNote).SingleOrDefault()?.Object ?? CacheClient.NewId;
         if (datedNote is not null)
         {
-            var noteDate = existing.GetTriplesWithSubjectPredicate(datedNote, Vocabulary.DatedNoteHasDate).SingleOrDefault()?.Object ?? BaseIngest.NewId;
+            var noteDate = existing.GetTriplesWithSubjectPredicate(datedNote, Vocabulary.DatedNoteHasDate).SingleOrDefault()?.Object ?? CacheClient.NewId;
             AddDatedNote(graph, rdf, id, datedNote, noteDate); //TODO: could be overengineering
         }
 
@@ -186,7 +189,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
                 var date = rdf.GetTriplesWithSubjectPredicate(foundNote, archivistNoteDate).FirstOrDefault()?.Object as ILiteralNode;
                 if (date is not null && !string.IsNullOrWhiteSpace(date.Value))
                 {
-                    BaseIngest.AssertYearMonthDay(graph, Vocabulary.DatedNoteHasDate, datedNode, noteDate, date.Value, logger);
+                    assert.YearMonthDay(graph, Vocabulary.DatedNoteHasDate, datedNode, noteDate, date.Value);
                 }
             }
         }
@@ -194,21 +197,21 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
 
     private static string GetPartialPath(string path) => path.Substring(path.IndexOf("/content/") + 8);
 
-    private static readonly IUriNode note = new UriNode(new($"{BaseIngest.TnaNamespace}note"));
-    private static readonly IUriNode curatedDateNote = new UriNode(new($"{BaseIngest.TnaNamespace}curatedDateNote"));
-    private static readonly IUriNode hasRedactedFile = new UriNode(new($"{BaseIngest.TnaNamespace}hasRedactedFile"));
-    private static readonly IUriNode hasPresentationManifestationFile = new UriNode(new($"{BaseIngest.TnaNamespace}hasPresentationManifestationFile"));
-    private static readonly IUriNode formerReferenceDepartment = new UriNode(new($"{BaseIngest.TnaNamespace}formerReferenceDepartment"));
-    private static readonly IUriNode physicalCondition = new UriNode(new($"{BaseIngest.TnaNamespace}physicalCondition"));
-    private static readonly IUriNode googleId = new UriNode(new($"{BaseIngest.TnaNamespace}googleId"));
-    private static readonly IUriNode googleParentId = new UriNode(new($"{BaseIngest.TnaNamespace}googleParentId"));
-    private static readonly IUriNode archivistNote = new UriNode(new($"{BaseIngest.TnaNamespace}archivistNote"));
-    private static readonly IUriNode archivistNoteInfo = new UriNode(new($"{BaseIngest.TnaNamespace}archivistNoteInfo"));
-    private static readonly IUriNode archivistNoteDate = new UriNode(new($"{BaseIngest.TnaNamespace}archivistNoteDate"));
-    private static readonly IUriNode scanOperator = new UriNode(new($"{BaseIngest.TnaNamespace}scanOperator"));
-    private static readonly IUriNode scanId = new UriNode(new($"{BaseIngest.TnaNamespace}scanId"));
-    private static readonly IUriNode scanLocation = new UriNode(new($"{BaseIngest.TnaNamespace}scanLocation"));
-    private static readonly IUriNode imageSplit = new UriNode(new($"{BaseIngest.TnaNamespace}imageSplit"));
-    private static readonly IUriNode imageCrop = new UriNode(new($"{BaseIngest.TnaNamespace}imageCrop"));
-    private static readonly IUriNode imageDeskew = new UriNode(new($"{BaseIngest.TnaNamespace}imageDeskew"));
+    private static readonly IUriNode note = new UriNode(new($"{Vocabulary.TnaNamespace}note"));
+    private static readonly IUriNode curatedDateNote = new UriNode(new($"{Vocabulary.TnaNamespace}curatedDateNote"));
+    private static readonly IUriNode hasRedactedFile = new UriNode(new($"{Vocabulary.TnaNamespace}hasRedactedFile"));
+    private static readonly IUriNode hasPresentationManifestationFile = new UriNode(new($"{Vocabulary.TnaNamespace}hasPresentationManifestationFile"));
+    private static readonly IUriNode formerReferenceDepartment = new UriNode(new($"{Vocabulary.TnaNamespace}formerReferenceDepartment"));
+    private static readonly IUriNode physicalCondition = new UriNode(new($"{Vocabulary.TnaNamespace}physicalCondition"));
+    private static readonly IUriNode googleId = new UriNode(new($"{Vocabulary.TnaNamespace}googleId"));
+    private static readonly IUriNode googleParentId = new UriNode(new($"{Vocabulary.TnaNamespace}googleParentId"));
+    private static readonly IUriNode archivistNote = new UriNode(new($"{Vocabulary.TnaNamespace}archivistNote"));
+    private static readonly IUriNode archivistNoteInfo = new UriNode(new($"{Vocabulary.TnaNamespace}archivistNoteInfo"));
+    private static readonly IUriNode archivistNoteDate = new UriNode(new($"{Vocabulary.TnaNamespace}archivistNoteDate"));
+    private static readonly IUriNode scanOperator = new UriNode(new($"{Vocabulary.TnaNamespace}scanOperator"));
+    private static readonly IUriNode scanId = new UriNode(new($"{Vocabulary.TnaNamespace}scanId"));
+    private static readonly IUriNode scanLocation = new UriNode(new($"{Vocabulary.TnaNamespace}scanLocation"));
+    private static readonly IUriNode imageSplit = new UriNode(new($"{Vocabulary.TnaNamespace}imageSplit"));
+    private static readonly IUriNode imageCrop = new UriNode(new($"{Vocabulary.TnaNamespace}imageCrop"));
+    private static readonly IUriNode imageDeskew = new UriNode(new($"{Vocabulary.TnaNamespace}imageDeskew"));
 }

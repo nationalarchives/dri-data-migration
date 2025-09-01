@@ -1,24 +1,21 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using VDS.RDF;
 
 namespace Staging;
 
-public class AccessConditionIngest(ISparqlClient sparqlClient, ILogger<AccessConditionIngest> logger)
-    : StagingIngest<DriAccessCondition>(sparqlClient, logger, "AccessConditionGraph")
+public class AccessConditionIngest(ISparqlClient sparqlClient, ILogger<AccessConditionIngest> logger, ICacheClient cacheClient)
+    : StagingIngest<DriAccessCondition>(sparqlClient, logger, cacheClient, "AccessConditionGraph")
 {
     internal override Task<Graph?> BuildAsync(IGraph existing, DriAccessCondition dri, CancellationToken cancellationToken)
     {
         logger.BuildingRecord(dri.Id);
-        var code = new LiteralNode(BaseIngest.GetUriFragment(dri.Link));
-        var id = existing.GetTriplesWithPredicateObject(Vocabulary.AccessConditionCode, code).FirstOrDefault()?.Subject ?? BaseIngest.NewId;
+        var code = new LiteralNode(GetUriFragment(dri.Link));
+        var id = existing.GetTriplesWithPredicateObject(Vocabulary.AccessConditionCode, code).FirstOrDefault()?.Subject ?? CacheClient.NewId;
 
         var graph = new Graph();
         graph.Assert(id, Vocabulary.AccessConditionCode, code);
-        graph.Assert(id, Vocabulary.AccessConditionName, new LiteralNode(dri.Name));
+        GraphAssert.Text(graph, id, dri.Name, Vocabulary.AccessConditionName);
         logger.RecordBuilt(dri.Id);
 
         return Task.FromResult((Graph?)graph);

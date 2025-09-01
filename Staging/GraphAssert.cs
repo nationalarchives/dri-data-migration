@@ -7,16 +7,17 @@ using VDS.RDF.Parsing;
 
 namespace Staging;
 
-public static class BaseIngest
+public class GraphAssert(ILogger logger, ICacheClient cacheClient)
 {
-    public static readonly Uri TnaNamespace = new("http://nationalarchives.gov.uk/metadata/tna#");
-    private static readonly Uri idNamespace = new("http://id.example.com/");
+    public static void Text(IGraph graph, INode id, Dictionary<IUriNode, string?> predicates)
+    {
+        foreach (var predicate in predicates)
+        {
+            Text(graph, id, predicate.Value, predicate.Key);
+        }
+    }
 
-    public static IUriNode NewId => new UriNode(new Uri(idNamespace, Guid.NewGuid().ToString()));
-
-    public static string? GetUriFragment(Uri? uri) => uri?.Fragment.Length > 1 ? uri.Fragment.TrimStart('#') : null;
-
-    public static void AssertLiteral(IGraph graph, INode id, string? value, IUriNode immediatePredicate)
+    public static void Text(IGraph graph, INode id, string? value, IUriNode immediatePredicate)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {
@@ -24,18 +25,36 @@ public static class BaseIngest
         }
     }
 
-    public static void AssertLiteral(IGraph graph, INode id, IGraph rdf,
-        IUriNode findPredicate, IUriNode immediatePredicate)
+    public static void Text(IGraph graph, INode id, IGraph rdf,
+        Dictionary<IUriNode, IUriNode> predicates)
     {
-        var found = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
-        if (found is ILiteralNode foundNode && !string.IsNullOrWhiteSpace(foundNode.Value))
+        foreach (var predicate in predicates)
         {
-            graph.Assert(id, immediatePredicate, new LiteralNode(foundNode.Value));
+            Text(graph, id, rdf, predicate.Key, predicate.Value);
         }
     }
 
-    public static void AssertInt(IGraph graph, INode id, IGraph rdf,
-        IUriNode findPredicate, IUriNode immediatePredicate, ILogger logger)
+    public static void Text(IGraph graph, INode id, IGraph rdf,
+        IUriNode findPredicate, IUriNode immediatePredicate)
+    {
+        var found = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
+        if (found is ILiteralNode foundNode)
+        {
+            Text(graph, id, foundNode.Value, immediatePredicate);
+        }
+    }
+
+    public void Integer(IGraph graph, INode id, IGraph rdf,
+        Dictionary<IUriNode, IUriNode> predicates)
+    {
+        foreach (var predicate in predicates)
+        {
+            Integer(graph, id, rdf, predicate.Key, predicate.Value);
+        }
+    }
+
+    public void Integer(IGraph graph, INode id, IGraph rdf,
+        IUriNode findPredicate, IUriNode immediatePredicate)
     {
         var found = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
         if (found is ILiteralNode foundNode && !string.IsNullOrWhiteSpace(foundNode.Value))
@@ -51,7 +70,15 @@ public static class BaseIngest
         }
     }
 
-    public static void AssertDate(IGraph graph, INode id, DateTimeOffset? value, IUriNode immediatePredicate)
+    public static void Date(IGraph graph, INode id, Dictionary<IUriNode, DateTimeOffset?> predicates)
+    {
+        foreach (var predicate in predicates)
+        {
+            Date(graph, id, predicate.Value, predicate.Key);
+        }
+    }
+
+    public static void Date(IGraph graph, INode id, DateTimeOffset? value, IUriNode immediatePredicate)
     {
         if (value.HasValue)
         {
@@ -59,8 +86,17 @@ public static class BaseIngest
         }
     }
 
-    public static void AssertDate(IGraph graph, INode id, IGraph rdf,
-        IUriNode findPredicate, IUriNode immediatePredicate, ILogger logger)
+    public void Date(IGraph graph, INode id, IGraph rdf,
+        Dictionary<IUriNode, IUriNode> predicates)
+    {
+        foreach (var predicate in predicates)
+        {
+            Date(graph, id, rdf, predicate.Key, predicate.Value);
+        }
+    }
+
+    public void Date(IGraph graph, INode id, IGraph rdf,
+        IUriNode findPredicate, IUriNode immediatePredicate)
     {
         var found = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
         if (found is ILiteralNode foundNode && !string.IsNullOrWhiteSpace(foundNode.Value))
@@ -76,7 +112,7 @@ public static class BaseIngest
         }
     }
 
-    public static bool AssertYearMonthDay(IGraph graph, IUriNode predicate, INode id, INode dateId, string date, ILogger logger)
+    public bool YearMonthDay(IGraph graph, IUriNode predicate, INode id, INode dateId, string date)
     {
         graph.Assert(id, predicate, dateId);
         if (TryParseDate(date, out var dt))
@@ -96,17 +132,17 @@ public static class BaseIngest
 
         if (date.StartsWith('[') && date.IndexOf(']') == date.Length - 1)
         {
-            return AssertYearMonthDay(graph, predicate, id, dateId, date.Remove(date.Length - 1, 1).Remove(0, 1), logger);
+            return YearMonthDay(graph, predicate, id, dateId, date.Remove(date.Length - 1, 1).Remove(0, 1));
         }
 
         logger.UnrecognizedYearMonthDayFormat(date);
         return false;
     }
 
-    public static async Task<IUriNode?> AssertAsync(IGraph graph, INode id, IGraph rdf,
+    public async Task<IUriNode?> ExistingOrNewWithRelationshipAsync(IGraph graph, INode id, IGraph rdf,
         IUriNode findPredicate, CacheEntityKind cacheEntityKind,
         IUriNode immediatePredicate, IUriNode foundPredicate,
-        ICacheClient cacheClient, CancellationToken cancellationToken)
+        CancellationToken cancellationToken)
     {
         var node = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
         if (node is null)

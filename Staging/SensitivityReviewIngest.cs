@@ -1,10 +1,5 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
@@ -12,7 +7,7 @@ using VDS.RDF.Parsing;
 namespace Staging;
 
 public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<SensitivityReviewIngest> logger)
-    : StagingIngest<DriSensitivityReview>(sparqlClient, logger, "SensitivityReviewGraph")
+    : StagingIngest<DriSensitivityReview>(sparqlClient, logger, cacheClient, "SensitivityReviewGraph")
 {
     private Dictionary<string, IUriNode> legislations;
     private Dictionary<string, IUriNode> accessConditions;
@@ -23,9 +18,9 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         logger.BuildingRecord(dri.Id);
         await PreloadAsync(cancellationToken);
 
-        var id = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewDriId).FirstOrDefault()?.Subject ?? BaseIngest.NewId;
-        var restriction = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewHasSensitivityReviewRestriction).FirstOrDefault()?.Object ?? BaseIngest.NewId;
-        var retentionRestriction = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewRestrictionHasRetentionRestriction).FirstOrDefault()?.Object ?? BaseIngest.NewId;
+        var id = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewDriId).FirstOrDefault()?.Subject ?? CacheClient.NewId;
+        var restriction = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewHasSensitivityReviewRestriction).FirstOrDefault()?.Object ?? CacheClient.NewId;
+        var retentionRestriction = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewRestrictionHasRetentionRestriction).FirstOrDefault()?.Object ?? CacheClient.NewId;
 
         var graph = new Graph();
 
@@ -83,12 +78,15 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
     private async Task<bool> AddSensitivityReview(IGraph graph, INode id, DriSensitivityReview dri, CancellationToken cancellationToken)
     {
         graph.Assert(id, Vocabulary.SensitivityReviewDriId, new LiteralNode(dri.Id));
-        BaseIngest.AssertDate(graph, id, dri.Date, Vocabulary.SensitivityReviewDate);
-        BaseIngest.AssertLiteral(graph, id, dri.SensitiveName, Vocabulary.SensitivityReviewSensitiveName);
-        BaseIngest.AssertLiteral(graph, id, dri.SensitiveDescription, Vocabulary.SensitivityReviewSensitiveDescription);
+        GraphAssert.Date(graph, id, dri.Date, Vocabulary.SensitivityReviewDate);
+        GraphAssert.Text(graph, id, new Dictionary<IUriNode, string?>()
+        {
+            [Vocabulary.SensitivityReviewSensitiveName] = dri.SensitiveName,
+            [Vocabulary.SensitivityReviewSensitiveDescription] = dri.SensitiveDescription
+        });
         if (dri.AccessCondition is not null)
         {
-            var acCode = BaseIngest.GetUriFragment(dri.AccessCondition);
+            var acCode = GetUriFragment(dri.AccessCondition);
             if (acCode is null)
             {
                 logger.UnableParseAccessConditionUri(dri.AccessCondition);
@@ -114,12 +112,15 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
     {
         var existing = graph.Triples.Count;
 
-        BaseIngest.AssertDate(graph, restriction, dri.ReviewDate, Vocabulary.SensitivityReviewRestrictionReviewDate);
-        BaseIngest.AssertDate(graph, restriction, dri.RestrictionStartDate, Vocabulary.SensitivityReviewRestrictionCalculationStartDate);
+        GraphAssert.Date(graph, restriction, new Dictionary<IUriNode, DateTimeOffset?>()
+        {
+            [Vocabulary.SensitivityReviewRestrictionReviewDate] = dri.ReviewDate,
+            [Vocabulary.SensitivityReviewRestrictionCalculationStartDate] = dri.RestrictionStartDate
+        });
         if (dri.RestrictionDuration.HasValue)
         {
             var yearType = new string[] { "D", "U" };
-            if (yearType.Contains(BaseIngest.GetUriFragment(dri.AccessCondition)))
+            if (yearType.Contains(GetUriFragment(dri.AccessCondition)))
             {
                 graph.Assert(restriction, Vocabulary.SensitivityReviewRestrictionEndYear, new LiteralNode(dri.RestrictionDuration.Value.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
             }
@@ -128,7 +129,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
                 graph.Assert(restriction, Vocabulary.SensitivityReviewRestrictionDuration, new LiteralNode($"P{dri.RestrictionDuration.Value}Y", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDuration)));
             }
         }
-        BaseIngest.AssertLiteral(graph, restriction, dri.RestrictionDescription, Vocabulary.SensitivityReviewRestrictionDescription);
+        GraphAssert.Text(graph, restriction, dri.RestrictionDescription, Vocabulary.SensitivityReviewRestrictionDescription);
         foreach (var legislation in dri.Legislations)
         {
             if (!legislations!.TryGetValue(legislation.ToString(), out var legislationNode))
@@ -190,11 +191,14 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         {
             graph.Assert(retentionRestriction, Vocabulary.RetentionInstrumentNumber, new LongNode(dri.InstrumentNumber.Value));
         }
-        BaseIngest.AssertDate(graph, retentionRestriction, dri.InstrumentSignedDate, Vocabulary.RetentionInstrumentSignatureDate);
-        BaseIngest.AssertDate(graph, retentionRestriction, dri.RestrictionReviewDate, Vocabulary.RetentionRestrictionReviewDate);
+        GraphAssert.Date(graph, restriction, new Dictionary<IUriNode, DateTimeOffset?>()
+        {
+            [Vocabulary.RetentionInstrumentSignatureDate] = dri.InstrumentSignedDate,
+            [Vocabulary.RetentionRestrictionReviewDate] = dri.RestrictionReviewDate
+        });
         if (dri.GroundForRetention is not null)
         {
-            var gCode = BaseIngest.GetUriFragment(dri.GroundForRetention);
+            var gCode = GetUriFragment(dri.GroundForRetention);
             if (gCode is null)
             {
                 logger.UnableParseGroundForRetentionUri(dri.GroundForRetention);

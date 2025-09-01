@@ -1,21 +1,18 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using VDS.RDF;
 
 namespace Staging;
 
 public class SubsetIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<SubsetIngest> logger)
-    : StagingIngest<DriSubset>(sparqlClient, logger, "SubsetGraph")
+    : StagingIngest<DriSubset>(sparqlClient, logger, cacheClient, "SubsetGraph")
 {
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriSubset dri, CancellationToken cancellationToken)
     {
         logger.BuildingRecord(dri.Id);
         var subsetReference = new LiteralNode(dri.Reference);
-        var id = existing.GetTriplesWithPredicateObject(Vocabulary.SubsetReference, subsetReference).FirstOrDefault()?.Subject ?? BaseIngest.NewId;
-        var retention = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SubsetHasRetention).FirstOrDefault()?.Object ?? BaseIngest.NewId;
+        var id = existing.GetTriplesWithPredicateObject(Vocabulary.SubsetReference, subsetReference).FirstOrDefault()?.Subject ?? CacheClient.NewId;
+        var retention = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SubsetHasRetention).FirstOrDefault()?.Object ?? CacheClient.NewId;
 
         var graph = new Graph();
         graph.Assert(id, Vocabulary.SubsetReference, subsetReference);
