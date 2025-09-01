@@ -25,6 +25,7 @@ public static class Vocabulary
     public static readonly IUriNode AssetPastReference = new UriNode(new(Namespace, "assetPastReference"));
     public static readonly IUriNode AssetName = new UriNode(new(Namespace, "assetName"));
     public static readonly IUriNode AssetDescription = new UriNode(new(Namespace, "assetDescription"));
+    public static readonly IUriNode AssetSummary = new UriNode(new(Namespace, "assetSummary"));
     public static readonly IUriNode AssetRelationDescription = new UriNode(new(Namespace, "assetRelationDescription"));
     public static readonly IUriNode AssetPhysicalDescription = new UriNode(new(Namespace, "assetPhysicalDescription"));
     public static readonly IUriNode AssetUsageRestrictionDescription = new UriNode(new(Namespace, "assetUsageRestrictionDescription"));

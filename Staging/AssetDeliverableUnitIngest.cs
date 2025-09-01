@@ -67,6 +67,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         BaseIngest.AssertLiteral(graph, id, rdf, tdrConsignmentRef, Vocabulary.ConsignmentTdrId);
         BaseIngest.AssertLiteral(graph, id, rdf, description, Vocabulary.AssetDescription);
         BaseIngest.AssertLiteral(graph, id, rdf, summary, Vocabulary.AssetDescription);
+        BaseIngest.AssertLiteral(graph, id, rdf, administrativeBackground, Vocabulary.AssetSummary);
         BaseIngest.AssertLiteral(graph, id, rdf, relatedMaterial, Vocabulary.AssetRelationDescription);
         BaseIngest.AssertLiteral(graph, id, rdf, physicalDescription, Vocabulary.AssetPhysicalDescription);
         BaseIngest.AssertLiteral(graph, id, rdf, evidenceProvidedBy, Vocabulary.EvidenceProviderName);
@@ -311,6 +312,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     private static readonly IUriNode photographer = new UriNode(new($"{BaseIngest.TnaNamespace}photographer"));
     private static readonly IUriNode fullDate = new UriNode(new($"{BaseIngest.TnaNamespace}fullDate"));
     private static readonly IUriNode dateRange = new UriNode(new($"{BaseIngest.TnaNamespace}dateRange"));
+    private static readonly IUriNode administrativeBackground = new UriNode(new($"{BaseIngest.TnaNamespace}administrativeBackground"));
 
     private static readonly IUriNode description = new UriNode(new(dctermsNamespace, "description"));
     private static readonly IUriNode creator = new UriNode(new(dctermsNamespace, "creator"));

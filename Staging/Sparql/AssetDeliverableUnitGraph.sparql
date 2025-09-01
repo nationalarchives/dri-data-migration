@@ -5,6 +5,7 @@ construct {
         ex:assetDriXml ?assetDriXml;
         ex:assetPastReference ?assetPastReference;
         ex:assetDescription ?assetDescription;
+        ex:assetSummary ?assetSummary;
         ex:batchDriId ?batchDriId;
         ex:consignmentTdrId ?consignmentTdrId;
         ex:assetRelationDescription ?assetRelationDescription;
@@ -65,6 +66,7 @@ construct {
     optional { ?asset ex:assetDriXml ?assetDriXml }
     optional { ?asset ex:assetPastReference ?assetPastReference }
     optional { ?asset ex:assetDescription ?assetDescription }
+    optional { ?asset ex:assetSummary ?assetSummary }
     optional { ?asset ex:batchDriId ?batchDriId }
     optional { ?asset ex:consignmentTdrId ?consignmentTdrId }
     optional { ?asset ex:assetRelationDescription ?assetRelationDescription }
