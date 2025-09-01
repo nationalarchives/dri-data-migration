@@ -1,10 +1,6 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Globalization;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
@@ -80,7 +76,7 @@ public static class BaseIngest
         }
     }
 
-    public static void AssertYearMonthDay(IGraph graph, IUriNode predicate, INode id, INode dateId, string date, ILogger logger)
+    public static bool AssertYearMonthDay(IGraph graph, IUriNode predicate, INode id, INode dateId, string date, ILogger logger)
     {
         graph.Assert(id, predicate, dateId);
         if (TryParseDate(date, out var dt))
@@ -88,20 +84,23 @@ public static class BaseIngest
             graph.Assert(dateId, Vocabulary.Year, new LiteralNode(dt.Year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
             graph.Assert(dateId, Vocabulary.Month, new LiteralNode($"--{dt.Month}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
             graph.Assert(dateId, Vocabulary.Day, new LiteralNode($"---{dt.Day}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
+
+            return true;
         }
-        else if (int.TryParse(date, out var year))
+
+        if (int.TryParse(date, out var year))
         {
             graph.Assert(dateId, Vocabulary.Year, new LiteralNode(year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
+            return true;
         }
-        else if (date.IndexOf('[') == 0 && date.IndexOf(']') == date.Length - 1 &&
-            int.TryParse(date.Remove(date.Length - 1, 1).Remove(0, 1), out var year2))
+
+        if (date.StartsWith('[') && date.IndexOf(']') == date.Length - 1)
         {
-            graph.Assert(dateId, Vocabulary.Year, new LiteralNode(year2.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
+            return AssertYearMonthDay(graph, predicate, id, dateId, date.Remove(date.Length - 1, 1).Remove(0, 1), logger);
         }
-        else
-        {
-            logger.UnrecognizedYearMonthDayFormat(date);
-        }
+
+        logger.UnrecognizedYearMonthDayFormat(date);
+        return false;
     }
 
     public static async Task<IUriNode?> AssertAsync(IGraph graph, INode id, IGraph rdf,

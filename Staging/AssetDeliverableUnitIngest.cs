@@ -1,12 +1,7 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
@@ -175,8 +170,12 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     private void AddOriginDates(IGraph graph, IGraph rdf, INode id, IGraph existing)
     {
         var foundCoverage = rdf.GetTriplesWithPredicate(coverage).FirstOrDefault()?.Object;
-        var dateStart = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateStart).SingleOrDefault()?.Object ?? BaseIngest.NewId;
-        var dateEnd = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateEnd).SingleOrDefault()?.Object ?? BaseIngest.NewId;
+        var dateStart = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateStart).SingleOrDefault()?.Object ??
+            existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginApproximateDateStart).SingleOrDefault()?.Object ??
+            BaseIngest.NewId;
+        var dateEnd = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateEnd).SingleOrDefault()?.Object ??
+            existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginApproximateDateEnd).SingleOrDefault()?.Object ??
+            BaseIngest.NewId;
         if (foundCoverage is not null)
         {
             var start = rdf.GetTriplesWithSubjectPredicate(foundCoverage, startDate).FirstOrDefault()?.Object as ILiteralNode;
@@ -191,11 +190,25 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
             }
             else
             {
-                var singleDate = rdf.GetTriplesWithSubjectPredicate(foundCoverage, fullDate).FirstOrDefault()?.Object as ILiteralNode;
+                var singleDate = rdf.GetTriplesWithSubjectPredicate(foundCoverage, fullDate).FirstOrDefault()?.Object as ILiteralNode ??
+                    rdf.GetTriplesWithSubjectPredicate(foundCoverage, dateRange).FirstOrDefault()?.Object as ILiteralNode;
                 if (singleDate is not null && !string.IsNullOrWhiteSpace(singleDate.Value))
                 {
-                    BaseIngest.AssertYearMonthDay(graph, Vocabulary.AssetHasOriginDateStart, id, dateStart, singleDate.Value, logger);
-                    BaseIngest.AssertYearMonthDay(graph, Vocabulary.AssetHasOriginDateEnd, id, dateEnd, singleDate.Value, logger);
+                    var yearRangeMatch = DateRegex.YearRange().Match(singleDate.Value);
+                    if (yearRangeMatch.Success)
+                    {
+                        BaseIngest.AssertYearMonthDay(graph, Vocabulary.AssetHasOriginApproximateDateStart, id, dateStart, yearRangeMatch.Groups["start"].Value, logger);
+                        BaseIngest.AssertYearMonthDay(graph, Vocabulary.AssetHasOriginApproximateDateEnd, id, dateEnd, yearRangeMatch.Groups["end"].Value, logger);
+                    }
+                    else if (singleDate.Value.StartsWith("c ") || singleDate.Value.StartsWith("[c "))
+                    {
+                        BaseIngest.AssertYearMonthDay(graph, Vocabulary.AssetHasOriginApproximateDateStart, id, dateStart, singleDate.Value.Replace("c ", string.Empty), logger);
+                    }
+                    else
+                    {
+                        BaseIngest.AssertYearMonthDay(graph, Vocabulary.AssetHasOriginDateStart, id, dateStart, singleDate.Value, logger);
+                        BaseIngest.AssertYearMonthDay(graph, Vocabulary.AssetHasOriginDateEnd, id, dateEnd, singleDate.Value, logger);
+                    }
                 }
             }
         }
@@ -297,6 +310,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     private static readonly IUriNode filmName = new UriNode(new($"{BaseIngest.TnaNamespace}filmName"));
     private static readonly IUriNode photographer = new UriNode(new($"{BaseIngest.TnaNamespace}photographer"));
     private static readonly IUriNode fullDate = new UriNode(new($"{BaseIngest.TnaNamespace}fullDate"));
+    private static readonly IUriNode dateRange = new UriNode(new($"{BaseIngest.TnaNamespace}dateRange"));
 
     private static readonly IUriNode description = new UriNode(new(dctermsNamespace, "description"));
     private static readonly IUriNode creator = new UriNode(new(dctermsNamespace, "creator"));
