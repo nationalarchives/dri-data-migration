@@ -481,7 +481,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
             {
                 "Public_Record(s)" or "Public_record" or "Public_Record" or "PublicRecord" =>
                     Vocabulary.PublicRecord,
-                "Welsh_Public_Record(s)" => Vocabulary.WelshPublicRecord,
+                "Welsh_Public_Record(s)" or "Welsh_Public_Record" => Vocabulary.WelshPublicRecord,
                 "Not_Public_Record(s)" => Vocabulary.NotPublicRecord,
                 _ => null
             };
