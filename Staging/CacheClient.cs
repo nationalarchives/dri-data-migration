@@ -23,6 +23,7 @@ public class CacheClient : ICacheClient
     private readonly string courtCaseByCaseAndAssetSparql;
     private readonly string inquiryAppearanceByWitnessAndDescriptionSparql;
     private readonly string geographicalPlaceSparql;
+    private readonly string sealCategorySparql;
 
     private readonly string accessConditionsSparql;
     private readonly string legislationsSparql;
@@ -56,6 +57,7 @@ public class CacheClient : ICacheClient
         courtCaseByCaseAndAssetSparql = embedded.GetSparql("GetCourtCaseByCaseAndAsset");
         inquiryAppearanceByWitnessAndDescriptionSparql = embedded.GetSparql("GetInquiryAppearanceByWitnessAndDescription");
         geographicalPlaceSparql = embedded.GetSparql("GetGeographicalPlace");
+        sealCategorySparql = embedded.GetSparql("GetSealCategory");
 
         accessConditionsSparql = embedded.GetSparql("GetAccessConditions");
         legislationsSparql = embedded.GetSparql("GetLegislations");
@@ -181,6 +183,7 @@ public class CacheClient : ICacheClient
         CacheEntityKind.CourtCaseByCaseAndAsset => new(courtCaseByCaseAndAssetSparql, $"court-case-{key}"),
         CacheEntityKind.InquiryAppearanceByWitnessAndDescription => new(inquiryAppearanceByWitnessAndDescriptionSparql, $"inquiry-appearance-{key}"),
         CacheEntityKind.GeographicalPlace => new(geographicalPlaceSparql, $"geographical-place-{key}"),
+        CacheEntityKind.SealCategory => new(sealCategorySparql, $"seal-category-{key}"),
         _ => null
     };
 

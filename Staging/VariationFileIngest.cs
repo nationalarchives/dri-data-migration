@@ -13,6 +13,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
     : StagingIngest<DriVariationFile>(sparqlClient, logger, cacheClient, "VariationFileGraph")
 {
     private readonly HashSet<string> predicates = [];
+    private readonly DateParser dateParser = new(logger);
 
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriVariationFile dri, CancellationToken cancellationToken)
     {
@@ -181,15 +182,20 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         var foundNote = rdf.GetTriplesWithPredicate(archivistNote).FirstOrDefault()?.Object;
         if (foundNote is not null)
         {
-            graph.Assert(id, Vocabulary.VariationHasDatedNote, datedNode);
             var info = rdf.GetTriplesWithSubjectPredicate(foundNote, archivistNoteInfo).FirstOrDefault()?.Object as ILiteralNode;
             if (info is not null && !string.IsNullOrWhiteSpace(info.Value))
             {
+                graph.Assert(id, Vocabulary.VariationHasDatedNote, datedNode);
                 graph.Assert(datedNode, Vocabulary.ArchivistNote, new LiteralNode(info.Value)); //TODO: review notes to check if can be better modelled
                 var date = rdf.GetTriplesWithSubjectPredicate(foundNote, archivistNoteDate).FirstOrDefault()?.Object as ILiteralNode;
                 if (date is not null && !string.IsNullOrWhiteSpace(date.Value))
                 {
-                    assert.YearMonthDay(graph, Vocabulary.DatedNoteHasDate, datedNode, noteDate, date.Value);
+                    var ymd = dateParser.ParseDate(date.Value);
+                    if (ymd.DateKind == DateParser.DateType.Date)
+                    {
+                        graph.Assert(datedNode, Vocabulary.DatedNoteHasDate, noteDate);
+                        GraphAssert.YearMonthDay(graph, noteDate, ymd.Year, ymd.Month, ymd.Day);
+                    }
                 }
             }
         }

@@ -58,8 +58,18 @@ public static class Vocabulary
     public static readonly IUriNode AssetHasOriginDateEnd = new UriNode(new(Namespace, "assetHasOriginDateEnd"));
     public static readonly IUriNode AssetHasOriginApproximateDateStart = new UriNode(new(Namespace, "assetHasOriginApproximateDateStart"));
     public static readonly IUriNode AssetHasOriginApproximateDateEnd = new UriNode(new(Namespace, "assetHasOriginApproximateDateEnd"));
-    public static readonly IUriNode AssetHasUkGovernmentWebArchive = new UriNode(new(Namespace, "assetHasUkGovernmentWebArchive"));
+    public static readonly IUriNode AssetHasDimension = new UriNode(new(Namespace, "assetHasDimension"));
     public static readonly IUriNode CourtAssetHasCourtCase = new UriNode(new(Namespace, "courtAssetHasCourtCase"));
+    public static readonly IUriNode SealAssetHasSealCategory = new UriNode(new(Namespace, "sealAssetHasSealCategory"));
+    public static readonly IUriNode SealAssetHasStartDate = new UriNode(new(Namespace, "sealAssetHasStartDate"));
+    public static readonly IUriNode SealAssetHasEndDate = new UriNode(new(Namespace, "sealAssetHasEndDate"));
+    public static readonly IUriNode SealAssetHasObverseStartDate = new UriNode(new(Namespace, "sealAssetHasObverseStartDate"));
+    public static readonly IUriNode SealAssetHasObverseEndDate = new UriNode(new(Namespace, "sealAssetHasObverseEndDate"));
+    public static readonly IUriNode SealAssetHasReverseStartDate = new UriNode(new(Namespace, "sealAssetHasReverseStartDate"));
+    public static readonly IUriNode SealAssetHasReverseEndDate = new UriNode(new(Namespace, "sealAssetHasReverseEndDate"));
+    public static readonly IUriNode SealAssetHasObverseDimension = new UriNode(new(Namespace, "sealAssetHasObverseDimension"));
+    public static readonly IUriNode SealAssetHasReverseDimension = new UriNode(new(Namespace, "sealAssetHasReverseDimension"));
+    public static readonly IUriNode AssetHasUkGovernmentWebArchive = new UriNode(new(Namespace, "assetHasUkGovernmentWebArchive"));
     public static readonly IUriNode InquiryAssetHasInquiryAppearance = new UriNode(new(Namespace, "inquiryAssetHasInquiryAppearance"));
 
     public static readonly IUriNode Variation = new UriNode(new(Namespace, "Variation"));
@@ -160,4 +170,13 @@ public static class Vocabulary
     public static readonly IUriNode ManualImageCrop = new UriNode(new(Namespace, "ManualImageCrop"));
     public static readonly IUriNode AutoImageDeskew = new UriNode(new(Namespace, "AutoImageDeskew"));
     public static readonly IUriNode ManualImageDeskew = new UriNode(new(Namespace, "ManualImageDeskew"));
+    
+    public static readonly IUriNode SealOwnerName = new UriNode(new(Namespace, "sealOwnerName"));
+    public static readonly IUriNode SealColour = new UriNode(new(Namespace, "sealColour"));
+    
+    public static readonly IUriNode SealCategoryName = new UriNode(new(Namespace, "sealCategoryName"));
+    
+    public static readonly IUriNode FragmentDimension = new UriNode(new(Namespace, "FragmentDimension"));
+    public static readonly IUriNode FirstDimensionMillimetre = new UriNode(new(Namespace, "firstDimensionMillimetre"));
+    public static readonly IUriNode SecondDimensionMillimetre = new UriNode(new(Namespace, "secondDimensionMillimetre"));
 }

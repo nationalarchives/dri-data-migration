@@ -62,6 +62,11 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Paper asset".
 
+:SealAsset a owl:Class;
+	rdfs:subClassOf :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Seal asset".
+
 :InquiryAppearance a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Inquiry appearance".
@@ -272,6 +277,19 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Manual image deskew".
 
+:SealCategory a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Seal category".
+
+:Dimension a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Dimension".
+
+:FragmentDimension a owl:Class;
+	rdfs:subClassOf :Dimension;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Fragment dimension".
+
 
 # Object properties
 
@@ -358,6 +376,66 @@ this:schema a owl:Ontology;
 	rdfs:range :Asset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Associated geographical place has asset".
+
+:assetHasDimension a owl:ObjectProperty;
+	rdfs:domain :Asset;
+	rdfs:range :Dimension;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has dimension".
+
+:sealAssetHasSealCategory a owl:ObjectProperty;
+	rdfs:domain :SealAsset;
+	rdfs:range :SealCategory;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Seal asset has seal category".
+
+:sealAssetHasStartDate a owl:ObjectProperty;
+	rdfs:domain :SealAsset;
+	rdfs:range :Date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Seal asset has start date".
+
+:sealAssetHasEndDate a owl:ObjectProperty;
+	rdfs:domain :SealAsset;
+	rdfs:range :Date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Seal asset has end date".
+
+:sealAssetHasObverseStartDate a owl:ObjectProperty;
+	rdfs:domain :SealAsset;
+	rdfs:range :Date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Seal asset has obverse start date".
+
+:sealAssetHasObverseEndDate a owl:ObjectProperty;
+	rdfs:domain :SealAsset;
+	rdfs:range :Date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Seal asset has obverse end date".
+
+:sealAssetHasReverseStartDate a owl:ObjectProperty;
+	rdfs:domain :SealAsset;
+	rdfs:range :Date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Seal asset has reverse start date".
+
+:sealAssetHasReverseEndDate a owl:ObjectProperty;
+	rdfs:domain :SealAsset;
+	rdfs:range :Date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Seal asset has reverse end date".
+
+:sealAssetHasObverseDimension a owl:ObjectProperty;
+	rdfs:domain :SealAsset;
+	rdfs:range :Dimension;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Seal asset has obverse dimension".
+
+:sealAssetHasReverseDimension a owl:ObjectProperty;
+	rdfs:domain :SealAsset;
+	rdfs:range :Dimension;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Seal asset has reverse dimension".
 
 :courtAssetHasCourtCase a owl:ObjectProperty;
 	rdfs:domain :CourtAsset;
@@ -885,6 +963,19 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Paper number".
 
+:sealOwnerName a owl:DatatypeProperty;
+	rdfs:domain :SealAsset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :name;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Seal owner name".
+
+:sealColour a owl:DatatypeProperty;
+	rdfs:domain :SealAsset;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Seal colour".
+
 :formalBodyName a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :FormalBody;
 	rdfs:range xsd:string;
@@ -1199,3 +1290,24 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Geographical place name".
+
+:sealCategoryName a owl:DatatypeProperty;
+	rdfs:domain :SealCategory;
+	rdfs:subPropertyOf :name;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Seal category name".
+
+:firstDimensionMillimetre a owl:DatatypeProperty;
+	rdfs:seeAlso rico:measure;
+	rdfs:domain :Dimension;
+	rdfs:range xsd:integer;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset first dimension millimetre".
+
+:secondDimensionMillimetre a owl:DatatypeProperty;
+	rdfs:seeAlso rico:measure;
+	rdfs:domain :Dimension;
+	rdfs:range xsd:integer;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset second dimension millimetre".

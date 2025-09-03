@@ -1,6 +1,5 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
-using System.Globalization;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
@@ -41,6 +40,14 @@ public class GraphAssert(ILogger logger, ICacheClient cacheClient)
         if (found is ILiteralNode foundNode)
         {
             Text(graph, id, foundNode.Value, immediatePredicate);
+        }
+    }
+
+    public static void Integer(IGraph graph, INode id, int? value, IUriNode immediatePredicate)
+    {
+        if (value.HasValue)
+        {
+            graph.Assert(id, immediatePredicate, new LongNode(value.Value));
         }
     }
 
@@ -101,7 +108,7 @@ public class GraphAssert(ILogger logger, ICacheClient cacheClient)
         var found = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
         if (found is ILiteralNode foundNode && !string.IsNullOrWhiteSpace(foundNode.Value))
         {
-            if (TryParseDate(foundNode.Value, out var dt))
+            if (DateParser.TryParseDate(foundNode.Value, out var dt))
             {
                 graph.Assert(id, immediatePredicate, new DateNode(dt));
             }
@@ -112,31 +119,20 @@ public class GraphAssert(ILogger logger, ICacheClient cacheClient)
         }
     }
 
-    public bool YearMonthDay(IGraph graph, IUriNode predicate, INode id, INode dateId, string date)
+    public static void YearMonthDay(IGraph graph, INode id, int? year, int? month, int? day)
     {
-        graph.Assert(id, predicate, dateId);
-        if (TryParseDate(date, out var dt))
+        if (year.HasValue)
         {
-            graph.Assert(dateId, Vocabulary.Year, new LiteralNode(dt.Year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
-            graph.Assert(dateId, Vocabulary.Month, new LiteralNode($"--{dt.Month}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
-            graph.Assert(dateId, Vocabulary.Day, new LiteralNode($"---{dt.Day}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
-
-            return true;
+            graph.Assert(id, Vocabulary.Year, new LiteralNode(year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
+            if (month.HasValue)
+            {
+                graph.Assert(id, Vocabulary.Month, new LiteralNode($"--{month}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
+            }
+            if (day.HasValue)
+            {
+                graph.Assert(id, Vocabulary.Day, new LiteralNode($"---{day}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
+            }
         }
-
-        if (int.TryParse(date, out var year))
-        {
-            graph.Assert(dateId, Vocabulary.Year, new LiteralNode(year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
-            return true;
-        }
-
-        if (date.StartsWith('[') && date.IndexOf(']') == date.Length - 1)
-        {
-            return YearMonthDay(graph, predicate, id, dateId, date.Remove(date.Length - 1, 1).Remove(0, 1));
-        }
-
-        logger.UnrecognizedYearMonthDayFormat(date);
-        return false;
     }
 
     public async Task<IUriNode?> ExistingOrNewWithRelationshipAsync(IGraph graph, INode id, IGraph rdf,
@@ -163,38 +159,5 @@ public class GraphAssert(ILogger logger, ICacheClient cacheClient)
         graph.Assert(id, immediatePredicate, nodeId);
 
         return nodeId;
-    }
-
-    public static bool TryParseDate(string date, out DateTimeOffset dt)
-    {
-        if (string.IsNullOrWhiteSpace(date))
-        {
-            dt = default;
-            return false;
-        }
-        date = date.Replace(" Sept ", " Sep ");
-        if (DateTimeOffset.TryParse(date, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt1))
-        {
-            dt = dt1;
-            return true;
-        }
-        if (DateTimeOffset.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt2))
-        {
-            dt = dt2;
-            return true;
-        }
-        if (DateTimeOffset.TryParseExact(date, "\\[yyyy MMM d\\]", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt3))
-        {
-            dt = dt3;
-            return true;
-        }
-        if (DateTimeOffset.TryParseExact(date, "\\[yyyy MMMM d\\]", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt4))
-        {
-            dt = dt4;
-            return true;
-        }
-
-        dt = default;
-        return false;
     }
 }

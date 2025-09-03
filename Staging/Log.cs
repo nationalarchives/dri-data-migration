@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
 using VDS.RDF.Parsing;
 
 namespace Staging;
@@ -101,4 +100,10 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 32, Level = LogLevel.Warning, Message = "Unable to load RDF: {message}")]
     internal static partial void UnableLoadRdf(this ILogger logger, string message);
+
+    [LoggerMessage(EventId = 33, Level = LogLevel.Warning, Message = "Unrecognized {face} face format")]
+    internal static partial void UnrecognizedFaceFormat(this ILogger logger, string face);
+
+    [LoggerMessage(EventId = 34, Level = LogLevel.Warning, Message = "Unable to parse {dimension} dimension")]
+    internal static partial void UnableParseDimension(this ILogger logger, string dimension);
 }

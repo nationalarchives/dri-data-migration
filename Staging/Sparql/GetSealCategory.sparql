@@ -1,0 +1,8 @@
+﻿prefix ex: <http://id.example.com/schema/>
+            
+construct {
+    ?s ex:sealCategoryName ?sealCategoryName.
+} where {
+    bind(@id as ?sealCategoryName)
+    ?s ex:sealCategoryName ?sealCategoryName.
+}

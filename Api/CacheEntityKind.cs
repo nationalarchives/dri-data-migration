@@ -13,5 +13,6 @@ public enum CacheEntityKind
     VariationByPartialPathAndAsset,
     CourtCaseByCaseAndAsset,
     InquiryAppearanceByWitnessAndDescription,
-    GeographicalPlace
+    GeographicalPlace,
+    SealCategory
 }
