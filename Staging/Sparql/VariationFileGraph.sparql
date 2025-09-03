@@ -35,6 +35,10 @@ construct {
     optional { ?variation ex:variationReferenceParentGoogleId ?variationReferenceParentGoogleId }
     optional { ?variation ex:scannerOperatorIdentifier ?scannerOperatorIdentifier }
     optional { ?variation ex:scannerIdentifier ?scannerIdentifier }
+    optional { ?variation ex:scannedVariationHasScannerGeographicalPlace ?scannedVariationHasScannerGeographicalPlace }
+    optional { ?variation ex:scannedVariationHasImageSplit ?scannedVariationHasImageSplit }
+    optional { ?variation ex:scannedVariationHasImageCrop ?scannedVariationHasImageCrop }
+    optional { ?variation ex:scannedVariationHasImageDeskew ?scannedVariationHasImageDeskew }
     optional { ?variation ex:variationHasRedactedVariation ?variationHasRedactedVariation }
     optional { ?variation ex:variationHasAlternativeVariation ?variationHasAlternativeVariation }
     optional {
