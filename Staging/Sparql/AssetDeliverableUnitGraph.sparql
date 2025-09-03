@@ -27,11 +27,8 @@ construct {
         ex:imageSequenceEnd ?imageSequenceEnd;
         ex:paperNumber ?paperNumber;
         ex:assetHasDimension ?dimension;
-        ex:assetHasFragmentDimension ?fragmentDimension;
         ex:sealAssetHasObverseDimension ?obverseDimension;
         ex:sealAssetHasReverseDimension ?reverseDimension;
-        ex:sealAssetHasObverseFragmentDimension ?sealAssetHasObverseFragmentDimension;
-        ex:sealAssetHasReverseFragmentDimension ?sealAssetHasReverseFragmentDimension;
         ex:sealOwnerName ?sealOwnerName;
         ex:sealColour ?sealColour;
         ex:assetHasUkGovernmentWebArchive ?assetHasUkGovernmentWebArchive;
@@ -134,9 +131,6 @@ construct {
     optional { ?asset ex:assetHasAssociatedGeographicalPlace ?associatedGeographicalPlace }
     optional { ?asset ex:assetHasLegalStatus ?legalStatus }
     optional { ?asset ex:sealAssetHasSealCategory ?sealAssetHasSealCategory }
-    optional { ?asset ex:assetHasFragmentDimension ?fragmentDimension }
-    optional { ?asset ex:sealAssetHasObverseFragmentDimension ?sealAssetHasObverseFragmentDimension }
-    optional { ?asset ex:sealAssetHasReverseFragmentDimension ?sealAssetHasReverseFragmentDimension }
     optional {
         ?asset ex:assetHasDimension ?dimension.
         optional { ?dimension ex:firstDimensionMillimetre ?firstDimensionMillimetre }
