@@ -6,28 +6,44 @@
 <section class="row tna-!--margin-top-m tna-column tna-column--full">
     <h1>Variation @Model.Item.Name.Single()</h1>
     <dl class="tna-dl tna-dl--plain">
-        <dt>DRI Id</dt>
-        <dd>@Model.Item.Id.Single()</dd>
-        @if (Model.Item.PastName.Any())
-        {
-            <dt>Past name</dt>
-            <dd>@Model.Item.PastName.Single()</dd>
-        }
-        @if (Model.Item.Note.Any())
-        {
-            <dt>Note</dt>
-            <dd>@Model.Item.Note.Single()</dd>
-        }
+        <partial name="DynamicCollectionTextPartial" model="@("Id", Model.Item.Id)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Past name", Model.Item.PastName)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Note", Model.Item.Note)" />
         @if (Model.Item.Location.Any())
         {
             <dt>Location</dt>
             <dd>@Model.Item.Location.Single().Value</dd>
         }
-        @if (Model.Item.PhysicalConditionDescription.Any())
+        <partial name="DynamicCollectionTextPartial" model="@("Physical condition description", Model.Item.PhysicalConditionDescription)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Reference Google identifier", Model.Item.ReferenceGoogleId)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Reference parent Google identifier", Model.Item.ReferenceParentGoogleId)" />
+        @if (Model.Item.ScannerGeographicalPlace.Any())
         {
-            <dt>Physical condition description</dt>
-            <dd>@Model.Item.PhysicalConditionDescription.Single()</dd>
+            <partial name="DynamicCollectionTextPartial" model="@("Scanner geographical place name", Model.Item.ScannerGeographicalPlace.Single().Name)" />
         }
+        <partial name="DynamicCollectionTextPartial" model="@("Scanner operator identifier", Model.Item.ScannerOperatorIdentifier)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Scanner identifier", Model.Item.ScannerIdentifier)" />
+        @if (Model.Item.ScannedVariationHasImageCrop.Any())
+        {
+            <dt>Scanned image crop</dt>
+            <dd>@Model.Item.ScannedVariationHasImageCrop.Single().Uri.Segments.Last()</dd>
+        }
+        @if (Model.Item.ScannedVariationHasImageDeskew.Any())
+        {
+            <dt>Scanned image deskew</dt>
+            <dd>@Model.Item.ScannedVariationHasImageDeskew.Single().Uri.Segments.Last()</dd>
+        }
+        @if (Model.Item.ScannedVariationHasImageSplit.Any())
+        {
+            <dt>Scanned image split</dt>
+            <dd>@Model.Item.ScannedVariationHasImageSplit.Single().Uri.Segments.Last()</dd>
+        }
+        @if (Model.Item.DatedNote.Any())
+        {
+            <partial name="DynamicCollectionTextPartial" model="@("Archivist note", Model.Item.DatedNote.Single().ArchivistNote)" />
+            <partial name="DateYmdPartial" model="@("Archivist note date", Model.Item.DatedNote.Single().Date)" />
+        }
+
     </dl>
 
     @if (Model.Item.Redacted.Any())
@@ -74,25 +90,6 @@
     <div class="tna-column tna-column--full">
         <div class="tna-form__group">
             <textarea class="tna-textarea" rows="25" readonly>@System.Text.UTF8Encoding.UTF8.GetString(Convert.FromBase64String(Model.Item.Xml.Single().Value))</textarea>
-        </div>
-    </div>
-</section>
-
-<section class="tna-container tna-!--margin-top-m">
-    <div class="tna-column tna-column--full">
-        <div class="tna-form__group">
-            @{
-                var simple = Models.SimpleVariation.FromVariation(Model.Item);
-
-                var options = new System.Text.Json.JsonSerializerOptions()
-                {
-                    PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,
-                    WriteIndented = true,
-                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
-                };
-                var json = System.Text.Json.JsonSerializer.Serialize(simple, options);
-                <textarea class="tna-textarea" rows="25" readonly>@json</textarea>
-            }
         </div>
     </div>
 </section>

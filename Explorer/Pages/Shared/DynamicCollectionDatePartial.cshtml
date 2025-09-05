@@ -1,0 +1,7 @@
+﻿@model (string, ICollection<DateTimeOffset?>)
+
+@if (Model.Item2.Any())
+{
+    <dt>@Model.Item1</dt>
+    <dd>@Model.Item2.Single().Value.ToString("dd MMMM yyyy")</dd>
+}

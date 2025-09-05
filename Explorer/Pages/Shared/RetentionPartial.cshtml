@@ -2,19 +2,10 @@
 
 @if (Model.Any())
 {
-    <div class="tna-!--margin-top-m">
-        <h2>Retention</h2>
-        <dl class="tna-dl tna-dl--plain">
-            @if (Model.Single().ImportLocation.Any())
-            {
-                <dt>Import location</dt>
-                <dd>@Model.Single().ImportLocation.Single()</dd>
-            }
-            @if (Model.Single().RetentionBody.Any())
-            {
-                <dt>Retained by</dt>
-                <dd>@Model.Single().RetentionBody.Single().Name.Single()</dd>
-            }
-        </dl>
-    </div>
+    @if (Model.Single().RetentionBody.Any())
+    {
+        <dt>Retained by</dt>
+        <dd>@Model.Single().RetentionBody.Single().Name.Single()</dd>
+    }
+    <partial name="DynamicCollectionTextPartial" model="@("Retention import location", Model.Single().ImportLocation)" />
 }

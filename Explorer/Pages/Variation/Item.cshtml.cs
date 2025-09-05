@@ -21,19 +21,27 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:variationNote ?variationNote;
                 ex:variationRelativeLocation ?variationRelativeLocation;
                 ex:variationPhysicalConditionDescription ?variationPhysicalConditionDescription;
+                ex:variationReferenceGoogleId ?variationReferenceGoogleId;
+                ex:variationReferenceParentGoogleId ?variationReferenceParentGoogleId;
+                ex:scannerOperatorIdentifier ?scannerOperatorIdentifier;
+                ex:scannerIdentifier ?scannerIdentifier;
+                ex:variationHasDatedNote ?datedNote;
+                ex:scannedVariationHasScannerGeographicalPlace ?scannerGeographicalPlace;
+                ex:scannedVariationHasImageSplit ?scannedVariationHasImageSplit;
+                ex:scannedVariationHasImageCrop ?scannedVariationHasImageCrop;
+                ex:scannedVariationHasImageDeskew ?scannedVariationHasImageDeskew;
                 ex:variationHasRedactedVariation ?variationHasRedactedVariation;
                 ex:variationHasSensitivityReview ?sr;
                 ex:variationHasAsset ?asset.
+            ?datedNote ex:archivistNote ?archivistNote;
+                ex:year ?datedNoteYear;
+                ex:month ?datedNoteMonth;
+                ex:day ?datedNoteDay.
+            ?scannerGeographicalPlace ex:geographicalPlaceName ?scannerGeographicalPlaceName.
             ?variationHasRedactedVariation ex:variationDriId ?redactedVariationDriId;
                 ex:variationName ?redactedVariationName.
             ?asset ex:assetDriId ?assetDriId;
                 ex:assetReference ?assetReference;
-                ex:assetDescription ?assetDescription;
-                ex:batchDriId ?batchDriId;
-                ex:consignmentTdrId ?consignmentTdrId;
-                ex:assetHasLegalStatus ?legalStatus;
-                ex:assetHasRetention ?retention;
-                ex:assetHasCreation ?creation;
                 ex:assetHasSubset ?subset.
             ?retention ex:retentionHasFormalBody ?retentionHasFormalBody.
             ?retentionHasFormalBody ex:formalBodyName ?retentionFormalBodyName.
@@ -77,7 +85,25 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
             optional { ?variation ex:variationNote ?variationNote }
             optional { ?variation ex:variationRelativeLocation ?variationRelativeLocation }
             optional { ?variation ex:variationPhysicalConditionDescription ?variationPhysicalConditionDescription }
-            optional { 
+            optional { ?variation ex:variationReferenceGoogleId ?variationReferenceGoogleId }
+            optional { ?variation ex:variationReferenceParentGoogleId ?variationReferenceParentGoogleId }
+            optional { ?variation ex:scannerOperatorIdentifier ?scannerOperatorIdentifier }
+            optional { ?variation ex:scannerIdentifier ?scannerIdentifier }
+            optional {
+                ?variation ex:variationHasDatedNote ?datedNote.
+                optional { ?datedNote ex:archivistNote ?archivistNote }
+                optional { ?datedNote ex:year ?datedNoteYear }
+                optional { ?datedNote ex:month ?datedNoteMonth }
+                optional { ?datedNote ex:day ?datedNoteDay }
+            }
+            optional {
+                ?variation ex:scannedVariationHasScannerGeographicalPlace ?scannerGeographicalPlace.
+                ?scannerGeographicalPlace ex:geographicalPlaceName ?scannerGeographicalPlaceName.
+            }
+            optional { ?variation ex:scannedVariationHasImageSplit ?scannedVariationHasImageSplit }
+            optional { ?variation ex:scannedVariationHasImageCrop ?scannedVariationHasImageCrop }
+            optional { ?variation ex:scannedVariationHasImageDeskew ?scannedVariationHasImageDeskew }
+            optional {
                 ?variation ex:variationHasRedactedVariation ?variationHasRedactedVariation.
                 ?variationHasRedactedVariation ex:variationDriId ?redactedVariationDriId;
                     ex:variationName ?redactedVariationName.
@@ -85,24 +111,6 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
             ?asset ex:assetDriId ?assetDriId;
                 ex:assetReference ?assetReference;
                 ex:assetHasSubset ?subset.
-            optional { ?asset ex:assetDescription ?assetDescription }
-            optional { ?asset ex:batchDriId ?batchDriId }
-            optional { ?asset ex:consignmentTdrId ?consignmentTdrId }
-            optional { ?asset ex:assetHasLegalStatus ?legalStatus }
-            optional {
-                ?asset ex:assetHasRetention ?retention.
-        	    optional {
-                    ?retention ex:retentionHasFormalBody ?retentionHasFormalBody.
-                    ?retentionHasFormalBody ex:formalBodyName ?retentionFormalBodyName.
-                }
-            }
-            optional {
-                ?asset ex:assetHasCreation ?creation.
-                optional {
-                    ?creation ex:creationHasFormalBody ?creationHasFormalBody.
-                    ?creationHasFormalBody ex:formalBodyName ?creationFormalBodyName.
-                }
-            }
             ?subset ex:subsetReference ?subsetReference.
             optional {
                 ?subset ex:subsetHasBroaderSubset* ?broader.
@@ -111,7 +119,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
             optional {
                 ?variation ex:variationHasSensitivityReview ?sr.
         	    ?sr ex:sensitivityReviewDriId ?sensitivityReviewDriId.
-                # filter not exists { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?sr }
+                filter not exists { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?sr }
                 optional { 
                     ?sr ex:sensitivityReviewHasAccessCondition ?accessCondition.
                     ?accessCondition ex:accessConditionCode ?accessConditionCode;

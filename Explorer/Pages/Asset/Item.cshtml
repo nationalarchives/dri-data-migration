@@ -2,144 +2,133 @@
 @using VDS.RDF.Parsing
 @using VDS.RDF.Writing
 @model Explorer.Pages.Asset.ItemModel
+@{
+    var asset = Model.Item;
+}
 
-<partial name="SubsetBreadcrumbPartial" model="@Model.Item.Subset.Single().Broader" />
+<partial name="SubsetBreadcrumbPartial" model="@asset.Subset.Single().Broader" />
 
 <section class="row tna-!--margin-top-m tna-column tna-column--full">
-    <h1>Asset @Model.Item.Reference.Single() @Model.Item.Name.SingleOrDefault()</h1>
+    <h1>Asset @asset.Reference.Single() @asset.Name.SingleOrDefault()</h1>
     <dl class="tna-dl tna-dl--plain">
-        <dt>DRI Id</dt>
-        <dd>@Model.Item.Id.Single()</dd>
-        @if (Model.Item.Description.Any())
+        <partial name="DynamicCollectionTextPartial" model="@("Id", asset.Id)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Name", asset.Name)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Reference", asset.Reference)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Past reference", asset.PastReference)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Description", asset.Description)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Summary", asset.Summary)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Tag", asset.Tag)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Consignment identifier", asset.ConsignmentId)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Batch identifier", asset.BatchId)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Source internal name", asset.SourceInternalName)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Source internal name", asset.SourceInternalName)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Relation description", asset.RelationDescription)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Physical description", asset.PhysicalDescription)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Paper number", asset.PaperNumber)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Usage restriction description", asset.UsageRestrictionDescription)" />
+        @if (asset.UkGovernmentWebArchive.Any())
         {
-            <dt>Description</dt>
-            <dd>@Model.Item.Description.Single()</dd>
+            <dt>UK government web archive</dt>
+            <dd><a href="@asset.UkGovernmentWebArchive.Single().Uri">@asset.UkGovernmentWebArchive.Single().Uri</a></dd>
         }
-        @if (Model.Item.BatchId.Any())
-        {
-            <dt>Batch Id</dt>
-            <dd>@Model.Item.BatchId.Single()</dd>
-        }
-        @if (Model.Item.ConsignmentId.Any())
-        {
-            <dt>Consignment Id</dt>
-            <dd>@Model.Item.ConsignmentId.Single()</dd>
-        }
-        @if (Model.Item.RelationDescription.Any())
-        {
-            <dt>Relation description</dt>
-            <dd>@Model.Item.RelationDescription.Single()</dd>
-        }
-        @if (Model.Item.PhysicalDescription.Any())
-        {
-            <dt>Physical description</dt>
-            <dd>@Model.Item.PhysicalDescription.Single()</dd>
-        }
-        @if (Model.Item.UseRestrictionDescription.Any())
-        {
-            <dt>Usage restriction description</dt>
-            <dd>@Model.Item.UseRestrictionDescription.Single()</dd>
-        }
-        @if (Model.Item.Language.Any())
-        {
-            <dt>Language</dt>
-            <dd>@Model.Item.Language.Single().Name.Single()</dd>
-        }
-        @if (Model.Item.Copyrights.Any())
-        {
-            <dt>Copyright</dt>
-            <dd>
-                <ul class="tna-ul tna-ul--dashed">
-                    @foreach (var copyright in Model.Item.Copyrights)
-                    {
-                        <li>@copyright.Title.Single()</li>
-                    }
-                </ul>
-            </dd>
-        }
-        @if (Model.Item.LegalStatus.Any())
+        @if (asset.LegalStatus.Any())
         {
             <dt>Legal status</dt>
-            <dd>@Model.Item.LegalStatus.Single().Uri.Segments.Last()</dd>
+            <dd>@asset.LegalStatus.Single().Uri.Segments.Last()</dd>
         }
-        @if (Model.Item.Creation.Any())
+        @if (asset.Copyrights.Any())
         {
-            <dt>Created by</dt>
-            <dd>@Model.Item.Creation.Single().CreationBody.Single().Name.Single()</dd>
+            <dt>Copyrights</dt>
+            <dd>
+                <dl>
+                    @foreach (var copyright in asset.Copyrights)
+                    {
+                        <partial name="DynamicCollectionTextPartial" model="@("Title", copyright.Title)" />
+                    }
+                </dl>
+            </dd>
         }
+        <partial name="RetentionPartial" model="@asset.Retention" />
+        @if (asset.Creation.Any() && asset.Creation.Single().CreationBody.Any())
+        {
+            <partial name="DynamicCollectionTextPartial" model="@("Created by", asset.Creation.Single().CreationBody.Single().Name)" />
+        }
+        @if (asset.GeographicalPlace.Any())
+        {
+            <partial name="DynamicCollectionTextPartial" model="@("Geographical place name", asset.GeographicalPlace.Single().Name)" />
+        }
+        <partial name="DateYmdPartial" model="@("Origin date start", asset.OriginDateStart)" />
+        <partial name="DateYmdPartial" model="@("Origin date end", asset.OriginDateEnd)" />
+        <partial name="DateYmdPartial" model="@("Origin approximate date start", asset.OriginApproximateDateEnd)" />
+        <partial name="DateYmdPartial" model="@("Origin approximate date end", asset.OriginApproximateDateStart)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Film production company name", asset.FilmProductionCompanyName)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Film title", asset.FilmTitle)" />
+        @if (asset.FilmDuration.Any())
+        {
+            <dt>Film duration</dt>
+            <dd>@asset.FilmDuration.Single()</dd>
+        }
+        <partial name="DynamicCollectionTextPartial" model="@("Evidence provider", asset.EvidenceProvider)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Investigation", asset.Investigation)" />
+        <partial name="DynamicCollectionDatePartial" model="@("Inquiry hearing date", asset.InquiryHearingDate)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Inquiry session description", asset.InquirySessionDescription)" />
+        @if (asset.InquiryAppearances.Any())
+        {
+            <dt>Inquiry appearances</dt>
+            <dd>
+                <dl>
+                    @foreach (var appearance in asset.InquiryAppearances)
+                    {
+                        <partial name="DynamicCollectionTextPartial" model="@("Witness name", appearance.WitnessName)" />
+                        <partial name="DynamicCollectionTextPartial" model="@("Description", appearance.AppearanceDescription)" />
+                    }
+                </dl>
+            </dd>
+        }
+        <partial name="DynamicCollectionTextPartial" model="@("Court session", asset.CourtSession)" />
+        <partial name="DynamicCollectionDatePartial" model="@("Court session date", asset.CourtSessionDate)" />
+        @if (asset.CourtCases.Any())
+        {
+            <dt>Court cases</dt>
+            <dd>
+                <dl>
+                    @foreach (var courtCase in asset.CourtCases)
+                    {
+                        <partial name="DynamicCollectionTextPartial" model="@("Reference", courtCase.Reference)" />
+                        <partial name="DynamicCollectionTextPartial" model="@("Name", courtCase.Name)" />
+                        <partial name="DynamicCollectionTextPartial" model="@("Summary judgment", courtCase.SummaryJudgment)" />
+                        <partial name="DynamicCollectionTextPartial" model="@("Summary reasons for judgment", courtCase.SummaryReasonsForJudgment)" />
+                        <partial name="DynamicCollectionDatePartial" model="@("Hearing start date", courtCase.HearingStartDate)" />
+                        <partial name="DynamicCollectionDatePartial" model="@("Hearing end date", courtCase.HearingEndDate)" />
+                    }
+                </dl>
+            </dd>
+        }
+        <partial name="DynamicCollectionTextPartial" model="@("Seal owner name", asset.SealOwnerName)" />
+        <partial name="DynamicCollectionTextPartial" model="@("Seal colour", asset.SealColour)" />
+        @if (asset.SealCatagory.Any())
+        {
+            <partial name="DynamicCollectionTextPartial" model="@("Seal category name", asset.SealCatagory.Single().Name)" />
+        }
+        <partial name="DynamicCollectionIntPartial" model="@("Image sequence start", asset.ImageSequenceStart)" />
+        <partial name="DynamicCollectionIntPartial" model="@("Image sequence end", asset.ImageSequenceEnd)" />
+        <partial name="DimensionPartial" model="@("Dimension", asset.Dimension)" />
+        <partial name="DimensionPartial" model="@("Obverse dimension", asset.ObverseDimension)" />
+        <partial name="DimensionPartial" model="@("Reverse dimension", asset.ReverseDimension)" />
+        <partial name="DateYmdPartial" model="@("Seal start date", asset.SealStartDate)" />
+        <partial name="DateYmdPartial" model="@("Seal end date", asset.SealEndDate)" />
+        <partial name="DateYmdPartial" model="@("Seal obverse start date", asset.SealObverseStartDate)" />
+        <partial name="DateYmdPartial" model="@("Seal obverse end date", asset.SealObverseEndDate)" />
+        <partial name="DateYmdPartial" model="@("Seal reverse start date", asset.SealReverseStartDate)" />
+        <partial name="DateYmdPartial" model="@("Seal reverse end date", asset.SealReverseEndDate)" />
     </dl>
-    @if (Model.Item.EvidenceProvider.Any() || Model.Item.Investigation.Any())
-    {
-        <div class="tna-!--margin-top-m">
-            <h2>Inquiry</h2>
-            <dl class="tna-dl tna-dl--plain">
-                @if (Model.Item.Investigation.Any())
-                {
-                    <dt>Investigation</dt>
-                    <dd>@Model.Item.Investigation.Single()</dd>
-                }
-                @if (Model.Item.EvidenceProvider.Any())
-                {
-                    <dt>Evidence provider</dt>
-                    <dd>@Model.Item.EvidenceProvider.Single()</dd>
-                }
-            </dl>
-        </div>
-    }
-    @if (Model.Item.CourtCases.Any())
-    {
-        <div class="tna-!--margin-top-m">
-            <h2>Court case</h2>
-            <ul class="tna-ul tna-ul--dashed">
-                @foreach (var courtCase in Model.Item.CourtCases)
-                {
-                    <li>
-                        <dl class="tna-dl tna-dl--plain">
-                            @if (courtCase.Reference.Any())
-                            {
-                                <dt>Reference</dt>
-                                <dd>@courtCase.Reference.Single()</dd>
-                            }
-                            @if (courtCase.Name.Any())
-                            {
-                                <dt>Name</dt>
-                                <dd>@courtCase.Name.Single()</dd>
-                            }
-                            @if (courtCase.SummaryJudgment.Any())
-                            {
-                                <dt>Summary judgment</dt>
-                                <dd>@courtCase.SummaryJudgment.Single()</dd>
-                            }
-                            @if (courtCase.SummaryReasonsForJudgment.Any())
-                            {
-                                <dt>Summary reasons for judgment</dt>
-                                <dd>@courtCase.SummaryReasonsForJudgment.Single()</dd>
-                            }
-                            @if (courtCase.HearingStartDate.Any())
-                            {
-                                <dt>Hearing start date</dt>
-                                <dd>@courtCase.HearingStartDate.Single().Value.ToString("dd MMMM yyyy")</dd>
-                            }
-                            @if (courtCase.HearingStartDate.Any())
-                            {
-                                <dt>Hearing end date</dt>
-                                <dd>@courtCase.HearingEndDate.Single().Value.ToString("dd MMMM yyyy")</dd>
-                            }
-                        </dl>
-                    </li>
-                }
-            </ul>
-        </div>
-    }
 
-    <partial name="RetentionPartial" model="@Model.Item.Retention" />
-
-    @if (Model.Item.Variations.Any())
+    @if (asset.Variations.Any())
     {
         <div class="tna-!--margin-top-m">
             <h2>Variations</h2>
             <ul class="tna-ul tna-ul--dashed">
-                @foreach (var variation in Model.Item.Variations)
+                @foreach (var variation in asset.Variations)
                 {
                     <li>
                         <a asp-page="/variation/item" asp-route-id="@variation.Id.Single()">@variation.Name.Single()</a>
@@ -149,12 +138,12 @@
         </div>
     }
 
-    @if (Model.Item.SensitivityReviews.Any())
+    @if (asset.SensitivityReviews.Any())
     {
         <div class="tna-!--margin-top-m">
             <h2>Sensitivity reviews</h2>
             <ul class="tna-ul tna-ul--dashed">
-                @foreach (var sr in Model.Item.SensitivityReviews)
+                @foreach (var sr in asset.SensitivityReviews)
                 {
                     <li>
                         <p>
@@ -171,7 +160,27 @@
 <section class="tna-container tna-!--margin-top-m">
     <div class="tna-column tna-column--full">
         <div class="tna-form__group">
-            <textarea class="tna-textarea" rows="25" readonly>@System.Text.UTF8Encoding.UTF8.GetString(Convert.FromBase64String(Model.Item.Xml.Single().Value))</textarea>
+            <textarea class="tna-textarea" rows="25" readonly>@System.Text.UTF8Encoding.UTF8.GetString(Convert.FromBase64String(asset.Xml.Single().Value))</textarea>
+        </div>
+    </div>
+</section>
+
+<section class="tna-container tna-!--margin-top-m">
+    <div class="tna-column tna-column--full">
+        <div class="tna-form__group">
+            @{
+                var options = new System.Text.Json.JsonSerializerOptions()
+                {
+                    PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,
+                    WriteIndented = true,
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                };
+
+                var assets = Models.FlatJsonAsset.FromAsset(asset);
+                var json = System.Text.Json.JsonSerializer.Serialize(assets, options);
+
+                <textarea class="tna-textarea" rows="25" readonly>@json</textarea>
+            }
         </div>
     </div>
 </section>
