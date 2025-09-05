@@ -17,6 +17,7 @@ construct {
         ex:scannedVariationHasImageDeskew ?scannedVariationHasImageDeskew;
         ex:variationHasRedactedVariation ?variationHasRedactedVariation;
         ex:variationHasAlternativeVariation ?variationHasAlternativeVariation;
+        <http://purl.org/dc/terms/description> ?dctermsDescription;
         ex:variationHasDatedNote ?datedNote.
     ?datedNote ex:archivistNote ?archivistNote;
         ex:datedNoteHasDate ?date.
@@ -41,6 +42,7 @@ construct {
     optional { ?variation ex:scannedVariationHasImageDeskew ?scannedVariationHasImageDeskew }
     optional { ?variation ex:variationHasRedactedVariation ?variationHasRedactedVariation }
     optional { ?variation ex:variationHasAlternativeVariation ?variationHasAlternativeVariation }
+    optional { ?variation <http://purl.org/dc/terms/description> ?dctermsDescription }
     optional {
         ?variation ex:variationHasDatedNote ?datedNote.
         optional { ?datedNote ex:archivistNote ?archivistNote }

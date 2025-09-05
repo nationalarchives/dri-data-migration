@@ -74,7 +74,8 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
             [googleId] = Vocabulary.VariationReferenceGoogleId,
             [googleParentId] = Vocabulary.VariationReferenceParentGoogleId,
             [scanId] = Vocabulary.ScannerIdentifier,
-            [scanOperator] = Vocabulary.ScannerOperatorIdentifier
+            [scanOperator] = Vocabulary.ScannerOperatorIdentifier,
+            [dctermsDescription] = dctermsDescription //TODO: remove after checking
         });
 
         await assert.ExistingOrNewWithRelationshipAsync(graph, id, rdf, scanLocation, CacheEntityKind.GeographicalPlace,
@@ -220,4 +221,6 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
     private static readonly IUriNode imageSplit = new UriNode(new($"{Vocabulary.TnaNamespace}imageSplit"));
     private static readonly IUriNode imageCrop = new UriNode(new($"{Vocabulary.TnaNamespace}imageCrop"));
     private static readonly IUriNode imageDeskew = new UriNode(new($"{Vocabulary.TnaNamespace}imageDeskew"));
+    
+    private static readonly IUriNode dctermsDescription = new UriNode(new("http://purl.org/dc/terms/description")); //TODO: remove after checking data
 }
