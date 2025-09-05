@@ -1303,11 +1303,11 @@ this:schema a owl:Ontology;
 	rdfs:domain :Dimension;
 	rdfs:range xsd:integer;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset first dimension millimetre".
+	rdfs:label "First dimension millimetre".
 
 :secondDimensionMillimetre a owl:DatatypeProperty;
 	rdfs:seeAlso rico:measure;
 	rdfs:domain :Dimension;
 	rdfs:range xsd:integer;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset second dimension millimetre".
+	rdfs:label "Second dimension millimetre".
