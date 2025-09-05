@@ -191,7 +191,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         {
             graph.Assert(retentionRestriction, Vocabulary.RetentionInstrumentNumber, new LongNode(dri.InstrumentNumber.Value));
         }
-        GraphAssert.Date(graph, restriction, new Dictionary<IUriNode, DateTimeOffset?>()
+        GraphAssert.Date(graph, retentionRestriction, new Dictionary<IUriNode, DateTimeOffset?>()
         {
             [Vocabulary.RetentionInstrumentSignatureDate] = dri.InstrumentSignedDate,
             [Vocabulary.RetentionRestrictionReviewDate] = dri.RestrictionReviewDate
