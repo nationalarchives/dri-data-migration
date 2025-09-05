@@ -7,7 +7,7 @@
 
 this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Digital preservation ontology.".
+	rdfs:label "Digital preservation ontology. This is a simplified model that serves ingestion process only.".
 
 
 # Types
