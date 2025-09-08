@@ -8,6 +8,7 @@
     <dl class="tna-dl tna-dl--plain">
         <partial name="DynamicCollectionTextPartial" model="@("Id", Model.Item.Id)" />
         <partial name="DynamicCollectionTextPartial" model="@("Past name", Model.Item.PastName)" />
+        <partial name="DynamicCollectionIntPartial" model="@("Redaction sequence", Model.Item.RedactedSequence)" />
         <partial name="DynamicCollectionTextPartial" model="@("Note", Model.Item.Note)" />
         @if (Model.Item.Location.Any())
         {
@@ -46,23 +47,6 @@
 
     </dl>
 
-    @if (Model.Item.Redacted.Any())
-    {
-        <div class="tna-!--margin-top-m">
-            <h2>Redacted versions</h2>
-            <ul class="tna-ul tna-ul--dashed">
-                @foreach (var redacted in Model.Item.Redacted)
-                {
-                    <li>
-                        <p>
-                            <a asp-page="/variation/item" asp-route-id="@redacted.Id.Single()">@redacted.Name.Single()</a>
-                        </p>
-                    </li>
-                }
-            </ul>
-        </div>
-    }
-
     <div class="tna-!--margin-top-m">
         <h2>Asset <a asp-page="/asset/item" asp-route-id="@Model.Item.Asset.Single().Reference.Single()">@Model.Item.Asset.Single().Reference.Single()</a></h2>
     </div>
@@ -89,7 +73,7 @@
 <section class="tna-container tna-!--margin-top-m">
     <div class="tna-column tna-column--full">
         <div class="tna-form__group">
-            <textarea class="tna-textarea" rows="25" readonly>@System.Text.UTF8Encoding.UTF8.GetString(Convert.FromBase64String(Model.Item.Xml.Single().Value))</textarea>
+            <textarea class="tna-textarea" rows="25" readonly>@(Model.Item.Xml.Any() ? System.Text.UTF8Encoding.UTF8.GetString(Convert.FromBase64String(Model.Item.Xml.Single().Value)) : string.Empty)</textarea>
         </div>
     </div>
 </section>

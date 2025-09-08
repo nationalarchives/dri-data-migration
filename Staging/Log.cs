@@ -106,4 +106,7 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 34, Level = LogLevel.Warning, Message = "Unable to parse {dimension} dimension")]
     internal static partial void UnableParseDimension(this ILogger logger, string dimension);
+
+    [LoggerMessage(EventId = 35, Level = LogLevel.Warning, Message = "Unable to establish sequence of redacted variation {variationPartialName}")]
+    internal static partial void UnableEstablishRedactedVariationSequence(this ILogger logger, string variationPartialName);
 }

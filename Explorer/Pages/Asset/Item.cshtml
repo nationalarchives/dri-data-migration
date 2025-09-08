@@ -9,10 +9,14 @@
 <partial name="SubsetBreadcrumbPartial" model="@asset.Subset.Single().Broader" />
 
 <section class="row tna-!--margin-top-m tna-column tna-column--full">
-    <h1>Asset @asset.Reference.Single() @asset.Name.SingleOrDefault()</h1>
+    <h1>Asset @asset.Reference.Single()</h1>
     <dl class="tna-dl tna-dl--plain">
         <partial name="DynamicCollectionTextPartial" model="@("Id", asset.Id)" />
-        <partial name="DynamicCollectionTextPartial" model="@("Name", asset.Name)" />
+        @foreach (var name in asset.Names)
+        {
+            <dt>Name</dt>
+            <dd>@name</dd>
+        }
         <partial name="DynamicCollectionTextPartial" model="@("Reference", asset.Reference)" />
         <partial name="DynamicCollectionTextPartial" model="@("Past reference", asset.PastReference)" />
         <partial name="DynamicCollectionTextPartial" model="@("Description", asset.Description)" />

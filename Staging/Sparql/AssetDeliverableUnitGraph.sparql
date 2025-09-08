@@ -2,6 +2,7 @@
 
 construct {
     ?asset ex:assetDriId ?assetDriId;
+        ex:assetName ?assetName;
         ex:assetDriXml ?assetDriXml;
         ex:assetPastReference ?assetPastReference;
         ex:assetDescription ?assetDescription;
@@ -50,7 +51,8 @@ construct {
         ex:sealAssetHasReverseStartDate ?sealReverseStartDate;
         ex:sealAssetHasReverseEndDate ?sealReverseEndDate;
         ex:courtAssetHasCourtCase ?courtCase;
-        ex:inquiryAssetHasInquiryAppearance ?inquiryAppearance.
+        ex:inquiryAssetHasInquiryAppearance ?inquiryAppearance;
+        ex:assetHasVariation ?redactedVariation.
     ?retention ex:retentionHasFormalBody ?retentionHasFormalBody.
     ?creation ex:creationHasFormalBody ?creationHasFormalBody.
     ?originDateStart ex:year ?startYear;
@@ -96,10 +98,12 @@ construct {
         ex:courtCaseHearingEndDate ?courtCaseHearingEndDate.
     ?inquiryAppearance ex:inquiryWitnessName ?inquiryWitnessName;
         ex:inquiryWitnessAppearanceDescription ?inquiryWitnessAppearanceDescription.
+    ?redactedVariation ex:redactedVariationSequence ?redactedVariationSequence
 } where {
     bind(@id as ?assetDriId)
     ?asset ex:assetDriId ?assetDriId.
     optional { ?asset ex:assetDriXml ?assetDriXml }
+    optional { ?asset ex:assetName ?assetName }
     optional { ?asset ex:assetPastReference ?assetPastReference }
     optional { ?asset ex:assetDescription ?assetDescription }
     optional { ?asset ex:assetSummary ?assetSummary }
@@ -226,5 +230,9 @@ construct {
         ?asset ex:inquiryAssetHasInquiryAppearance ?inquiryAppearance.
         optional { ?inquiryAppearance ex:inquiryWitnessName ?inquiryWitnessName }
         optional { ?inquiryAppearance ex:inquiryWitnessAppearanceDescription ?inquiryWitnessAppearanceDescription }
+    }
+    optional {
+        ?asset ex:assetHasVariation ?redactedVariation.
+        ?redactedVariation ex:redactedVariationSequence ?redactedVariationSequence.
     }
 }

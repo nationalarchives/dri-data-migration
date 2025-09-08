@@ -12,8 +12,8 @@ public static class EtlServiceCollectionExtensions
         services.AddSingleton<IEtl, EtlGroundForRetention>();
         services.AddSingleton<IEtl, EtlSubset>();
         services.AddSingleton<IEtl, EtlAsset>();
-        services.AddSingleton<IEtl, EtlAssetDeliverableUnit>();
         services.AddSingleton<IEtl, EtlVariation>();
+        services.AddSingleton<IEtl, EtlAssetDeliverableUnit>();
         services.AddSingleton<IEtl, EtlVariationFile>();
         services.AddSingleton<IEtl, EtlSensitivityReview>();
         services.AddSingleton<IMigration, Migration>();

@@ -1,15 +1,13 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System.Text;
-using System.Web;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 
 namespace Staging;
 
-public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<VariationFileIngest> logger, IOptions<DriSettings> options)
+public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<VariationFileIngest> logger)
     : StagingIngest<DriVariationFile>(sparqlClient, logger, cacheClient, "VariationFileGraph")
 {
     private readonly HashSet<string> predicates = [];
@@ -88,36 +86,6 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         {
             var noteDate = existing.GetTriplesWithSubjectPredicate(datedNote, Vocabulary.DatedNoteHasDate).SingleOrDefault()?.Object ?? CacheClient.NewId;
             AddDatedNote(graph, rdf, id, datedNote, noteDate); //TODO: could be overengineering
-        }
-
-        var redacted = rdf.GetTriplesWithPredicate(hasRedactedFile).Select(t => t.Object).Cast<ILiteralNode>();
-        foreach (var redactedFile in redacted)
-        {
-            var partialPath = GetPartialPath(HttpUtility.UrlDecode(redactedFile.Value));
-            var redactedVariation = await cacheClient.CacheFetch(CacheEntityKind.VariationByPartialPathAndAsset, [partialPath, options.Value.Code], cancellationToken);
-            if (redactedVariation is not null)
-            {
-                graph.Assert(id, Vocabulary.VariationHasRedactedVariation, redactedVariation);
-            }
-            else
-            {
-                logger.RedactedVariationMissing(options.Value.Code, partialPath);
-            }
-        }
-
-        var alternative = rdf.GetTriplesWithPredicate(hasPresentationManifestationFile).Select(t => t.Object).Cast<ILiteralNode>();
-        foreach (var alternativeFile in alternative)
-        {
-            var partialPath = GetPartialPath(HttpUtility.UrlDecode(alternativeFile.Value));
-            var alternativeVariation = await cacheClient.CacheFetch(CacheEntityKind.VariationByPartialPathAndAsset, [partialPath, options.Value.Code], cancellationToken);
-            if (alternativeVariation is not null)
-            {
-                graph.Assert(id, Vocabulary.VariationHasAlternativeVariation, alternativeVariation);
-            }
-            else
-            {
-                logger.AlternativeVariationMissing(options.Value.Code, partialPath);
-            }
         }
 
         return true;
@@ -202,12 +170,10 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         }
     }
 
-    private static string GetPartialPath(string path) => path.Substring(path.IndexOf("/content/") + 8);
+
 
     private static readonly IUriNode note = new UriNode(new($"{Vocabulary.TnaNamespace}note"));
     private static readonly IUriNode curatedDateNote = new UriNode(new($"{Vocabulary.TnaNamespace}curatedDateNote"));
-    private static readonly IUriNode hasRedactedFile = new UriNode(new($"{Vocabulary.TnaNamespace}hasRedactedFile"));
-    private static readonly IUriNode hasPresentationManifestationFile = new UriNode(new($"{Vocabulary.TnaNamespace}hasPresentationManifestationFile"));
     private static readonly IUriNode formerReferenceDepartment = new UriNode(new($"{Vocabulary.TnaNamespace}formerReferenceDepartment"));
     private static readonly IUriNode physicalCondition = new UriNode(new($"{Vocabulary.TnaNamespace}physicalCondition"));
     private static readonly IUriNode googleId = new UriNode(new($"{Vocabulary.TnaNamespace}googleId"));
@@ -221,6 +187,6 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
     private static readonly IUriNode imageSplit = new UriNode(new($"{Vocabulary.TnaNamespace}imageSplit"));
     private static readonly IUriNode imageCrop = new UriNode(new($"{Vocabulary.TnaNamespace}imageCrop"));
     private static readonly IUriNode imageDeskew = new UriNode(new($"{Vocabulary.TnaNamespace}imageDeskew"));
-    
+
     private static readonly IUriNode dctermsDescription = new UriNode(new("http://purl.org/dc/terms/description")); //TODO: remove after checking data
 }

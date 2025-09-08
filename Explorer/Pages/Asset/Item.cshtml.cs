@@ -85,19 +85,18 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:variationReferenceParentGoogleId ?variationReferenceParentGoogleId;
                 ex:scannerOperatorIdentifier ?scannerOperatorIdentifier;
                 ex:scannerIdentifier ?scannerIdentifier;
+                ex:redactedVariationSequence ?redactedVariationSequence;
                 ex:variationHasDatedNote ?datedNote;
                 ex:scannedVariationHasScannerGeographicalPlace ?scannerGeographicalPlace;
                 ex:scannedVariationHasImageSplit ?scannedVariationHasImageSplit;
                 ex:scannedVariationHasImageCrop ?scannedVariationHasImageCrop;
                 ex:scannedVariationHasImageDeskew ?scannedVariationHasImageDeskew;
-                ex:variationHasRedactedVariation ?variationHasRedactedVariation;
                 ex:variationHasSensitivityReview ?srv.
             ?datedNote ex:archivistNote ?archivistNote;
                 ex:year ?datedNoteYear;
                 ex:month ?datedNoteMonth;
                 ex:day ?datedNoteDay.
             ?scannerGeographicalPlace ex:geographicalPlaceName ?scannerGeographicalPlaceName.
-            ?variationHasRedactedVariation ex:variationDriId ?redactedVariationDriId.
             ?srv ex:sensitivityReviewDriId ?vSensitivityReviewDriId;
                 ex:sensitivityReviewHasAccessCondition ?accessCondition;
                 ex:sensitivityReviewDate ?vSensitivityReviewDate;
@@ -236,6 +235,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 optional { ?variation ex:variationReferenceParentGoogleId ?variationReferenceParentGoogleId }
                 optional { ?variation ex:scannerOperatorIdentifier ?scannerOperatorIdentifier }
                 optional { ?variation ex:scannerIdentifier ?scannerIdentifier }
+                optional { ?variation ex:redactedVariationSequence ?redactedVariationSequence }
                 optional {
                     ?variation ex:variationHasDatedNote ?datedNote.
                     optional { ?datedNote ex:archivistNote ?archivistNote }
@@ -250,10 +250,6 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 optional { ?variation ex:scannedVariationHasImageSplit ?scannedVariationHasImageSplit }
                 optional { ?variation ex:scannedVariationHasImageCrop ?scannedVariationHasImageCrop }
                 optional { ?variation ex:scannedVariationHasImageDeskew ?scannedVariationHasImageDeskew }
-                optional { 
-                    ?variation ex:variationHasRedactedVariation ?variationHasRedactedVariation.
-                    ?variationHasRedactedVariation ex:variationDriId ?redactedVariationDriId.
-                }
                 optional {
                     ?variation ex:variationHasSensitivityReview ?srv.
         	        ?srv ex:sensitivityReviewDriId ?vSensitivityReviewDriId.

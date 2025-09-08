@@ -83,10 +83,9 @@ public static class Vocabulary
     public static readonly IUriNode VariationPhysicalConditionDescription = new UriNode(new(Namespace, "variationPhysicalConditionDescription"));
     public static readonly IUriNode VariationReferenceGoogleId = new UriNode(new(Namespace, "variationReferenceGoogleId"));
     public static readonly IUriNode VariationReferenceParentGoogleId = new UriNode(new(Namespace, "variationReferenceParentGoogleId"));
+    public static readonly IUriNode RedactedVariationSequence = new UriNode(new(Namespace, "redactedVariationSequence"));
     public static readonly IUriNode ScannerOperatorIdentifier = new UriNode(new(Namespace, "scannerOperatorIdentifier"));
     public static readonly IUriNode ScannerIdentifier = new UriNode(new(Namespace, "scannerIdentifier"));
-    public static readonly IUriNode VariationHasRedactedVariation = new UriNode(new(Namespace, "variationHasRedactedVariation"));
-    public static readonly IUriNode VariationHasAlternativeVariation = new UriNode(new(Namespace, "variationHasAlternativeVariation"));
     public static readonly IUriNode VariationHasSensitivityReview = new UriNode(new(Namespace, "variationHasSensitivityReview"));
     public static readonly IUriNode VariationHasDatedNote = new UriNode(new(Namespace, "variationHasDatedNote"));
     public static readonly IUriNode ScannedVariationHasScannerGeographicalPlace = new UriNode(new(Namespace, "scannedVariationHasScannerGeographicalPlace"));

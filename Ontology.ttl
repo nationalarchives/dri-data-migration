@@ -509,36 +509,6 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation has asset".
 
-:variationHasRedactedVariation a owl:ObjectProperty;
-	rdfs:seeAlso rico:migratedInto;
-	rdfs:domain :Variation;
-	rdfs:range :RedactedVariation;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Variation has redacted variation".
-
-:redactedVariationHasVariation a owl:ObjectProperty;
-	owl:inverseOf :variationHasRedactedVariation;
-	rdfs:seeAlso rico:migratedFrom;
-	rdfs:domain :RedactedVariation;
-	rdfs:range :Variation;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Redacted variation has variation".
-
-:variationHasAlternativeVariation a owl:ObjectProperty;
-	rdfs:seeAlso rico:migratedInto;
-	rdfs:domain :Variation;
-	rdfs:range :AlternativeVariation;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Variation has alternative variation".
-
-:alternativeVariationHasVariation a owl:ObjectProperty;
-	owl:inverseOf :variationHasAlternativeVariation;
-	rdfs:seeAlso rico:migratedFrom;
-	rdfs:domain :AlternativeVariation;
-	rdfs:range :Variation;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Alternative variation has variation".
-
 :scannedVariationHasScannerGeographicalPlace a owl:ObjectProperty;
 	rdfs:domain :ScannedVariation;
 	rdfs:range :GeographicalPlace;
@@ -1065,6 +1035,12 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation reference parent Google Id".
 
+:redactedVariationSequence a owl:DatatypeProperty;
+	rdfs:domain :RedactedVariation;
+	rdfs:range xsd:integer;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Redacted variation sequence".
+
 :scannerOperatorIdentifier a owl:DatatypeProperty;
 	rdfs:domain :ScannedVariation;
 	rdfs:subPropertyOf :externalIdentifier;
@@ -1187,10 +1163,9 @@ this:schema a owl:Ontology;
 
 :retentionRestrictionReviewDate a owl:DatatypeProperty;
 	rdfs:domain :RetentionRestriction;
-	rdfs:subPropertyOf :sensitivityReviewRestrictionReviewDate;
 	rdfs:range xsd:date;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Retention review date".
+	rdfs:label "Retention restriction review date".
 
 :languageName a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :Language;

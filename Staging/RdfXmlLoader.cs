@@ -12,6 +12,12 @@ public static class RdfXmlLoader
     {
         var doc = new XmlDocument();
         doc.LoadXml(xml);
+
+        return GetRdf(doc, logger);
+    }
+
+    public static IGraph? GetRdf(XmlDocument doc, ILogger logger)
+    {
         var namespaceManager = new XmlNamespaceManager(doc.NameTable);
         namespaceManager.AddNamespace("rdf", NamespaceMapper.RDF);
         var rdfNode = doc.DocumentElement.SelectSingleNode("descendant::rdf:RDF", namespaceManager);

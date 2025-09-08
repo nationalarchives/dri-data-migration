@@ -1,12 +1,10 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Explorer.Models;
+﻿namespace Explorer.Models;
 
 public class FlatJsonAsset
 {
     public string Id { get; set; }
     public string Reference { get; set; }
-    public string? Name { get; set; }
+    public IEnumerable<string>? Names { get; set; }
     public string? PastReference { get; set; }
     public string? Description { get; set; }
     public string? Summary { get; set; }
@@ -61,13 +59,11 @@ public class FlatJsonAsset
 
     public static IEnumerable<FlatJsonAsset> FromAsset(Asset asset)
     {
-        var redactedIds = asset.Variations.SelectMany(v => v.Redacted.Select(r => r.Id.Single()));
-
         var template = new FlatJsonAsset()
         {
             Id = asset.Id.Single(),
             Reference = asset.Reference.Single(),
-            Name = asset.Name.SingleOrDefault(),
+            Names = asset.Names,
             PastReference = asset.PastReference.SingleOrDefault(),
             Description = asset.Description.SingleOrDefault(),
             Summary = asset.Summary.SingleOrDefault(),
@@ -121,14 +117,13 @@ public class FlatJsonAsset
         };
 
         var assets = new List<FlatJsonAsset>();
-
-        var unredactedVariations = asset.Variations.Where(v => !redactedIds.Contains(v.Id.Single()))
+        var unredactedVariations = asset.Variations.Where(v => v.RedactedSequence.Count == 0)
             .Select(VariationRecord.FromVariation);
         var unredatcedAsset = template.DeepCopy();
         unredatcedAsset.Variations = unredactedVariations;
         assets.Add(unredatcedAsset);
 
-        foreach (var redactedVariation in asset.Variations.Where(v => redactedIds.Contains(v.Id.Single())))
+        foreach (var redactedVariation in asset.Variations.Where(v => v.RedactedSequence.Count == 1))
         {
             var redactedAsset = template.DeepCopy();
             redactedAsset.Variations = [VariationRecord.FromVariation(redactedVariation)];
@@ -179,15 +174,15 @@ public class FlatJsonAsset
         internal DimensionRecord DeepCopy() => (DimensionRecord)MemberwiseClone();
     }
 
-    public record VariationRecord(string Id, string Name, string? PastName, string? Note,
-        string? Location, string? PhysicalConditionDescription, string? ReferenceGoogleId,
-        string? ReferenceParentGoogleId, string? ScannerOperatorIdentifier,
+    public record VariationRecord(string Id, string Name, long? RedactionSequence,
+        string? PastName, string? Note, string? Location, string? PhysicalConditionDescription,
+        string? ReferenceGoogleId, string? ReferenceParentGoogleId, string? ScannerOperatorIdentifier,
         string? ScannerIdentifier, string? ArchivistNote, string? DatedNote,
         string? ScannerGeographicalPlace, string? ScannedImageCrop,
         string? ScannedImageDeskew, string? ScannedImageSplit, Sr? SensitiveReview)
     {
         public static VariationRecord FromVariation(Variation variation) =>
-            new(variation.Id.Single(), variation.Name.Single(),
+            new(variation.Id.Single(), variation.Name.Single(), variation.RedactedSequence.SingleOrDefault(),
                 variation.PastName.SingleOrDefault(), variation.Note.SingleOrDefault(),
                 variation.Location.SingleOrDefault()?.Value,
                 variation.PhysicalConditionDescription.SingleOrDefault(),

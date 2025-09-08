@@ -1,14 +1,18 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Globalization;
 using System.Text;
+using System.Web;
+using System.Xml;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 
 namespace Staging;
 
-public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<AssetDeliverableUnitIngest> logger) : StagingIngest<DriAssetDeliverableUnit>(sparqlClient, logger, cacheClient, "AssetDeliverableUnitGraph")
+public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient sparqlClient,
+    ILogger<AssetDeliverableUnitIngest> logger, IOptions<DriSettings> options) : StagingIngest<DriAssetDeliverableUnit>(sparqlClient, logger, cacheClient, "AssetDeliverableUnitGraph")
 {
     private readonly HashSet<string> predicates = [];
     private readonly ICacheClient cacheClient = cacheClient;
@@ -57,7 +61,10 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     private async Task<bool> ExtractXmlData(IGraph graph, IGraph existing,
         INode id, string xml, string assetReference, CancellationToken cancellationToken)
     {
-        var rdf = RdfXmlLoader.GetRdf(xml, logger);
+        var doc = new XmlDocument();
+        doc.LoadXml(xml);
+
+        var rdf = RdfXmlLoader.GetRdf(doc, logger);
         if (rdf is null)
         {
             logger.AssetXmlMissingRdf(id.AsValuedNode().AsString());
@@ -103,6 +110,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
             [endImageNumber] = Vocabulary.ImageSequenceEnd
         });
 
+        await AddVariationRelations(graph, rdf, id, doc, cancellationToken);
         AddFilmDuration(graph, rdf, id);
         AddWebArchive(graph, rdf, id);
         await AddCourtCasesAsync(graph, rdf, id, assetReference, cancellationToken);
@@ -130,6 +138,62 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         await AddSeal(graph, rdf, existing, id, cancellationToken);
 
         return true;
+    }
+
+    private async Task AddVariationRelations(IGraph graph, IGraph rdf, INode id, XmlDocument doc, CancellationToken cancellationToken)
+    {
+        var redacted = rdf.GetTriplesWithPredicate(hasRedactedFile).Select(t => t.Object).Cast<ILiteralNode>();
+        if (redacted.Any())
+        {
+            var namespaceManager = new XmlNamespaceManager(doc.NameTable);
+            namespaceManager.AddNamespace("tna", Vocabulary.TnaNamespace.ToString());
+            var xmlRedactedFiles = doc.SelectNodes("descendant::tna:hasRedactedFile", namespaceManager);
+            foreach (var redactedFile in redacted)
+            {
+                var partialPath = GetPartialPath(HttpUtility.UrlDecode(redactedFile.Value));
+                var redactedVariation = await cacheClient.CacheFetch(CacheEntityKind.VariationByPartialPathAndAsset, [partialPath, options.Value.Code], cancellationToken);
+                if (redactedVariation is not null)
+                {
+                    graph.Assert(id, Vocabulary.AssetHasVariation, redactedVariation);
+                    var foundFile = false;
+                    for (int i = 0; i < xmlRedactedFiles.Count; i++)
+                    {
+                        if (xmlRedactedFiles.Item(i).InnerText.Equals(redactedFile.Value))
+                        {
+                            foundFile = true;
+                            GraphAssert.Integer(graph, redactedVariation, i+1, Vocabulary.RedactedVariationSequence);
+                            break;
+                        }
+                    }
+                    if (!foundFile)
+                    {
+                        logger.UnableEstablishRedactedVariationSequence(partialPath);
+                    }
+                }
+                else
+                {
+                    logger.RedactedVariationMissing(options.Value.Code, partialPath);
+                }
+            }
+        }
+
+        /*TODO
+        var alternative = rdf.GetTriplesWithPredicate(hasPresentationManifestationFile).Select(t => t.Object).Cast<ILiteralNode>();
+        foreach (var alternativeFile in alternative)
+        {
+            var partialPath = GetPartialPath(HttpUtility.UrlDecode(alternativeFile.Value));
+            var alternativeVariation = await cacheClient.CacheFetch(CacheEntityKind.VariationByPartialPathAndAsset, [partialPath, options.Value.Code], cancellationToken);
+            if (alternativeVariation is not null)
+            {
+                graph.Assert(id, , alternativeVariation);
+                graph.Assert(, Vocabulary.VariationHasAlternativeVariation, alternativeVariation);
+            }
+            else
+            {
+                logger.AlternativeVariationMissing(options.Value.Code, partialPath);
+            }
+        }*/
+
     }
 
     private void AddFilmDuration(IGraph graph, IGraph rdf, INode id)
@@ -466,8 +530,8 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
             .Where(o => !string.IsNullOrWhiteSpace(o.ToString())).Cast<IUriNode>();
         foreach (var copyright in copyrights)
         {
-            var title = copyright.Uri.Segments.Last().Replace('_', ' ');
-            var copyrightId = await cacheClient.CacheFetchOrNew(CacheEntityKind.Copyright, title, Vocabulary.CopyrightTitle, cancellationToken);
+            var cTitle = copyright.Uri.Segments.Last().Replace('_', ' ');
+            var copyrightId = await cacheClient.CacheFetchOrNew(CacheEntityKind.Copyright, cTitle, Vocabulary.CopyrightTitle, cancellationToken);
             graph.Assert(id, Vocabulary.AssetHasCopyright, copyrightId);
         }
     }
@@ -495,6 +559,8 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
             }
         }
     }
+
+    private static string GetPartialPath(string path) => path.Substring(path.IndexOf("/content/") + 9);
 
     private static readonly Uri dctermsNamespace = new("http://purl.org/dc/terms/");
     private static readonly Uri transNamespace = new("http://nationalarchives.gov.uk/dri/transcription");
@@ -525,7 +591,9 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     private static readonly IUriNode fullDate = new UriNode(new($"{Vocabulary.TnaNamespace}fullDate"));
     private static readonly IUriNode dateRange = new UriNode(new($"{Vocabulary.TnaNamespace}dateRange"));
     private static readonly IUriNode administrativeBackground = new UriNode(new($"{Vocabulary.TnaNamespace}administrativeBackground"));
+    private static readonly IUriNode hasRedactedFile = new UriNode(new($"{Vocabulary.TnaNamespace}hasRedactedFile"));
 
+    private static readonly IUriNode title = new UriNode(new(dctermsNamespace, "title"));
     private static readonly IUriNode description = new UriNode(new(dctermsNamespace, "description"));
     private static readonly IUriNode creator = new UriNode(new(dctermsNamespace, "creator"));
     private static readonly IUriNode language = new UriNode(new(dctermsNamespace, "language"));
