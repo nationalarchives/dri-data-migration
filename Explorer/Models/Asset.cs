@@ -7,7 +7,7 @@ namespace Explorer.Models;
 public class Asset(INode node, IGraph graph) : DynamicNode(node, graph)
 {
     public ICollection<string> Id => new DynamicObjectCollection<string>(this, Vocabulary.AssetDriId.Uri.ToString());
-    public ICollection<string> Name => new DynamicObjectCollection<string>(this, Vocabulary.AssetName.Uri.ToString());
+    public ICollection<string> Names => new DynamicObjectCollection<string>(this, Vocabulary.AssetName.Uri.ToString());
     public ICollection<string> Reference => new DynamicObjectCollection<string>(this, Vocabulary.AssetReference.Uri.ToString());
     public ICollection<string> PastReference => new DynamicObjectCollection<string>(this, Vocabulary.AssetPastReference.Uri.ToString());
     public ICollection<string> Description => new DynamicObjectCollection<string>(this, Vocabulary.AssetDescription.Uri.ToString());

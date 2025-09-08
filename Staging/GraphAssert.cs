@@ -43,6 +43,15 @@ public class GraphAssert(ILogger logger, ICacheClient cacheClient)
         }
     }
 
+    public static void MultiText(IGraph graph, INode id, IGraph rdf,
+        IUriNode findPredicate, IUriNode immediatePredicate)
+    {
+        foreach (var found in rdf.GetTriplesWithPredicate(findPredicate).Select(t => t.Object).Cast<ILiteralNode>())
+        {
+            Text(graph, id, found.Value, immediatePredicate);
+        }
+    }
+
     public static void Integer(IGraph graph, INode id, int? value, IUriNode immediatePredicate)
     {
         if (value.HasValue)

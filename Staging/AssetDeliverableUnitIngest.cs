@@ -103,7 +103,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
             [session_date] = Vocabulary.CourtSessionDate,
             [hearing_date] = Vocabulary.InquiryHearingDate
         });
-
+        GraphAssert.MultiText(graph, id, rdf, title, Vocabulary.AssetName);
         assert.Integer(graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
         {
             [startImageNumber] = Vocabulary.ImageSequenceStart,
