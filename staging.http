@@ -51,8 +51,8 @@ Content-Type: text/turtle
     ].
 
 ### Index compacting
-POST {{endpoint}}
-Content-Type: application/sparql-query
+POST {{endpoint}}/statements
+Content-Type: application/sparql-update
 Accept: text/turtle
 
 insert data { [] <http://www.ontotext.com/compactIndexes> [] }
