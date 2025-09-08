@@ -21,11 +21,13 @@ public class DateYmd(INode node, IGraph graph) : DynamicNode(node, graph)
         sb.Append(Year.Single().Value);
         if (Month.Count > 0)
         {
-            sb.Append(Month.Single().Value.Replace("--", "-").PadLeft(2, '0'));
+            sb.Append("-");
+            sb.Append(Month.Single().Value.Replace("--", string.Empty).PadLeft(2, '0'));
         }
         if (Day.Count > 0)
         {
-            sb.Append(Day.Single().Value.Replace("---", "-").PadLeft(2, '0'));
+            sb.Append("-");
+            sb.Append(Day.Single().Value.Replace("---", string.Empty).PadLeft(2, '0'));
         }
         return sb.ToString();
     }
