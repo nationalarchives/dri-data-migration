@@ -13,10 +13,26 @@ construct {
     {
         select * where {
             bind(@id as ?code)
-            ?d a dri:File;
-                dri:directory*/rdfs:label ?code;
-                ^dri:file/dri:parent/rdfs:label ?assetReference;
+            bind('RED 1' as ?code2)
+            bind(replace(@id,' ','_') as ?code3)
+            ?d ^dri:file/dri:parent/rdfs:label ?assetReference;
                 rdfs:label ?label.
+            {
+                ?d a dri:File;
+        	        dri:directory*/rdfs:label ?code.
+            }
+            union
+            {
+                ?d a dri:File;
+        	        ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code;
+        	        dri:directory*/rdfs:label ?code2.
+            }
+            union
+            {
+                ?d a dri:File;
+        	        ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code;
+        	        dri:directory*/rdfs:label ?code3.
+            }
         }
         order by ?assetReference
         limit @limit offset @offset
