@@ -10,7 +10,7 @@ public enum CacheEntityKind
     Language,
     FormalBody,
     Copyright,
-    VariationByPartialPathAndAsset,
+    VariationByAssetAndVariationName,
     CourtCaseByCaseAndAsset,
     InquiryAppearanceByWitnessAndDescription,
     GeographicalPlace,

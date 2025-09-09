@@ -1,0 +1,10 @@
+﻿prefix ex: <http://id.example.com/schema/>
+
+construct {
+    ?s ex:variationRelativeLocation ?id0
+} where {
+    bind(iri(@id0) as ?id0)
+    bind(@id1 as ?id1)
+    ?s ex:variationHasAsset ?id0;
+        ex:variationName ?id1.
+}

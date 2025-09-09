@@ -25,7 +25,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         logger.BuildingRecord(dri.Id);
 
         var driId = new LiteralNode(dri.Id);
-        var id = existing.GetTriplesWithPredicateObject(Vocabulary.AssetDriId, driId).FirstOrDefault()?.Subject;
+        var id = existing.GetTriplesWithPredicateObject(Vocabulary.AssetDriId, driId).FirstOrDefault()?.Subject as IUriNode;
         if (id is null)
         {
             logger.AssetNotFound(dri.Id);
@@ -59,7 +59,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     }
 
     private async Task<bool> ExtractXmlData(IGraph graph, IGraph existing,
-        INode id, string xml, string assetReference, CancellationToken cancellationToken)
+        IUriNode id, string xml, string assetReference, CancellationToken cancellationToken)
     {
         var doc = new XmlDocument();
         doc.LoadXml(xml);
@@ -140,7 +140,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         return true;
     }
 
-    private async Task AddVariationRelations(IGraph graph, IGraph rdf, INode id, XmlDocument doc, CancellationToken cancellationToken)
+    private async Task AddVariationRelations(IGraph graph, IGraph rdf, IUriNode id, XmlDocument doc, CancellationToken cancellationToken)
     {
         var redacted = rdf.GetTriplesWithPredicate(hasRedactedFile).Select(t => t.Object).Cast<ILiteralNode>();
         if (redacted.Any())
@@ -150,8 +150,8 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
             var xmlRedactedFiles = doc.SelectNodes("descendant::tna:hasRedactedFile", namespaceManager);
             foreach (var redactedFile in redacted)
             {
-                var partialPath = GetPartialPath(HttpUtility.UrlDecode(redactedFile.Value));
-                var redactedVariation = await cacheClient.CacheFetch(CacheEntityKind.VariationByPartialPathAndAsset, [partialPath, options.Value.Code], cancellationToken);
+                var variationName = GetPartialPath(HttpUtility.UrlDecode(redactedFile.Value));
+                var redactedVariation = await cacheClient.CacheFetch(CacheEntityKind.VariationByAssetAndVariationName, [id.Uri.ToString(), variationName], cancellationToken);
                 if (redactedVariation is not null)
                 {
                     graph.Assert(id, Vocabulary.AssetHasVariation, redactedVariation);
@@ -167,12 +167,12 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
                     }
                     if (!foundFile)
                     {
-                        logger.UnableEstablishRedactedVariationSequence(partialPath);
+                        logger.UnableEstablishRedactedVariationSequence(variationName);
                     }
                 }
                 else
                 {
-                    logger.RedactedVariationMissing(options.Value.Code, partialPath);
+                    logger.RedactedVariationMissing(options.Value.Code, variationName);
                 }
             }
         }
@@ -360,7 +360,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         var foundCase = rdf.GetTriplesWithPredicate(new UriNode(new($"{Vocabulary.TnaNamespace}case_id_{caseIndex}"))).SingleOrDefault()?.Object;
         if (foundCase is ILiteralNode caseNode && !string.IsNullOrWhiteSpace(caseNode.Value))
         {
-            var caseId = await cacheClient.CacheFetchOrNew(CacheEntityKind.VariationByPartialPathAndAsset, [caseNode.Value, assetReference], Vocabulary.VariationRelativeLocation, cancellationToken);
+            var caseId = await cacheClient.CacheFetchOrNew(CacheEntityKind.CourtCaseByCaseAndAsset, [caseNode.Value, assetReference], Vocabulary.VariationRelativeLocation, cancellationToken);
             graph.Assert(id, Vocabulary.CourtAssetHasCourtCase, caseId);
         }
 
@@ -560,7 +560,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         }
     }
 
-    private static string GetPartialPath(string path) => path.Substring(path.IndexOf("/content/") + 9);
+    private static string GetPartialPath(string path) => path.Substring(path.LastIndexOf("/") + 1);
 
     private static readonly Uri dctermsNamespace = new("http://purl.org/dc/terms/");
     private static readonly Uri transNamespace = new("http://nationalarchives.gov.uk/dri/transcription");
