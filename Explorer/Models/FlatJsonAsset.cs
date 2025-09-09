@@ -9,6 +9,9 @@ public class FlatJsonAsset
     public string? Description { get; set; }
     public string? Summary { get; set; }
     public string? Tag { get; set; }
+    public IEnumerable<LocationPath> Location { get; set; }
+    public string? SensitiveName { get; set; }
+    public string? SensitiveDescription { get; set; }
     public string? ConsignmentId { get; set; }
     public string? BatchId { get; set; }
     public string? SourceInternalName { get; set; }
@@ -21,7 +24,7 @@ public class FlatJsonAsset
     public string? Language { get; set; }
     public IEnumerable<string>? Copyrights { get; set; }
     public string? RetentionImportLocation { get; set; }
-    public string? RetentionRetentionBody { get; set; }
+    public string? RetentionBody { get; set; }
     public string? CreatedBy { get; set; }
     public string? GeographicalPlace { get; set; }
     public string? OriginDateStart { get; set; }
@@ -53,8 +56,6 @@ public class FlatJsonAsset
     public string? SealObverseEndDate { get; set; }
     public string? SealReverseStartDate { get; set; }
     public string? SealReverseEndDate { get; set; }
-    public string? SensitiveName { get; set; }
-    public string? SensitiveDescription { get; set; }
     public IEnumerable<VariationRecord>? Variations { get; set; }
 
     public static IEnumerable<FlatJsonAsset> FromAsset(Asset asset)
@@ -68,6 +69,9 @@ public class FlatJsonAsset
             Description = asset.Description.SingleOrDefault(),
             Summary = asset.Summary.SingleOrDefault(),
             Tag = asset.Tag.SingleOrDefault(),
+            Location = SubsetLocation(asset.Subset.Single()),
+            SensitiveName = asset.SensitivityReviews.SingleOrDefault()?.SensitiveName.SingleOrDefault(),
+            SensitiveDescription = asset.SensitivityReviews.SingleOrDefault()?.SensitiveDescription.SingleOrDefault(),
             ConsignmentId = asset.ConsignmentId.SingleOrDefault(),
             BatchId = asset.BatchId.SingleOrDefault(),
             SourceInternalName = asset.SourceInternalName.SingleOrDefault(),
@@ -80,7 +84,7 @@ public class FlatJsonAsset
             Language = asset.Language.SingleOrDefault()?.Name.SingleOrDefault(),
             Copyrights = asset.Copyrights.Select(c => c.Title.SingleOrDefault()),
             RetentionImportLocation = asset.Retention.SingleOrDefault()?.ImportLocation.SingleOrDefault(),
-            RetentionRetentionBody = asset.Retention.SingleOrDefault()?.RetentionBody.SingleOrDefault()?.Name.SingleOrDefault(),
+            RetentionBody = asset.Retention.SingleOrDefault()?.RetentionBody.SingleOrDefault()?.Name.SingleOrDefault(),
             CreatedBy = asset.Creation.SingleOrDefault()?.CreationBody.SingleOrDefault()?.Name.SingleOrDefault(),
             GeographicalPlace = asset.GeographicalPlace.SingleOrDefault()?.Name.SingleOrDefault(),
             OriginDateStart = asset.OriginDateStart.SingleOrDefault()?.ToDate(),
@@ -111,14 +115,12 @@ public class FlatJsonAsset
             SealObverseStartDate = asset.SealObverseStartDate.SingleOrDefault()?.ToDate(),
             SealObverseEndDate = asset.SealObverseEndDate.SingleOrDefault()?.ToDate(),
             SealReverseStartDate = asset.SealReverseStartDate.SingleOrDefault()?.ToDate(),
-            SealReverseEndDate = asset.SealReverseEndDate.SingleOrDefault()?.ToDate(),
-            SensitiveName = asset.SensitivityReviews.SingleOrDefault()?.SensitiveName.SingleOrDefault(),
-            SensitiveDescription = asset.SensitivityReviews.SingleOrDefault()?.SensitiveDescription.SingleOrDefault()
+            SealReverseEndDate = asset.SealReverseEndDate.SingleOrDefault()?.ToDate()
         };
 
         var assets = new List<FlatJsonAsset>();
         var unredactedVariations = asset.Variations.Where(v => v.RedactedSequence.Count == 0)
-            .Select(VariationRecord.FromVariation);
+            .Select(v => VariationRecord.FromVariation(v, asset.Id.Single(), asset.Reference.Single()));
         var unredatcedAsset = template.DeepCopy();
         unredatcedAsset.Variations = unredactedVariations;
         assets.Add(unredatcedAsset);
@@ -126,12 +128,54 @@ public class FlatJsonAsset
         foreach (var redactedVariation in asset.Variations.Where(v => v.RedactedSequence.Count == 1))
         {
             var redactedAsset = template.DeepCopy();
-            redactedAsset.Variations = [VariationRecord.FromVariation(redactedVariation)];
+            redactedAsset.Variations = [VariationRecord.FromVariation(redactedVariation, asset.Id.Single(), asset.Reference.Single())];
             assets.Add(redactedAsset);
         }
 
         return assets;
     }
+
+    public static IEnumerable<LocationPath> SubsetLocation(Subset subset)
+    {
+        static LocationPath GetLocation(Subset subset)
+        {
+            var sensitiveName = subset.SensitivityReviews.SingleOrDefault()?.SensitiveName.SingleOrDefault();
+            var location = subset.Retention.SingleOrDefault()?.ImportLocation.SingleOrDefault() ?? string.Empty;
+            if (sensitiveName is null)
+            {
+                return new LocationPath(location, location);
+            }
+            else
+            {
+                return new LocationPath(location, location, sensitiveName);
+            }
+        }
+
+        var paths = new List<LocationPath>();
+        foreach (var broader in subset.Broader.Reverse())
+        {
+            if (broader is null)
+            {
+                break;
+            }
+            var location = GetLocation(broader);
+            if (paths.Count > 0 && !string.IsNullOrWhiteSpace(location.Path))
+            {
+                location = location with
+                {
+                    Partial = location.Partial.Replace(paths[paths.Count - 1].Path, string.Empty).TrimStart('/'),
+                    Sensitive = location.Sensitive?.Replace(paths[paths.Count - 1].Path, string.Empty)
+                };
+            }
+            if (!string.IsNullOrWhiteSpace(location.Partial))
+            {
+                paths.Add(location);
+            }
+        }
+        return paths;
+    }
+
+    public record LocationPath(string Partial, string Path, string? Sensitive = null);
 
     private FlatJsonAsset DeepCopy()
     {
@@ -174,15 +218,18 @@ public class FlatJsonAsset
         internal DimensionRecord DeepCopy() => (DimensionRecord)MemberwiseClone();
     }
 
-    public record VariationRecord(string Id, string Name, long? RedactionSequence,
+    public record VariationRecord(string Id, string IaId, string Name, long? RedactionSequence, string? Reference,
         string? PastName, string? Note, string? Location, string? PhysicalConditionDescription,
         string? ReferenceGoogleId, string? ReferenceParentGoogleId, string? ScannerOperatorIdentifier,
         string? ScannerIdentifier, string? ArchivistNote, string? DatedNote,
         string? ScannerGeographicalPlace, string? ScannedImageCrop,
-        string? ScannedImageDeskew, string? ScannedImageSplit, Sr? SensitiveReview)
+        string? ScannedImageDeskew, string? ScannedImageSplit, Sr? SensitivityReview)
     {
-        public static VariationRecord FromVariation(Variation variation) =>
-            new(variation.Id.Single(), variation.Name.Single(), variation.RedactedSequence.SingleOrDefault(),
+        public static VariationRecord FromVariation(Variation variation, string assetId, string assetReference) =>
+            new(variation.Id.Single(), 
+                VariationIaId(variation.RedactedSequence.SingleOrDefault(), assetId),
+                variation.Name.Single(), variation.RedactedSequence.SingleOrDefault(),
+                VariationReference(variation.RedactedSequence.SingleOrDefault(), assetReference),
                 variation.PastName.SingleOrDefault(), variation.Note.SingleOrDefault(),
                 variation.Location.SingleOrDefault()?.Value,
                 variation.PhysicalConditionDescription.SingleOrDefault(),
@@ -196,31 +243,37 @@ public class FlatJsonAsset
                 variation.ScannedVariationHasImageCrop.SingleOrDefault()?.Uri.Segments.Last(),
                 variation.ScannedVariationHasImageDeskew.SingleOrDefault()?.Uri.Segments.Last(),
                 variation.ScannedVariationHasImageSplit.SingleOrDefault()?.Uri.Segments.Last(),
-                Sr.FromSensitiveReview(variation.SensitivityReviews.SingleOrDefault()));
+                Sr.FromSensitivityReview(variation.SensitivityReviews.SingleOrDefault()));
+
+        private static string? VariationIaId(long? redactedSequence, string id) =>
+            redactedSequence is null ? Guid.Parse(id).ToString("N") : $"{Guid.Parse(id):N}_{redactedSequence}";
+
+        private static string? VariationReference(long? redactedSequence, string assetReference) =>
+            redactedSequence is null ? null : $"{assetReference}/{redactedSequence}";
 
         internal VariationRecord DeepCopy() => (VariationRecord)MemberwiseClone() with
         {
-            SensitiveReview = SensitiveReview?.DeepCopy()
+            SensitivityReview = SensitivityReview?.DeepCopy()
         };
     };
 
-    public record Sr(string DriId, DateTimeOffset? Date, string? SensitiveName,
+    public record Sr(string Id, DateTimeOffset? Date, string? SensitiveName,
         string? SensitiveDescription, string? AccessConditionName,
         string? AccessConditionCode, DateTimeOffset? ReviewDate,
-        DateTimeOffset? CalculationStartDate, TimeSpan? Duration,
+        DateTimeOffset? CalculationStartDate, int? DurationYear,
         long? EndYear, string? Description, IEnumerable<LegislationRecord>? Legislations,
         long? InstrumentNumber, DateTimeOffset? InstrumentSignedDate,
         DateTimeOffset? RetentionRestrictionReviewDate, string? GroundForRetentionCode,
         string? GroundForRetentionDescription)
     {
-        public static Sr? FromSensitiveReview(SensitivityReview? sr) => sr is null ? null :
+        public static Sr? FromSensitivityReview(SensitivityReview? sr) => sr is null ? null :
             new(sr.DriId.Single(), sr.Date.SingleOrDefault(), sr.SensitiveName.SingleOrDefault(),
                 sr.SensitiveDescription.SingleOrDefault(),
                 sr.AccessCondition.SingleOrDefault()?.Name.SingleOrDefault(),
                 sr.AccessCondition.SingleOrDefault()?.Code.SingleOrDefault(),
                 sr.Restriction.SingleOrDefault()?.ReviewDate.SingleOrDefault(),
                 sr.Restriction.SingleOrDefault()?.CalculationStartDate.SingleOrDefault(),
-                sr.Restriction.SingleOrDefault()?.Duration.SingleOrDefault(),
+                DurationToYear(sr.Restriction.SingleOrDefault()?.Duration.SingleOrDefault()),
                 sr.Restriction.SingleOrDefault()?.EndYear.SingleOrDefault(),
                 sr.Restriction.SingleOrDefault()?.Description.SingleOrDefault(),
                 LegislationRecord.FromLegislation(sr.Restriction.SingleOrDefault()?.UkLegislations),
@@ -229,6 +282,9 @@ public class FlatJsonAsset
                 sr.Restriction.SingleOrDefault()?.RetentionRestriction.SingleOrDefault()?.ReviewDate.SingleOrDefault(),
                 sr.Restriction.SingleOrDefault()?.RetentionRestriction.SingleOrDefault()?.GroundForRetention.SingleOrDefault()?.Code.SingleOrDefault(),
                 sr.Restriction.SingleOrDefault()?.RetentionRestriction.SingleOrDefault()?.GroundForRetention.SingleOrDefault()?.Description.SingleOrDefault());
+
+        private static int? DurationToYear(TimeSpan? duration) =>
+            duration is null ? null : (int)duration.Value.TotalDays / 365;
 
         internal Sr DeepCopy() => (Sr)MemberwiseClone() with
         {

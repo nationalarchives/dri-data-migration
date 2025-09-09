@@ -73,8 +73,18 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
             ?creation ex:creationHasFormalBody ?creationHasFormalBody.
             ?creationHasFormalBody ex:formalBodyName ?creationFormalBodyName.
             ?subset ex:subsetReference ?subsetReference;
-                ex:subsetHasBroaderSubset ?broader.
-            ?broader ex:subsetReference ?broaderSubsetReference.
+                ex:subsetHasRetention ?sRetention;
+                ex:subsetHasBroaderSubset ?broader;
+                ex:subsetHasSensitivityReview ?srs.
+            ?sRetention ex:importLocation ?importLocation.
+            ?srs ex:sensitivityReviewSensitiveName ?sSensitivityReviewSensitiveName;
+                ex:sensitivityReviewSensitiveDescription ?sSensitivityReviewSensitiveDescription.
+            ?broader ex:subsetReference ?broaderSubsetReference;
+                ex:subsetHasRetention ?broaderRetention;
+                ex:subsetHasSensitivityReview ?srsb.
+            ?broaderRetention ex:importLocation ?sbImportLocation.
+            ?srsb ex:sensitivityReviewSensitiveName ?sbSensitivityReviewSensitiveName;
+                ex:sensitivityReviewSensitiveDescription ?sbSensitivityReviewSensitiveDescription.
             ?variation ex:variationName ?variationName;
                 ex:variationDriId ?variationDriId;
                 ex:variationPastName ?variationPastName;
@@ -184,8 +194,28 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:assetHasSubset ?subset.
             ?subset ex:subsetReference ?subsetReference.
             optional {
+                ?subset ex:subsetHasRetention ?sRetention.
+                ?sRetention ex:importLocation ?importLocation.
+                optional {
+                    ?subset ex:subsetHasSensitivityReview ?srs.
+                    filter not exists { ?futureSrs ex:sensitivityReviewHasPastSensitivityReview ?srs }
+                    optional { ?srs ex:sensitivityReviewSensitiveName ?sSensitivityReviewSensitiveName }
+                    optional { ?srs ex:sensitivityReviewSensitiveDescription ?sSensitivityReviewSensitiveDescription }
+                }
+            }
+            optional {
                 ?subset ex:subsetHasBroaderSubset* ?broader.
                 ?broader ex:subsetReference ?broaderSubsetReference.
+                optional {
+                    ?broader ex:subsetHasRetention ?broaderRetention.
+                    ?broaderRetention ex:importLocation ?sbImportLocation.
+                    optional {
+                        ?broader ex:subsetHasSensitivityReview ?srsb.
+                        filter not exists { ?futureSrsb ex:sensitivityReviewHasPastSensitivityReview ?srsb }
+                        optional { ?srsb ex:sensitivityReviewSensitiveName ?sbSensitivityReviewSensitiveName }
+                        optional { ?srsb ex:sensitivityReviewSensitiveDescription ?sbSensitivityReviewSensitiveDescription }
+                    }
+                }
             }
             optional { ?s ex:assetName ?assetName }
             optional { ?s ex:assetDriXml ?assetDriXml }

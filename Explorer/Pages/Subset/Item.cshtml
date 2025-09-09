@@ -6,6 +6,7 @@
 <section class="row tna-!--margin-top-m tna-column tna-column--full">
     <h1>Subset @Model.Item.Reference.Single() @Model.Item.Name.SingleOrDefault()</h1>
     <dl>
+        <partial name="LocationPartial" model="@Model.Item" />
         <partial name="RetentionPartial" model="@Model.Item.Retention" />
     </dl>
 

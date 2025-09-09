@@ -52,6 +52,10 @@
                 </dl>
             </dd>
         }
+        @if (Model.Item.Subset.Any())
+        {
+            <partial name="LocationPartial" model="@Model.Item.Subset.Single()" />
+        }
         <partial name="RetentionPartial" model="@asset.Retention" />
         @if (asset.Creation.Any() && asset.Creation.Single().CreationBody.Any())
         {
