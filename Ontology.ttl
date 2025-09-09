@@ -349,14 +349,14 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Copyright has asset".
 
-:assetHasLegalStatus a owl:ObjectProperty;
+:assetHasLegalStatus a owl:ObjectProperty, owl:FunctionalProperty;
 	rdfs:seeAlso rico:hasOrHadAllMembersWithLegalStatus;
 	rdfs:domain :Asset;
 	rdfs:range :LegalStatus;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has legal status".
 
-:legalStatusHasAsset a owl:ObjectProperty;
+:legalStatusHasAsset a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	owl:inverseOf :assetHasLegalStatus;
 	rdfs:seeAlso rico:isOrWasLegalStatusOfAllMembersOf;
 	rdfs:domain :LegalStatus;
@@ -547,7 +547,7 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Creation has asset".
 
-:assetHasCreation a owl:ObjectProperty;
+:assetHasCreation a owl:ObjectProperty, owl:FunctionalProperty;
 	owl:inverseOf :creationHasAsset;
 	rdfs:seeAlso rico:thingIsSourceOfRelation;
 	rdfs:domain :Asset;
@@ -562,7 +562,7 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Creation has subset".
 
-:creationHasFormalBody a owl:ObjectProperty;
+:creationHasFormalBody a owl:ObjectProperty, owl:FunctionalProperty;
 	rdfs:seeAlso rico:relationHasTarget;
 	rdfs:domain :Creation;
 	rdfs:range :FormalBody;
@@ -597,7 +597,7 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has retention".
 
-:retentionHasFormalBody a owl:ObjectProperty;
+:retentionHasFormalBody a owl:ObjectProperty, owl:FunctionalProperty;
 	rdfs:seeAlso rico:relationHasSource;
 	rdfs:domain :Retention;
 	rdfs:range :FormalBody;
