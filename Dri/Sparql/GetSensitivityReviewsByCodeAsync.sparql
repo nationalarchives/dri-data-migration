@@ -56,7 +56,7 @@ where {
                 bind(str(?exemptionCode) as ?legislation)
             }
             optional { ?closure dri:titleAlternative ?titleAlternative }
-            optional { ?closure dri:alternative ?descriptionAlternative }
+            optional { ?closure dcterms:alternative ?descriptionAlternative }
             optional { ?closure prov:wasRevisionOf ?previous }
             optional {
                 ?closure prov:qualifiedInfluence/prov:influencer/rdfs:label ?reasonForChange
@@ -66,11 +66,11 @@ where {
     		optional { ?closure dri:retentionJustification ?retentionJustification }
             filter exists {
                 {
-                    ?record dri:titleAlternative ?titleAlternative
+                    ?closure dri:titleAlternative ?titleAlternative
                 }
                 union
                 {
-                    ?record dri:alternative ?descriptionAlternative
+                    ?closure dcterms:alternative ?descriptionAlternative
                 }
                 union
                 {
