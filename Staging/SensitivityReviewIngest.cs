@@ -58,17 +58,17 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         legislations = await cacheClient.Legislations(cancellationToken);
         groundsForRetention = await cacheClient.GroundsForRetention(cancellationToken);
 
-        if (accessConditions is null || !accessConditions.Any())
+        if (accessConditions is null || accessConditions.Count == 0)
         {
             logger.MissingAccessConditions();
             throw new MigrationException();
         }
-        if (legislations is null || !legislations.Any())
+        if (legislations is null || legislations.Count == 0)
         {
             logger.MissingLegislations();
             throw new MigrationException();
         }
-        if (groundsForRetention is null || !groundsForRetention.Any())
+        if (groundsForRetention is null || groundsForRetention.Count == 0)
         {
             logger.MissingLegislations();
             throw new MigrationException();
@@ -108,7 +108,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         return true;
     }
 
-    private bool AddRestriction(IGraph graph, INode id, INode restriction, DriSensitivityReview dri)
+    private bool AddRestriction(Graph graph, INode id, INode restriction, DriSensitivityReview dri)
     {
         var existing = graph.Triples.Count;
 
@@ -182,7 +182,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         return true;
     }
 
-    private async Task<bool> AddRetentionRestriction(IGraph graph, INode id, INode restriction, INode retentionRestriction,
+    private async Task<bool> AddRetentionRestriction(Graph graph, INode id, INode restriction, INode retentionRestriction,
         DriSensitivityReview dri, CancellationToken cancellationToken)
     {
         var existing = graph.Triples.Count;
