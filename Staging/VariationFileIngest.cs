@@ -13,8 +13,6 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
 
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriVariationFile dri, CancellationToken cancellationToken)
     {
-        logger.BuildingRecord(dri.Id);
-
         var driId = new LiteralNode(dri.Id);
         var id = existing.GetTriplesWithPredicateObject(Vocabulary.VariationDriId, driId).FirstOrDefault()?.Subject;
         if (id is null)
@@ -36,7 +34,6 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
                 return null;
             }
         }
-        logger.RecordBuilt(dri.Id);
 
         return graph;
     }

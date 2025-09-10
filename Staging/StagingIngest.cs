@@ -36,22 +36,27 @@ public abstract class StagingIngest<T> : IStagingIngest<T> where T : IDriRecord
         var total = 0;
         foreach (var dri in records)
         {
-            var existing = await sparqlClient.GetGraphAsync(graphSparql, new Dictionary<string, object> { { "id", dri.Id } }, cancellationToken);
-            var proposed = await BuildAsync(existing, dri, cancellationToken);
-            if (proposed is null)
+            using (logger.BeginScope(("RecordId", dri.Id)))
             {
-                logger.RecordNotIngestedNoGraph(dri.Id);
-                continue;
-            }
-            var diff = existing.Difference(proposed);
-            if (!diff.AddedTriples.Any() && !diff.RemovedTriples.Any())
-            {
-                continue;
-            }
+                var existing = await sparqlClient.GetGraphAsync(graphSparql, new Dictionary<string, object> { { "id", dri.Id } }, cancellationToken);
+                logger.BuildingRecord();
+                var proposed = await BuildAsync(existing, dri, cancellationToken);
+                logger.RecordBuilt();
+                if (proposed is null)
+                {
+                    logger.RecordNotIngestedNoGraph();
+                    continue;
+                }
+                var diff = existing.Difference(proposed);
+                if (!diff.AddedTriples.Any() && !diff.RemovedTriples.Any())
+                {
+                    continue;
+                }
 
-            await sparqlClient.ApplyDiffAsync(diff, cancellationToken);
-            total++;
-            logger.RecordUpdated(dri.Id);
+                await sparqlClient.ApplyDiffAsync(diff, cancellationToken);
+                total++;
+                logger.RecordUpdated();
+            }
         }
         PostIngest();
         return total;

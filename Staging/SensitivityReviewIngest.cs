@@ -15,7 +15,6 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
 
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriSensitivityReview dri, CancellationToken cancellationToken)
     {
-        logger.BuildingRecord(dri.Id);
         await PreloadAsync(cancellationToken);
 
         var id = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewDriId).FirstOrDefault()?.Subject ?? CacheClient.NewId;
@@ -47,7 +46,6 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         {
             return null;
         }
-        logger.RecordBuilt(dri.Id);
 
         return graph;
     }
@@ -173,7 +171,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
             var variation = await cacheClient.CacheFetch(CacheEntityKind.Variation, dri.TargetId.ToString(), cancellationToken);
             if (variation is null)
             {
-                logger.AssociatedVariationNotFound(dri.Id, dri.TargetReference); //TODO: sensitive name?
+                logger.AssociatedVariationNotFound(dri.TargetReference); //TODO: sensitive name?
                 return false;
             }
             graph.Assert(id, Vocabulary.SensitivityReviewHasVariation, variation);

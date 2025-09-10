@@ -4,18 +4,18 @@ using VDS.RDF.Parsing;
 namespace Staging;
 
 internal static partial class Log
-{//TODO: always include record id in the log
-    [LoggerMessage(EventId = 1, Level = LogLevel.Trace, Message = "Building record {id}")]
-    internal static partial void BuildingRecord(this ILogger logger, string id);
+{
+    [LoggerMessage(EventId = 1, Level = LogLevel.Trace, Message = "Building record")]
+    internal static partial void BuildingRecord(this ILogger logger);
 
-    [LoggerMessage(EventId = 2, Level = LogLevel.Trace, Message = "Record {id} built")]
-    internal static partial void RecordBuilt(this ILogger logger, string id);
+    [LoggerMessage(EventId = 2, Level = LogLevel.Trace, Message = "Record built")]
+    internal static partial void RecordBuilt(this ILogger logger);
 
-    [LoggerMessage(EventId = 3, Level = LogLevel.Trace, Message = "Record {id} updated")]
-    internal static partial void RecordUpdated(this ILogger logger, string id);
+    [LoggerMessage(EventId = 3, Level = LogLevel.Trace, Message = "Record updated")]
+    internal static partial void RecordUpdated(this ILogger logger);
 
-    [LoggerMessage(EventId = 4, Level = LogLevel.Warning, Message = "Record {id} not ingested because graph couldn't be constructed")]
-    internal static partial void RecordNotIngestedNoGraph(this ILogger logger, string id);
+    [LoggerMessage(EventId = 4, Level = LogLevel.Warning, Message = "Record not ingested because graph couldn't be constructed")]
+    internal static partial void RecordNotIngestedNoGraph(this ILogger logger);
 
     [LoggerMessage(EventId = 5, Level = LogLevel.Warning, Message = "Subset {subset} not found")]
     internal static partial void SubsetNotFound(this ILogger logger, string subset);
@@ -68,8 +68,8 @@ internal static partial class Log
     [LoggerMessage(EventId = 21, Level = LogLevel.Warning, Message = "Alternative variation {variation} on {path} not found")]
     internal static partial void AlternativeVariationMissing(this ILogger logger, string variation, string path);
 
-    [LoggerMessage(EventId = 22, Level = LogLevel.Warning, Message = "Associated variation {id} {variation} not found")]
-    internal static partial void AssociatedVariationNotFound(this ILogger logger, string id, string variation);
+    [LoggerMessage(EventId = 22, Level = LogLevel.Warning, Message = "Associated variation {variation} not found")]
+    internal static partial void AssociatedVariationNotFound(this ILogger logger, string variation);
 
     [LoggerMessage(EventId = 23, Level = LogLevel.Warning, Message = "Unrecognized {status} legal status")]
     internal static partial void UnrecognizedLegalStatus(this ILogger logger, string status);

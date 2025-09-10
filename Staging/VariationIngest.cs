@@ -9,7 +9,6 @@ public class VariationIngest(ICacheClient cacheClient, ISparqlClient sparqlClien
 {
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriVariation dri, CancellationToken cancellationToken)
     {
-        logger.BuildingRecord(dri.Id);
         var id = existing.GetTriplesWithPredicate(Vocabulary.VariationHasAsset).FirstOrDefault()?.Subject ?? CacheClient.NewId;
         var asset = await cacheClient.CacheFetch(CacheEntityKind.Asset, dri.AssetReference, cancellationToken);
         if (asset is null)
@@ -25,7 +24,6 @@ public class VariationIngest(ICacheClient cacheClient, ISparqlClient sparqlClien
             [Vocabulary.VariationDriId] = dri.Id,
             [Vocabulary.VariationName] = dri.VariationName
         });
-        logger.RecordBuilt(dri.Id);
 
         return graph;
     }

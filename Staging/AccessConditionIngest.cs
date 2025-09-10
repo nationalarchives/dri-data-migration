@@ -9,14 +9,12 @@ public class AccessConditionIngest(ISparqlClient sparqlClient, ILogger<AccessCon
 {
     internal override Task<Graph?> BuildAsync(IGraph existing, DriAccessCondition dri, CancellationToken cancellationToken)
     {
-        logger.BuildingRecord(dri.Id);
         var code = new LiteralNode(GetUriFragment(dri.Link));
         var id = existing.GetTriplesWithPredicateObject(Vocabulary.AccessConditionCode, code).FirstOrDefault()?.Subject ?? CacheClient.NewId;
 
         var graph = new Graph();
         graph.Assert(id, Vocabulary.AccessConditionCode, code);
         GraphAssert.Text(graph, id, dri.Name, Vocabulary.AccessConditionName);
-        logger.RecordBuilt(dri.Id);
 
         return Task.FromResult((Graph?)graph);
     }
