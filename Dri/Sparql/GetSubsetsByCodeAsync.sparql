@@ -13,25 +13,38 @@ construct {
     	].
 } where {
     {
-        select * where {
+        select distinct ?subset ?reference ?parentReference ?directory where {
             bind(@id as ?code)
             bind(replace(@id,' ','_') as ?code2)
             ?subset rdfs:label ?reference.
             {
                 ?subset a dri:DeliverableUnit;
-                        dri:isPartOfSeries/rdfs:label ?code;
+                    dri:isPartOfSeries/rdfs:label ?code.
             }
             union
             {
                 ?subset a dri:DeliverableUnit;
-                        dri:isPartOfSeries/rdfs:label ?code2;
+                    dri:isPartOfSeries/rdfs:label ?code2.
             }
             optional { ?subset dri:parent/rdfs:label ?parent }
             optional { ?subset dri:hasDirectory/rdfs:label ?directory }
             bind(coalesce(?parent, ?directory) as ?parentReference)
-            filter not exists {
-                ?m dri:file ?f;
-        	        dri:parent ?subset.
+            {
+                {
+                    filter exists {
+                       ?asset a dri:DeliverableUnit;
+                            dri:parent ?subset.
+                        ?m dri:file ?f;
+                            dri:parent ?asset.
+                    }
+                }
+                union
+                {
+                    filter not exists {
+                        ?m dri:file ?f;
+                            dri:parent ?subset.
+                    }
+                }
             }
         }
         order by ?reference
