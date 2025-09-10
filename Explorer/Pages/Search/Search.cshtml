@@ -23,24 +23,30 @@
     @if(Model.Results is not null && Model.Results.Any())
     {
         var variationDriIdKey = Api.Vocabulary.VariationDriId.Uri.Segments.Last();
-        var variationNameKey = Api.Vocabulary.VariationName.Uri.Segments.Last();
         var assetReferenceKey = Api.Vocabulary.AssetReference.Uri.Segments.Last();
         var subsetReferenceKey = Api.Vocabulary.SubsetReference.Uri.Segments.Last();
+        var sensitivityReviewDriIdKey = Api.Vocabulary.SensitivityReviewDriId.Uri.Segments.Last();
         <ul class="tna-ul tna-ul--dashed">
             @foreach(var item in Model.Results)
             {
+                var t = item["t"] as Uri;
+                var text = item["text"] as string;
                 <li>
-                    @if(item[variationNameKey] is not null)
+                    @if(Api.Vocabulary.Variation.Uri.Equals(t))
                     {
-                        <a asp-page="/variation/item" asp-route-id="@item[variationDriIdKey]">@item[variationNameKey] (variation)</a>
+                        <a asp-page="/variation/item" asp-route-id="@item[variationDriIdKey]">@text (variation)</a>
                     }
-                    else if (item[assetReferenceKey] is not null)
+                    else if (Api.Vocabulary.Asset.Uri.Equals(t))
                     {
-                        <a asp-page="/asset/item" asp-route-id="@item[assetReferenceKey]">@item[assetReferenceKey] (asset)</a>
+                        <a asp-page="/asset/item" asp-route-id="@item[assetReferenceKey]">@text (asset)</a>
                     }
-                    else if (item[subsetReferenceKey] is not null)
+                    else if (Api.Vocabulary.Subset.Uri.Equals(t))
                     {
-                        <a asp-page="/subset/item" asp-route-id="@item[subsetReferenceKey]">@item[subsetReferenceKey] (subset)</a>
+                        <a asp-page="/subset/item" asp-route-id="@item[subsetReferenceKey]">@text (subset)</a>
+                    }
+                    else if (Api.Vocabulary.SensitivityReview.Uri.Equals(t))
+                    {
+                        <a asp-page="/sensitivityreview/item" asp-route-id="@item[sensitivityReviewDriIdKey]">@text (sensitivity review)</a>
                     }
                 </li>
             }

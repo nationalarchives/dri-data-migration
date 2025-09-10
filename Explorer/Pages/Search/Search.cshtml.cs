@@ -1,7 +1,4 @@
-using Explorer.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Web;
 using VDS.RDF;
 using VDS.RDF.Dynamic;
 using VDS.RDF.Query;
@@ -14,32 +11,22 @@ public class SearchModel(HttpClient httpClient, IConfiguration configuration) : 
     private readonly string query = """
         prefix ex: <http://id.example.com/schema/>
 
-        select ?variationName ?variationDriId ?assetReference ?subsetReference where {
+        select * where {
             filter(contains(ucase(?text), ucase(@id)))
-            filter(?t in (ex:Variation, ex:Asset, ex:Subset))
+            filter(?t in (ex:Variation, ex:Asset, ex:Subset, ex:SensitivityReview))
             {
-                ?s ex:variationName ?variationName;
-                	ex:variationDriId ?variationDriId.
-            }
-            union
-            {
-                ?s ex:assetReference ?assetReference
-            }
-            union
-            {
-            	?s ex:subsetReference ?subsetReference
-        	}
-            {
-                select * where {
-                    {
-                      ?s a ?t;
+                optional { ?s ex:variationDriId ?variationDriId }
+                optional { ?s ex:assetReference ?assetReference }
+                optional { ?s ex:subsetReference ?subsetReference }
+                optional { ?s ex:sensitivityReviewDriId ?sensitivityReviewDriId }
+                {
+                    ?s a ?t;
                         ex:name ?text.
-                    }
-                    union
-                    {
-                        ?s a ?t;
-                            ex:externalIdentifier ?text.
-                    }
+                }
+                union
+                {
+                    ?s a ?t;
+                        ex:externalIdentifier ?text.
                 }
             }
         }
