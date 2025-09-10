@@ -1,5 +1,4 @@
-﻿using Api;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 
 namespace Etl;
@@ -81,7 +80,7 @@ internal static partial class Log
     [LoggerMessage(EventId = 25, Level = LogLevel.Critical, Message = "Migration failed")]
     internal static partial void MigrationFailed(this ILogger logger);
 
-    [LoggerMessage(EventId = 26, Level = LogLevel.Information, Message = "")] //TODO: downgrade to Debug
+    [LoggerMessage(EventId = 26, Level = LogLevel.Debug)]
     internal static partial void MigrationFailedDetails(this ILogger logger, Exception e);
 
     [LoggerMessage(EventId = 27, Level = LogLevel.Critical, Message = "Unhandled exception: {message}")]

@@ -3,10 +3,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Migration;
+using Serilog;
 
 var builder = Host.CreateApplicationBuilder();
 
 builder.Configuration.AddProgramCommandLine(args);
+
+builder.Services.AddSerilog((_, loggerConfiguration) =>
+    loggerConfiguration.ReadFrom.Configuration(builder.Configuration));
 
 builder.Services.AddOptions<StagingSettings>().BindConfiguration(StagingSettings.Prefix);
 builder.Services.AddOptions<DriSettings>().BindConfiguration(DriSettings.Prefix);
