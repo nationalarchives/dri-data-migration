@@ -1208,6 +1208,12 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Court case name".
 
+:courtCaseSummary a owl:DatatypeProperty;
+	rdfs:domain :CourtCase;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Court case summary".
+
 :courtCaseSummaryJudgment a owl:DatatypeProperty;
 	rdfs:domain :CourtCase;
 	rdfs:range xsd:string;

@@ -94,6 +94,7 @@ construct {
     ?reverseDimension ex:firstDimensionMillimetre ?reverseFirstDimensionMillimetre;
         ex:secondDimensionMillimetre ?reverseSecondDimensionMillimetre.
     ?courtCase ex:courtCaseName ?courtCaseName;
+        ex:courtCaseSummary ?courtCaseSummary;
         ex:courtCaseSummaryJudgment ?courtCaseSummaryJudgment;
         ex:courtCaseSummaryReasonsForJudgment ?courtCaseSummaryReasonsForJudgment;
         ex:courtCaseHearingStartDate ?courtCaseHearingStartDate;
@@ -225,6 +226,7 @@ construct {
     optional {
         ?asset ex:courtAssetHasCourtCase ?courtCase.
         optional { ?courtCase ex:courtCaseName ?courtCaseName }
+        optional { ?courtCase ex:courtCaseSummary ?courtCaseSummary }
         optional { ?courtCase ex:courtCaseSummaryJudgment ?courtCaseSummaryJudgment }
         optional { ?courtCase ex:courtCaseSummaryReasonsForJudgment ?courtCaseSummaryReasonsForJudgment }
         optional { ?courtCase ex:courtCaseHearingStartDate ?courtCaseHearingStartDate }

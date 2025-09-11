@@ -202,11 +202,13 @@ public class FlatJsonAsset
         internal InquiryAppearanceRecord DeepCopy() => (InquiryAppearanceRecord)MemberwiseClone();
     }
 
-    public record CourtCaseRecord(string? Name, string? Reference, string? SummaryJudgment,
-        string? SummaryReasonsForJudgment, DateTimeOffset? HearingStartDate, DateTimeOffset? HearingEndDate)
+    public record CourtCaseRecord(string? Name, string? Reference, string? Summary,
+        string? SummaryJudgment, string? SummaryReasonsForJudgment,
+        DateTimeOffset? HearingStartDate, DateTimeOffset? HearingEndDate)
     {
         public static IEnumerable<CourtCaseRecord> FromCourtCases(ICollection<CourtCase> courtCases) =>
-            courtCases.Select(c => new CourtCaseRecord(c.Name.SingleOrDefault(), c.Reference.SingleOrDefault(),
+            courtCases.Select(c => new CourtCaseRecord(c.Name.SingleOrDefault(),
+                c.Reference.SingleOrDefault(), c.Summary.SingleOrDefault(),
                 c.SummaryJudgment.SingleOrDefault(), c.SummaryReasonsForJudgment.SingleOrDefault(),
                 c.HearingStartDate.SingleOrDefault(), c.HearingEndDate.SingleOrDefault()));
 

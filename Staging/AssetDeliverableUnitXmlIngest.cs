@@ -59,7 +59,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             [IngestVocabulary.SeparatedMaterial] = Vocabulary.AssetConnectedAssetNote,
             [IngestVocabulary.AttachmentFormerReference] = Vocabulary.EmailAttachmentReference
         });
-        GraphAssert.Text(graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
+        assert.Date(graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
         {
             [IngestVocabulary.Session_date] = Vocabulary.CourtSessionDate,
             [IngestVocabulary.Hearing_date] = Vocabulary.InquiryHearingDate
@@ -283,6 +283,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             GraphAssert.Text(graph, courtCase, rdf, new Dictionary<IUriNode, IUriNode>()
             {
                 [new UriNode(new($"{Vocabulary.TnaNamespace}case_name_{caseIndex}"))] = Vocabulary.CourtCaseName,
+                [new UriNode(new($"{Vocabulary.TnaNamespace}case_summary_{caseIndex}"))] = Vocabulary.CourtCaseSummary,
                 [new UriNode(new($"{Vocabulary.TnaNamespace}case_summary_{caseIndex}_judgment"))] = Vocabulary.CourtCaseSummaryJudgment,
                 [new UriNode(new($"{Vocabulary.TnaNamespace}case_summary_{caseIndex}_reasons_for_judgment"))] = Vocabulary.CourtCaseSummaryReasonsForJudgment
             });
@@ -306,8 +307,10 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         var foundCase = rdf.GetTriplesWithPredicate(new UriNode(new($"{Vocabulary.TnaNamespace}case_id_{caseIndex}"))).SingleOrDefault()?.Object;
         if (foundCase is ILiteralNode caseNode && !string.IsNullOrWhiteSpace(caseNode.Value))
         {
-            var caseId = await cacheClient.CacheFetchOrNew(CacheEntityKind.CourtCaseByCaseAndAsset, [caseNode.Value, assetReference], Vocabulary.VariationRelativeLocation, cancellationToken);
+            var caseId = await cacheClient.CacheFetchOrNew(CacheEntityKind.CourtCaseByCaseAndAsset, [caseNode.Value, assetReference], Vocabulary.CourtCaseReference, cancellationToken);
             graph.Assert(id, Vocabulary.CourtAssetHasCourtCase, caseId);
+
+            return caseId;
         }
 
         return null;

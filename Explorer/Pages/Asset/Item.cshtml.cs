@@ -176,6 +176,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
             ?associatedGeographicalPlace ex:geographicalPlaceName ?geographicalPlaceName.
             ?courtCase ex:courtCaseReference ?courtCaseReference;
                 ex:courtCaseName ?courtCaseName;
+                ex:courtCaseSummary ?courtCaseSummary;
                 ex:courtCaseSummaryJudgment ?courtCaseSummaryJudgment;
                 ex:courtCaseSummaryReasonsForJudgment ?courtCaseSummaryReasonsForJudgment;
                 ex:courtCaseHearingStartDate ?courtCaseHearingStartDate;
@@ -368,6 +369,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ?s ex:courtAssetHasCourtCase ?courtCase.
                 optional { ?courtCase ex:courtCaseReference ?courtCaseReference }
                 optional { ?courtCase ex:courtCaseName ?courtCaseName }
+                optional { ?courtCase ex:courtCaseSummary ?courtCaseSummary }
                 optional { ?courtCase ex:courtCaseSummaryJudgment ?courtCaseSummaryJudgment }
                 optional { ?courtCase ex:courtCaseSummaryReasonsForJudgment ?courtCaseSummaryReasonsForJudgment }
                 optional { ?courtCase ex:courtCaseHearingStartDate ?courtCaseHearingStartDate }

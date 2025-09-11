@@ -150,6 +150,7 @@ public static class Vocabulary
 
     public static readonly IUriNode CourtCaseReference = new UriNode(new(Namespace, "courtCaseReference"));
     public static readonly IUriNode CourtCaseName = new UriNode(new(Namespace, "courtCaseName"));
+    public static readonly IUriNode CourtCaseSummary = new UriNode(new(Namespace, "courtCaseSummary"));
     public static readonly IUriNode CourtCaseSummaryJudgment = new UriNode(new(Namespace, "courtCaseSummaryJudgment"));
     public static readonly IUriNode CourtCaseSummaryReasonsForJudgment = new UriNode(new(Namespace, "courtCaseSummaryReasonsForJudgment"));
     public static readonly IUriNode CourtCaseHearingStartDate = new UriNode(new(Namespace, "courtCaseHearingStartDate"));
