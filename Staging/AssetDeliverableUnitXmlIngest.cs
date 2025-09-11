@@ -48,7 +48,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             [IngestVocabulary.RestrictionOnUse] = Vocabulary.AssetUsageRestrictionDescription,
             [IngestVocabulary.FormerReferenceTna] = Vocabulary.AssetPastReference,
             [IngestVocabulary.FormerReferenceDepartment] = Vocabulary.AssetPastReference,
-            [IngestVocabulary.classification] = Vocabulary.AssetTag,
+            [IngestVocabulary.Classification] = Vocabulary.AssetTag,
             [IngestVocabulary.InternalDepartment] = Vocabulary.AssetSourceInternalName,
             [IngestVocabulary.FilmMaker] = Vocabulary.FilmProductionCompanyName,
             [IngestVocabulary.FilmName] = Vocabulary.FilmTitle,
