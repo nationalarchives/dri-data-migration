@@ -55,7 +55,9 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             [IngestVocabulary.Photographer] = Vocabulary.PhotographerDescription,
             [IngestVocabulary.PaperNumber] = Vocabulary.PaperNumber,
             [IngestVocabulary.SealOwner] = Vocabulary.SealOwnerName, //TODO: check if can be turned into entities
-            [IngestVocabulary.ColourOfOriginalSeal] = Vocabulary.SealColour
+            [IngestVocabulary.ColourOfOriginalSeal] = Vocabulary.SealColour,
+            [IngestVocabulary.SeparatedMaterial] = Vocabulary.AssetConnectedAssetNote,
+            [IngestVocabulary.AttachmentFormerReference] = Vocabulary.EmailAttachmentReference
         });
         GraphAssert.Text(graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
         {

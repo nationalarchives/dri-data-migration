@@ -32,6 +32,7 @@ public static class Vocabulary
     public static readonly IUriNode AssetUsageRestrictionDescription = new UriNode(new(Namespace, "assetUsageRestrictionDescription"));
     public static readonly IUriNode AssetTag = new UriNode(new(Namespace, "assetTag"));
     public static readonly IUriNode AssetSourceInternalName = new UriNode(new(Namespace, "assetSourceInternalName"));
+    public static readonly IUriNode AssetConnectedAssetNote = new UriNode(new(Namespace, "assetConnectedAssetNote"));
     public static readonly IUriNode EvidenceProviderName = new UriNode(new(Namespace, "evidenceProviderName"));
     public static readonly IUriNode InvestigationName = new UriNode(new(Namespace, "investigationName"));
     public static readonly IUriNode CourtSessionDescription = new UriNode(new(Namespace, "courtSessionDescription"));
@@ -45,6 +46,9 @@ public static class Vocabulary
     public static readonly IUriNode ImageSequenceStart = new UriNode(new(Namespace, "imageSequenceStart"));
     public static readonly IUriNode ImageSequenceEnd = new UriNode(new(Namespace, "imageSequenceEnd"));
     public static readonly IUriNode PaperNumber = new UriNode(new(Namespace, "paperNumber"));
+    public static readonly IUriNode SealOwnerName = new UriNode(new(Namespace, "sealOwnerName"));
+    public static readonly IUriNode SealColour = new UriNode(new(Namespace, "sealColour"));
+    public static readonly IUriNode EmailAttachmentReference = new UriNode(new(Namespace, "emailAttachmentReference"));
     public static readonly IUriNode AssetHasSubset = new UriNode(new(Namespace, "assetHasSubset"));
     public static readonly IUriNode AssetHasVariation = new UriNode(new(Namespace, "assetHasVariation"));
     public static readonly IUriNode AssetHasRetention = new UriNode(new(Namespace, "assetHasRetention"));
@@ -168,9 +172,6 @@ public static class Vocabulary
     public static readonly IUriNode ManualImageCrop = new UriNode(new(Namespace, "ManualImageCrop"));
     public static readonly IUriNode AutoImageDeskew = new UriNode(new(Namespace, "AutoImageDeskew"));
     public static readonly IUriNode ManualImageDeskew = new UriNode(new(Namespace, "ManualImageDeskew"));
-    
-    public static readonly IUriNode SealOwnerName = new UriNode(new(Namespace, "sealOwnerName"));
-    public static readonly IUriNode SealColour = new UriNode(new(Namespace, "sealColour"));
     
     public static readonly IUriNode SealCategoryName = new UriNode(new(Namespace, "sealCategoryName"));
     

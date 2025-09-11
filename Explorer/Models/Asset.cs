@@ -16,6 +16,8 @@ public class Asset(INode node, IGraph graph) : DynamicNode(node, graph)
     public ICollection<string> ConsignmentId => new DynamicObjectCollection<string>(this, Vocabulary.ConsignmentTdrId.Uri.ToString());
     public ICollection<string> BatchId => new DynamicObjectCollection<string>(this, Vocabulary.BatchDriId.Uri.ToString());
     public ICollection<string> SourceInternalName => new DynamicObjectCollection<string>(this, Vocabulary.AssetSourceInternalName.Uri.ToString());
+    public ICollection<string> ConnectedAssetNote => new DynamicObjectCollection<string>(this, Vocabulary.AssetConnectedAssetNote.Uri.ToString());
+    public ICollection<string> EmailAttachmentReference => new DynamicObjectCollection<string>(this, Vocabulary.EmailAttachmentReference.Uri.ToString());
     public ICollection<string> RelationDescription => new DynamicObjectCollection<string>(this, Vocabulary.AssetRelationDescription.Uri.ToString());
     public ICollection<string> PhysicalDescription => new DynamicObjectCollection<string>(this, Vocabulary.AssetPhysicalDescription.Uri.ToString());
     public ICollection<string> PaperNumber => new DynamicObjectCollection<string>(this, Vocabulary.PaperNumber.Uri.ToString());

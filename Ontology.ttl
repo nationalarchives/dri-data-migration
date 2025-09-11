@@ -67,6 +67,11 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Seal asset".
 
+:EmailAsset a owl:Class;
+	rdfs:subClassOf :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "E-mail asset".
+
 :InquiryAppearance a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Inquiry appearance".
@@ -849,6 +854,14 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset source internal name".
 
+:assetConnectedAssetNote a owl:DatatypeProperty;
+	rdfs:seeAlso rico:integrityNote;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :name;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset connected asset note".
+
 :evidenceProviderName a owl:DatatypeProperty;
 	rdfs:domain :InquiryAsset;
 	rdfs:range xsd:string;
@@ -945,6 +958,14 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Seal colour".
+
+:emailAttachmentReference a owl:DatatypeProperty;
+	rdfs:seeAlso rico:hasPartTransitive;
+	rdfs:domain :EmailAsset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "E-mail attachment reference".
 
 :formalBodyName a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :FormalBody;

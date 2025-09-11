@@ -25,6 +25,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:assetSummary ?assetSummary;
                 ex:assetTag ?assetTag;
                 ex:assetSourceInternalName ?assetSourceInternalName;
+                ex:assetConnectedAssetNote ?assetConnectedAssetNote;
                 ex:filmProductionCompanyName ?filmProductionCompanyName;
                 ex:filmTitle ?filmTitle;
                 ex:filmDuration ?filmDuration;
@@ -46,6 +47,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:sealAssetHasSealCategory ?sealAssetHasSealCategory;
                 ex:sealOwnerName ?sealOwnerName;
                 ex:sealColour ?sealColour;
+                ex:emailAttachmentReference ?emailAttachmentReference;
                 ex:assetHasUkGovernmentWebArchive ?assetHasUkGovernmentWebArchive;
                 ex:assetHasAssociatedGeographicalPlace ?associatedGeographicalPlace;
                 ex:assetHasOriginDateStart ?originDateStart;
@@ -225,6 +227,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
             optional { ?s ex:assetSummary ?assetSummary }
             optional { ?s ex:assetTag ?assetTag }
             optional { ?s ex:assetSourceInternalName ?assetSourceInternalName }
+            optional { ?s ex:assetConnectedAssetNote ?assetConnectedAssetNote }
             optional { ?s ex:filmProductionCompanyName ?filmProductionCompanyName }
             optional { ?s ex:filmTitle ?filmTitle }
             optional { ?s ex:filmDuration ?filmDuration }
@@ -242,6 +245,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
             optional { ?s ex:paperNumber ?paperNumber }
             optional { ?s ex:sealOwnerName ?sealOwnerName }
             optional { ?s ex:sealColour ?sealColour }
+            optional { ?s ex:emailAttachmentReference ?emailAttachmentReference }
             optional { ?s ex:assetHasUkGovernmentWebArchive ?assetHasUkGovernmentWebArchive }
             optional {
                 ?s ex:assetHasLanguage ?language.

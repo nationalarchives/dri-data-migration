@@ -15,6 +15,7 @@ public class FlatJsonAsset
     public string? ConsignmentId { get; set; }
     public string? BatchId { get; set; }
     public string? SourceInternalName { get; set; }
+    public string? ConnectedAssetNote { get; set; }
     public string? RelationDescription { get; set; }
     public string? PhysicalDescription { get; set; }
     public string? PaperNumber { get; set; }
@@ -44,6 +45,7 @@ public class FlatJsonAsset
     public IEnumerable<CourtCaseRecord>? CourtCases { get; set; }
     public string? SealOwnerName { get; set; }
     public string? SealColour { get; set; }
+    public string? EmailAttachmentReference { get; set; }
     public string? SealCatagory { get; set; }
     public long? ImageSequenceEnd { get; set; }
     public long? ImageSequenceStart { get; set; }
@@ -75,6 +77,7 @@ public class FlatJsonAsset
             ConsignmentId = asset.ConsignmentId.SingleOrDefault(),
             BatchId = asset.BatchId.SingleOrDefault(),
             SourceInternalName = asset.SourceInternalName.SingleOrDefault(),
+            ConnectedAssetNote = asset.ConnectedAssetNote.SingleOrDefault(),
             RelationDescription = asset.RelationDescription.SingleOrDefault(),
             PhysicalDescription = asset.PhysicalDescription.SingleOrDefault(),
             PaperNumber = asset.PaperNumber.SingleOrDefault(),
@@ -104,6 +107,7 @@ public class FlatJsonAsset
             CourtCases = CourtCaseRecord.FromCourtCases(asset.CourtCases),
             SealOwnerName = asset.SealOwnerName.SingleOrDefault(),
             SealColour = asset.SealColour.SingleOrDefault(),
+            EmailAttachmentReference = asset.EmailAttachmentReference.SingleOrDefault(),
             SealCatagory = asset.SealCatagory.SingleOrDefault()?.Name.SingleOrDefault(),
             ImageSequenceStart = asset.ImageSequenceStart.SingleOrDefault(),
             ImageSequenceEnd = asset.ImageSequenceEnd.SingleOrDefault(),

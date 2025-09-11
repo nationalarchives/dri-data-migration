@@ -24,6 +24,7 @@ public static class IngestVocabulary
     public static readonly IUriNode StartDate = new UriNode(new($"{Vocabulary.TnaNamespace}startDate"));
     public static readonly IUriNode EndDate = new UriNode(new($"{Vocabulary.TnaNamespace}endDate"));
     public static readonly IUriNode FormerReferenceTna = new UriNode(new($"{Vocabulary.TnaNamespace}formerReferenceTNA"));
+    public static readonly IUriNode FormerReferenceDepartment = new UriNode(new($"{Vocabulary.TnaNamespace}formerReferenceDepartment"));
     public static readonly IUriNode classification = new UriNode(new($"{Vocabulary.TnaNamespace}classification"));
     public static readonly IUriNode Summary = new UriNode(new($"{Vocabulary.TnaNamespace}summary"));
     public static readonly IUriNode InternalDepartment = new UriNode(new($"{Vocabulary.TnaNamespace}internalDepartment"));
@@ -35,10 +36,11 @@ public static class IngestVocabulary
     public static readonly IUriNode DateRange = new UriNode(new($"{Vocabulary.TnaNamespace}dateRange"));
     public static readonly IUriNode AdministrativeBackground = new UriNode(new($"{Vocabulary.TnaNamespace}administrativeBackground"));
     public static readonly IUriNode HasRedactedFile = new UriNode(new($"{Vocabulary.TnaNamespace}hasRedactedFile"));
+    public static readonly IUriNode AttachmentFormerReference = new UriNode(new($"{Vocabulary.TnaNamespace}attachmentFormerReference"));
+    public static readonly IUriNode SeparatedMaterial = new UriNode(new($"{Vocabulary.TnaNamespace}separatedMaterial"));
 
     public static readonly IUriNode Note = new UriNode(new($"{Vocabulary.TnaNamespace}note"));
     public static readonly IUriNode CuratedDateNote = new UriNode(new($"{Vocabulary.TnaNamespace}curatedDateNote"));
-    public static readonly IUriNode FormerReferenceDepartment = new UriNode(new($"{Vocabulary.TnaNamespace}formerReferenceDepartment"));
     public static readonly IUriNode PhysicalCondition = new UriNode(new($"{Vocabulary.TnaNamespace}physicalCondition"));
     public static readonly IUriNode GoogleId = new UriNode(new($"{Vocabulary.TnaNamespace}googleId"));
     public static readonly IUriNode GoogleParentId = new UriNode(new($"{Vocabulary.TnaNamespace}googleParentId"));
