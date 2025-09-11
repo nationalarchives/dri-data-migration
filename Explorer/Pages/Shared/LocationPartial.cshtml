@@ -1,23 +1,16 @@
 ﻿@model Models.Subset
 
 @{
-    var paths = Models.FlatJsonAsset.SubsetLocation(Model);
-}
-<dt>Location</dt>
-<dd>
-    <ol class="tna-ol">
-        @foreach (var path in paths)
+    var location = Models.FlatJsonAsset.SubsetLocation(Model);
+    if (!string.IsNullOrWhiteSpace(location.Original))
+    {
+        <dt>Location</dt>
+        <dd>@location.Original</dd>
+        if (!string.IsNullOrWhiteSpace(location.Published) &&
+                !location.Original.Equals(location.Published))
         {
-            <li>
-                @if (string.IsNullOrWhiteSpace(path.Sensitive))
-                {
-                    <text>@path.Partial</text>
-                }
-                else
-                {
-                    <text>@path.Partial (Sensitive: @path.Sensitive)</text>
-                }
-            </li>
+            <dt>Published location</dt>
+            <dd>@location.Published</dd>
         }
-    </ol>
-</dd>
+    }
+}

@@ -1,4 +1,6 @@
-﻿namespace Explorer.Models;
+﻿using System.Text;
+
+namespace Explorer.Models;
 
 public class FlatJsonAsset
 {
@@ -9,7 +11,8 @@ public class FlatJsonAsset
     public string? Description { get; set; }
     public string? Summary { get; set; }
     public string? Tag { get; set; }
-    public IEnumerable<LocationPath> Location { get; set; }
+    public string? Arrangement { get; set; }
+    public string? PublishedArrangement { get; set; }
     public string? SensitiveName { get; set; }
     public string? SensitiveDescription { get; set; }
     public string? ConsignmentId { get; set; }
@@ -62,6 +65,7 @@ public class FlatJsonAsset
 
     public static IEnumerable<FlatJsonAsset> FromAsset(Asset asset)
     {
+        var location = SubsetLocation(asset.Subset.Single());
         var template = new FlatJsonAsset()
         {
             Id = asset.Id.Single(),
@@ -71,7 +75,8 @@ public class FlatJsonAsset
             Description = asset.Description.SingleOrDefault(),
             Summary = asset.Summary.SingleOrDefault(),
             Tag = asset.Tag.SingleOrDefault(),
-            Location = SubsetLocation(asset.Subset.Single()),
+            Arrangement = location.Original,
+            PublishedArrangement = location.Published,
             SensitiveName = asset.SensitivityReviews.SingleOrDefault()?.SensitiveName.SingleOrDefault(),
             SensitiveDescription = asset.SensitivityReviews.SingleOrDefault()?.SensitiveDescription.SingleOrDefault(),
             ConsignmentId = asset.ConsignmentId.SingleOrDefault(),
@@ -139,7 +144,7 @@ public class FlatJsonAsset
         return assets;
     }
 
-    public static IEnumerable<LocationPath> SubsetLocation(Subset subset)
+    public static LocationPath SubsetLocation(Subset subset)
     {
         static LocationPath GetLocation(Subset subset)
         {
@@ -147,15 +152,17 @@ public class FlatJsonAsset
             var location = subset.Retention.SingleOrDefault()?.ImportLocation.SingleOrDefault() ?? string.Empty;
             if (sensitiveName is null)
             {
-                return new LocationPath(location, location);
+                return new(location, location);
             }
             else
             {
-                return new LocationPath(location, location, sensitiveName);
+                return new(location, sensitiveName);
             }
         }
 
-        var paths = new List<LocationPath>();
+        var original = new StringBuilder();
+        var published = new StringBuilder();
+        LocationPath previous = new(string.Empty, string.Empty);
         foreach (var broader in subset.Broader.Reverse())
         {
             if (broader is null)
@@ -163,23 +170,47 @@ public class FlatJsonAsset
                 break;
             }
             var location = GetLocation(broader);
-            if (paths.Count > 0 && !string.IsNullOrWhiteSpace(location.Path))
+            string partialOriginal = location.Original;
+            string partialPublished = location.Published;
+            if (string.IsNullOrWhiteSpace(previous.Original))
             {
-                location = location with
+                original.Append('/');
+                original.Append(location.Original);
+                published.Append('/');
+                published.Append(location.Published);
+            }
+            else
+            {
+                if (partialOriginal.Equals(partialPublished))
                 {
-                    Partial = location.Partial.Replace(paths[paths.Count - 1].Path, string.Empty).TrimStart('/'),
-                    Sensitive = location.Sensitive?.Replace(paths[paths.Count - 1].Path, string.Empty)
-                };
+                    partialOriginal = partialOriginal.Replace(previous.Original, string.Empty).TrimStart('/');
+                    partialPublished = partialPublished.Replace(previous.Original, string.Empty).TrimStart('/');
+                }
+                else
+                {
+                    partialPublished = partialPublished.Replace(previous.Published, string.Empty).TrimStart('/');
+                }
+
+                if (!string.IsNullOrWhiteSpace(partialOriginal))
+                {
+                    original.Append('/');
+                    original.Append(partialOriginal);
+                }
+                if (!string.IsNullOrWhiteSpace(partialPublished))
+                {
+                    published.Append('/');
+                    published.Append(partialPublished);
+                }
             }
-            if (!string.IsNullOrWhiteSpace(location.Partial))
-            {
-                paths.Add(location);
-            }
+            previous = location.DeepCopy;
         }
-        return paths;
+        return new LocationPath(original.ToString(), published.ToString());
     }
 
-    public record LocationPath(string Partial, string Path, string? Sensitive = null);
+    public record LocationPath(string Original, string Published)
+    {
+        public LocationPath DeepCopy => (LocationPath)MemberwiseClone();
+    }
 
     private FlatJsonAsset DeepCopy()
     {
@@ -232,7 +263,7 @@ public class FlatJsonAsset
         string? ScannedImageDeskew, string? ScannedImageSplit, Sr? SensitivityReview)
     {
         public static VariationRecord FromVariation(Variation variation, string assetId, string assetReference) =>
-            new(variation.Id.Single(), 
+            new(variation.Id.Single(),
                 VariationIaId(variation.RedactedSequence.SingleOrDefault(), assetId),
                 variation.Name.Single(), variation.RedactedSequence.SingleOrDefault(),
                 VariationReference(variation.RedactedSequence.SingleOrDefault(), assetReference),
@@ -255,7 +286,7 @@ public class FlatJsonAsset
             redactedSequence is null ? Guid.Parse(id).ToString("N") : $"{Guid.Parse(id):N}_{redactedSequence}";
 
         private static string? VariationReference(long? redactedSequence, string assetReference) =>
-            redactedSequence is null ? null : $"{assetReference}/{redactedSequence}";
+            redactedSequence is null ? assetReference : $"{assetReference}/{redactedSequence}";
 
         internal VariationRecord DeepCopy() => (VariationRecord)MemberwiseClone() with
         {
