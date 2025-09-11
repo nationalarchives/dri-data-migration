@@ -45,12 +45,12 @@
         {
             <dt>Copyrights</dt>
             <dd>
-                <dl>
+                <ul class="tna-ul tna-ul--plain">
                     @foreach (var copyright in asset.Copyrights)
                     {
-                        <partial name="DynamicCollectionTextPartial" model="@("Title", copyright.Title)" />
+                        <li>@copyright.Title.Single()</li>
                     }
-                </dl>
+                </ul>
             </dd>
         }
         @if (Model.Item.Subset.Any())
