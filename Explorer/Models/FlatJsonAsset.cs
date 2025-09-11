@@ -219,7 +219,7 @@ public class FlatJsonAsset
     }
 
     public record VariationRecord(string Id, string IaId, string Name, long? RedactionSequence, string? Reference,
-        string? PastName, string? Note, string? Location, string? PhysicalConditionDescription,
+        string? Note, string? Location, string? PhysicalConditionDescription,
         string? ReferenceGoogleId, string? ReferenceParentGoogleId, string? ScannerOperatorIdentifier,
         string? ScannerIdentifier, string? ArchivistNote, string? DatedNote,
         string? ScannerGeographicalPlace, string? ScannedImageCrop,
@@ -230,7 +230,7 @@ public class FlatJsonAsset
                 VariationIaId(variation.RedactedSequence.SingleOrDefault(), assetId),
                 variation.Name.Single(), variation.RedactedSequence.SingleOrDefault(),
                 VariationReference(variation.RedactedSequence.SingleOrDefault(), assetReference),
-                variation.PastName.SingleOrDefault(), variation.Note.SingleOrDefault(),
+                variation.Note.SingleOrDefault(),
                 variation.Location.SingleOrDefault()?.Value,
                 variation.PhysicalConditionDescription.SingleOrDefault(),
                 variation.ReferenceGoogleId.SingleOrDefault(),

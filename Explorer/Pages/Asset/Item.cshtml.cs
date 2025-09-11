@@ -87,7 +87,6 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:sensitivityReviewSensitiveDescription ?sbSensitivityReviewSensitiveDescription.
             ?variation ex:variationName ?variationName;
                 ex:variationDriId ?variationDriId;
-                ex:variationPastName ?variationPastName;
                 ex:variationNote ?variationNote;
                 ex:variationRelativeLocation ?variationRelativeLocation;
                 ex:variationPhysicalConditionDescription ?variationPhysicalConditionDescription;
@@ -257,7 +256,6 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ?s ex:assetHasVariation ?variation.
                 ?variation ex:variationName ?variationName;
                     ex:variationDriId ?variationDriId.
-                optional { ?variation ex:variationPastName ?variationPastName }
                 optional { ?variation ex:variationNote ?variationNote }
                 optional { ?variation ex:variationRelativeLocation ?variationRelativeLocation }
                 optional { ?variation ex:variationPhysicalConditionDescription ?variationPhysicalConditionDescription }

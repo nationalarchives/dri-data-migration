@@ -23,7 +23,7 @@ public static class IngestVocabulary
     public static readonly IUriNode WebArchiveUrl = new UriNode(new($"{Vocabulary.TnaNamespace}webArchiveUrl"));
     public static readonly IUriNode StartDate = new UriNode(new($"{Vocabulary.TnaNamespace}startDate"));
     public static readonly IUriNode EndDate = new UriNode(new($"{Vocabulary.TnaNamespace}endDate"));
-    public static readonly IUriNode FormerReferenceTNA = new UriNode(new($"{Vocabulary.TnaNamespace}formerReferenceTNA"));
+    public static readonly IUriNode FormerReferenceTna = new UriNode(new($"{Vocabulary.TnaNamespace}formerReferenceTNA"));
     public static readonly IUriNode classification = new UriNode(new($"{Vocabulary.TnaNamespace}classification"));
     public static readonly IUriNode Summary = new UriNode(new($"{Vocabulary.TnaNamespace}summary"));
     public static readonly IUriNode InternalDepartment = new UriNode(new($"{Vocabulary.TnaNamespace}internalDepartment"));

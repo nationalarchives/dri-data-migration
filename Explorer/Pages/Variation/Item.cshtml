@@ -7,7 +7,6 @@
     <h1>Variation @Model.Item.Name.Single()</h1>
     <dl class="tna-dl tna-dl--plain">
         <partial name="DynamicCollectionTextPartial" model="@("Id", Model.Item.Id)" />
-        <partial name="DynamicCollectionTextPartial" model="@("Past name", Model.Item.PastName)" />
         <partial name="DynamicCollectionIntPartial" model="@("Redaction sequence", Model.Item.RedactedSequence)" />
         <partial name="DynamicCollectionTextPartial" model="@("Note", Model.Item.Note)" />
         @if (Model.Item.Location.Any())

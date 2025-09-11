@@ -26,7 +26,6 @@ public class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
         {
             [IngestVocabulary.Note] = Vocabulary.VariationNote,
             [IngestVocabulary.CuratedDateNote] = Vocabulary.VariationNote,
-            [IngestVocabulary.FormerReferenceDepartment] = Vocabulary.VariationPastName,
             [IngestVocabulary.PhysicalCondition] = Vocabulary.VariationPhysicalConditionDescription,
             [IngestVocabulary.GoogleId] = Vocabulary.VariationReferenceGoogleId,
             [IngestVocabulary.GoogleParentId] = Vocabulary.VariationReferenceParentGoogleId,

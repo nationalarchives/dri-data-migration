@@ -46,7 +46,8 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             [IngestVocabulary.EvidenceProvidedBy] = Vocabulary.EvidenceProviderName, //TODO: check if can be split and turned into entities
             [IngestVocabulary.Investigation] = Vocabulary.InvestigationName,//TODO: check if can be turned into entities
             [IngestVocabulary.RestrictionOnUse] = Vocabulary.AssetUsageRestrictionDescription,
-            [IngestVocabulary.FormerReferenceTNA] = Vocabulary.AssetPastReference,
+            [IngestVocabulary.FormerReferenceTna] = Vocabulary.AssetPastReference,
+            [IngestVocabulary.FormerReferenceDepartment] = Vocabulary.AssetPastReference,
             [IngestVocabulary.classification] = Vocabulary.AssetTag,
             [IngestVocabulary.InternalDepartment] = Vocabulary.AssetSourceInternalName,
             [IngestVocabulary.FilmMaker] = Vocabulary.FilmProductionCompanyName,
