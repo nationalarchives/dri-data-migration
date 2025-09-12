@@ -5,7 +5,6 @@ namespace Api;
 
 public static class Vocabulary
 {
-    public static readonly Uri TnaNamespace = new("http://nationalarchives.gov.uk/metadata/tna#");
     public static readonly Uri Namespace = new("http://id.example.com/schema/");
 
     public static readonly IUriNode Subset = new UriNode(new(Namespace, "Subset"));

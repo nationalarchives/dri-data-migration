@@ -107,7 +107,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         if (redacted.Any())
         {
             var namespaceManager = new XmlNamespaceManager(doc.NameTable);
-            namespaceManager.AddNamespace("tna", Vocabulary.TnaNamespace.ToString());
+            namespaceManager.AddNamespace("tna", IngestVocabulary.TnaNamespace.ToString());
             var xmlRedactedFiles = doc.SelectNodes("descendant::tna:hasRedactedFile", namespaceManager);
             foreach (var redactedFile in redacted)
             {
@@ -254,10 +254,10 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
 
     private async Task<IUriNode?> FetchWitnessIdAsync(IGraph graph, IGraph rdf, INode id, int witnessIndex, CancellationToken cancellationToken)
     {
-        var foundWitness = rdf.GetTriplesWithPredicate(new UriNode(new($"{Vocabulary.TnaNamespace}witness_list_{witnessIndex}"))).SingleOrDefault()?.Object;
+        var foundWitness = rdf.GetTriplesWithPredicate(new UriNode(new($"{IngestVocabulary.TnaNamespace}witness_list_{witnessIndex}"))).SingleOrDefault()?.Object;
         if (foundWitness is ILiteralNode witnessNode && !string.IsNullOrWhiteSpace(witnessNode.Value))
         {
-            var foundDescription = rdf.GetTriplesWithPredicate(new UriNode(new($"{Vocabulary.TnaNamespace}subject_role_{witnessIndex}"))).SingleOrDefault()?.Object as ILiteralNode;
+            var foundDescription = rdf.GetTriplesWithPredicate(new UriNode(new($"{IngestVocabulary.TnaNamespace}subject_role_{witnessIndex}"))).SingleOrDefault()?.Object as ILiteralNode;
             if (foundDescription is not null)
             {
                 var witnessId = await cacheClient.CacheFetchOrNew(CacheEntityKind.InquiryAppearanceByWitnessAndDescription, [witnessNode.Value, foundDescription.Value], Vocabulary.InquiryWitnessName, cancellationToken);
@@ -282,15 +282,15 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             found = true;
             GraphAssert.Text(graph, courtCase, rdf, new Dictionary<IUriNode, IUriNode>()
             {
-                [new UriNode(new($"{Vocabulary.TnaNamespace}case_name_{caseIndex}"))] = Vocabulary.CourtCaseName,
-                [new UriNode(new($"{Vocabulary.TnaNamespace}case_summary_{caseIndex}"))] = Vocabulary.CourtCaseSummary,
-                [new UriNode(new($"{Vocabulary.TnaNamespace}case_summary_{caseIndex}_judgment"))] = Vocabulary.CourtCaseSummaryJudgment,
-                [new UriNode(new($"{Vocabulary.TnaNamespace}case_summary_{caseIndex}_reasons_for_judgment"))] = Vocabulary.CourtCaseSummaryReasonsForJudgment
+                [new UriNode(new($"{IngestVocabulary.TnaNamespace}case_name_{caseIndex}"))] = Vocabulary.CourtCaseName,
+                [new UriNode(new($"{IngestVocabulary.TnaNamespace}case_summary_{caseIndex}"))] = Vocabulary.CourtCaseSummary,
+                [new UriNode(new($"{IngestVocabulary.TnaNamespace}case_summary_{caseIndex}_judgment"))] = Vocabulary.CourtCaseSummaryJudgment,
+                [new UriNode(new($"{IngestVocabulary.TnaNamespace}case_summary_{caseIndex}_reasons_for_judgment"))] = Vocabulary.CourtCaseSummaryReasonsForJudgment
             });
             assert.Date(graph, courtCase, rdf, new Dictionary<IUriNode, IUriNode>()
             {
-                [new UriNode(new($"{Vocabulary.TnaNamespace}hearing_start_date_{caseIndex}"))] = Vocabulary.CourtCaseHearingStartDate,
-                [new UriNode(new($"{Vocabulary.TnaNamespace}hearing_end_date_{caseIndex}"))] = Vocabulary.CourtCaseHearingEndDate
+                [new UriNode(new($"{IngestVocabulary.TnaNamespace}hearing_start_date_{caseIndex}"))] = Vocabulary.CourtCaseHearingStartDate,
+                [new UriNode(new($"{IngestVocabulary.TnaNamespace}hearing_end_date_{caseIndex}"))] = Vocabulary.CourtCaseHearingEndDate
             });
 
             caseIndex++;
@@ -304,7 +304,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
 
     private async Task<IUriNode?> FetchCourtCaseIdAsync(IGraph graph, IGraph rdf, INode id, int caseIndex, string assetReference, CancellationToken cancellationToken)
     {
-        var foundCase = rdf.GetTriplesWithPredicate(new UriNode(new($"{Vocabulary.TnaNamespace}case_id_{caseIndex}"))).SingleOrDefault()?.Object;
+        var foundCase = rdf.GetTriplesWithPredicate(new UriNode(new($"{IngestVocabulary.TnaNamespace}case_id_{caseIndex}"))).SingleOrDefault()?.Object;
         if (foundCase is ILiteralNode caseNode && !string.IsNullOrWhiteSpace(caseNode.Value))
         {
             var caseId = await cacheClient.CacheFetchOrNew(CacheEntityKind.CourtCaseByCaseAndAsset, [caseNode.Value, assetReference], Vocabulary.CourtCaseReference, cancellationToken);

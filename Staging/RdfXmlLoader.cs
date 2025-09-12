@@ -27,7 +27,7 @@ public static class RdfXmlLoader
             {
                 BaseUri = new Uri("http://example.com")
             };
-            rdf.NamespaceMap.AddNamespace("tna", Vocabulary.TnaNamespace);
+            rdf.NamespaceMap.AddNamespace("tna", IngestVocabulary.TnaNamespace);
             try
             {
                 new RdfXmlParser().Load(rdf, new StringReader(rdfNode.OuterXml));
@@ -55,7 +55,7 @@ public static class RdfXmlLoader
         var coverage = rdfNode.SelectSingleNode("descendant::dcterms:coverage", namespaceManager);
         if (coverage is not null)
         {
-            var coverageTypeNode = rdfNode.OwnerDocument.CreateElement("tna:MissingType", Vocabulary.TnaNamespace.ToString());
+                var coverageTypeNode = rdfNode.OwnerDocument.CreateElement("tna:MissingType", IngestVocabulary.TnaNamespace.ToString());
             var coverageChild = coverage.FirstChild.Clone();
             coverageTypeNode.AppendChild(coverageChild);
             coverage.ReplaceChild(coverageTypeNode, coverage.FirstChild);
