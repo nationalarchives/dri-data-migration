@@ -172,14 +172,17 @@ public class FlatJsonAsset
             var location = GetLocation(broader);
             string partialOriginal = location.Original;
             string partialPublished = location.Published;
-            if (string.IsNullOrWhiteSpace(previous.Original))
+            if (string.IsNullOrWhiteSpace(previous.Original) &&
+                !string.IsNullOrWhiteSpace(partialOriginal) &&
+                !string.IsNullOrWhiteSpace(partialPublished))
             {
                 original.Append('/');
                 original.Append(location.Original);
                 published.Append('/');
                 published.Append(location.Published);
             }
-            else
+            else if (!string.IsNullOrWhiteSpace(partialOriginal) &&
+                !string.IsNullOrWhiteSpace(partialPublished))
             {
                 if (partialOriginal.Equals(partialPublished))
                 {
