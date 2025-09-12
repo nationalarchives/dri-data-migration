@@ -1,26 +1,32 @@
-﻿using Api;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System.Xml;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 
 namespace Staging;
 
-public static class RdfXmlLoader
+public class RdfXmlLoader(ILogger logger)
 {
-    public static IGraph? GetRdf(string xml, ILogger logger)
+    private MissingRdfOldNamespace missingRdfOldNamespace = new(logger);
+    private MalformedRdfMissingCoverageType malformedRdfMissingCoverageType = new(logger);
+
+    public IGraph? GetRdf(string xml)
     {
         var doc = new XmlDocument();
         doc.LoadXml(xml);
 
-        return GetRdf(doc, logger);
+        return GetRdf(doc);
     }
 
-    public static IGraph? GetRdf(XmlDocument doc, ILogger logger)
+    public IGraph? GetRdf(XmlDocument doc)
     {
         var namespaceManager = new XmlNamespaceManager(doc.NameTable);
         namespaceManager.AddNamespace("rdf", NamespaceMapper.RDF);
         var rdfNode = doc.DocumentElement.SelectSingleNode("descendant::rdf:RDF", namespaceManager);
+        if (rdfNode is null)
+        {
+            rdfNode = missingRdfOldNamespace.GetRdfNode(doc);
+        }
         if (rdfNode is not null)
         {
             var rdf = new Graph
@@ -33,9 +39,10 @@ public static class RdfXmlLoader
                 new RdfXmlParser().Load(rdf, new StringReader(rdfNode.OuterXml));
                 return rdf;
             }
-            catch (RdfParseException)
+            catch (RdfParseException e)
             {
-                return LoadRdfWithMissingCoverageType(rdfNode, rdf);
+                logger.MalformedRdf(e);
+                return malformedRdfMissingCoverageType.GetRdf(rdfNode, rdf);
             }
             catch (Exception e)
             {
@@ -43,26 +50,6 @@ public static class RdfXmlLoader
                 return null;
             }
         }
-        return null;
-    }
-
-    private static Graph? LoadRdfWithMissingCoverageType(XmlNode rdfNode, Graph rdf)
-    {
-        //Handle problem with malformed RDF: https://www.w3.org/TR/rdf-syntax-grammar/#nodeElement
-        //MINT 20
-        var namespaceManager = new XmlNamespaceManager(rdfNode.OwnerDocument.NameTable);
-        namespaceManager.AddNamespace("dcterms", "http://purl.org/dc/terms/");
-        var coverage = rdfNode.SelectSingleNode("descendant::dcterms:coverage", namespaceManager);
-        if (coverage is not null)
-        {
-                var coverageTypeNode = rdfNode.OwnerDocument.CreateElement("tna:MissingType", IngestVocabulary.TnaNamespace.ToString());
-            var coverageChild = coverage.FirstChild.Clone();
-            coverageTypeNode.AppendChild(coverageChild);
-            coverage.ReplaceChild(coverageTypeNode, coverage.FirstChild);
-            new RdfXmlParser().Load(rdf, new StringReader(rdfNode.OuterXml));
-            return rdf;
-        }
-
         return null;
     }
 }

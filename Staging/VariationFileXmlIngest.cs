@@ -10,14 +10,15 @@ public class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
     public readonly HashSet<string> Predicates = [];
     private readonly GraphAssert assert = new(logger, cacheClient);
     private readonly DateParser dateParser = new(logger);
+    private readonly RdfXmlLoader rdfXmlLoader = new(logger);
 
-    public async Task<bool> ExtractXmlData(IGraph graph, IGraph existing, INode id, string xml, CancellationToken cancellationToken)
+    public async Task ExtractXmlData(IGraph graph, IGraph existing, INode id, string xml, CancellationToken cancellationToken)
     {
-        var rdf = RdfXmlLoader.GetRdf(xml, logger);
+        var rdf = rdfXmlLoader.GetRdf(xml);
         if (rdf is null)
         {
             logger.VariationXmlMissingRdf(id.AsValuedNode().AsString());
-            return false;
+            return;
         }
 
         Predicates.UnionWith(rdf.Triples.PredicateNodes.Cast<IUriNode>().Select(p => p.Uri.ToString()).ToHashSet());
@@ -45,8 +46,6 @@ public class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
             var noteDate = existing.GetTriplesWithSubjectPredicate(datedNote, Vocabulary.DatedNoteHasDate).SingleOrDefault()?.Object ?? CacheClient.NewId;
             AddDatedNote(graph, rdf, id, datedNote, noteDate); //TODO: could be overengineering
         }
-
-        return true;
     }
 
     private void AddImageNodes(IGraph graph, IGraph rdf, INode id)

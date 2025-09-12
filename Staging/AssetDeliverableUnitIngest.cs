@@ -27,11 +27,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         {
             var xmlBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(dri.Xml));
             graph.Assert(id, Vocabulary.AssetDriXml, new LiteralNode(xmlBase64, new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
-            var proceed = await xmlIngest.ExtractXmlData(graph, existing, id, dri.Xml, dri.Reference, cancellationToken);
-            if (!proceed)
-            {
-                return null;
-            }
+            await xmlIngest.ExtractXmlData(graph, existing, id, dri.Xml, dri.Reference, cancellationToken);
         }
 
         return graph;

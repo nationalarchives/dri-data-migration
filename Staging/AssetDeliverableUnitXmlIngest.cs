@@ -15,18 +15,19 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
     private readonly GraphAssert assert = new(logger, cacheClient);
     private readonly DimensionParser dimensionParser = new(logger);
     private readonly DateParser dateParser = new(logger);
+    private readonly RdfXmlLoader rdfXmlLoader = new(logger);
 
-    public async Task<bool> ExtractXmlData(IGraph graph, IGraph existing,
+    public async Task ExtractXmlData(IGraph graph, IGraph existing,
         IUriNode id, string xml, string assetReference, CancellationToken cancellationToken)
     {
         var doc = new XmlDocument();
         doc.LoadXml(xml);
 
-        var rdf = RdfXmlLoader.GetRdf(doc, logger);
+        var rdf = rdfXmlLoader.GetRdf(doc);
         if (rdf is null)
         {
             logger.AssetXmlMissingRdf(id.AsValuedNode().AsString());
-            return false;
+            return;
         }
 
         Predicates.UnionWith(rdf.Triples.PredicateNodes.Cast<IUriNode>().Select(p => p.Uri.ToString()).ToHashSet());
@@ -97,8 +98,6 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         await AddCopyrightAsync(graph, rdf, id, cancellationToken);
         AddLegalStatus(graph, rdf, id);
         await AddSeal(graph, rdf, existing, id, cancellationToken);
-
-        return true;
     }
 
     private async Task AddVariationRelations(IGraph graph, IGraph rdf, IUriNode id, XmlDocument doc, CancellationToken cancellationToken)
@@ -476,12 +475,20 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
     private async Task AddCopyrightAsync(IGraph graph, IGraph rdf, INode id, CancellationToken cancellationToken)
     {
         var copyrights = rdf.GetTriplesWithPredicate(IngestVocabulary.Rights).Select(t => t.Object)
-            .Where(o => !string.IsNullOrWhiteSpace(o.ToString())).Cast<IUriNode>();
+            .Where(o => !string.IsNullOrWhiteSpace(o.ToString()));
         foreach (var copyright in copyrights)
         {
-            var cTitle = copyright.Uri.Segments.Last().Replace('_', ' ');
-            var copyrightId = await cacheClient.CacheFetchOrNew(CacheEntityKind.Copyright, cTitle, Vocabulary.CopyrightTitle, cancellationToken);
-            graph.Assert(id, Vocabulary.AssetHasCopyright, copyrightId);
+            var cTitle = copyright switch
+            {
+                ILiteralNode literalRight => literalRight.Value,
+                IUriNode uriRight => uriRight.Uri.Segments.Last().Replace('_', ' '),
+                _ => null
+            };
+            if (!string.IsNullOrWhiteSpace(cTitle))
+            {
+                var copyrightId = await cacheClient.CacheFetchOrNew(CacheEntityKind.Copyright, cTitle, Vocabulary.CopyrightTitle, cancellationToken);
+                graph.Assert(id, Vocabulary.AssetHasCopyright, copyrightId);
+            }
         }
     }
 

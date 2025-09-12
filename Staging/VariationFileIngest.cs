@@ -28,11 +28,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         {
             var xmlBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(dri.Xml));
             graph.Assert(id, Vocabulary.VariationDriXml, new LiteralNode(xmlBase64, new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
-            var proceed = await xmlIngest.ExtractXmlData(graph, existing, id, dri.Xml, cancellationToken);
-            if (!proceed)
-            {
-                return null;
-            }
+            await xmlIngest.ExtractXmlData(graph, existing, id, dri.Xml, cancellationToken);
         }
 
         return graph;
