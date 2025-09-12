@@ -6,7 +6,7 @@ public class FlatJsonAsset
 {
     public string Id { get; set; }
     public string Reference { get; set; }
-    public IEnumerable<string>? Names { get; set; }
+    public IEnumerable<string>? Titles { get; set; }
     public string? PastReference { get; set; }
     public string? Description { get; set; }
     public string? Summary { get; set; }
@@ -28,7 +28,7 @@ public class FlatJsonAsset
     public string? Language { get; set; }
     public IEnumerable<string>? Copyrights { get; set; }
     public string? RetentionImportLocation { get; set; }
-    public string? RetentionBody { get; set; }
+    public string? HeldBy { get; set; }
     public string? CreatedBy { get; set; }
     public string? GeographicalPlace { get; set; }
     public string? OriginDateStart { get; set; }
@@ -70,7 +70,7 @@ public class FlatJsonAsset
         {
             Id = asset.Id.Single(),
             Reference = asset.Reference.Single(),
-            Names = asset.Names,
+            Titles = asset.Names,
             PastReference = asset.PastReference.SingleOrDefault(),
             Description = asset.Description.SingleOrDefault(),
             Summary = asset.Summary.SingleOrDefault(),
@@ -92,7 +92,7 @@ public class FlatJsonAsset
             Language = asset.Language.SingleOrDefault()?.Name.SingleOrDefault(),
             Copyrights = asset.Copyrights.Select(c => c.Title.SingleOrDefault()),
             RetentionImportLocation = asset.Retention.SingleOrDefault()?.ImportLocation.SingleOrDefault(),
-            RetentionBody = asset.Retention.SingleOrDefault()?.RetentionBody.SingleOrDefault()?.Name.SingleOrDefault(),
+            HeldBy = asset.Retention.SingleOrDefault()?.RetentionBody.SingleOrDefault()?.Name.SingleOrDefault(),
             CreatedBy = asset.Creation.SingleOrDefault()?.CreationBody.SingleOrDefault()?.Name.SingleOrDefault(),
             GeographicalPlace = asset.GeographicalPlace.SingleOrDefault()?.Name.SingleOrDefault(),
             OriginDateStart = asset.OriginDateStart.SingleOrDefault()?.ToDate(),
@@ -301,7 +301,7 @@ public class FlatJsonAsset
         string? SensitiveDescription, string? AccessConditionName,
         string? AccessConditionCode, DateTimeOffset? ReviewDate,
         DateTimeOffset? CalculationStartDate, int? DurationYear,
-        long? EndYear, string? Description, IEnumerable<LegislationRecord>? Legislations,
+        long? EndYear, string? Description, IEnumerable<LegislationRecord>? FoiExemptions,
         long? InstrumentNumber, DateTimeOffset? InstrumentSignedDate,
         DateTimeOffset? RetentionRestrictionReviewDate, string? GroundForRetentionCode,
         string? GroundForRetentionDescription)
@@ -328,7 +328,7 @@ public class FlatJsonAsset
 
         internal Sr DeepCopy() => (Sr)MemberwiseClone() with
         {
-            Legislations = Legislations?.Select(l => l.DeepCopy())
+            FoiExemptions = FoiExemptions?.Select(l => l.DeepCopy())
         };
     }
 
