@@ -14,81 +14,75 @@ internal static partial class Log
     [LoggerMessage(EventId = 3, Level = LogLevel.Information, Message = "Ingesting {size} grounds for retention")]
     internal static partial void IngestingGroundsForRetention(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 4, Level = LogLevel.Information, Message = "Ingesting {size} top subsets")]
-    internal static partial void IngestingBroadestSubsets(this ILogger logger, int size);
-
-    [LoggerMessage(EventId = 5, Level = LogLevel.Information, Message = "Ingesting {size} subsets")]
+    [LoggerMessage(EventId = 4, Level = LogLevel.Information, Message = "Ingesting {size} subsets")]
     internal static partial void IngestingSubsets(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 6, Level = LogLevel.Information, Message = "Ingesting {size} assets")]
+    [LoggerMessage(EventId = 5, Level = LogLevel.Information, Message = "Ingesting {size} assets")]
     internal static partial void IngestingAssets(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 7, Level = LogLevel.Information, Message = "Ingesting {size} variations")]
+    [LoggerMessage(EventId = 6, Level = LogLevel.Information, Message = "Ingesting {size} variations")]
     internal static partial void IngestingVariations(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 8, Level = LogLevel.Information, Message = "Ingesting {size} sensitivity reviews")]
+    [LoggerMessage(EventId = 7, Level = LogLevel.Information, Message = "Ingesting {size} sensitivity reviews")]
     internal static partial void IngestingSensitivityReview(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 9, Level = LogLevel.Information, Message = "Updated {size} access conditions")]
+    [LoggerMessage(EventId = 8, Level = LogLevel.Information, Message = "Updated {size} access conditions")]
     internal static partial void IngestedAccessConditions(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 10, Level = LogLevel.Information, Message = "Updated {size} legislations")]
+    [LoggerMessage(EventId = 9, Level = LogLevel.Information, Message = "Updated {size} legislations")]
     internal static partial void IngestedLegislations(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 11, Level = LogLevel.Information, Message = "Updated {size} grounds for retention")]
+    [LoggerMessage(EventId = 10, Level = LogLevel.Information, Message = "Updated {size} grounds for retention")]
     internal static partial void IngestedGroundsForRetention(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 12, Level = LogLevel.Information, Message = "Updated {size} top subsets")]
-    internal static partial void IngestedBroadestSubsets(this ILogger logger, int size);
-
-    [LoggerMessage(EventId = 13, Level = LogLevel.Information, Message = "Updated {size} subsets")]
+    [LoggerMessage(EventId = 11, Level = LogLevel.Information, Message = "Updated {size} subsets")]
     internal static partial void IngestedSubsets(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 14, Level = LogLevel.Information, Message = "Updated {size} assets")]
+    [LoggerMessage(EventId = 12, Level = LogLevel.Information, Message = "Updated {size} assets")]
     internal static partial void IngestedAssets(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 15, Level = LogLevel.Information, Message = "Updated {size} variations")]
+    [LoggerMessage(EventId = 13, Level = LogLevel.Information, Message = "Updated {size} variations")]
     internal static partial void IngestedVariations(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 16, Level = LogLevel.Information, Message = "Updated {size} sensitivity reviews")]
+    [LoggerMessage(EventId = 14, Level = LogLevel.Information, Message = "Updated {size} sensitivity reviews")]
     internal static partial void IngestedSensitivityReview(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 17, Level = LogLevel.Information, Message = "{code} migration started")]
+    [LoggerMessage(EventId = 15, Level = LogLevel.Information, Message = "{code} migration started")]
     internal static partial void MigrationStarted(this ILogger logger, string code);
 
-    [LoggerMessage(EventId = 18, Level = LogLevel.Information, Message = "Migration finished")]
+    [LoggerMessage(EventId = 16, Level = LogLevel.Information, Message = "Migration finished")]
     internal static partial void MigrationFinished(this ILogger logger);
 
-    [LoggerMessage(EventId = 19, Level = LogLevel.Information, Message = "Ingesting {size} deliverable units")]
+    [LoggerMessage(EventId = 17, Level = LogLevel.Information, Message = "Ingesting {size} deliverable units")]
     internal static partial void IngestingDeliverableUnits(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 20, Level = LogLevel.Information, Message = "Updated {size} deliverable units")]
+    [LoggerMessage(EventId = 18, Level = LogLevel.Information, Message = "Updated {size} deliverable units")]
     internal static partial void IngestedDeliverableUnits(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 21, Level = LogLevel.Information, Message = "Fetching deliverable units at {offset}")]
+    [LoggerMessage(EventId = 19, Level = LogLevel.Information, Message = "Fetching deliverable units at {offset}")]
     internal static partial void GetDeliverableUnits(this ILogger logger, int offset);
 
-    [LoggerMessage(EventId = 22, Level = LogLevel.Information, Message = "Fetching files at {offset}")]
+    [LoggerMessage(EventId = 20, Level = LogLevel.Information, Message = "Fetching files at {offset}")]
     internal static partial void GetFiles(this ILogger logger, int offset);
 
-    [LoggerMessage(EventId = 23, Level = LogLevel.Information, Message = "Ingesting {size} files")]
+    [LoggerMessage(EventId = 21, Level = LogLevel.Information, Message = "Ingesting {size} files")]
     internal static partial void IngestingFiles(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 24, Level = LogLevel.Information, Message = "Updated {size} files")]
+    [LoggerMessage(EventId = 22, Level = LogLevel.Information, Message = "Updated {size} files")]
     internal static partial void IngestedFiles(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 25, Level = LogLevel.Critical, Message = "Migration failed")]
+    [LoggerMessage(EventId = 23, Level = LogLevel.Critical, Message = "Migration failed")]
     internal static partial void MigrationFailed(this ILogger logger);
 
-    [LoggerMessage(EventId = 26, Level = LogLevel.Debug)]
+    [LoggerMessage(EventId = 24, Level = LogLevel.Debug)]
     internal static partial void MigrationFailedDetails(this ILogger logger, Exception e);
 
-    [LoggerMessage(EventId = 27, Level = LogLevel.Critical, Message = "Unhandled exception: {message}")]
+    [LoggerMessage(EventId = 25, Level = LogLevel.Critical, Message = "Unhandled exception: {message}")]
     internal static partial void UnhandledException(this ILogger logger, string message);
 
-    [LoggerMessage(EventId = 28, Level = LogLevel.Critical, Message = "Migration failed with message {message}")]
+    [LoggerMessage(EventId = 26, Level = LogLevel.Critical, Message = "Migration failed with message {message}")]
     internal static partial void MigrationFailedWithMessage(this ILogger logger, string message);
 
-    [LoggerMessage(EventId = 29, Level = LogLevel.Critical, Message = "Process cancelled")]
+    [LoggerMessage(EventId = 27, Level = LogLevel.Critical, Message = "Process cancelled")]
     internal static partial void ProcessCancelled(this ILogger logger);
 }
