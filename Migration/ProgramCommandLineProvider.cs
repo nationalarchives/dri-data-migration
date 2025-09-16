@@ -49,24 +49,13 @@ public class ProgramCommandLineProvider : ConfigurationProvider
     };
     private static readonly Option<EtlStageType?> restartFromStage = new("--restart-from-stage", "-rfs")
     {
-        Description = """
-        Additional option, designed to by used in the restart scenario. Allows to specify the starting migration stage. Allowed options are:
-        AccessCondition,
-        Legislation,
-        GroundForRetention,
-        Subset,
-        Asset,
-        Variation,
-        AssetDeliverableUnit,
-        VariationFile,
-        SensitivityReview.
-        """,
+        Description = "Additional option, designed to by used in the restart scenario. Allows to specify the starting migration stage.",
         Arity = ArgumentArity.ZeroOrOne,
         Required = false
     };
     private static readonly Option<int> restartFromOffset = new("--restart-from-offset", "-rfo")
     {
-        Description = "Additional option, designed to by used in the restart scenario. Works only when --restart-from-stage option is set. Allows to specify the starting point of the paging query. Defaults to 0.",
+        Description = "Additional option, designed to by used in the restart scenario. Works only when --restart-from-stage option is set. Allows to control the starting point of the paging query (only at a given stage set by --restart-from-stage option) in adition to the starting stage. Defaults to 0.",
         DefaultValueFactory = _ => 0,
         Arity = ArgumentArity.ZeroOrOne,
         Required = false
