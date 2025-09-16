@@ -24,19 +24,23 @@ public class SqlExporter(IOptions<DriSettings> options) : IDriSqlExporter
         join xmlmetadata x on x.METADATAREF = d.METADATAREF
         where f.DELETED = 'F' and f.EXTANT = 'T' and f.DIRECTORY = 'F' and
             dm.DELETED = 'F' and dm.ACTIVE='T' and d.DELETED = 'F' and
-            d.TOPLEVELREF = (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION = $code)
+            (d.TOPLEVELREF = (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION = $code) or
+                ($code = 'WO 409' and dm.ORIGINALITY = 'T' and
+                d.TOPLEVELREF in (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION like 'WO/16/409/%')))
         order by d.DELIVERABLEUNITREF
         limit $limit offset $offset
         """;
     private readonly string fileXmlSql = """
-        select f.FILEREF, f.FILELOCATION, f.NAME, x.XMLCLOB from digitalfile f
+        select distinct f.FILEREF, f.FILELOCATION, f.NAME, x.XMLCLOB from digitalfile f
         join manifestationfile m on m.FILEREF = f.FILEREF
         join deliverableunitmanifestation dm on dm.MANIFESTATIONREF = m.MANIFESTATIONREF
         join deliverableunit d on d.DELIVERABLEUNITREF = dm.DELIVERABLEUNITREF
         join xmlmetadata x on x.METADATAREF = f.METADATAREF
         where f.DELETED = 'F' and f.EXTANT = 'T' and f.DIRECTORY = 'F' and
             dm.DELETED = 'F' and dm.ACTIVE='T' and d.DELETED = 'F' and
-            d.TOPLEVELREF = (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION  = $code)
+            (d.TOPLEVELREF = (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION  = $code) or
+                ($code = 'WO 409' and dm.ORIGINALITY = 'T' and
+                d.TOPLEVELREF in (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION like 'WO/16/409/%')))
         order by f.FILEREF
         limit $limit offset $offset
         """;

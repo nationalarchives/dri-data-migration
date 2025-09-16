@@ -14,6 +14,10 @@ public class AssetIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, I
         var retention = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasRetention).FirstOrDefault()?.Object ?? CacheClient.NewId;
 
         var subset = await cacheClient.CacheFetch(CacheEntityKind.Subset, dri.SubsetReference, cancellationToken);
+        if (subset is null && dri.SubsetReference == "WO 409")//Special case
+        {
+            subset = await cacheClient.CacheFetchOrNew(CacheEntityKind.Subset, dri.SubsetReference, Vocabulary.SubsetReference, cancellationToken);
+        }
         if (subset is null)
         {
             logger.SubsetNotFound(dri.SubsetReference);
