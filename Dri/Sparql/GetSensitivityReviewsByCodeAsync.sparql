@@ -41,11 +41,26 @@ where {
             ?reasonForChange ?rINumber ?rISignedDate ?retentionReconsiderDate ?retentionJustification
 	        (group_concat(?legislation; separator=',') as ?legislations) ?closureType where {
             bind(@id as ?code)
+            bind(replace(@id,' ','_') as ?code2)
             ?closure prov:specializationOf ?record;
                 dri:closureType ?closureType.
             ?record a ?type;
-                rdfs:label ?reference;
-            	(dri:isPartOfSeries/rdfs:label)|(dri:directory*/rdfs:label) ?code.
+                rdfs:label ?reference.
+            {
+                ?record ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code.
+            }
+            union
+            {
+                ?record ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code2.
+            }
+            union
+            {
+                ?record dri:isPartOfSeries/rdfs:label ?code.
+            }
+            union
+            {
+                ?record dri:isPartOfSeries/rdfs:label ?code2.
+            }
             optional { ?closure dri:closurePeriod ?closurePeriod }
             optional { ?closure dri:startDate ?startDate }
             optional { ?closure dri:exemptionAsserted ?exemptionAsserted }

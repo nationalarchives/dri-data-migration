@@ -11,10 +11,9 @@ construct {
     	ex:variationName ?label.
 } where {
     {
-        select * where {
+        select distinct ?d ?assetReference ?label where {
             bind(@id as ?code)
-            bind('RED 1' as ?code2)
-            bind(replace(@id,' ','_') as ?code3)
+            bind(replace(@id,' ','_') as ?code2)
             ?d ^dri:file/dri:parent/rdfs:label ?assetReference;
                 rdfs:label ?label.
             {
@@ -24,14 +23,12 @@ construct {
             union
             {
                 ?d a dri:File;
-        	        ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code;
-        	        dri:directory*/rdfs:label ?code2.
+        	        ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code.
             }
             union
             {
                 ?d a dri:File;
-        	        ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code;
-        	        dri:directory*/rdfs:label ?code3.
+        	        ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code2.
             }
         }
         order by ?assetReference

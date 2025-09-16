@@ -14,10 +14,10 @@ construct {
     	].
 } where {
     {
-        select * where {
+        select distinct ?a ?reference ?subset ?directory where {
             bind(@id as ?code)
             bind(replace(@id,' ','_') as ?code2)
-            ?a rdfs:label ?reference;
+            ?a rdfs:label ?reference.
             {
                 ?a a dri:DeliverableUnit;
     	            dri:isPartOfSeries/rdfs:label ?code.
