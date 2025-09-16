@@ -13,9 +13,10 @@ public class EtlSubset(ILogger<EtlSubset> logger, IOptions<DriSettings> driSetti
 {
     private readonly DriSettings settings = driSettings.Value;
 
-    public async Task RunAsync(CancellationToken cancellationToken)
+    public EtlStageType StageType => EtlStageType.Subset;
+
+    public async Task RunAsync(int offset, CancellationToken cancellationToken)
     {
-        int offset = 0;
         IEnumerable<DriSubset> dri;
         do
         {

@@ -9,7 +9,9 @@ namespace Etl;
 public class EtlLegislation(ILogger<EtlLegislation> logger, IDriRdfExporter driExport,
     IStagingIngest<DriLegislation> ingest) : IEtl
 {
-    public async Task RunAsync(CancellationToken cancellationToken)
+    public EtlStageType StageType => EtlStageType.Legislation;
+
+    public async Task RunAsync(int _, CancellationToken cancellationToken)
     {
         var dri = await driExport.GetLegislationsAsync(cancellationToken);
 

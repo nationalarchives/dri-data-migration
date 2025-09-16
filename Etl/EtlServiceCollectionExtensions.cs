@@ -7,6 +7,7 @@ public static class EtlServiceCollectionExtensions
 {
     public static IServiceCollection AddMigration(this IServiceCollection services)
     {
+        //Order of execution is dictated by EtlStageType
         services.AddSingleton<IEtl, EtlAccessCondition>();
         services.AddSingleton<IEtl, EtlLegislation>();
         services.AddSingleton<IEtl, EtlGroundForRetention>();

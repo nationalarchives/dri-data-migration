@@ -85,4 +85,7 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 27, Level = LogLevel.Critical, Message = "Process cancelled")]
     internal static partial void ProcessCancelled(this ILogger logger);
+
+    [LoggerMessage(EventId = 28, Level = LogLevel.Information, Message = "Migration stage {stage} skipped")]
+    internal static partial void EtlStageSkipped(this ILogger logger, Api.EtlStageType stage);
 }

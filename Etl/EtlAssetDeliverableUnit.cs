@@ -13,9 +13,10 @@ public class EtlAssetDeliverableUnit(ILogger<EtlAssetDeliverableUnit> logger, IO
 {
     private readonly DriSettings settings = driSettings.Value;
 
-    public async Task RunAsync(CancellationToken cancellationToken)
+    public EtlStageType StageType => EtlStageType.AssetDeliverableUnit;
+
+    public async Task RunAsync(int offset, CancellationToken cancellationToken)
     {
-        int offset = 0;
         IEnumerable<DriAssetDeliverableUnit> dri;
         do
         {

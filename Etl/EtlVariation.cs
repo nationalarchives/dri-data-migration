@@ -13,9 +13,10 @@ public class EtlVariation(ILogger<EtlVariation> logger, IOptions<DriSettings> dr
 {
     private readonly DriSettings settings = driSettings.Value;
 
-    public async Task RunAsync(CancellationToken cancellationToken)
+    public EtlStageType StageType => EtlStageType.Variation;
+
+    public async Task RunAsync(int offset, CancellationToken cancellationToken)
     {
-        int offset = 0;
         IEnumerable<DriVariation> dri;
         do
         {
