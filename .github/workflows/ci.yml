@@ -28,3 +28,8 @@ jobs:
 
       - name: Build
         run: dotnet build --no-restore --configuration Release
+
+      - name: Test Dri
+        run: |
+            cd Tests
+            dotnet run --no-restore --project "Dri.Tests" --configuration Release
