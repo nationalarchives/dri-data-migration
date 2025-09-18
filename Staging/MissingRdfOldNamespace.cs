@@ -24,7 +24,9 @@ internal class MissingRdfOldNamespace(ILogger logger)
         var namespaceManager = new XmlNamespaceManager(doc.NameTable);
         namespaceManager.AddNamespace("rdf", NamespaceMapper.RDF);
         namespaceManager.AddNamespace("t", "http://www.tessella.com/XIP/v4");
-        var metadata = doc.DocumentElement.SelectSingleNode("descendant::t:Metadata", namespaceManager);
+        namespaceManager.AddNamespace("tnaxm", IngestVocabulary.TnaNamespaceWithSlash.ToString());
+        var metadata = doc.DocumentElement.SelectSingleNode("descendant::t:Metadata", namespaceManager) ??
+            doc.DocumentElement.SelectSingleNode("descendant::tnaxm:metadata", namespaceManager)?.ParentNode;
         if (metadata is null)
         {
             return null;
@@ -41,6 +43,10 @@ internal class MissingRdfOldNamespace(ILogger logger)
         parseType.Value = "Resource";
         foreach (var child in metadataChild.ChildNodes.OfType<XmlElement>())
         {
+            if (child.LocalName == "provenance")
+            {
+                continue;
+            }
             var clonedChild = child.Clone();
             if (clonedChild.HasChildNodes && clonedChild.ChildNodes.Count > 1)
             {
