@@ -70,6 +70,21 @@ construct {
     ?s owl:sameAs ?s2.
 }
 
+### Description diff check
+POST {{endpoint}}
+Content-Type: application/sparql-query
+Accept: text/turtle
+
+prefix ex: <http://id.example.com/schema/>
+prefix dcterms: <http://purl.org/dc/terms/description>
+
+select * where {
+    ?asset ex:assetHasVariation ?variation;
+		  ex:assetDescription ?assetDescription.
+    ?variation <http://purl.org/dc/terms/description> ?variationDescription.
+    filter (?assetDescription!=?variationDescription)
+}
+
 ### Access conditions count
 POST {{endpoint}}
 Content-Type: application/sparql-query
