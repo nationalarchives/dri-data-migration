@@ -53,10 +53,10 @@ internal static partial class Log
     [LoggerMessage(EventId = 16, Level = LogLevel.Warning, Message = "Unrecognized cache entity type")]
     internal static partial void InvalidCacheEntityKind(this ILogger logger);
 
-    [LoggerMessage(EventId = 17, Level = LogLevel.Warning, Message = "Asset {asset} missing RDF in its XML")]
+    [LoggerMessage(EventId = 17, Level = LogLevel.Warning, Message = "Asset {asset} missing RDF in the XML")]
     internal static partial void AssetXmlMissingRdf(this ILogger logger, string asset);
 
-    [LoggerMessage(EventId = 18, Level = LogLevel.Warning, Message = "Variation {variation} missing RDF in its XML")]
+    [LoggerMessage(EventId = 18, Level = LogLevel.Warning, Message = "Variation {variation} missing RDF in the XML")]
     internal static partial void VariationXmlMissingRdf(this ILogger logger, string variation);
 
     [LoggerMessage(EventId = 19, Level = LogLevel.Warning, Message = "Legislation {code} not found")]
