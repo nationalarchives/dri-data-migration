@@ -24,7 +24,7 @@ internal static partial class Log
     internal static partial void IngestingVariations(this ILogger logger, int size);
 
     [LoggerMessage(EventId = 7, Level = LogLevel.Information, Message = "Ingesting {size} sensitivity reviews")]
-    internal static partial void IngestingSensitivityReview(this ILogger logger, int size);
+    internal static partial void IngestingSensitivityReviews(this ILogger logger, int size);
 
     [LoggerMessage(EventId = 8, Level = LogLevel.Information, Message = "Updated {size} access conditions")]
     internal static partial void IngestedAccessConditions(this ILogger logger, int size);
@@ -45,7 +45,7 @@ internal static partial class Log
     internal static partial void IngestedVariations(this ILogger logger, int size);
 
     [LoggerMessage(EventId = 14, Level = LogLevel.Information, Message = "Updated {size} sensitivity reviews")]
-    internal static partial void IngestedSensitivityReview(this ILogger logger, int size);
+    internal static partial void IngestedSensitivityReviews(this ILogger logger, int size);
 
     [LoggerMessage(EventId = 15, Level = LogLevel.Information, Message = "{code} migration started")]
     internal static partial void MigrationStarted(this ILogger logger, string code);

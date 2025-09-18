@@ -22,9 +22,9 @@ public class EtlSensitivityReview(ILogger<EtlSensitivityReview> logger, IOptions
         {
             dri = (await driExport.GetSensitivityReviewsByCodeAsync(offset, cancellationToken)).ToList();
             offset += settings.FetchPageSize;
-            logger.IngestingSensitivityReview(dri.Count);
+            logger.IngestingSensitivityReviews(dri.Count);
             var ingestSize = await ingest.SetAsync(dri, cancellationToken);
-            logger.IngestedSensitivityReview(ingestSize);
+            logger.IngestedSensitivityReviews(ingestSize);
         } while (dri.Any() && dri.Count == settings.FetchPageSize);
     }
 }
