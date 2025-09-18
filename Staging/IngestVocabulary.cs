@@ -5,6 +5,7 @@ namespace Staging;
 public static class IngestVocabulary
 {
     public static readonly Uri TnaNamespace = new("http://nationalarchives.gov.uk/metadata/tna#");
+    public static readonly Uri TnaNamespaceWithSlash = new("http://nationalarchives.gov.uk/metadata/");
     public static readonly Uri DctermsNamespace = new("http://purl.org/dc/terms/");
     public static readonly Uri TransNamespace = new("http://nationalarchives.gov.uk/dri/transcription");
 
