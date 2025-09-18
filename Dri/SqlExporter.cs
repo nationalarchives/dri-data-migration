@@ -1,12 +1,13 @@
 ﻿using Api;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Data;
 
 namespace Dri;
 
-public class SqlExporter(IOptions<DriSettings> options) : IDriSqlExporter
+public class SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> options) : IDriSqlExporter
 {
     /* Additional indices created:
     create index xmlmetadata_ix on xmlmetadata (METADATAREF)
@@ -47,6 +48,7 @@ public class SqlExporter(IOptions<DriSettings> options) : IDriSqlExporter
 
     public IEnumerable<DriAssetDeliverableUnit> GetAssetDeliverableUnits(int offset)
     {
+        logger.GetDeliverableUnits(offset);
         var codeParam = new SqliteParameter("$code", settings.Code);
         var limitParam = new SqliteParameter("$limit", settings.FetchPageSize);
         var offsetParam = new SqliteParameter("$offset", offset);
@@ -65,6 +67,7 @@ public class SqlExporter(IOptions<DriSettings> options) : IDriSqlExporter
 
     public IEnumerable<DriVariationFile> GetVariationFiles(int offset)
     {
+        logger.GetFiles(offset);
         var codeParam = new SqliteParameter("$code", settings.Code);
         var limitParam = new SqliteParameter("$limit", settings.FetchPageSize);
         var offsetParam = new SqliteParameter("$offset", offset);

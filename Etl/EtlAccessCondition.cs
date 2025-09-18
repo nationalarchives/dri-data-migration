@@ -13,9 +13,9 @@ public class EtlAccessCondition(ILogger<EtlAccessCondition> logger,
 
     public async Task RunAsync(int _, CancellationToken cancellationToken)
     {
-        var dri = await driExport.GetAccessConditionsAsync(cancellationToken);
+        var dri = (await driExport.GetAccessConditionsAsync(cancellationToken)).ToList();
 
-        logger.IngestingAccessConditions(dri.Count());
+        logger.IngestingAccessConditions(dri.Count);
         var ingestSize = await ingest.SetAsync(dri, cancellationToken);
         logger.IngestedAccessConditions(ingestSize);
     }

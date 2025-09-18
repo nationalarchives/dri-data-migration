@@ -17,14 +17,14 @@ public class EtlSubset(ILogger<EtlSubset> logger, IOptions<DriSettings> driSetti
 
     public async Task RunAsync(int offset, CancellationToken cancellationToken)
     {
-        IEnumerable<DriSubset> dri;
+        List<DriSubset> dri;
         do
         {
-            dri = await driExport.GetSubsetsByCodeAsync(offset, cancellationToken);
+            dri = (await driExport.GetSubsetsByCodeAsync(offset, cancellationToken)).ToList();
             offset += settings.FetchPageSize;
-            logger.IngestingSubsets(dri.Count());
+            logger.IngestingSubsets(dri.Count);
             var ingestSize = await ingest.SetAsync(dri, cancellationToken);
             logger.IngestedSubsets(ingestSize);
-        } while (dri.Any() && dri.Count() == settings.FetchPageSize);
+        } while (dri.Any() && dri.Count == settings.FetchPageSize);
     }
 }

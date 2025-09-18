@@ -24,4 +24,11 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 7, Level = LogLevel.Information, Message = "Fetching sensitivity reviews at {offset}")]
     internal static partial void GetSensitivityReviewsByCode(this ILogger logger, int offset);
+
+    [LoggerMessage(EventId = 8, Level = LogLevel.Information, Message = "Fetching deliverable units at {offset}")]
+    internal static partial void GetDeliverableUnits(this ILogger logger, int offset);
+
+    [LoggerMessage(EventId = 9, Level = LogLevel.Information, Message = "Fetching files at {offset}")]
+    internal static partial void GetFiles(this ILogger logger, int offset);
+
 }

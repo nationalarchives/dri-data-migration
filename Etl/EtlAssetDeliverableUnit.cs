@@ -17,15 +17,14 @@ public class EtlAssetDeliverableUnit(ILogger<EtlAssetDeliverableUnit> logger, IO
 
     public async Task RunAsync(int offset, CancellationToken cancellationToken)
     {
-        IEnumerable<DriAssetDeliverableUnit> dri;
+        List<DriAssetDeliverableUnit> dri;
         do
         {
-            logger.GetDeliverableUnits(offset);
-            dri = driExport.GetAssetDeliverableUnits(offset);
+            dri = driExport.GetAssetDeliverableUnits(offset).ToList();
             offset += settings.FetchPageSize;
-            logger.IngestingDeliverableUnits(dri.Count());
+            logger.IngestingDeliverableUnits(dri.Count);
             var ingestSize = await ingest.SetAsync(dri, cancellationToken);
             logger.IngestedDeliverableUnits(ingestSize);
-        } while (dri.Any() && dri.Count() == settings.FetchPageSize);
+        } while (dri.Any() && dri.Count == settings.FetchPageSize);
     }
 }

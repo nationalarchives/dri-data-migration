@@ -13,9 +13,9 @@ public class EtlLegislation(ILogger<EtlLegislation> logger, IDriRdfExporter driE
 
     public async Task RunAsync(int _, CancellationToken cancellationToken)
     {
-        var dri = await driExport.GetLegislationsAsync(cancellationToken);
+        var dri = (await driExport.GetLegislationsAsync(cancellationToken)).ToList();
 
-        logger.IngestingLegislations(dri.Count());
+        logger.IngestingLegislations(dri.Count);
         var ingestSize = await ingest.SetAsync(dri, cancellationToken);
         logger.IngestedLegislations(ingestSize);
     }

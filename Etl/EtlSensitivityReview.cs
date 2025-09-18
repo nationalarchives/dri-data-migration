@@ -17,14 +17,14 @@ public class EtlSensitivityReview(ILogger<EtlSensitivityReview> logger, IOptions
 
     public async Task RunAsync(int offset, CancellationToken cancellationToken)
     {
-        IEnumerable<DriSensitivityReview> dri;
+        List<DriSensitivityReview> dri;
         do
         {
-            dri = await driExport.GetSensitivityReviewsByCodeAsync(offset, cancellationToken);
+            dri = (await driExport.GetSensitivityReviewsByCodeAsync(offset, cancellationToken)).ToList();
             offset += settings.FetchPageSize;
-            logger.IngestingSensitivityReview(dri.Count());
+            logger.IngestingSensitivityReview(dri.Count);
             var ingestSize = await ingest.SetAsync(dri, cancellationToken);
             logger.IngestedSensitivityReview(ingestSize);
-        } while (dri.Any() && dri.Count() == settings.FetchPageSize);
+        } while (dri.Any() && dri.Count == settings.FetchPageSize);
     }
 }

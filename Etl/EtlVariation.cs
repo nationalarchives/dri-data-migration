@@ -17,14 +17,14 @@ public class EtlVariation(ILogger<EtlVariation> logger, IOptions<DriSettings> dr
 
     public async Task RunAsync(int offset, CancellationToken cancellationToken)
     {
-        IEnumerable<DriVariation> dri;
+        List<DriVariation> dri;
         do
         {
-            dri = await driExport.GetVariationsByCodeAsync(offset, cancellationToken);
+            dri = (await driExport.GetVariationsByCodeAsync(offset, cancellationToken)).ToList();
             offset += settings.FetchPageSize;
-            logger.IngestingVariations(dri.Count());
+            logger.IngestingVariations(dri.Count);
             var ingestSize = await ingest.SetAsync(dri, cancellationToken);
             logger.IngestedVariations(ingestSize);
-        } while (dri.Any() && dri.Count() == settings.FetchPageSize);
+        } while (dri.Any() && dri.Count == settings.FetchPageSize);
     }
 }

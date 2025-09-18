@@ -18,14 +18,14 @@ public class EtlAsset(ILogger<EtlAsset> logger, IOptions<DriSettings> driSetting
 
     public async Task RunAsync(int offset, CancellationToken cancellationToken)
     {
-        IEnumerable<DriAsset> dri;
+        List<DriAsset> dri;
         do
         {
-            dri = await driExport.GetAssetsByCodeAsync(offset, cancellationToken);
+            dri = (await driExport.GetAssetsByCodeAsync(offset, cancellationToken)).ToList();
             offset += settings.FetchPageSize;
-            logger.IngestingAssets(dri.Count());
+            logger.IngestingAssets(dri.Count);
             var ingestSize = await ingest.SetAsync(dri, cancellationToken);
             logger.IngestedAssets(ingestSize);
-        } while (dri.Any() && dri.Count() == settings.FetchPageSize);
+        } while (dri.Any() && dri.Count == settings.FetchPageSize);
     }
 }

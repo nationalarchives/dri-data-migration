@@ -13,9 +13,9 @@ public class EtlGroundForRetention(ILogger<EtlGroundForRetention> logger, IDriRd
 
     public async Task RunAsync(int _, CancellationToken cancellationToken)
     {
-        var dri = await driExport.GetGroundsForRetentionAsync(cancellationToken);
+        var dri = (await driExport.GetGroundsForRetentionAsync(cancellationToken)).ToList();
 
-        logger.IngestingGroundsForRetention(dri.Count());
+        logger.IngestingGroundsForRetention(dri.Count);
         var ingestSize = await ingest.SetAsync(dri, cancellationToken);
         logger.IngestedGroundsForRetention(ingestSize);
     }

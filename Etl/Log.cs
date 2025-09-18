@@ -59,33 +59,27 @@ internal static partial class Log
     [LoggerMessage(EventId = 18, Level = LogLevel.Information, Message = "Updated {size} deliverable units")]
     internal static partial void IngestedDeliverableUnits(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 19, Level = LogLevel.Information, Message = "Fetching deliverable units at {offset}")]
-    internal static partial void GetDeliverableUnits(this ILogger logger, int offset);
-
-    [LoggerMessage(EventId = 20, Level = LogLevel.Information, Message = "Fetching files at {offset}")]
-    internal static partial void GetFiles(this ILogger logger, int offset);
-
-    [LoggerMessage(EventId = 21, Level = LogLevel.Information, Message = "Ingesting {size} files")]
+    [LoggerMessage(EventId = 19, Level = LogLevel.Information, Message = "Ingesting {size} files")]
     internal static partial void IngestingFiles(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 22, Level = LogLevel.Information, Message = "Updated {size} files")]
+    [LoggerMessage(EventId = 20, Level = LogLevel.Information, Message = "Updated {size} files")]
     internal static partial void IngestedFiles(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 23, Level = LogLevel.Critical, Message = "Migration failed")]
+    [LoggerMessage(EventId = 21, Level = LogLevel.Critical, Message = "Migration failed")]
     internal static partial void MigrationFailed(this ILogger logger);
 
-    [LoggerMessage(EventId = 24, Level = LogLevel.Debug)]
+    [LoggerMessage(EventId = 22, Level = LogLevel.Debug)]
     internal static partial void MigrationFailedDetails(this ILogger logger, Exception e);
 
-    [LoggerMessage(EventId = 25, Level = LogLevel.Critical, Message = "Unhandled exception: {message}")]
+    [LoggerMessage(EventId = 23, Level = LogLevel.Critical, Message = "Unhandled exception: {message}")]
     internal static partial void UnhandledException(this ILogger logger, string message);
 
-    [LoggerMessage(EventId = 26, Level = LogLevel.Critical, Message = "Migration failed with message {message}")]
+    [LoggerMessage(EventId = 24, Level = LogLevel.Critical, Message = "Migration failed with message {message}")]
     internal static partial void MigrationFailedWithMessage(this ILogger logger, string message);
 
-    [LoggerMessage(EventId = 27, Level = LogLevel.Critical, Message = "Process cancelled")]
+    [LoggerMessage(EventId = 25, Level = LogLevel.Critical, Message = "Process cancelled")]
     internal static partial void ProcessCancelled(this ILogger logger);
 
-    [LoggerMessage(EventId = 28, Level = LogLevel.Information, Message = "Migration stage {stage} skipped")]
+    [LoggerMessage(EventId = 26, Level = LogLevel.Information, Message = "Migration stage {stage} skipped")]
     internal static partial void EtlStageSkipped(this ILogger logger, Api.EtlStageType stage);
 }
