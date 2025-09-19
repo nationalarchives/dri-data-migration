@@ -2,8 +2,10 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading;
 
 namespace Dri;
 
@@ -11,42 +13,50 @@ public class SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> opti
 {
     /* Additional indices created:
     create index xmlmetadata_ix on xmlmetadata (METADATAREF)
-    create index deliverableunit_ix on deliverableunit (TOPLEVELREF, DELETED)
-    create index deliverableunitmanifestation_ix on deliverableunitmanifestation (DELIVERABLEUNITREF,  DELETED, ACTIVE)
-    create index manifestationfile_ix on manifestationfile (MANIFESTATIONREF)
+    create index deliverableunit_ix on deliverableunit (DELETED)
+    create index deliverableunit_ix2 on deliverableunit (DELETED, IsWO409)
+    create index deliverableunit_ix3 on deliverableunit (DELIVERABLEUNITREF)
+    create index deliverableunitmanifestation_ix on deliverableunitmanifestation (DELETED, ACTIVE, MANIFESTATIONREF)
+    create index manifestationfile_ix on manifestationfile (FILEREF)
+    create index manifestationfile_ix2 on manifestationfile (MANIFESTATIONREF)
     create index digitalfile_ix on digitalfile (FILEREF, DELETED)
+
+    Additional column added:
+
+    alter table deliverableunit add column IsWO409 integer default 0
+    update deliverableunit set IsWO409 = 1 where substr(DESCRIPTION,1,10)='WO/16/409/'
      */
     private readonly DriSettings settings = options.Value;
     private readonly string duXmlSql = """
-        select distinct d.DELIVERABLEUNITREF, d.CATALOGUEREFERENCE, x.XMLCLOB from deliverableunit d
-        join deliverableunitmanifestation dm on d.DELIVERABLEUNITREF = dm.DELIVERABLEUNITREF
-        join manifestationfile m on dm.MANIFESTATIONREF = m.MANIFESTATIONREF
-        join digitalfile f on m.FILEREF = f.FILEREF
+        select distinct d.DELIVERABLEUNITREF, d.CATALOGUEREFERENCE, x.XMLCLOB from digitalfile f
+        join manifestationfile m on m.FILEREF = f.FILEREF
+        join deliverableunitmanifestation dm on dm.MANIFESTATIONREF = m.MANIFESTATIONREF
+        join deliverableunit d on d.DELIVERABLEUNITREF = dm.DELIVERABLEUNITREF
         join xmlmetadata x on x.METADATAREF = d.METADATAREF
         where f.DELETED = 'F' and f.EXTANT = 'T' and f.DIRECTORY = 'F' and
             dm.DELETED = 'F' and dm.ACTIVE='T' and d.DELETED = 'F' and
             (d.TOPLEVELREF = (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION = $code) or
                 ($code = 'WO 409' and dm.ORIGINALITY = 'T' and
-                d.TOPLEVELREF in (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION like 'WO/16/409/%')))
-        order by d.DELIVERABLEUNITREF
+                d.TOPLEVELREF in (select TOPLEVELREF from deliverableunit where DELETED = 'F' and IsWO409 = 1)))
+        order by d.rowid
         limit $limit offset $offset
         """;
     private readonly string fileXmlSql = """
-        select distinct f.FILEREF, f.FILELOCATION, f.NAME, x.XMLCLOB from digitalfile f
+        select f.FILEREF, f.FILELOCATION, f.NAME, x.XMLCLOB from digitalfile f
         join manifestationfile m on m.FILEREF = f.FILEREF
         join deliverableunitmanifestation dm on dm.MANIFESTATIONREF = m.MANIFESTATIONREF
         join deliverableunit d on d.DELIVERABLEUNITREF = dm.DELIVERABLEUNITREF
         join xmlmetadata x on x.METADATAREF = f.METADATAREF
         where f.DELETED = 'F' and f.EXTANT = 'T' and f.DIRECTORY = 'F' and
             dm.DELETED = 'F' and dm.ACTIVE='T' and d.DELETED = 'F' and
-            (d.TOPLEVELREF = (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION  = $code) or
+            (d.TOPLEVELREF = (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION = $code) or
                 ($code = 'WO 409' and dm.ORIGINALITY = 'T' and
-                d.TOPLEVELREF in (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION like 'WO/16/409/%')))
-        order by f.FILEREF
+                d.TOPLEVELREF in (select TOPLEVELREF from deliverableunit where DELETED = 'F' and IsWO409 = 1)))
+        order by f.rowid
         limit $limit offset $offset
         """;
 
-    public IEnumerable<DriAssetDeliverableUnit> GetAssetDeliverableUnits(int offset)
+    public IEnumerable<DriAssetDeliverableUnit> GetAssetDeliverableUnits(int offset, CancellationToken cancellationToken)
     {
         logger.GetDeliverableUnits(offset);
         var codeParam = new SqliteParameter("$code", settings.Code);
@@ -54,6 +64,7 @@ public class SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> opti
         var offsetParam = new SqliteParameter("$offset", offset);
 
         using var connection = new SqliteConnection(settings.SqlConnectionString);
+        cancellationToken.Register(() => SQLitePCL.raw.sqlite3_interrupt(connection.Handle));
         connection.Open();
         using var command = new SqliteCommand(duXmlSql, connection);
         command.Parameters.AddRange([codeParam, limitParam, offsetParam]);
@@ -65,7 +76,7 @@ public class SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> opti
         }
     }
 
-    public IEnumerable<DriVariationFile> GetVariationFiles(int offset)
+    public IEnumerable<DriVariationFile> GetVariationFiles(int offset, CancellationToken cancellationToken)
     {
         logger.GetFiles(offset);
         var codeParam = new SqliteParameter("$code", settings.Code);
@@ -73,6 +84,7 @@ public class SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> opti
         var offsetParam = new SqliteParameter("$offset", offset);
 
         using var connection = new SqliteConnection(settings.SqlConnectionString);
+        cancellationToken.Register(() => SQLitePCL.raw.sqlite3_interrupt(connection.Handle));
         connection.Open();
         using var command = new SqliteCommand(fileXmlSql, connection);
         command.Parameters.AddRange([codeParam, limitParam, offsetParam]);

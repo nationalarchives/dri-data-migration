@@ -1,4 +1,5 @@
 ﻿using Api;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -48,6 +49,12 @@ public class Migration(ILogger<Migration> logger, IOptions<DriSettings> driSetti
                 return;
             }
             catch (TaskCanceledException e)
+            {
+                logger.ProcessCancelled();
+                logger.MigrationFailedDetails(e);
+                return;
+            }
+            catch (SqliteException e) when (e.SqliteErrorCode == SQLitePCL.raw.SQLITE_INTERRUPT)
             {
                 logger.ProcessCancelled();
                 logger.MigrationFailedDetails(e);
