@@ -32,4 +32,4 @@ jobs:
       - name: Test Dri
         run: |
             cd Tests
-            dotnet run --no-restore --project "Dri.Tests" --configuration Release
+            dotnet run --project "Dri.Tests" --configuration Release
