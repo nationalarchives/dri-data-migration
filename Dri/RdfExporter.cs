@@ -31,17 +31,6 @@ public class RdfExporter : IDriRdfExporter
         embedded = new(currentAssembly, baseName);
     }
 
-    public async Task<IEnumerable<DriSubset>> GetBroadestSubsetsAsync(CancellationToken cancellationToken)
-    {
-        logger.GetBroadestSubsets();
-        var sparql = embedded.GetSparql(nameof(GetBroadestSubsetsAsync));
-
-        var result = await sparqlClient.GetResultSetAsync(sparql, cancellationToken);
-
-        return result.Results.Select(s => new DriSubset(
-            s.Value("directory").AsValuedNode().AsString(), s.Value("directory").AsValuedNode().AsString(), null));
-    }
-
     public async Task<IEnumerable<DriAccessCondition>> GetAccessConditionsAsync(CancellationToken cancellationToken)
     {
         logger.GetAccessConditions();

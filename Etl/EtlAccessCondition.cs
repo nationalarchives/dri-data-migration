@@ -6,14 +6,16 @@ using System.Threading.Tasks;
 
 namespace Etl;
 
-public class EtlAccessCondition(ILogger<EtlAccessCondition> logger, IDriRdfExporter driExport,
-    IStagingIngest<DriAccessCondition> ingest) : IEtl
+public class EtlAccessCondition(ILogger<EtlAccessCondition> logger,
+    IDriRdfExporter driExport, IStagingIngest<DriAccessCondition> ingest) : IEtl
 {
-    public async Task RunAsync(CancellationToken cancellationToken)
-    {
-        var dri = await driExport.GetAccessConditionsAsync(cancellationToken);
+    public EtlStageType StageType => EtlStageType.AccessCondition;
 
-        logger.IngestingAccessConditions(dri.Count());
+    public async Task RunAsync(int _, CancellationToken cancellationToken)
+    {
+        var dri = (await driExport.GetAccessConditionsAsync(cancellationToken)).ToList();
+
+        logger.IngestingAccessConditions(dri.Count);
         var ingestSize = await ingest.SetAsync(dri, cancellationToken);
         logger.IngestedAccessConditions(ingestSize);
     }

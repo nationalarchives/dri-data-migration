@@ -47,6 +47,19 @@ public class ProgramCommandLineProvider : ConfigurationProvider
         Arity = ArgumentArity.ZeroOrOne,
         Required = false
     };
+    private static readonly Option<EtlStageType?> restartFromStage = new("--restart-from-stage", "-rfs")
+    {
+        Description = "Additional option, designed to by used in the restart scenario. Allows to specify the starting migration stage.",
+        Arity = ArgumentArity.ZeroOrOne,
+        Required = false
+    };
+    private static readonly Option<int> restartFromOffset = new("--restart-from-offset", "-rfo")
+    {
+        Description = "Additional option, designed to by used in the restart scenario. Works only when --restart-from-stage option is set. Allows to control the starting point of the paging query (only at a given stage set by --restart-from-stage option) in adition to the starting stage. Defaults to 0.",
+        DefaultValueFactory = _ => 0,
+        Arity = ArgumentArity.ZeroOrOne,
+        Required = false
+    };
     private static readonly Option<string> filePrefix = new("--prefix", "-px")
     {
         Description = "Starting part of of the identifier in the exported file. This value will be used to replace catalogue reference in the staging data with the reference to match records.",
@@ -92,7 +105,9 @@ public class ProgramCommandLineProvider : ConfigurationProvider
             driSparql,
             sparql,
             sparqlUpdate,
-            pageSize
+            pageSize,
+            restartFromStage,
+            restartFromOffset
         };
 
         ReconcileCommand = new Command("reconcile", """
@@ -165,6 +180,11 @@ public class ProgramCommandLineProvider : ConfigurationProvider
             {
                 data.Add($"{StagingSettings.Prefix}:{nameof(StagingSettings.FetchPageSize)}", size.ToString());
                 data.Add($"{DriSettings.Prefix}:{nameof(DriSettings.FetchPageSize)}", size.ToString());
+            }
+            if (parseResult.GetValue(restartFromStage) is EtlStageType etlStageType)
+            {
+                data.Add($"{DriSettings.Prefix}:{nameof(DriSettings.RestartFromStage)}", etlStageType.ToString());
+                data.Add($"{DriSettings.Prefix}:{nameof(DriSettings.RestartFromOffset)}", parseResult.GetValue(restartFromOffset).ToString());
             }
         }
 

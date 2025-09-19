@@ -70,7 +70,7 @@
         if (restriction.EndYear.Any())
         {
             <dt>Restriction end year</dt>
-            <dd>@restriction.EndYear.Single()</dd>
+            <dd>@restriction.EndYear.Single().Value</dd>
         }
         if (restriction.Description.Any())
         {

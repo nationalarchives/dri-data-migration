@@ -1,12 +1,13 @@
 ﻿using Api;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Data;
 
 namespace Dri;
 
-public class SqlExporter(IOptions<DriSettings> options) : IDriSqlExporter
+public class SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> options) : IDriSqlExporter
 {
     /* Additional indices created:
     create index xmlmetadata_ix on xmlmetadata (METADATAREF)
@@ -24,25 +25,30 @@ public class SqlExporter(IOptions<DriSettings> options) : IDriSqlExporter
         join xmlmetadata x on x.METADATAREF = d.METADATAREF
         where f.DELETED = 'F' and f.EXTANT = 'T' and f.DIRECTORY = 'F' and
             dm.DELETED = 'F' and dm.ACTIVE='T' and d.DELETED = 'F' and
-            d.TOPLEVELREF = (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION = $code)
+            (d.TOPLEVELREF = (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION = $code) or
+                ($code = 'WO 409' and dm.ORIGINALITY = 'T' and
+                d.TOPLEVELREF in (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION like 'WO/16/409/%')))
         order by d.DELIVERABLEUNITREF
         limit $limit offset $offset
         """;
     private readonly string fileXmlSql = """
-        select f.FILEREF, f.FILELOCATION, f.NAME, x.XMLCLOB from digitalfile f
+        select distinct f.FILEREF, f.FILELOCATION, f.NAME, x.XMLCLOB from digitalfile f
         join manifestationfile m on m.FILEREF = f.FILEREF
         join deliverableunitmanifestation dm on dm.MANIFESTATIONREF = m.MANIFESTATIONREF
         join deliverableunit d on d.DELIVERABLEUNITREF = dm.DELIVERABLEUNITREF
         join xmlmetadata x on x.METADATAREF = f.METADATAREF
         where f.DELETED = 'F' and f.EXTANT = 'T' and f.DIRECTORY = 'F' and
             dm.DELETED = 'F' and dm.ACTIVE='T' and d.DELETED = 'F' and
-            d.TOPLEVELREF = (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION  = $code)
+            (d.TOPLEVELREF = (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION  = $code) or
+                ($code = 'WO 409' and dm.ORIGINALITY = 'T' and
+                d.TOPLEVELREF in (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION like 'WO/16/409/%')))
         order by f.FILEREF
         limit $limit offset $offset
         """;
 
     public IEnumerable<DriAssetDeliverableUnit> GetAssetDeliverableUnits(int offset)
     {
+        logger.GetDeliverableUnits(offset);
         var codeParam = new SqliteParameter("$code", settings.Code);
         var limitParam = new SqliteParameter("$limit", settings.FetchPageSize);
         var offsetParam = new SqliteParameter("$offset", offset);
@@ -61,6 +67,7 @@ public class SqlExporter(IOptions<DriSettings> options) : IDriSqlExporter
 
     public IEnumerable<DriVariationFile> GetVariationFiles(int offset)
     {
+        logger.GetFiles(offset);
         var codeParam = new SqliteParameter("$code", settings.Code);
         var limitParam = new SqliteParameter("$limit", settings.FetchPageSize);
         var offsetParam = new SqliteParameter("$offset", offset);

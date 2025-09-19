@@ -8,7 +8,6 @@ public interface IDriRdfExporter
 {
     Task<IEnumerable<DriAccessCondition>> GetAccessConditionsAsync(CancellationToken cancellationToken);
     Task<IEnumerable<DriAsset>> GetAssetsByCodeAsync(int offset, CancellationToken cancellationToken);
-    Task<IEnumerable<DriSubset>> GetBroadestSubsetsAsync(CancellationToken cancellationToken);
     Task<IEnumerable<DriGroundForRetention>> GetGroundsForRetentionAsync(CancellationToken cancellationToken);
     Task<IEnumerable<DriLegislation>> GetLegislationsAsync(CancellationToken cancellationToken);
     Task<IEnumerable<DriSensitivityReview>> GetSensitivityReviewsByCodeAsync(int offset, CancellationToken cancellationToken);

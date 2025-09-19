@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,17 +14,18 @@ public class EtlAsset(ILogger<EtlAsset> logger, IOptions<DriSettings> driSetting
 {
     private readonly DriSettings settings = driSettings.Value;
 
-    public async Task RunAsync(CancellationToken cancellationToken)
+    public EtlStageType StageType => EtlStageType.Asset;
+
+    public async Task RunAsync(int offset, CancellationToken cancellationToken)
     {
-        int offset = 0;
-        IEnumerable<DriAsset> dri;
+        List<DriAsset> dri;
         do
         {
-            dri = await driExport.GetAssetsByCodeAsync(offset, cancellationToken);
+            dri = (await driExport.GetAssetsByCodeAsync(offset, cancellationToken)).ToList();
             offset += settings.FetchPageSize;
-            logger.IngestingAssets(dri.Count());
+            logger.IngestingAssets(dri.Count);
             var ingestSize = await ingest.SetAsync(dri, cancellationToken);
             logger.IngestedAssets(ingestSize);
-        } while (dri.Any() && dri.Count() == settings.FetchPageSize);
+        } while (dri.Any() && dri.Count == settings.FetchPageSize);
     }
 }

@@ -9,7 +9,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Sparql\GetAccessConditionsAsync.sparql" />
     <EmbeddedResource Include="Sparql\GetAssetsByCodeAsync.sparql" />
-    <EmbeddedResource Include="Sparql\GetBroadestSubsetsAsync.sparql" />
     <EmbeddedResource Include="Sparql\GetGroundsForRetentionAsync.sparql" />
     <EmbeddedResource Include="Sparql\GetLegislationsAsync.sparql" />
     <EmbeddedResource Include="Sparql\GetSensitivityReviewsByCodeAsync.sparql" />

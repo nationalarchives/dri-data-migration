@@ -301,7 +301,7 @@ public class FlatJsonAsset
         string? SensitiveDescription, string? AccessConditionName,
         string? AccessConditionCode, DateTimeOffset? ReviewDate,
         DateTimeOffset? CalculationStartDate, int? DurationYear,
-        long? EndYear, string? Description, IEnumerable<LegislationRecord>? FoiExemptions,
+        string? EndYear, string? Description, IEnumerable<LegislationRecord>? FoiExemptions,
         long? InstrumentNumber, DateTimeOffset? InstrumentSignedDate,
         DateTimeOffset? RetentionRestrictionReviewDate, string? GroundForRetentionCode,
         string? GroundForRetentionDescription)
@@ -314,7 +314,7 @@ public class FlatJsonAsset
                 sr.Restriction.SingleOrDefault()?.ReviewDate.SingleOrDefault(),
                 sr.Restriction.SingleOrDefault()?.CalculationStartDate.SingleOrDefault(),
                 DurationToYear(sr.Restriction.SingleOrDefault()?.Duration.SingleOrDefault()),
-                sr.Restriction.SingleOrDefault()?.EndYear.SingleOrDefault(),
+                sr.Restriction.SingleOrDefault()?.EndYear.SingleOrDefault()?.Value,
                 sr.Restriction.SingleOrDefault()?.Description.SingleOrDefault(),
                 LegislationRecord.FromLegislation(sr.Restriction.SingleOrDefault()?.UkLegislations),
                 sr.Restriction.SingleOrDefault()?.RetentionRestriction.SingleOrDefault()?.InstrumentNumber.SingleOrDefault(),

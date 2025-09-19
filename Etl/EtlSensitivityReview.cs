@@ -13,17 +13,18 @@ public class EtlSensitivityReview(ILogger<EtlSensitivityReview> logger, IOptions
 {
     private readonly DriSettings settings = driSettings.Value;
 
-    public async Task RunAsync(CancellationToken cancellationToken)
+    public EtlStageType StageType => EtlStageType.SensitivityReview;
+
+    public async Task RunAsync(int offset, CancellationToken cancellationToken)
     {
-        int offset = 0;
-        IEnumerable<DriSensitivityReview> dri;
+        List<DriSensitivityReview> dri;
         do
         {
-            dri = await driExport.GetSensitivityReviewsByCodeAsync(offset, cancellationToken);
+            dri = (await driExport.GetSensitivityReviewsByCodeAsync(offset, cancellationToken)).ToList();
             offset += settings.FetchPageSize;
-            logger.IngestingSensitivityReview(dri.Count());
+            logger.IngestingSensitivityReviews(dri.Count);
             var ingestSize = await ingest.SetAsync(dri, cancellationToken);
-            logger.IngestedSensitivityReview(ingestSize);
-        } while (dri.Any() && dri.Count() == settings.FetchPageSize);
+            logger.IngestedSensitivityReviews(ingestSize);
+        } while (dri.Any() && dri.Count == settings.FetchPageSize);
     }
 }

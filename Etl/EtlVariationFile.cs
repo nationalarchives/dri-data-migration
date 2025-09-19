@@ -13,18 +13,18 @@ public class EtlVariationFile(ILogger<EtlVariationFile> logger, IOptions<DriSett
 {
     private readonly DriSettings settings = driSettings.Value;
 
-    public async Task RunAsync(CancellationToken cancellationToken)
+    public EtlStageType StageType => EtlStageType.VariationFile;
+
+    public async Task RunAsync(int offset, CancellationToken cancellationToken)
     {
-        int offset = 0;
-        IEnumerable<DriVariationFile> dri;
+        List<DriVariationFile> dri;
         do
         {
-            logger.GetFiles(offset);
-            dri = driExport.GetVariationFiles(offset);
+            dri = driExport.GetVariationFiles(offset).ToList();
             offset += settings.FetchPageSize;
-            logger.IngestingFiles(dri.Count());
+            logger.IngestingFiles(dri.Count);
             var ingestSize = await ingest.SetAsync(dri, cancellationToken);
             logger.IngestedFiles(ingestSize);
-        } while (dri.Any() && dri.Count() == settings.FetchPageSize);
+        } while (dri.Any() && dri.Count == settings.FetchPageSize);
     }
 }
