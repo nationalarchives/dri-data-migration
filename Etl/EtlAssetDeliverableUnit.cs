@@ -20,7 +20,7 @@ public class EtlAssetDeliverableUnit(ILogger<EtlAssetDeliverableUnit> logger, IO
         List<DriAssetDeliverableUnit> dri;
         do
         {
-            dri = driExport.GetAssetDeliverableUnits(offset).ToList();
+            dri = driExport.GetAssetDeliverableUnits(offset, cancellationToken).ToList();
             offset += settings.FetchPageSize;
             logger.IngestingDeliverableUnits(dri.Count);
             var ingestSize = await ingest.SetAsync(dri, cancellationToken);

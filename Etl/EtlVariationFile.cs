@@ -20,7 +20,7 @@ public class EtlVariationFile(ILogger<EtlVariationFile> logger, IOptions<DriSett
         List<DriVariationFile> dri;
         do
         {
-            dri = driExport.GetVariationFiles(offset).ToList();
+            dri = driExport.GetVariationFiles(offset, cancellationToken).ToList();
             offset += settings.FetchPageSize;
             logger.IngestingFiles(dri.Count);
             var ingestSize = await ingest.SetAsync(dri, cancellationToken);
