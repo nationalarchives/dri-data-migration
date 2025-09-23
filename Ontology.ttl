@@ -707,7 +707,7 @@ this:schema a owl:Ontology;
 	rdfs:range :SensitivityReview;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Subset has sensitivity review".
-	
+
 :sensitivityReviewRestrictionHasLegislation a owl:ObjectProperty;
 	rdfs:domain :SensitivityReviewRestriction;
 	rdfs:range :Legislation;
@@ -814,7 +814,6 @@ this:schema a owl:Ontology;
 	rdfs:seeAlso rico:generalDescription;
 	rdfs:domain :Asset;
 	rdfs:range xsd:string;
-	rdfs:subPropertyOf rdfs:comment;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset description".
 
@@ -822,7 +821,6 @@ this:schema a owl:Ontology;
 	rdfs:seeAlso rico:scopeAndContent;
 	rdfs:domain :Asset;
 	rdfs:range xsd:string;
-	rdfs:subPropertyOf rdfs:comment;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset summary".
 
@@ -1066,7 +1064,6 @@ this:schema a owl:Ontology;
 	rdfs:seeAlso rico:note;
 	rdfs:domain :Variation;
 	rdfs:range xsd:string;
-	rdfs:subPropertyOf rdfs:comment;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation note".
 
