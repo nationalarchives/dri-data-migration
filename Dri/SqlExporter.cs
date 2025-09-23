@@ -87,8 +87,8 @@ public class SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> opti
         var offsetParam = new SqliteParameter("$offset", offset);
 
         using var connection = new SqliteConnection(settings.SqlConnectionString);
-        cancellationToken.Register(() => SQLitePCL.raw.sqlite3_interrupt(connection.Handle));
         connection.Open();
+        cancellationToken.Register(() => SQLitePCL.raw.sqlite3_interrupt(connection.Handle));
         using var command = new SqliteCommand(duXmlSql, connection);
         command.Parameters.AddRange([codeParam, limitParam, offsetParam]);
         using var reader = command.ExecuteReader();
@@ -107,8 +107,8 @@ public class SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> opti
         var offsetParam = new SqliteParameter("$offset", offset);
 
         using var connection = new SqliteConnection(settings.SqlConnectionString);
-        cancellationToken.Register(() => SQLitePCL.raw.sqlite3_interrupt(connection.Handle));
         connection.Open();
+        cancellationToken.Register(() => SQLitePCL.raw.sqlite3_interrupt(connection.Handle));
         using var command = new SqliteCommand(fileXmlSql, connection);
         command.Parameters.AddRange([codeParam, limitParam, offsetParam]);
         using var reader = command.ExecuteReader();
@@ -128,8 +128,8 @@ public class SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> opti
         var offsetParam = new SqliteParameter("$offset", offset);
 
         using var connection = new SqliteConnection(settings.SqlConnectionString);
-        cancellationToken.Register(() => SQLitePCL.raw.sqlite3_interrupt(connection.Handle));
         connection.Open();
+        cancellationToken.Register(() => SQLitePCL.raw.sqlite3_interrupt(connection.Handle));
         using var command = new SqliteCommand(auditSql, connection);
         command.Parameters.AddRange([codeParam, limitParam, offsetParam]);
         using var reader = command.ExecuteReader();
