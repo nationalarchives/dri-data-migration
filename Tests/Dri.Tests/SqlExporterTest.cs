@@ -10,7 +10,7 @@ namespace Dri.Tests;
 public sealed class SqlExporterTest
 {
     private const string Series = "Series 1";
-    private const string SqlAssetFileSchema = $"""
+    private const string SqlSchema = $"""
             create table digitalfile
                 (FILEREF TEXT, METADATAREF TEXT, FILELOCATION TEXT, NAME TEXT, DELETED TEXT DEFAULT 'F', EXTANT TEXT DEFAULT 'T', DIRECTORY TEXT DEFAULT 'F');
             create table manifestationfile
@@ -21,6 +21,10 @@ public sealed class SqlExporterTest
                 (DELIVERABLEUNITREF TEXT, CATALOGUEREFERENCE TEXT, DESCRIPTION TEXT, TOPLEVELREF TEXT, METADATAREF TEXT, DELETED TEXT DEFAULT 'F', IsWO409 INTEGER);
             create table xmlmetadata
                 (METADATAREF TEXT, XMLCLOB TEXT);
+            create table auditchange
+                (CHANGEREF TEXT, PRIMARYKEYVALUE TEXT, TABLEINVOLVEDREF TEXT, DATETIME TEXT, USERNAME TEXT, FULLNAME TEXT, XMLDIFF TEXT);
+            create table tableinvolved
+                (TABLEINVOLVEDREF TEXT, TABLENAME TEXT);
         """;
     private SqlExporter exporter;
     private IOptions<DriSettings> options;
@@ -64,6 +68,19 @@ public sealed class SqlExporterTest
         dris.Should().ContainSingle().And.BeEquivalentTo([expected]);
     }
 
+    [TestMethod("Reads changes")]
+    public void FetchesChanges()
+    {
+        var sqliteInMemory = "Data Source=file:memdb-change?mode=memory&cache=shared";
+        options.Value.SqlConnectionString = sqliteInMemory;
+        var expected = new DriChange("Change1", "DeliverableUnit", "Asset1", DateTimeOffset.UtcNow, "Username1", "First Second", "Change diff");
+        PopulateChange(expected, sqliteInMemory);
+
+        var dris = exporter.GetChanges(0, CancellationToken.None);
+
+        dris.Should().ContainSingle().And.BeEquivalentTo([expected]);
+    }
+
     private static void PopulateAsset(DriAssetDeliverableUnit dri, string sqliteConnectionString)
     {
         var fileRef = "File reference asset";
@@ -80,7 +97,7 @@ public sealed class SqlExporterTest
 
         using var connection = new SqliteConnection(sqliteConnectionString);
         connection.Open();
-        using var commandSchema = new SqliteCommand(SqlAssetFileSchema, connection);
+        using var commandSchema = new SqliteCommand(SqlSchema, connection);
         commandSchema.ExecuteNonQuery();
         using var commandData = new SqliteCommand(data, connection);
         commandData.ExecuteNonQuery();
@@ -102,7 +119,32 @@ public sealed class SqlExporterTest
 
         using var connection = new SqliteConnection(sqliteConnectionString);
         connection.Open();
-        using var commandSchema = new SqliteCommand(SqlAssetFileSchema, connection);
+        using var commandSchema = new SqliteCommand(SqlSchema, connection);
+        commandSchema.ExecuteNonQuery();
+        using var commandData = new SqliteCommand(data, connection);
+        commandData.ExecuteNonQuery();
+    }
+
+    private static void PopulateChange(DriChange dri, string sqliteConnectionString)
+    {
+        var fileRef = "File reference asset";
+        var manifestationRef = "Manifestation reference asset";
+        var topLevelRef = "Top level reference variation";
+        var tableInvolvedRef = "Table involved ref";
+
+        var data = $"""
+            insert into digitalfile(FILEREF) values('{fileRef}');
+            insert into manifestationfile(MANIFESTATIONREF, FILEREF) values('{manifestationRef}', '{fileRef}');
+            insert into deliverableunitmanifestation(MANIFESTATIONREF, DELIVERABLEUNITREF) values('{manifestationRef}', '{dri.Reference}');
+            insert into deliverableunit(DELIVERABLEUNITREF, DESCRIPTION, TOPLEVELREF) values('{dri.Reference}', '{Series}', '{topLevelRef}');
+            insert into auditchange(CHANGEREF, PRIMARYKEYVALUE, TABLEINVOLVEDREF, DATETIME, USERNAME, FULLNAME, XMLDIFF)
+                values('{dri.Id}', '{dri.Reference}', '{tableInvolvedRef}', '{dri.Timestamp:O}', '{dri.UserName}', '{dri.FullName}', '{dri.Diff}');
+            insert into tableinvolved(TABLEINVOLVEDREF, TABLENAME) values('{tableInvolvedRef}', '{dri.Table}');
+        """;
+
+        using var connection = new SqliteConnection(sqliteConnectionString);
+        connection.Open();
+        using var commandSchema = new SqliteCommand(SqlSchema, connection);
         commandSchema.ExecuteNonQuery();
         using var commandData = new SqliteCommand(data, connection);
         commandData.ExecuteNonQuery();
