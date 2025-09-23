@@ -17,7 +17,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         var id = existing.GetTriplesWithPredicateObject(Vocabulary.VariationDriId, driId).FirstOrDefault()?.Subject;
         if (id is null)
         {
-            logger.VariationNotFound(dri.Name, dri.Location); //TODO: sensitive information?
+            logger.VariationNotFound(dri.Name); //TODO: sensitive information?
             return null;
         }
 

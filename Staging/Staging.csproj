@@ -13,6 +13,7 @@
     <EmbeddedResource Include="Sparql\GetAccessConditions.sparql" />
     <EmbeddedResource Include="Sparql\GetAsset.sparql" />
     <EmbeddedResource Include="Sparql\GetCopyright.sparql" />
+    <EmbeddedResource Include="Sparql\GetOperator.sparql" />
     <EmbeddedResource Include="Sparql\GetSealCategory.sparql" />
     <EmbeddedResource Include="Sparql\GetInquiryAppearanceByWitnessAndDescription.sparql" />
     <EmbeddedResource Include="Sparql\GetGroundsForRetention.sparql" />
@@ -30,6 +31,7 @@
     <EmbeddedResource Include="Sparql\LegislationGraph.sparql" />
     <EmbeddedResource Include="Sparql\ReconciliationResultSet.sparql" />
     <EmbeddedResource Include="Sparql\SensitivityReviewGraph.sparql" />
+    <EmbeddedResource Include="Sparql\ChangeGraph.sparql" />
     <EmbeddedResource Include="Sparql\SubsetGraph.sparql" />
     <EmbeddedResource Include="Sparql\VariationFileGraph.sparql" />
     <EmbeddedResource Include="Sparql\VariationGraph.sparql" />

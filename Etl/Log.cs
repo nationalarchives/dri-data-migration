@@ -82,4 +82,11 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 26, Level = LogLevel.Information, Message = "Migration stage {stage} skipped")]
     internal static partial void EtlStageSkipped(this ILogger logger, Api.EtlStageType stage);
+
+    [LoggerMessage(EventId = 27, Level = LogLevel.Information, Message = "Ingesting {size} changes")]
+    internal static partial void IngestingChanges(this ILogger logger, int size);
+
+    [LoggerMessage(EventId = 28, Level = LogLevel.Information, Message = "Updated {size} changes")]
+    internal static partial void IngestedChanges(this ILogger logger, int size);
+
 }

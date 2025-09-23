@@ -14,5 +14,6 @@ public enum CacheEntityKind
     CourtCaseByCaseAndAsset,
     InquiryAppearanceByWitnessAndDescription,
     GeographicalPlace,
-    SealCategory
+    SealCategory,
+    Operator
 }

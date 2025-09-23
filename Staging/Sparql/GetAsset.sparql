@@ -3,6 +3,14 @@
 construct {
     ?s ex:assetReference ?assetReference.
 } where {
-    bind(@id as ?assetReference)
-    ?s ex:assetReference ?assetReference.
+    bind(@id as ?id)
+    {
+        ?s ex:assetReference ?id;
+        	ex:assetReference ?assetReference.
+    }
+    union
+    {
+        ?s ex:assetDriId ?id;
+        	ex:assetReference ?assetReference.
+    }
 }

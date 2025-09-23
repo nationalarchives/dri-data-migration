@@ -1,0 +1,22 @@
+﻿prefix ex: <http://id.example.com/schema/>
+
+construct {
+    ?change ex:changeDriId ?changeDriId;
+        ex:changeDescription ?changeDescription;
+        ex:changeDateTime ?changeDateTime;
+        ex:changeHasOperator ?operator;
+        ex:changeHasAsset ?asset;
+        ex:changeHasVariation ?variation.
+    ?operator ex:operatorName ?operatorName.
+} where {
+    bind(@id as ?changeDriId)
+    ?change ex:changeDriId ?changeDriId;
+    optional { ?change ex:changeDescription ?changeDescription }
+    optional { ?change ex:changeDateTime ?changeDateTime }
+    optional {
+        ?change ex:changeHasOperator ?operator.
+        optional { ?operator ex:operatorName ?operatorName }
+    }
+    optional { ?change ex:changeHasAsset ?asset }
+    optional { ?change ex:changeHasVariation ?variation }
+}

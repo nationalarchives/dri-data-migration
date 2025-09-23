@@ -178,4 +178,14 @@ public static class Vocabulary
     public static readonly IUriNode FragmentDimension = new UriNode(new(Namespace, "FragmentDimension"));
     public static readonly IUriNode FirstDimensionMillimetre = new UriNode(new(Namespace, "firstDimensionMillimetre"));
     public static readonly IUriNode SecondDimensionMillimetre = new UriNode(new(Namespace, "secondDimensionMillimetre"));
+    
+    public static readonly IUriNode ChangeDriId = new UriNode(new(Namespace, "changeDriId"));
+    public static readonly IUriNode ChangeDateTime = new UriNode(new(Namespace, "changeDateTime"));
+    public static readonly IUriNode ChangeDescription = new UriNode(new(Namespace, "changeDescription"));
+    public static readonly IUriNode ChangeHasAsset = new UriNode(new(Namespace, "changeHasAsset"));
+    public static readonly IUriNode ChangeHasVariation = new UriNode(new(Namespace, "changeHasVariation"));
+    public static readonly IUriNode ChangeHasOperator = new UriNode(new(Namespace, "changeHasOperator"));
+    
+    public static readonly IUriNode OperatorIdentifier = new UriNode(new(Namespace, "operatorIdentifier"));
+    public static readonly IUriNode OperatorName = new UriNode(new(Namespace, "operatorName"));
 }

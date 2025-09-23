@@ -19,6 +19,7 @@ public static class StagingServiceCollectionExtensions
         services.AddSingleton<IStagingIngest<DriVariation>, VariationIngest>();
         services.AddSingleton<IStagingIngest<DriVariationFile>, VariationFileIngest>();
         services.AddSingleton<IStagingIngest<DriSensitivityReview>, SensitivityReviewIngest>();
+        services.AddSingleton<IStagingIngest<DriChange>, ChangeIngest>();
 
         return services;
     }

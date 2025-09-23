@@ -10,5 +10,6 @@ public enum EtlStageType
     Variation = 5,
     AssetDeliverableUnit = 6,
     VariationFile = 7,
-    SensitivityReview = 8
+    SensitivityReview = 8,
+    Change = 9
 }

@@ -1,0 +1,8 @@
+﻿prefix ex: <http://id.example.com/schema/>
+            
+construct {
+    ?s ex:operatorIdentifier ?operatorIdentifier.
+} where {
+    bind(@id as ?operatorIdentifier)
+    ?s ex:operatorIdentifier ?operatorIdentifier.
+}

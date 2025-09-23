@@ -295,6 +295,16 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Fragment dimension".
 
+:Change a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Change";
+	rdfs:comment "A thing describing a generic change to a thing.".
+
+:Operator a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Operator";
+	rdfs:comment "A person that performs operation on data.".
+
 
 # Object properties
 
@@ -381,6 +391,19 @@ this:schema a owl:Ontology;
 	rdfs:range :Asset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Associated geographical place has asset".
+
+:assetHasChange a owl:ObjectProperty;
+	rdfs:domain :Asset;
+	rdfs:range :Change;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has change".
+
+:changeHasAsset a owl:ObjectProperty, owl:InverseFunctionalProperty;
+	owl:inverseOf :assetHasChange;
+	rdfs:domain :Change;
+	rdfs:range :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Change has asset".
 
 :assetHasDimension a owl:ObjectProperty;
 	rdfs:domain :Asset;
@@ -513,6 +536,19 @@ this:schema a owl:Ontology;
 	rdfs:range :Asset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation has asset".
+
+:variationHasChange a owl:ObjectProperty;
+	rdfs:domain :Variation;
+	rdfs:range :Change;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation has change".
+
+:changeHasVariation a owl:ObjectProperty, owl:InverseFunctionalProperty;
+	owl:inverseOf :variationHasChange;
+	rdfs:domain :Change;
+	rdfs:range :Variation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Change has variation".
 
 :scannedVariationHasScannerGeographicalPlace a owl:ObjectProperty;
 	rdfs:domain :ScannedVariation;
@@ -721,6 +757,19 @@ this:schema a owl:Ontology;
 	rdfs:range :Date;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Dated note has date".
+
+:operatorHasChange a owl:ObjectProperty;
+	rdfs:domain :Operator;
+	rdfs:range :Change;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Operator has change".
+
+:changeHasOperator a owl:ObjectProperty, owl:FunctionalProperty;
+	owl:inverseOf :operatorHasChange;
+	rdfs:domain :Change;
+	rdfs:range :Operator;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Change has operator".
 
 
 ## Data type properties
@@ -1305,3 +1354,36 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:integer;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Second dimension millimetre".
+
+:changeDriId a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :Change;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Change DRI Id".
+
+:changeDateTime a owl:DatatypeProperty;
+	rdfs:domain :Change;
+	rdfs:range xsd:dateTime;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Change date time".
+
+:changeDescription a owl:DatatypeProperty;
+	rdfs:domain :Change;
+	rdfs:range xsd:base64Binary;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Change description".
+
+:operatorIdentifier a owl:DatatypeProperty;
+	rdfs:domain :Operator;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Operator identifier".
+
+:operatorName a owl:DatatypeProperty;
+	rdfs:domain :Operator;
+	rdfs:subPropertyOf :name;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Operator name".
