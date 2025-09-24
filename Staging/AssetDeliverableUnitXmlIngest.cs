@@ -84,6 +84,8 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
 
         await assert.ExistingOrNewWithRelationshipAsync(graph, id, rdf, IngestVocabulary.Counties, CacheEntityKind.GeographicalPlace,
             Vocabulary.AssetHasAssociatedGeographicalPlace, Vocabulary.GeographicalPlaceName, cancellationToken);
+        await assert.ExistingOrNewWithRelationshipAsync(graph, id, rdf, IngestVocabulary.County, CacheEntityKind.GeographicalPlace,
+            Vocabulary.AssetHasAssociatedGeographicalPlace, Vocabulary.GeographicalPlaceName, cancellationToken);
 
         var retention = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasRetention).SingleOrDefault()?.Object ?? CacheClient.NewId;
         graph.Assert(id, Vocabulary.AssetHasRetention, retention);

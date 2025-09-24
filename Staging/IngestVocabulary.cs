@@ -77,5 +77,7 @@ public static class IngestVocabulary
     public static readonly IUriNode AdditionalInformation = new UriNode(new($"{TransNamespace}additionalInformation"));
     public static readonly IUriNode Face = new UriNode(new($"{TransNamespace}face"));
 
+    public static readonly IUriNode County = new UriNode(new(TnaNamespaceWithSlash, "spatial/county"));
+
     public static readonly IUriNode DctermsDescription = new UriNode(new(DctermsNamespace, "description")); //TODO: remove after checking data
 }
