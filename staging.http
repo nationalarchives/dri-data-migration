@@ -73,7 +73,7 @@ construct {
 ### Description diff check
 POST {{endpoint}}
 Content-Type: application/sparql-query
-Accept: text/turtle
+Accept: application/sparql-results+json
 
 prefix ex: <http://id.example.com/schema/>
 prefix dcterms: <http://purl.org/dc/terms/description>
