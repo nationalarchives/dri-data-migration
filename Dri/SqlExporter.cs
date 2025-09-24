@@ -13,69 +13,70 @@ public class SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> opti
     /*
     Additional indices created:
     
-    create index xmlmetadata_ix on xmlmetadata (METADATAREF)
     create index deliverableunit_ix on deliverableunit (DELETED)
-    create index deliverableunit_ix2 on deliverableunit (DELETED, IsWO409)
-    create index deliverableunit_ix3 on deliverableunit (DELIVERABLEUNITREF)
-    create index deliverableunitmanifestation_ix on deliverableunitmanifestation (DELETED, ACTIVE, MANIFESTATIONREF)
-    create index deliverableunitmanifestation_ix2 on deliverableunitmanifestation (DELETED, ACTIVE)
-    create index manifestationfile_ix on manifestationfile (FILEREF)
-    create index manifestationfile_ix2 on manifestationfile (MANIFESTATIONREF)
+    create index deliverableunitmanifestation_ix on deliverableunitmanifestation (DELETED, ACTIVE)
+    create index manifestationfile_ix on manifestationfile (MANIFESTATIONREF)
     create index digitalfile_ix on digitalfile (FILEREF, DELETED)
-    create index auditchange_ix on auditchange(PRIMARYKEYVALUE)
-    create index tableinvolved_ix on tableinvolved (TABLEINVOLVEDREF);
+    create index xmlmetadata_ix on xmlmetadata (METADATAREF)
 
-    Additional column added:
+    Additional tables created:
+    
+    create temp table temptop(TOPLEVELREF TEXT, DESCRIPTION TEXT);
+    
+    insert into temptop(TOPLEVELREF, DESCRIPTION)
+    select TOPLEVELREF,
+	    case 
+		    when substr(DESCRIPTION,1,10) = 'WO/16/409/' then 'WO 409'
+		    else DESCRIPTION
+	    end as Code from deliverableunit
+    where DELIVERABLEUNITREF = TOPLEVELREF and DELETED = 'F';
+    
+    create index temptop_ix on temptop(TOPLEVELREF);
 
-    alter table deliverableunit add column IsWO409 integer default 0
-    update deliverableunit set IsWO409 = 1 where substr(DESCRIPTION,1,10)='WO/16/409/'
+    create temp table tempdu(DELIVERABLEUNITREF TEXT, CATALOGUEREFERENCE TEXT, DMETADATAREF TEXT, Code TEXT);
+    
+    insert into tempdu(DELIVERABLEUNITREF, CATALOGUEREFERENCE, DMETADATAREF, Code)
+    select d.DELIVERABLEUNITREF, d.CATALOGUEREFERENCE, d.METADATAREF, t.DESCRIPTION from deliverableunit d
+    join temptop t on t.TOPLEVELREF = d.TOPLEVELREF
+    where d.DELETED = 'F';
+    
+    create index tempdu_ix on tempdu(DELIVERABLEUNITREF);
+
+    create table dufile(DELIVERABLEUNITREF TEXT, FILEREF TEXT, CATALOGUEREFERENCE TEXT, DMETADATAREF TEXT, Code TEXT, FMETADATAREF TEXT, FILELOCATION TEXT, NAME TEXT);
+    
+    insert into dufile(DELIVERABLEUNITREF, FILEREF, CATALOGUEREFERENCE, DMETADATAREF, Code, FMETADATAREF, FILELOCATION, NAME)
+    select d.DELIVERABLEUNITREF, f.FILEREF, d.CATALOGUEREFERENCE, d.DMETADATAREF, d.Code, f.METADATAREF, f.FILELOCATION, f.NAME
+    from digitalfile f
+    join manifestationfile m on m.FILEREF = f.FILEREF
+    join deliverableunitmanifestation dm on dm.MANIFESTATIONREF = m.MANIFESTATIONREF
+    join tempdu d on d.DELIVERABLEUNITREF = dm.DELIVERABLEUNITREF
+    where f.DELETED = 'F' and f.EXTANT = 'T' and f.DIRECTORY = 'F' and
+        dm.DELETED = 'F' and dm.ACTIVE='T' and (dm.ORIGINALITY = 'T' or d.Code != 'WO 409');
+
+    create index dufile_ix on dufile (Code)
      */
     private readonly DriSettings settings = options.Value;
     private readonly string duXmlSql = """
-        select distinct d.DELIVERABLEUNITREF, d.CATALOGUEREFERENCE, x.XMLCLOB from digitalfile f
-        join manifestationfile m on m.FILEREF = f.FILEREF
-        join deliverableunitmanifestation dm on dm.MANIFESTATIONREF = m.MANIFESTATIONREF
-        join deliverableunit d on d.DELIVERABLEUNITREF = dm.DELIVERABLEUNITREF
-        join xmlmetadata x on x.METADATAREF = d.METADATAREF
-        where f.DELETED = 'F' and f.EXTANT = 'T' and f.DIRECTORY = 'F' and
-            dm.DELETED = 'F' and dm.ACTIVE='T' and d.DELETED = 'F' and
-            (d.TOPLEVELREF = (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION = $code) or
-                ($code = 'WO 409' and dm.ORIGINALITY = 'T' and
-                d.TOPLEVELREF in (select TOPLEVELREF from deliverableunit where DELETED = 'F' and IsWO409 = 1)))
+        select distinct d.DELIVERABLEUNITREF, d.CATALOGUEREFERENCE, x.XMLCLOB from dufile d
+        join xmlmetadata x on x.METADATAREF = d.DMETADATAREF
+        where d.Code = $code
         order by d.rowid
         limit $limit offset $offset
         """;
     private readonly string fileXmlSql = """
-        select f.FILEREF, f.FILELOCATION, f.NAME, x.XMLCLOB from digitalfile f
-        join manifestationfile m on m.FILEREF = f.FILEREF
-        join deliverableunitmanifestation dm on dm.MANIFESTATIONREF = m.MANIFESTATIONREF
-        join deliverableunit d on d.DELIVERABLEUNITREF = dm.DELIVERABLEUNITREF
-        join xmlmetadata x on x.METADATAREF = f.METADATAREF
-        where f.DELETED = 'F' and f.EXTANT = 'T' and f.DIRECTORY = 'F' and
-            dm.DELETED = 'F' and dm.ACTIVE='T' and d.DELETED = 'F' and
-            (d.TOPLEVELREF = (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION = $code) or
-                ($code = 'WO 409' and dm.ORIGINALITY = 'T' and
-                d.TOPLEVELREF in (select TOPLEVELREF from deliverableunit where DELETED = 'F' and IsWO409 = 1)))
+        select f.FILEREF, f.FILELOCATION, f.NAME, x.XMLCLOB from dufile f
+        join xmlmetadata x on x.METADATAREF = f.FMETADATAREF
+        where f.Code = $code
         order by f.rowid
         limit $limit offset $offset
         """;
     private readonly string auditSql = """
-        select distinct c.CHANGEREF, c.TABLENAME, c.PRIMARYKEYVALUE, c.DATETIME, c.USERNAME, c.FULLNAME, c.XMLDIFF from digitalfile f
-        join manifestationfile m on m.FILEREF = f.FILEREF
-        join deliverableunitmanifestation dm on dm.MANIFESTATIONREF = m.MANIFESTATIONREF
-        join deliverableunit d on d.DELIVERABLEUNITREF = dm.DELIVERABLEUNITREF
-        join(
-        	select t.TABLENAME, a.CHANGEREF, a.PRIMARYKEYVALUE, a.DATETIME, a.USERNAME, a.FULLNAME, a.XMLDIFF from auditchange a
-        	join tableinvolved t on t.TABLEINVOLVEDREF = a.TABLEINVOLVEDREF
-        	where a.XMLDIFF is not null
-        ) c on (c.PRIMARYKEYVALUE = d.DELIVERABLEUNITREF and c.TABLENAME = 'DeliverableUnit') or
-        	(c.PRIMARYKEYVALUE = f.FILEREF and c.TABLENAME = 'DigitalFile')
-        where f.DELETED = 'F' and f.EXTANT = 'T' and f.DIRECTORY = 'F' and
-            dm.DELETED = 'F' and dm.ACTIVE='T' and d.DELETED = 'F' and
-            (d.TOPLEVELREF = (select TOPLEVELREF from deliverableunit where DELETED = 'F' and DESCRIPTION = $code) or
-                ($code = 'WO 409' and dm.ORIGINALITY = 'T' and
-                d.TOPLEVELREF in (select TOPLEVELREF from deliverableunit where DELETED = 'F' and IsWO409 = 1)))
-        order by f.rowid
+        select t.TABLENAME, a.CHANGEREF, a.PRIMARYKEYVALUE, a.DATETIME, a.USERNAME, a.FULLNAME, a.XMLDIFF from auditchange a
+        join tableinvolved t on t.TABLEINVOLVEDREF = a.TABLEINVOLVEDREF
+        join dufile d on (d.DELIVERABLEUNITREF = a.PRIMARYKEYVALUE and t.TABLENAME = 'DeliverableUnit') or
+        	(d.FILEREF = a.PRIMARYKEYVALUE and t.TABLENAME = 'DigitalFile')
+        where a.XMLDIFF is not null and d.Code = $code
+        order by a.rowid
         limit $limit offset $offset
         """;
 

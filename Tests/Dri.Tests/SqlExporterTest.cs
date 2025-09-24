@@ -11,14 +11,8 @@ public sealed class SqlExporterTest
 {
     private const string Series = "Series 1";
     private const string SqlSchema = $"""
-            create table digitalfile
-                (FILEREF TEXT, METADATAREF TEXT, FILELOCATION TEXT, NAME TEXT, DELETED TEXT DEFAULT 'F', EXTANT TEXT DEFAULT 'T', DIRECTORY TEXT DEFAULT 'F');
-            create table manifestationfile
-                (FILEREF TEXT, MANIFESTATIONREF TEXT);
-            create table deliverableunitmanifestation
-                (MANIFESTATIONREF TEXT, DELIVERABLEUNITREF TEXT, DELETED TEXT DEFAULT 'F', ACTIVE TEXT DEFAULT 'T', ORIGINALITY TEXT DEFAULT 'T' );
-            create table deliverableunit
-                (DELIVERABLEUNITREF TEXT, CATALOGUEREFERENCE TEXT, DESCRIPTION TEXT, TOPLEVELREF TEXT, METADATAREF TEXT, DELETED TEXT DEFAULT 'F', IsWO409 INTEGER);
+            create table dufile
+                (DELIVERABLEUNITREF TEXT, CATALOGUEREFERENCE TEXT, DMETADATAREF TEXT, FILEREF TEXT, FMETADATAREF TEXT, FILELOCATION TEXT, NAME TEXT, Code TEXT);
             create table xmlmetadata
                 (METADATAREF TEXT, XMLCLOB TEXT);
             create table auditchange
@@ -83,15 +77,9 @@ public sealed class SqlExporterTest
 
     private static void PopulateAsset(DriAssetDeliverableUnit dri, string sqliteConnectionString)
     {
-        var fileRef = "File reference asset";
-        var manifestationRef = "Manifestation reference asset";
         var metadataRef = "Metadata reference asset";
-        var topLevelRef = "Top level reference asset";
         var data = $"""
-            insert into digitalfile(FILEREF) values('{fileRef}');
-            insert into manifestationfile(MANIFESTATIONREF, FILEREF) values('{manifestationRef}', '{fileRef}');
-            insert into deliverableunitmanifestation(MANIFESTATIONREF, DELIVERABLEUNITREF) values('{manifestationRef}', '{dri.Id}');
-            insert into deliverableunit(DELIVERABLEUNITREF, METADATAREF, DESCRIPTION, TOPLEVELREF, CATALOGUEREFERENCE) values('{dri.Id}', '{metadataRef}', '{Series}', '{topLevelRef}', '{dri.Reference}');
+            insert into dufile(DELIVERABLEUNITREF, DMETADATAREF, CATALOGUEREFERENCE, Code) values('{dri.Id}', '{metadataRef}', '{dri.Reference}','{Series}');
             insert into xmlmetadata(METADATAREF, XMLCLOB) values('{metadataRef}', '{dri.Xml}');
         """;
 
@@ -105,15 +93,9 @@ public sealed class SqlExporterTest
 
     private static void PopulateVariation(DriVariationFile dri, string sqliteConnectionString)
     {
-        var manifestationRef = "Manifestation reference variation";
         var metadataRef = "Metadata reference variation";
-        var topLevelRef = "Top level reference variation";
-
         var data = $"""
-            insert into digitalfile(FILEREF, METADATAREF, FILELOCATION, NAME) values('{dri.Id}', '{metadataRef}', '{dri.Location}', '{dri.Name}');
-            insert into manifestationfile(MANIFESTATIONREF, FILEREF) values('{manifestationRef}', '{dri.Id}');
-            insert into deliverableunitmanifestation(MANIFESTATIONREF, DELIVERABLEUNITREF) values('{manifestationRef}', '{dri.Id}');
-            insert into deliverableunit(DELIVERABLEUNITREF, DESCRIPTION, TOPLEVELREF) values('{dri.Id}', '{Series}', '{topLevelRef}');
+            insert into dufile(FILEREF, FMETADATAREF, FILELOCATION, NAME, Code) values('{dri.Id}', '{metadataRef}', '{dri.Location}', '{dri.Name}', '{Series}');
             insert into xmlmetadata(METADATAREF, XMLCLOB) values('{metadataRef}', '{dri.Xml}');
         """;
 
@@ -128,15 +110,9 @@ public sealed class SqlExporterTest
     private static void PopulateChange(DriChange dri, string sqliteConnectionString)
     {
         var fileRef = "File reference asset";
-        var manifestationRef = "Manifestation reference asset";
-        var topLevelRef = "Top level reference variation";
         var tableInvolvedRef = "Table involved ref";
-
         var data = $"""
-            insert into digitalfile(FILEREF) values('{fileRef}');
-            insert into manifestationfile(MANIFESTATIONREF, FILEREF) values('{manifestationRef}', '{fileRef}');
-            insert into deliverableunitmanifestation(MANIFESTATIONREF, DELIVERABLEUNITREF) values('{manifestationRef}', '{dri.Reference}');
-            insert into deliverableunit(DELIVERABLEUNITREF, DESCRIPTION, TOPLEVELREF) values('{dri.Reference}', '{Series}', '{topLevelRef}');
+            insert into dufile(DELIVERABLEUNITREF, FILEREF, Code) values('{dri.Reference}', '{fileRef}', '{Series}');
             insert into auditchange(CHANGEREF, PRIMARYKEYVALUE, TABLEINVOLVEDREF, DATETIME, USERNAME, FULLNAME, XMLDIFF)
                 values('{dri.Id}', '{dri.Reference}', '{tableInvolvedRef}', '{dri.Timestamp:O}', '{dri.UserName}', '{dri.FullName}', '{dri.Diff}');
             insert into tableinvolved(TABLEINVOLVEDREF, TABLENAME) values('{tableInvolvedRef}', '{dri.Table}');
