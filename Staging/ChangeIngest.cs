@@ -1,9 +1,7 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
-using System.Text;
 using VDS.RDF;
 using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
 
 namespace Staging;
 
@@ -16,8 +14,7 @@ public class ChangeIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, 
         var id = existing.GetTriplesWithPredicateObject(Vocabulary.ChangeDriId, driId).FirstOrDefault()?.Subject ?? CacheClient.NewId;
         var graph = new Graph();
         graph.Assert(id, Vocabulary.ChangeDriId, driId);
-        var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(dri.Diff));
-        graph.Assert(id, Vocabulary.ChangeDescription, new LiteralNode(base64, new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
+        GraphAssert.Base64(graph, id, dri.Diff, Vocabulary.ChangeDescription);
         graph.Assert(id, Vocabulary.ChangeDateTime, new DateTimeNode(dri.Timestamp));
         if (dri.Table == "DeliverableUnit")
         {

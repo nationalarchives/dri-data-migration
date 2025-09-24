@@ -1,5 +1,6 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
+using System.Text;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
@@ -49,6 +50,15 @@ public class GraphAssert(ILogger logger, ICacheClient cacheClient)
         foreach (var found in rdf.GetTriplesWithPredicate(findPredicate).Select(t => t.Object).Cast<ILiteralNode>())
         {
             Text(graph, id, found.Value, immediatePredicate);
+        }
+    }
+
+    public static void Base64(IGraph graph, INode id, string? value, IUriNode immediatePredicate)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
+            graph.Assert(id, immediatePredicate, new LiteralNode(base64, new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
         }
     }
 
