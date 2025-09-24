@@ -25,12 +25,8 @@ public abstract class SparqlClientReadOnly(HttpClient httpClient, Uri sparqlConn
             {
                 string txt => new LiteralNode(txt),
                 int number => new LongNode(number),
-                _ => null
+                _ => throw new MigrationException($"Unrecognized type of {kv.Key} {kv.Value} parameter")
             };
-            if (literal is null)
-            {
-                throw new MigrationException($"Unrecognized type of {kv.Key} {kv.Value} parameter");
-            }
             parameterizedString.SetParameter(kv.Key, literal);
         }
 
