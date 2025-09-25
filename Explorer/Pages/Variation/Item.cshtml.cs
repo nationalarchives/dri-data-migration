@@ -162,7 +162,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 }
             }
             optional {
-                ?variation ex:assetHasChange ?change.
+                ?variation ex:variationHasChange ?change.
                 optional { ?change ex:changeDriId ?changeDriId }
                 optional { ?change ex:changeDescription ?changeDescription }
                 optional { ?change ex:changeDateTime ?changeDateTime }

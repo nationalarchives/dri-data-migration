@@ -103,7 +103,8 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:scannedVariationHasImageSplit ?scannedVariationHasImageSplit;
                 ex:scannedVariationHasImageCrop ?scannedVariationHasImageCrop;
                 ex:scannedVariationHasImageDeskew ?scannedVariationHasImageDeskew;
-                ex:variationHasSensitivityReview ?srv.
+                ex:variationHasSensitivityReview ?srv;
+                ex:variationHasChange ?changeV.
             ?datedNote ex:archivistNote ?archivistNote;
                 ex:year ?datedNoteYear;
                 ex:month ?datedNoteMonth;
@@ -137,6 +138,12 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:importLocation ?importLocation;
                 ex:retentionHasFormalBody ?retentionHasFormalBody.
             ?retentionHasFormalBody ex:formalBodyName ?retentionFormalBodyName.
+            ?changeV ex:changeDriId ?changeDriIdV;
+                ex:changeDescription ?changeDescriptionV;
+                ex:changeDateTime ?changeDateTimeV;
+                ex:changeHasOperator ?operatorV.
+            ?operatorV ex:operatorIdentifier ?operatorIdentifierV;
+                ex:operatorName ?operatorNameV.
             ?originDateStart ex:year ?startYear;
                 ex:month ?startMonth;
                 ex:day ?startDay.
@@ -330,6 +337,17 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                                 optional { ?subset ex:subsetHasRetention ?retention }
                             }
                         }
+                    }
+                }
+                optional {
+                    ?variation ex:variationHasChange ?changeV.
+                    optional { ?changeV ex:changeDriId ?changeDriIdV }
+                    optional { ?changeV ex:changeDescription ?changeDescriptionV }
+                    optional { ?changeV ex:changeDateTime ?changeDateTimeV }
+                    optional {
+                        ?changeV ex:changeHasOperator ?operatorV.
+                        optional { ?operatorV ex:operatorIdentifier ?operatorIdentifierV }
+                        optional { ?operatorV ex:operatorName ?operatorNameV }
                     }
                 }
             }
