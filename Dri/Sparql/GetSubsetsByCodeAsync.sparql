@@ -31,12 +31,10 @@ construct {
             bind(coalesce(?parent, ?directory, ?code) as ?parentReference)
             {
                 {
-                    filter exists {
-                       ?asset a dri:DeliverableUnit;
-                            dri:parent ?subset.
-                        ?m dri:file ?f;
-                            dri:parent ?asset.
-                    }
+                    ?asset a dri:DeliverableUnit;
+                        dri:parent+ ?subset.
+                    ?m dri:file ?f;
+                        dri:parent ?asset.
                 }
                 union
                 {
