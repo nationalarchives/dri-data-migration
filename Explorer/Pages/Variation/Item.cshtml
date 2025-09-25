@@ -43,7 +43,7 @@
             <partial name="DynamicCollectionTextPartial" model="@("Archivist note", Model.Item.DatedNote.Single().ArchivistNote)" />
             <partial name="DateYmdPartial" model="@("Archivist note date", Model.Item.DatedNote.Single().Date)" />
         }
-
+        <partial name="ChangePartial" model="@Model.Item.Changes" />
     </dl>
 
     <div class="tna-!--margin-top-m">

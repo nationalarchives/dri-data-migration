@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Models.Change>
+
+@if (Model.Any())
+{
+    <dt>Changes</dt>
+    <dd>
+        <dl>
+            @foreach (var change in Model)
+            {
+                var description = System.Text.UTF8Encoding.UTF8.GetString(Convert.FromBase64String(change.Description.Single().Value));
+                <partial name="DynamicCollectionTextPartial" model="@("Id", change.Id)" />
+                <dt>Description</dt>
+                <dd>@description</dd>
+                if (change.Timestamp.Any())
+                {
+                    <dt>Timestamp</dt>
+                    <dd>@change.Timestamp.Single().Value.ToString("dd MMMM yyyy HH:mm:ss")</dd>
+                }
+                if (change.Operator.Any())
+                {
+                    <dt>Operator</dt>
+                    <dd>@change.Operator.Single().Name.Single() (@change.Operator.Single().Identifier.Single())</dd>
+                }
+            }
+        </dl>
+    </dd>
+}

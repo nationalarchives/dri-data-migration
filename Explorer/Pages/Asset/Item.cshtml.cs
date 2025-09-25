@@ -69,7 +69,8 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:assetHasCreation ?creation;
                 ex:courtAssetHasCourtCase ?courtCase;
                 ex:inquiryAssetHasInquiryAppearance ?inquiryAppearance;
-                ex:assetHasSensitivityReview ?sr.
+                ex:assetHasSensitivityReview ?sr;
+                ex:assetHasChange ?change.
             ?language ex:languageName ?languageName.
             ?copyright ex:copyrightTitle ?copyrightTitle.
             ?creation ex:creationHasFormalBody ?creationHasFormalBody.
@@ -189,6 +190,12 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription;
                 ex:sensitivityReviewHasPastSensitivityReview ?pastSensitivityReview.
             ?pastSensitivityReview ex:sensitivityReviewDriId ?pastSensitivityReviewDriId.
+            ?change ex:changeDriId ?changeDriId;
+                ex:changeDescription ?changeDescription;
+                ex:changeDateTime ?changeDateTime;
+                ex:changeHasOperator ?operator.
+            ?operator ex:operatorIdentifier ?operatorIdentifier;
+                ex:operatorName ?operatorName.
         } where {
             bind(@code as ?assetReference)
             ?s ex:assetDriId ?assetDriId;
@@ -451,6 +458,17 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ?s ex:inquiryAssetHasInquiryAppearance ?inquiryAppearance.
                 optional { ?inquiryAppearance ex:inquiryWitnessName ?inquiryWitnessName }
                 optional { ?inquiryAppearance ex:inquiryWitnessAppearanceDescription ?inquiryWitnessAppearanceDescription }
+            }
+            optional {
+                ?s ex:assetHasChange ?change.
+                optional { ?change ex:changeDriId ?changeDriId }
+                optional { ?change ex:changeDescription ?changeDescription }
+                optional { ?change ex:changeDateTime ?changeDateTime }
+                optional {
+                    ?change ex:changeHasOperator ?operator.
+                    optional { ?operator ex:operatorIdentifier ?operatorIdentifier }
+                    optional { ?operator ex:operatorName ?operatorName }
+                }
             }
         }
         """;

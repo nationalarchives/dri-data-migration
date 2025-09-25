@@ -61,6 +61,7 @@ public class FlatJsonAsset
     public string? SealObverseEndDate { get; set; }
     public string? SealReverseStartDate { get; set; }
     public string? SealReverseEndDate { get; set; }
+    public IEnumerable<ChangeRecord>? Changes { get; set; }
     public IEnumerable<VariationRecord>? Variations { get; set; }
 
     public static IEnumerable<FlatJsonAsset> FromAsset(Asset asset)
@@ -124,7 +125,8 @@ public class FlatJsonAsset
             SealObverseStartDate = asset.SealObverseStartDate.SingleOrDefault()?.ToDate(),
             SealObverseEndDate = asset.SealObverseEndDate.SingleOrDefault()?.ToDate(),
             SealReverseStartDate = asset.SealReverseStartDate.SingleOrDefault()?.ToDate(),
-            SealReverseEndDate = asset.SealReverseEndDate.SingleOrDefault()?.ToDate()
+            SealReverseEndDate = asset.SealReverseEndDate.SingleOrDefault()?.ToDate(),
+            Changes = asset.Changes.Select(ChangeRecord.FromChange)
         };
 
         var assets = new List<FlatJsonAsset>();
@@ -223,6 +225,7 @@ public class FlatJsonAsset
         deep.DimensionMm = DimensionMm?.DeepCopy();
         deep.ObverseDimensionMm = ObverseDimensionMm?.DeepCopy();
         deep.ReverseDimensionMm = ReverseDimensionMm?.DeepCopy();
+        deep.Changes = Changes?.Select(c => c.DeepCopy());
         deep.Variations = Variations?.Select(v => v.DeepCopy());
 
         return deep;
@@ -258,12 +261,26 @@ public class FlatJsonAsset
         internal DimensionRecord DeepCopy() => (DimensionRecord)MemberwiseClone();
     }
 
+    public record ChangeRecord(string Id, string? Description, DateTimeOffset? Timestamp,
+        string? OperatorName, string? OperatorIdentifier)
+    {
+        public static ChangeRecord FromChange(Change change) =>
+            new(change.Id.Single(),
+                UTF8Encoding.UTF8.GetString(Convert.FromBase64String(change.Description.Single().Value)),
+                change.Timestamp.SingleOrDefault(),
+                change.Operator.SingleOrDefault()?.Name.SingleOrDefault(),
+                change.Operator.SingleOrDefault()?.Identifier.SingleOrDefault());
+
+        internal ChangeRecord DeepCopy() => (ChangeRecord)MemberwiseClone();
+    }
+
     public record VariationRecord(string Id, string IaId, string Name, long? RedactionSequence, string? Reference,
         string? Note, string? Location, string? PhysicalConditionDescription,
         string? ReferenceGoogleId, string? ReferenceParentGoogleId, string? ScannerOperatorIdentifier,
         string? ScannerIdentifier, string? ArchivistNote, string? DatedNote,
         string? ScannerGeographicalPlace, string? ScannedImageCrop,
-        string? ScannedImageDeskew, string? ScannedImageSplit, Sr? SensitivityReview)
+        string? ScannedImageDeskew, string? ScannedImageSplit, Sr? SensitivityReview,
+        IEnumerable<ChangeRecord>? Changes)
     {
         public static VariationRecord FromVariation(Variation variation, string assetId, string assetReference) =>
             new(variation.Id.Single(),
@@ -283,7 +300,8 @@ public class FlatJsonAsset
                 variation.ScannedVariationHasImageCrop.SingleOrDefault()?.Uri.Segments.Last(),
                 variation.ScannedVariationHasImageDeskew.SingleOrDefault()?.Uri.Segments.Last(),
                 variation.ScannedVariationHasImageSplit.SingleOrDefault()?.Uri.Segments.Last(),
-                Sr.FromSensitivityReview(variation.SensitivityReviews.SingleOrDefault()));
+                Sr.FromSensitivityReview(variation.SensitivityReviews.SingleOrDefault()),
+                variation.Changes.Select(ChangeRecord.FromChange));
 
         private static string? VariationIaId(long? redactedSequence, string id) =>
             redactedSequence is null ? Guid.Parse(id).ToString("N") : $"{Guid.Parse(id):N}_{redactedSequence}";
@@ -293,7 +311,8 @@ public class FlatJsonAsset
 
         internal VariationRecord DeepCopy() => (VariationRecord)MemberwiseClone() with
         {
-            SensitivityReview = SensitivityReview?.DeepCopy()
+            SensitivityReview = SensitivityReview?.DeepCopy(),
+            Changes = Changes?.Select(c => c.DeepCopy())
         };
     };
 

@@ -24,4 +24,5 @@ public class Variation(INode node, IGraph graph) : DynamicNode(node, graph)
     public ICollection<Asset> Asset => new DynamicObjectCollection<Asset>(this, Vocabulary.VariationHasAsset.Uri.ToString());
     public ICollection<SensitivityReview> SensitivityReviews => new DynamicObjectCollection<SensitivityReview>(this, Vocabulary.VariationHasSensitivityReview.Uri.ToString());
     public ICollection<ILiteralNode> Xml => new DynamicObjectCollection<ILiteralNode>(this, Vocabulary.VariationDriXml.Uri.ToString());
+    public ICollection<Change> Changes => new DynamicObjectCollection<Change>(this, Vocabulary.VariationHasChange.Uri.ToString());
 }

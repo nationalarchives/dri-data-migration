@@ -31,7 +31,8 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:scannedVariationHasImageCrop ?scannedVariationHasImageCrop;
                 ex:scannedVariationHasImageDeskew ?scannedVariationHasImageDeskew;
                 ex:variationHasSensitivityReview ?sr;
-                ex:variationHasAsset ?asset.
+                ex:variationHasAsset ?asset;
+                ex:variationHasChange ?change.
             ?datedNote ex:archivistNote ?archivistNote;
                 ex:year ?datedNoteYear;
                 ex:month ?datedNoteMonth;
@@ -72,6 +73,12 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:retentionRestrictionHasRetention ?retention.
             ?retentionRestrictionHasGroundForRetention ex:groundForRetentionCode ?groundForRetentionCode;
                 ex:groundForRetentionDescription ?groundForRetentionDescription.
+            ?change ex:changeDriId ?changeDriId;
+                ex:changeDescription ?changeDescription;
+                ex:changeDateTime ?changeDateTime;
+                ex:changeHasOperator ?operator.
+            ?operator ex:operatorIdentifier ?operatorIdentifier;
+                ex:operatorName ?operatorName.
         } where {
             bind(@id as ?variationDriId)
             ?variation ex:variationName ?variationName;
@@ -152,6 +159,17 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                             optional { ?subset ex:subsetHasRetention ?retention }
                         }
                     }
+                }
+            }
+            optional {
+                ?variation ex:assetHasChange ?change.
+                optional { ?change ex:changeDriId ?changeDriId }
+                optional { ?change ex:changeDescription ?changeDescription }
+                optional { ?change ex:changeDateTime ?changeDateTime }
+                optional {
+                    ?change ex:changeHasOperator ?operator.
+                    optional { ?operator ex:operatorIdentifier ?operatorIdentifier }
+                    optional { ?operator ex:operatorName ?operatorName }
                 }
             }
         }

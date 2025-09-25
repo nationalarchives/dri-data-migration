@@ -62,4 +62,5 @@ public class Asset(INode node, IGraph graph) : DynamicNode(node, graph)
     public ICollection<Variation> Variations => new DynamicObjectCollection<Variation>(this, Vocabulary.AssetHasVariation.Uri.ToString());
     public ICollection<Subset> Subset => new DynamicObjectCollection<Subset>(this, Vocabulary.AssetHasSubset.Uri.ToString());
     public ICollection<ILiteralNode> Xml => new DynamicObjectCollection<ILiteralNode>(this, Vocabulary.AssetDriXml.Uri.ToString());
+    public ICollection<Change> Changes => new DynamicObjectCollection<Change>(this, Vocabulary.AssetHasChange.Uri.ToString());
 }

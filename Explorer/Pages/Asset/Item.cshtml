@@ -131,6 +131,7 @@
         <partial name="DateYmdPartial" model="@("Seal obverse end date", asset.SealObverseEndDate)" />
         <partial name="DateYmdPartial" model="@("Seal reverse start date", asset.SealReverseStartDate)" />
         <partial name="DateYmdPartial" model="@("Seal reverse end date", asset.SealReverseEndDate)" />
+        <partial name="ChangePartial" model="@asset.Changes" />
     </dl>
 
     @if (asset.Variations.Any())

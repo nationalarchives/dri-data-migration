@@ -62,6 +62,7 @@ public static class Vocabulary
     public static readonly IUriNode AssetHasOriginApproximateDateStart = new UriNode(new(Namespace, "assetHasOriginApproximateDateStart"));
     public static readonly IUriNode AssetHasOriginApproximateDateEnd = new UriNode(new(Namespace, "assetHasOriginApproximateDateEnd"));
     public static readonly IUriNode AssetHasDimension = new UriNode(new(Namespace, "assetHasDimension"));
+    public static readonly IUriNode AssetHasChange = new UriNode(new(Namespace, "assetHasChange"));
     public static readonly IUriNode CourtAssetHasCourtCase = new UriNode(new(Namespace, "courtAssetHasCourtCase"));
     public static readonly IUriNode SealAssetHasSealCategory = new UriNode(new(Namespace, "sealAssetHasSealCategory"));
     public static readonly IUriNode SealAssetHasStartDate = new UriNode(new(Namespace, "sealAssetHasStartDate"));
@@ -90,6 +91,7 @@ public static class Vocabulary
     public static readonly IUriNode ScannerIdentifier = new UriNode(new(Namespace, "scannerIdentifier"));
     public static readonly IUriNode VariationHasSensitivityReview = new UriNode(new(Namespace, "variationHasSensitivityReview"));
     public static readonly IUriNode VariationHasDatedNote = new UriNode(new(Namespace, "variationHasDatedNote"));
+    public static readonly IUriNode VariationHasChange = new UriNode(new(Namespace, "variationHasChange"));
     public static readonly IUriNode ScannedVariationHasScannerGeographicalPlace = new UriNode(new(Namespace, "scannedVariationHasScannerGeographicalPlace"));
     public static readonly IUriNode ScannedVariationHasImageSplit = new UriNode(new(Namespace, "scannedVariationHasImageSplit"));
     public static readonly IUriNode ScannedVariationHasImageCrop = new UriNode(new(Namespace, "scannedVariationHasImageCrop"));
