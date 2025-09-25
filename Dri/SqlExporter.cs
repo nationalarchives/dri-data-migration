@@ -89,7 +89,7 @@ public class SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> opti
 
         using var connection = new SqliteConnection(settings.SqlConnectionString);
         connection.Open();
-        cancellationToken.Register(() => SQLitePCL.raw.sqlite3_interrupt(connection.Handle));
+        RegisterCancellation(connection, cancellationToken);
         using var command = new SqliteCommand(duXmlSql, connection);
         command.Parameters.AddRange([codeParam, limitParam, offsetParam]);
         using var reader = command.ExecuteReader();
@@ -109,7 +109,7 @@ public class SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> opti
 
         using var connection = new SqliteConnection(settings.SqlConnectionString);
         connection.Open();
-        cancellationToken.Register(() => SQLitePCL.raw.sqlite3_interrupt(connection.Handle));
+        RegisterCancellation(connection, cancellationToken);
         using var command = new SqliteCommand(fileXmlSql, connection);
         command.Parameters.AddRange([codeParam, limitParam, offsetParam]);
         using var reader = command.ExecuteReader();
@@ -130,7 +130,7 @@ public class SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> opti
 
         using var connection = new SqliteConnection(settings.SqlConnectionString);
         connection.Open();
-        cancellationToken.Register(() => SQLitePCL.raw.sqlite3_interrupt(connection.Handle));
+        RegisterCancellation(connection, cancellationToken);
         using var command = new SqliteCommand(auditSql, connection);
         command.Parameters.AddRange([codeParam, limitParam, offsetParam]);
         using var reader = command.ExecuteReader();
@@ -142,4 +142,13 @@ public class SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> opti
                 reader.GetString("FULLNAME"), reader.GetString("XMLDIFF"));
         }
     }
+
+    private static void RegisterCancellation(SqliteConnection connection, CancellationToken cancellationToken) =>
+        cancellationToken.Register(() =>
+        {
+            if (connection.State is not ConnectionState.Closed)
+            {
+                SQLitePCL.raw.sqlite3_interrupt(connection.Handle);
+            }
+        });
 }
