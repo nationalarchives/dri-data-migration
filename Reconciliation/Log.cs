@@ -5,11 +5,11 @@ namespace Reconciliation;
 
 internal static partial class Log
 {
-    [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "Started {mapType} reconciliation")]
-    internal static partial void ReconciliationStarted(this ILogger logger, MapType mapType);
+    [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "Started {mapType} reconciliation on {code}")]
+    internal static partial void ReconciliationStarted(this ILogger logger, MapType mapType, string code);
 
-    [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "Finished {mapType} reconciliation")]
-    internal static partial void ReconciliationFinished(this ILogger logger, MapType mapType);
+    [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "Finished reconciliation")]
+    internal static partial void ReconciliationFinished(this ILogger logger);
 
     [LoggerMessage(EventId = 3, Level = LogLevel.Warning, Message = "Folder {id} not found in the staging database")]
     internal static partial void ReconciliationFolderNotFound(this ILogger logger, string id);
@@ -43,8 +43,8 @@ internal static partial class Log
     [LoggerMessage(EventId = 12, Level = LogLevel.Information, Message = "Fetching records from mark {mark}")]
     internal static partial void GetDiscoveryRecordsPage(this ILogger logger, string mark);
 
-    [LoggerMessage(EventId = 13, Level = LogLevel.Information, Message = "Comparing records")]
-    internal static partial void ComparingRecords(this ILogger logger);
+    [LoggerMessage(EventId = 13, Level = LogLevel.Information, Message = "Comparing {count} records")]
+    internal static partial void ComparingRecords(this ILogger logger, int count);
 
     [LoggerMessage(EventId = 14, Level = LogLevel.Information, Message = "Finding missing records")]
     internal static partial void FindingMissingRecords(this ILogger logger);
@@ -53,7 +53,10 @@ internal static partial class Log
     internal static partial void UnableFindSource(this ILogger logger);
 
     //TODO: Verbose???
-    [LoggerMessage(EventId = 16, Level = LogLevel.Information, Message = "Field '{field}': expected '{expected}', actual '{actual}'")]
+    [LoggerMessage(EventId = 16, Level = LogLevel.Information, Message = "Expected value of {field} is {expected} but found {actual}")]
     internal static partial void ReconciliationDiffDetails(this ILogger logger, ReconciliationFieldName field, object expected, object actual);
+
+    [LoggerMessage(EventId = 17, Level = LogLevel.Information, Message = "Retrieved {count} records")]
+    internal static partial void ReconciliationRecordCount(this ILogger logger, int count);
 
 }

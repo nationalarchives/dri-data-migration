@@ -29,7 +29,6 @@
     <EmbeddedResource Include="Sparql\GetVariation.sparql" />
     <EmbeddedResource Include="Sparql\GroundForRetentionGraph.sparql" />
     <EmbeddedResource Include="Sparql\LegislationGraph.sparql" />
-    <EmbeddedResource Include="Sparql\ReconciliationResultSet.sparql" />
     <EmbeddedResource Include="Sparql\SensitivityReviewGraph.sparql" />
     <EmbeddedResource Include="Sparql\ChangeGraph.sparql" />
     <EmbeddedResource Include="Sparql\SubsetGraph.sparql" />

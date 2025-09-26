@@ -3,9 +3,11 @@
 public enum ReconciliationFieldName
 {
     Id,
-    DriId,
     ImportLocation,
     Reference,
+    OriginStartDate,
+    OriginEndDate,
+    RedactedVariationSequence,
     VariationName,
     FileFolder,
     AccessConditionCode,

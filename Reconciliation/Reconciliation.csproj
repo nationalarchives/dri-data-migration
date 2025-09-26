@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Sparql\ReconciliationResultSet.sparql" />
+  </ItemGroup>
+
+  <ItemGroup>
 	<PackageReference Include="Microsoft.Extensions.Http" />
   	<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
 	<PackageReference Include="Microsoft.Extensions.Options" />

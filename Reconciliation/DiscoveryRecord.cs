@@ -45,22 +45,24 @@ public class DiscoveryRecord(HttpClient httpClient, ILogger<DiscoveryRecord> log
     }
 
     private static IEnumerable<Dictionary<ReconciliationFieldName, object>> Filter(DiscoverySearchRecordsResponse.Record[] records) =>
-        records.Select(r => new Dictionary<ReconciliationFieldName, object?>()
+        records.Where(r => !string.IsNullOrWhiteSpace(r.Reference))
+        .Where(r => r.Reference!.EndsWith("/Z") || r.Reference.Contains("/Z/"))
+        .Select(r => new Dictionary<ReconciliationFieldName, object?>()
         {
-            //[ReconciliationFieldName.Id] = ToId(r.Id),
+            [ReconciliationFieldName.Id] = r.Id,
             //[ReconciliationFieldName.VariationName] = r.Title,
-            [ReconciliationFieldName.Reference] = r.Reference?.Replace(' ', '/'),
+            [ReconciliationFieldName.Reference] = r.Reference!.Replace(' ', '/'),
+            [ReconciliationFieldName.OriginStartDate] = r.NumStartDate,
+            [ReconciliationFieldName.OriginEndDate] = r.NumEndDate,
             [ReconciliationFieldName.AccessConditionCode] = r.ClosureType,
             [ReconciliationFieldName.SensitivityReviewDuration] = ToDuration(r.ClosureType, r.ClosureCode),
             [ReconciliationFieldName.SensitivityReviewEndYear] = ToEndYear(r.ClosureType, r.ClosureCode),
             //[ReconciliationFieldName.SensitivityReviewRestrictionReviewDate] = ToDate(r.OpeningDate),
             //[ReconciliationFieldName.IsPublicName] = r.ClosureStatus,
             //[ReconciliationFieldName.IsPublicDescription] = r.ClosureStatus,
-            //[ReconciliationFieldName.SensitivityReviewRestrictionCalculationStartDate] = ToDate(r.StartDate),
         }).Select(d => d.Where(kv => kv.Value is not null).ToDictionary(kv => kv.Key, kv => kv.Value!));
 
     private static readonly string[] YearDuration = ["D", "U"];
-    private static Guid? ToId(string? txt) => Guid.TryParse(txt, out Guid v) ? v : null;
     private static int? ToDuration(string? closureType, string? txt) =>
         int.TryParse(txt, out int v) && closureType is not null ? !YearDuration.Contains(closureType) ? v : null : null;
     private static int? ToEndYear(string? closureType, string? txt) =>

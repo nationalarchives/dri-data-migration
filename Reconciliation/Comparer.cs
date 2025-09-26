@@ -13,17 +13,18 @@ public class Comparer(ILogger<Comparer> logger, IOptions<ReconciliationSettings>
     public async Task<ReconciliationSummary> ReconcileAsync(CancellationToken cancellationToken)
     {
         //TODO: use sensitive name in logs
-        logger.ReconciliationStarted(settings.MapKind);
+        logger.ReconciliationStarted(settings.MapKind, settings.Code);
         var expected = await GetExpectedDataAsync(cancellationToken);
+        logger.ReconciliationRecordCount(expected.Count);
 
         ReconciliationSummary summary = new(0, 0, 0, 0, 0);
-        IEnumerable<Dictionary<ReconciliationFieldName, object>> page;
+        List<Dictionary<ReconciliationFieldName, object>> page;
         var offset = 0;
         do
         {
             logger.GetReconciliationRecords(offset);
-            page = await client.FetchAsync(settings.Code,
-                settings.FetchPageSize, offset, cancellationToken);
+            page = (await client.FetchAsync(settings.Code,
+                settings.FetchPageSize, offset, cancellationToken)).ToList();
             offset += settings.FetchPageSize;
 
             var adjustedStaging = StagingReconciliationParser.Parse(page, settings.Code,
@@ -31,7 +32,7 @@ public class Comparer(ILogger<Comparer> logger, IOptions<ReconciliationSettings>
             var pageSummary = CheckRecords(expected, adjustedStaging);
             summary.Update(pageSummary);
         }
-        while (page.Any() && page.Count() == settings.FetchPageSize);
+        while (page.Any() && page.Count == settings.FetchPageSize);
 
         var missingSummary = CheckMissing(expected);
         summary.Update(missingSummary);
@@ -42,7 +43,7 @@ public class Comparer(ILogger<Comparer> logger, IOptions<ReconciliationSettings>
                 summary.MissingFilesCount, summary.MissingFolderCount, summary.DiffCount);
         }
 
-        logger.ReconciliationFinished(settings.MapKind);
+        logger.ReconciliationFinished();
 
         return summary;
     }
@@ -69,7 +70,7 @@ public class Comparer(ILogger<Comparer> logger, IOptions<ReconciliationSettings>
     private ReconciliationSummary CheckRecords(List<Dictionary<ReconciliationFieldName, object>> expected,
         List<Dictionary<ReconciliationFieldName, object>> staging)
     {
-        logger.ComparingRecords();
+        logger.ComparingRecords(staging.Count);
         var additionalFilesCount = 0;
         var additionalFolderCount = 0;
         var diffCount = 0;
@@ -138,6 +139,6 @@ public class Comparer(ILogger<Comparer> logger, IOptions<ReconciliationSettings>
 
     private string? SelectIdentifier(Dictionary<ReconciliationFieldName, object> item) =>
         settings.MapKind == MapType.Discovery ?
-                item[ReconciliationFieldName.Reference] as string :
+                item[ReconciliationFieldName.Id] as string :
                 item[ReconciliationFieldName.ImportLocation] as string; //TODO: handle null
 }

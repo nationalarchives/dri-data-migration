@@ -33,12 +33,14 @@ public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClien
 
     private static Dictionary<string, RowInfo> Map => new()
     {
-        { "s", new(ReconciliationFieldName.Id, ToUri) },
         { "t", new(ReconciliationFieldName.FileFolder, ToUri) },
         { Vocabulary.ImportLocation.Uri.Segments.Last(), new(ReconciliationFieldName.ImportLocation, ToText) },
         { "reference", new(ReconciliationFieldName.Reference, ToText) },
+        { Vocabulary.RedactedVariationSequence.Uri.Segments.Last(), new(ReconciliationFieldName.RedactedVariationSequence, ToInt) },
         { Vocabulary.VariationName.Uri.Segments.Last(), new(ReconciliationFieldName.VariationName, ToText) },
-        { Vocabulary.VariationDriId.Uri.Segments.Last(), new(ReconciliationFieldName.DriId, ToGuid) },
+        { Vocabulary.AssetDriId.Uri.Segments.Last(), new(ReconciliationFieldName.Id, ToText) },
+        { "startOriginDate", new(ReconciliationFieldName.OriginStartDate, ToText) },
+        { "endOriginDate", new(ReconciliationFieldName.OriginEndDate, ToText) },
         { Vocabulary.AccessConditionCode.Uri.Segments.Last(), new(ReconciliationFieldName.AccessConditionCode, ToText) },
         { Vocabulary.AccessConditionName.Uri.Segments.Last(), new(ReconciliationFieldName.AccessConditionName, ToText) },
         { "retentionType", new(ReconciliationFieldName.RetentionType, ToText) },
@@ -59,7 +61,6 @@ public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClien
 
     private static readonly Func<object?, object?> ToUri = result => result is Uri uri ? uri : null;
     private static readonly Func<object?, object?> ToText = result => result is string txt ? txt : null;
-    private static readonly Func<object?, object?> ToGuid = result => result is string txt ? new Guid(new Uri(txt).Segments.Last()) : null;
     private static readonly Func<object?, object?> ToDateTime = result => result is DateTimeOffset dt ? dt : null;
     private static readonly Func<object?, object?> ToTimeSpan = result => result is TimeSpan ts ? ts : null;
     private static readonly Func<object?, object?> ToInt = result => result is long l ? (int)l : null;

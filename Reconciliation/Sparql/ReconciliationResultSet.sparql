@@ -1,0 +1,97 @@
+﻿prefix ex: <http://id.example.com/schema/>
+
+select ?t ?importLocation ?reference ?redactedVariationSequence ?variationName
+	?assetDriId ?startOriginDate ?endOriginDate ?accessConditionCode ?accessConditionName
+	?retentionType ?sensitivityReviewDate ?sensitivityReviewSensitiveName ?isPublicName
+	?isPublicDescription ?sensitivityReviewRestrictionReviewDate
+	?sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionDuration
+	?sensitivityReviewRestrictionEndYear (group_concat(?lsr; separator=',') as ?legislationSectionReference)
+	?retentionRestrictionReviewDate ?retentionInstrumentNumber
+	?retentionInstrumentSignatureDate ?groundForRetentionCode
+where {
+    bind(@id as ?id)
+    ?subset ex:subsetHasBroaderSubset*/ex:subsetReference ?id.
+    {
+    	?subset ex:subsetReference ?reference.
+        optional { ?subset ex:subsetHasRetention/ex:importLocation ?importFolder }
+        bind(ex:Subset as ?t)
+        bind(coalesce(?importFolder, ?id) as ?importLocation)
+    }
+    union
+    {
+        ?asset ex:assetHasSubset ?subset;
+            ex:assetDriId ?assetDriId;
+            ex:assetReference ?reference;
+            ex:assetHasVariation ?variation.
+        optional { ?asset ex:assetHasRetention/ex:importLocation ?importFolder }
+        optional {
+            ?asset ex:assetHasOriginDateStart ?assetHasOriginDateStart.
+            ?assetHasOriginDateStart ex:year ?startYear.
+            optional { ?assetHasOriginDateStart ex:month ?startMonth }
+            optional { ?assetHasOriginDateStart ex:day ?startDay }
+            bind(concat(str(?startYear), coalesce(str(?startMonth), ''), coalesce(str(?startDay), '')) as ?startOriginDate)
+        }
+        optional {
+            ?asset ex:assetHasOriginDateEnd ?assetHasOriginDateEnd.
+            ?assetHasOriginDateEnd ex:year ?endYear.
+            optional { ?assetHasOriginDateEnd ex:month ?endMonth }
+            optional { ?assetHasOriginDateEnd ex:day ?endDay }
+            bind(concat(str(?endYear), coalesce(str(?endMonth), ''), coalesce(str(?endDay), '')) as ?endOriginDate)
+        }
+        ?variation ex:variationName ?variationName.
+        bind(ex:Variation as ?t)
+        bind(concat(coalesce(?importFolder, ?id), '/', ?variationName) as ?importLocation)
+        optional { ?variation ex:redactedVariationSequence ?redactedVariationSequence }
+        optional {
+            ?variation ex:variationHasSensitivityReview ?sr
+            filter not exists { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?sr }
+            optional { 
+                ?sr ex:sensitivityReviewHasAccessCondition ?ac.
+                ?ac ex:accessConditionCode ?accessConditionCode;
+                    ex:accessConditionName ?accessConditionName.
+                bind(?accessConditionName as ?retentionType)
+            }
+            optional { ?sr ex:sensitivityReviewDate ?sensitivityReviewDate }
+            optional {
+                ?sr ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName.
+                bind(?sensitivityReviewSensitiveName as ?isPublicName)
+            }
+            optional {
+                ?sr ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription.
+                bind(?sensitivityReviewSensitiveDescription as ?isPublicDescription)
+            }
+            optional {
+                ?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
+                optional { ?restriction ex:sensitivityReviewRestrictionReviewDate ?sensitivityReviewRestrictionReviewDate }
+                optional { ?restriction ex:sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionCalculationStartDate }
+                optional { ?restriction ex:sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionDuration }
+                optional { ?restriction ex:sensitivityReviewRestrictionEndYear ?sensitivityReviewRestrictionEndYear }
+                optional {
+                    ?restriction ex:sensitivityReviewRestrictionHasLegislation ?legislation.
+                    ?legislation ex:legislationHasUkLegislation ?legislationHasUkLegislation.
+                    optional { ?legislation ex:legislationSectionReference ?lsr }
+                }
+                optional {
+                    ?restriction ex:sensitivityReviewRestrictionHasRetentionRestriction ?retentionRestriction.
+                    optional { ?retentionRestriction ex:retentionRestrictionReviewDate ?retentionRestrictionReviewDate }
+                    optional { ?retentionRestriction ex:retentionInstrumentNumber ?retentionInstrumentNumber }
+                    optional { ?retentionRestriction ex:retentionInstrumentSignatureDate ?retentionInstrumentSignatureDate }
+                    optional {
+                        ?retentionRestriction ex:retentionRestrictionHasGroundForRetention ?retentionRestrictionHasGroundForRetention.
+                        ?retentionRestrictionHasGroundForRetention ex:groundForRetentionCode ?groundForRetentionCode.
+                    }
+                }
+            }
+        }
+    }
+}
+group by ?t ?importLocation ?reference ?redactedVariationSequence ?variationName
+	?assetDriId ?startOriginDate ?endOriginDate ?accessConditionCode ?accessConditionName
+	?retentionType ?sensitivityReviewDate ?sensitivityReviewSensitiveName ?isPublicName
+	?isPublicDescription ?sensitivityReviewSensitiveDescription
+	?sensitivityReviewRestrictionReviewDate ?sensitivityReviewRestrictionCalculationStartDate
+	?sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionEndYear
+	?retentionRestrictionReviewDate ?retentionInstrumentNumber
+	?retentionInstrumentSignatureDate ?groundForRetentionCode
+order by ?importLocation
+limit @limit offset @offset

@@ -1,4 +1,5 @@
 ﻿using Api;
+using System.Text;
 
 namespace Reconciliation;
 
@@ -19,9 +20,13 @@ internal static class StagingReconciliationParser
         Dictionary<ReconciliationFieldName, object> row, string code, string filePrefix) =>
             cell.Key switch
             {
+                ReconciliationFieldName.Id => new(cell.Key, ToId(row, cell.Value as string)),
+                ReconciliationFieldName.Reference => new(cell.Key, ToReference(row, cell.Value as string)),
                 ReconciliationFieldName.FileFolder => new(cell.Key, ToFileFolder(cell.Value as Uri)),
                 ReconciliationFieldName.ImportLocation => new(cell.Key, ToImportLocation(row, cell.Value as string, code, filePrefix)),
                 ReconciliationFieldName.VariationName => new(cell.Key, ToVariationName(row, cell.Value as string)),
+                ReconciliationFieldName.OriginStartDate => new(cell.Key, ToOriginDate(cell.Value as string)),
+                ReconciliationFieldName.OriginEndDate => new(cell.Key, ToOriginDate(cell.Value as string)),
                 ReconciliationFieldName.AccessConditionName => new(cell.Key, ToAccessConditon(cell.Value as string)),
                 ReconciliationFieldName.SensitivityReviewDuration => new(cell.Key, ToYearDuration(row, cell.Value as TimeSpan?)),
                 ReconciliationFieldName.LegislationSectionReference => new(cell.Key, ToLegislationReferences(cell.Value as string)),
@@ -29,6 +34,16 @@ internal static class StagingReconciliationParser
                 ReconciliationFieldName.RetentionType => new(cell.Key, ToRetentionType(cell.Value as string)),
                 _ => new KeyValuePair<ReconciliationFieldName, object?>(cell.Key, cell.Value),
             };
+
+    private static string? ToId(Dictionary<ReconciliationFieldName, object> row, string? driId) =>
+        !string.IsNullOrWhiteSpace(driId) ?
+        row.TryGetValue(ReconciliationFieldName.RedactedVariationSequence, out var redactedSequence) ?
+        $"{Guid.Parse(driId.ToString()):N}_{redactedSequence}" : Guid.Parse(driId.ToString()).ToString("N") : null;
+
+    private static string? ToReference(Dictionary<ReconciliationFieldName, object> row, string? reference) =>
+        !string.IsNullOrWhiteSpace(reference) ?
+        row.TryGetValue(ReconciliationFieldName.RedactedVariationSequence, out var redactedSequence) ?
+        $"{reference}/{redactedSequence}" : reference : null;
 
     private static string? ToFileFolder(Uri? subject) =>
         subject == Vocabulary.Subset.Uri ? folder :
@@ -58,6 +73,30 @@ internal static class StagingReconciliationParser
                 variationName?.Split('/').Last() : variationName;
         }
         return null;
+    }
+
+    private static int? ToOriginDate(string? date)
+    {
+        if (string.IsNullOrWhiteSpace(date))
+        {
+            return null;
+        }
+        var dt = date.Split('-', StringSplitOptions.RemoveEmptyEntries);
+        if (dt.Length == 0)
+        {
+            return null;
+        }
+        var sb = new StringBuilder();
+        sb.Append(dt[0]);
+        if (dt.Length > 1)
+        {
+            for (var i = 1; i < dt.Length; i++)
+            {
+                sb.Append(dt[i].PadLeft(2, '0'));
+            }
+        }
+
+        return int.TryParse(sb.ToString(), out var origin) ? origin : null;
     }
 
     private static string? ToAccessConditon(string? accessConditionName) => accessConditionName?.Replace(' ', '_');
