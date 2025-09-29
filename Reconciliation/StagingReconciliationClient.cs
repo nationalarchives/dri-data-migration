@@ -60,7 +60,7 @@ public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClien
     };
 
     private static readonly Func<object?, object?> ToUri = result => result is Uri uri ? uri : null;
-    private static readonly Func<object?, object?> ToText = result => result is string txt ? txt : null;
+    private static readonly Func<object?, object?> ToText = result => result is string txt && !string.IsNullOrWhiteSpace(txt) ? txt : null;
     private static readonly Func<object?, object?> ToDateTime = result => result is DateTimeOffset dt ? dt : null;
     private static readonly Func<object?, object?> ToTimeSpan = result => result is TimeSpan ts ? ts : null;
     private static readonly Func<object?, object?> ToInt = result => result is long l ? (int)l : null;

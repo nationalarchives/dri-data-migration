@@ -50,7 +50,7 @@ public class DiscoveryRecord(HttpClient httpClient, ILogger<DiscoveryRecord> log
         .Select(r => new Dictionary<ReconciliationFieldName, object?>()
         {
             [ReconciliationFieldName.Id] = r.Id,
-            //[ReconciliationFieldName.VariationName] = r.Title,
+            [ReconciliationFieldName.VariationName] = r.Title,
             [ReconciliationFieldName.Reference] = r.Reference!.Replace(' ', '/'),
             [ReconciliationFieldName.OriginStartDate] = r.NumStartDate,
             [ReconciliationFieldName.OriginEndDate] = r.NumEndDate,

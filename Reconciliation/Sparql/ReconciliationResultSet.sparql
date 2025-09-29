@@ -1,6 +1,7 @@
 ﻿prefix ex: <http://id.example.com/schema/>
 
-select ?t ?importLocation ?reference ?redactedVariationSequence ?variationName
+select ?t ?importLocation ?reference ?redactedVariationSequence
+    (group_concat(?name; separator=',') as ?variationName)
 	?assetDriId ?startOriginDate ?endOriginDate ?accessConditionCode ?accessConditionName
 	?retentionType ?sensitivityReviewDate ?sensitivityReviewSensitiveName ?isPublicName
 	?isPublicDescription ?sensitivityReviewRestrictionReviewDate
@@ -27,6 +28,7 @@ where {
             ex:assetDriId ?assetDriId;
             ex:assetReference ?reference;
             ex:assetHasVariation ?variation.
+        optional { ?asset ex:assetName ?assetName }
         optional { ?asset ex:assetHasRetention/ex:importLocation ?importFolder }
         optional {
             ?asset ex:variationHasSensitivityReview ?srA.
@@ -52,9 +54,10 @@ where {
             optional { ?assetHasOriginDateEnd ex:day ?endDay }
             bind(concat(str(?endYear), coalesce(str(?endMonth), ''), coalesce(str(?endDay), '')) as ?endOriginDate)
         }
-        ?variation ex:variationName ?variationName.
+        ?variation ex:variationName ?variationNameVariation.
         bind(ex:Variation as ?t)
-        bind(concat(coalesce(?importFolder, ?id), '/', ?variationName) as ?importLocation)
+        bind(coalesce(?assetName, ?variationNameVariation) as ?name)
+        bind(concat(coalesce(?importFolder, ?id), '/', ?variationNameVariation) as ?importLocation)
         optional { ?variation ex:redactedVariationSequence ?redactedVariationSequence }
         optional {
             ?variation ex:variationHasSensitivityReview ?sr.
@@ -97,7 +100,7 @@ where {
         }
     }
 }
-group by ?t ?importLocation ?reference ?redactedVariationSequence ?variationName
+group by ?t ?importLocation ?reference ?redactedVariationSequence
 	?assetDriId ?startOriginDate ?endOriginDate ?accessConditionCode ?accessConditionName
 	?retentionType ?sensitivityReviewDate ?sensitivityReviewSensitiveName ?isPublicName
 	?isPublicDescription ?sensitivityReviewSensitiveDescription
