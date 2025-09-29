@@ -1,7 +1,7 @@
 ﻿prefix ex: <http://id.example.com/schema/>
 
 select ?t ?importLocation ?reference ?redactedVariationSequence
-    (group_concat(?name; separator=',') as ?variationName)
+    (group_concat(distinct ?name; separator=',') as ?variationName)
 	?assetDriId ?startOriginDate ?endOriginDate ?accessConditionCode ?accessConditionName
 	?retentionType ?sensitivityReviewDate ?sensitivityReviewSensitiveName ?isPublicName
 	?isPublicDescription ?sensitivityReviewRestrictionReviewDate

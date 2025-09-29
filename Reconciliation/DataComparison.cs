@@ -42,6 +42,10 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
             logger.ReconciliationTotalDiff(summary.AdditionalFilesCount, summary.AdditionalFolderCount,
                 summary.MissingFilesCount, summary.MissingFolderCount, summary.DiffCount);
         }
+        else
+        {
+            logger.ReconciliationNoDiff();
+        }
 
         logger.ReconciliationFinished();
 

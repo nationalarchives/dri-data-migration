@@ -59,4 +59,6 @@ internal static partial class Log
     [LoggerMessage(EventId = 17, Level = LogLevel.Information, Message = "Retrieved {count} records")]
     internal static partial void ReconciliationRecordCount(this ILogger logger, int count);
 
+    [LoggerMessage(EventId = 18, Level = LogLevel.Information, Message = "No difference found")]
+    internal static partial void ReconciliationNoDiff(this ILogger logger);
 }
