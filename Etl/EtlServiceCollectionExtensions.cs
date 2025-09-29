@@ -18,7 +18,7 @@ public static class EtlServiceCollectionExtensions
         services.AddSingleton<IEtl, EtlVariationFile>();
         services.AddSingleton<IEtl, EtlSensitivityReview>();
         services.AddSingleton<IEtl, EtlChange>();
-        services.AddSingleton<IMigration, Migration>();
+        services.AddSingleton<IDataProcessing, DataProcessing>();
 
         return services;
     }

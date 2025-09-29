@@ -12,7 +12,7 @@ public static class ReconciliationServiceCollectionExtensions
         services.AddHttpClient<IReconciliationSource, DiscoveryRecord>();
         services.AddSingleton<IReconciliationSource, PreservicaClosure>();
         services.AddSingleton<IReconciliationSource, PreservicaMetadata>();
-        services.AddSingleton<IReconciliation, Comparer>();
+        services.AddSingleton<IDataComparison, DataComparison>();
 
         return services;
     }

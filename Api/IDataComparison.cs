@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Api;
 
-public interface IReconciliation
+public interface IDataComparison
 {
     Task<ReconciliationSummary> ReconcileAsync(CancellationToken cancellationToken);
 }

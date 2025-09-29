@@ -4,8 +4,8 @@ using Microsoft.Extensions.Options;
 
 namespace Reconciliation;
 
-public class Comparer(ILogger<Comparer> logger, IOptions<ReconciliationSettings> reconciliationSettings,
-    IStagingReconciliationClient client, IEnumerable<IReconciliationSource> sources) : IReconciliation
+public class DataComparison(ILogger<DataComparison> logger, IOptions<ReconciliationSettings> reconciliationSettings,
+    IStagingReconciliationClient client, IEnumerable<IReconciliationSource> sources) : IDataComparison
 {
     private readonly ReconciliationSettings settings = reconciliationSettings.Value;
     private const string missing = "MISSING IMPORT LOCATION";

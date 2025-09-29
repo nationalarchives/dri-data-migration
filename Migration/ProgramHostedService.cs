@@ -6,20 +6,20 @@ namespace Migration;
 
 public class ProgramHostedService(IOptions<StagingSettings> stagingSettings,
     IOptions<ReconciliationSettings> reconciliationSettings,
-    IMigration migration, IReconciliation reconciliation, IHostApplicationLifetime applicationLifetime)
+    IDataProcessing dataProcessing, IDataComparison dataComparison, IHostApplicationLifetime applicationLifetime)
     : IHostedService
 {
     async Task IHostedService.StartAsync(CancellationToken cancellationToken)
     {
         if (stagingSettings?.Value.Code is not null)
         {
-            await migration.MigrateAsync(cancellationToken);
+            await dataProcessing.EtlAsync(cancellationToken);
         }
         else
         {
             if (reconciliationSettings?.Value.Code is not null)
             {
-                await reconciliation.ReconcileAsync(cancellationToken);
+                await dataComparison.ReconcileAsync(cancellationToken);
             }
         }
         applicationLifetime.StopApplication();

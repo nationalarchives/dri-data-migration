@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Etl;
 
-public class Migration(ILogger<Migration> logger, IOptions<DriSettings> driSettings, IEnumerable<IEtl> etls) : IMigration
+public class DataProcessing(ILogger<DataProcessing> logger, IOptions<DriSettings> driSettings, IEnumerable<IEtl> etls) : IDataProcessing
 {
     private readonly DriSettings settings = driSettings.Value;
 
-    public async Task MigrateAsync(CancellationToken cancellationToken)
+    public async Task EtlAsync(CancellationToken cancellationToken)
     {
         logger.MigrationStarted(settings.Code);
         foreach (var etl in etls.OrderBy(e => (int)e.StageType))
