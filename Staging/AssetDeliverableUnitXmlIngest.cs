@@ -179,8 +179,11 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             CacheClient.NewId;
         if (foundCoverage is not null)
         {
-            var start = rdf.GetTriplesWithSubjectPredicate(foundCoverage, IngestVocabulary.StartDate).FirstOrDefault()?.Object as ILiteralNode ??
-                rdf.GetTriplesWithSubjectPredicate(foundCoverage, IngestVocabulary.FullDate).FirstOrDefault()?.Object as ILiteralNode;
+            var start = rdf.GetTriplesWithSubjectPredicate(foundCoverage, IngestVocabulary.StartDate).FirstOrDefault()?.Object as ILiteralNode;
+            if (start is not null && string.IsNullOrWhiteSpace(start.Value))
+            {
+                start = rdf.GetTriplesWithSubjectPredicate(foundCoverage, IngestVocabulary.FullDate).FirstOrDefault()?.Object as ILiteralNode;
+            }
             if (start is not null && !string.IsNullOrWhiteSpace(start.Value))
             {
                 var startYmd = dateParser.ParseDate(start.Value);
@@ -189,6 +192,10 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
                     graph.Assert(id, Vocabulary.AssetHasOriginDateStart, startNode);
                     GraphAssert.YearMonthDay(graph, startNode, startYmd.Year, startYmd.Month, startYmd.Day);
                     var end = rdf.GetTriplesWithSubjectPredicate(foundCoverage, IngestVocabulary.EndDate).FirstOrDefault()?.Object as ILiteralNode;
+                    if (end is not null && string.IsNullOrWhiteSpace(end.Value))
+                    {
+                        end = rdf.GetTriplesWithSubjectPredicate(foundCoverage, IngestVocabulary.FullDate).FirstOrDefault()?.Object as ILiteralNode;
+                    }
                     if (end is not null && !string.IsNullOrWhiteSpace(end.Value))
                     {
                         var endYmd = dateParser.ParseDate(end.Value);
