@@ -1,8 +1,6 @@
 ﻿using Api;
-using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -31,41 +29,7 @@ public class DataProcessing(ILogger<DataProcessing> logger, IOptions<DriSettings
                 offset = settings.RestartFromOffset;
             }
 
-            try
-            {
-                await etl.RunAsync(offset, cancellationToken);
-            }
-            catch (MigrationException e)
-            {
-                if (string.IsNullOrWhiteSpace(e.Message))
-                {
-                    logger.MigrationFailed();
-                }
-                else
-                {
-                    logger.MigrationFailedWithMessage(e.Message);
-                }
-                logger.MigrationFailedDetails(e);
-                return;
-            }
-            catch (TaskCanceledException e)
-            {
-                logger.ProcessCancelled();
-                logger.MigrationFailedDetails(e);
-                return;
-            }
-            catch (SqliteException e) when (e.SqliteErrorCode == SQLitePCL.raw.SQLITE_INTERRUPT)
-            {
-                logger.ProcessCancelled();
-                logger.MigrationFailedDetails(e);
-                return;
-            }
-            catch (Exception e)
-            {
-                logger.UnhandledException(e.Message);
-                logger.MigrationFailedDetails(e);
-                return;
-            }
+            await etl.RunAsync(offset, cancellationToken);
         }
         logger.MigrationFinished();
     }
