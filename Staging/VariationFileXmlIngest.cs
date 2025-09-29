@@ -26,7 +26,7 @@ public class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
         GraphAssert.Text(graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
         {
             [IngestVocabulary.Note] = Vocabulary.VariationNote,
-            [IngestVocabulary.CuratedDateNote] = Vocabulary.VariationNote,
+            [IngestVocabulary.Comment] = Vocabulary.VariationNote,
             [IngestVocabulary.PhysicalCondition] = Vocabulary.VariationPhysicalConditionDescription,
             [IngestVocabulary.GoogleId] = Vocabulary.VariationReferenceGoogleId,
             [IngestVocabulary.GoogleParentId] = Vocabulary.VariationReferenceParentGoogleId,
@@ -84,7 +84,7 @@ public class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
         }
         var foundImageDeskew = rdf.GetTriplesWithPredicate(IngestVocabulary.ImageDeskew).FirstOrDefault()?.Object;
         if (foundImageDeskew is ILiteralNode imageDeskewNode && !string.IsNullOrWhiteSpace(imageDeskewNode.Value) &&
-            imageDeskewNode.Value != "none")
+            imageDeskewNode.Value != "none" && imageDeskewNode.Value != "no")
         {
             var deskew = imageDeskewNode.Value switch
             {

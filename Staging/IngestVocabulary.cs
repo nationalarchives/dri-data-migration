@@ -54,6 +54,8 @@ public static class IngestVocabulary
     public static readonly IUriNode ImageSplit = new UriNode(new($"{TnaNamespace}imageSplit"));
     public static readonly IUriNode ImageCrop = new UriNode(new($"{TnaNamespace}imageCrop"));
     public static readonly IUriNode ImageDeskew = new UriNode(new($"{TnaNamespace}imageDeskew"));
+    
+    public static readonly IUriNode Comment = new UriNode(new($"{NamespaceMapper.RDFS}comment"));
 
     public static readonly IUriNode Title = new UriNode(new(DctermsNamespace, "title"));
     public static readonly IUriNode Description = new UriNode(new(DctermsNamespace, "description"));
