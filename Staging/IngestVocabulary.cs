@@ -39,6 +39,7 @@ public static class IngestVocabulary
     public static readonly IUriNode HasRedactedFile = new UriNode(new($"{TnaNamespace}hasRedactedFile"));
     public static readonly IUriNode AttachmentFormerReference = new UriNode(new($"{TnaNamespace}attachmentFormerReference"));
     public static readonly IUriNode SeparatedMaterial = new UriNode(new($"{TnaNamespace}separatedMaterial"));
+    public static readonly IUriNode ContentManagementSystemContainer = new UriNode(new($"{TnaNamespace}contentManagementSystemContainer"));
 
     public static readonly IUriNode Note = new UriNode(new($"{TnaNamespace}note"));
     public static readonly IUriNode CuratedDateNote = new UriNode(new($"{TnaNamespace}curatedDateNote"));
