@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging.Testing;
 using Microsoft.Extensions.Options;
+using System.Text.Json;
 
 namespace Dri.Tests;
 
@@ -41,7 +42,7 @@ public sealed class SqlExporterTest
     {
         var sqliteInMemory = "Data Source=file:memdb-asset?mode=memory&cache=shared";
         options.Value.SqlConnectionString = sqliteInMemory;
-        var expected = new DriAssetDeliverableUnit("Asset1", "Asset", "<xml/>");
+        var expected = new DriAssetDeliverableUnit("Asset1", "Asset", "<xml/>", "[{\"id\":\"Variation1\",\"location\":\"Location\",\"name\":\"Variation name\"}]");
         PopulateAsset(expected, sqliteInMemory);
 
         var dris = exporter.GetAssetDeliverableUnits(0, CancellationToken.None);
@@ -77,9 +78,13 @@ public sealed class SqlExporterTest
 
     private static void PopulateAsset(DriAssetDeliverableUnit dri, string sqliteConnectionString)
     {
+        var file = JsonSerializer.Deserialize<List<FileJsonTest>>(
+            dri.FilesJson, new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase })
+            .SingleOrDefault();
         var metadataRef = "Metadata reference asset";
         var data = $"""
-            insert into dufile(DELIVERABLEUNITREF, DMETADATAREF, CATALOGUEREFERENCE, Code) values('{dri.Id}', '{metadataRef}', '{dri.Reference}','{Series}');
+            insert into dufile(DELIVERABLEUNITREF, DMETADATAREF, CATALOGUEREFERENCE, Code, FILEREF, FILELOCATION, NAME)
+                values('{dri.Id}', '{metadataRef}', '{dri.Reference}', '{Series}', '{file.Id}', '{file.Location}','{file.Name}');
             insert into xmlmetadata(METADATAREF, XMLCLOB) values('{metadataRef}', '{dri.Xml}');
         """;
 
@@ -125,4 +130,6 @@ public sealed class SqlExporterTest
         using var commandData = new SqliteCommand(data, connection);
         commandData.ExecuteNonQuery();
     }
+
+    private record FileJsonTest(string Id, string Location, string Name);
 }
