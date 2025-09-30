@@ -19,7 +19,6 @@ public class CacheClient : ICacheClient
     private readonly string languageSparql;
     private readonly string formalBodySparql;
     private readonly string copyrightSparql;
-    private readonly string variationByAssetAndVariationNameSparql;
     private readonly string courtCaseByCaseAndAssetSparql;
     private readonly string inquiryAppearanceByWitnessAndDescriptionSparql;
     private readonly string geographicalPlaceSparql;
@@ -54,7 +53,6 @@ public class CacheClient : ICacheClient
         languageSparql = embedded.GetSparql("GetLanguage");
         formalBodySparql = embedded.GetSparql("GetFormalBody");
         copyrightSparql = embedded.GetSparql("GetCopyright");
-        variationByAssetAndVariationNameSparql = embedded.GetSparql("GetVariationByAssetAndVariationName");
         courtCaseByCaseAndAssetSparql = embedded.GetSparql("GetCourtCaseByCaseAndAsset");
         inquiryAppearanceByWitnessAndDescriptionSparql = embedded.GetSparql("GetInquiryAppearanceByWitnessAndDescription");
         geographicalPlaceSparql = embedded.GetSparql("GetGeographicalPlace");
@@ -181,7 +179,6 @@ public class CacheClient : ICacheClient
         CacheEntityKind.Language => new(languageSparql, $"language-{key}"),
         CacheEntityKind.FormalBody => new(formalBodySparql, $"formal-body-{key}"),
         CacheEntityKind.Copyright => new(copyrightSparql, $"copyright-{key}"),
-        CacheEntityKind.VariationByAssetAndVariationName => new(variationByAssetAndVariationNameSparql, $"variation-{key}"),
         CacheEntityKind.CourtCaseByCaseAndAsset => new(courtCaseByCaseAndAssetSparql, $"court-case-{key}"),
         CacheEntityKind.InquiryAppearanceByWitnessAndDescription => new(inquiryAppearanceByWitnessAndDescriptionSparql, $"inquiry-appearance-{key}"),
         CacheEntityKind.GeographicalPlace => new(geographicalPlaceSparql, $"geographical-place-{key}"),

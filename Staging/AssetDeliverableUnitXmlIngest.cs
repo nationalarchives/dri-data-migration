@@ -1,6 +1,7 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
+using System.Text.Json;
 using System.Web;
 using System.Xml;
 using VDS.RDF;
@@ -16,9 +17,14 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
     private readonly DimensionParser dimensionParser = new(logger);
     private readonly DateParser dateParser = new(logger);
     private readonly RdfXmlLoader rdfXmlLoader = new(logger);
+    private readonly JsonSerializerOptions jsonSerializerOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
 
     public async Task ExtractXmlData(IGraph graph, IGraph existing,
-        IUriNode id, string xml, string assetReference, CancellationToken cancellationToken)
+        IUriNode id, string xml, string assetReference, string filesJson,
+        CancellationToken cancellationToken)
     {
         var doc = new XmlDocument();
         doc.LoadXml(xml);
@@ -73,7 +79,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             [IngestVocabulary.EndImageNumber] = Vocabulary.ImageSequenceEnd
         });
 
-        await AddVariationRelations(graph, rdf, id, doc, cancellationToken);
+        await AddVariationRelations(graph, rdf, id, doc, filesJson, cancellationToken);
         AddFilmDuration(graph, rdf, id);
         AddWebArchive(graph, rdf, id);
         await AddCourtCasesAsync(graph, rdf, id, assetReference, cancellationToken);
@@ -103,7 +109,8 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         await AddSeal(graph, rdf, existing, id, cancellationToken);
     }
 
-    private async Task AddVariationRelations(IGraph graph, IGraph rdf, IUriNode id, XmlDocument doc, CancellationToken cancellationToken)
+    private async Task AddVariationRelations(IGraph graph, IGraph rdf, IUriNode id,
+        XmlDocument doc, string filesJson, CancellationToken cancellationToken)
     {
         var redacted = rdf.GetTriplesWithPredicate(IngestVocabulary.HasRedactedFile).Select(t => t.Object).Cast<ILiteralNode>();
         if (redacted.Any())
@@ -111,10 +118,18 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             var namespaceManager = new XmlNamespaceManager(doc.NameTable);
             namespaceManager.AddNamespace("tna", IngestVocabulary.TnaNamespace.ToString());
             var xmlRedactedFiles = doc.SelectNodes("descendant::tna:hasRedactedFile", namespaceManager);
+            var files = JsonSerializer.Deserialize<List<RelationVariation>>(filesJson, jsonSerializerOptions);
             foreach (var redactedFile in redacted)
             {
-                var variationName = GetPartialPath(HttpUtility.UrlDecode(redactedFile.Value));
-                var redactedVariation = await cacheClient.CacheFetch(CacheEntityKind.VariationByAssetAndVariationName, [id.Uri.ToString(), variationName], cancellationToken);
+                var decodedPath = HttpUtility.UrlDecode(redactedFile.Value);
+                var variationName = GetPartialPath(decodedPath);
+                var variationId = files?.SingleOrDefault(f => f.Name == variationName &&
+                    (decodedPath.Contains($"{f.Location}/") || decodedPath.Contains($"{f.UnderscoredLocation}/")))?.Id;
+                IUriNode? redactedVariation = null;
+                if (variationId is not null)
+                {
+                    redactedVariation = await cacheClient.CacheFetch(CacheEntityKind.Variation, variationId, cancellationToken);
+                }
                 if (redactedVariation is not null)
                 {
                     graph.Assert(id, Vocabulary.AssetHasVariation, redactedVariation);
@@ -527,4 +542,9 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
     }
 
     private static string GetPartialPath(string path) => path.Substring(path.LastIndexOf('/') + 1);
+
+    private record RelationVariation(string Id, string Location, string Name)
+    {
+        internal string UnderscoredLocation = Location.Replace(' ', '_');
+    }
 }

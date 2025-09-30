@@ -51,15 +51,20 @@ public class SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> opti
     join deliverableunitmanifestation dm on dm.MANIFESTATIONREF = m.MANIFESTATIONREF
     join tempdu d on d.DELIVERABLEUNITREF = dm.DELIVERABLEUNITREF
     where f.DELETED = 'F' and f.EXTANT = 'T' and f.DIRECTORY = 'F' and
-        dm.DELETED = 'F' and dm.ACTIVE='T' and (dm.ORIGINALITY = 'T' or d.Code != 'WO 409');
+        dm.DELETED = 'F' and (dm.ORIGINALITY = 'T' or d.Code != 'WO 409');
 
     create index dufile_ix on dufile (Code)
+    create index dufile_ix2 on dufile (DELIVERABLEUNITREF)
      */
     private readonly DriSettings settings = options.Value;
     private readonly string duXmlSql = """
-        select distinct d.DELIVERABLEUNITREF, d.CATALOGUEREFERENCE, x.XMLCLOB from dufile d
+        select d.DELIVERABLEUNITREF, d.CATALOGUEREFERENCE, x.XMLCLOB,
+            concat('[',group_concat(distinct json_object('id', f.FILEREF, 'location', f.FILELOCATION, 'name', f.NAME )),']') as files
+        from dufile d
         join xmlmetadata x on x.METADATAREF = d.DMETADATAREF
+        join dufile f on f.DELIVERABLEUNITREF = d.DELIVERABLEUNITREF
         where d.Code = $code
+        group by d.DELIVERABLEUNITREF, d.CATALOGUEREFERENCE, x.XMLCLOB
         order by d.rowid
         limit $limit offset $offset
         """;
@@ -96,7 +101,8 @@ public class SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> opti
         while (reader.Read())
         {
             yield return new DriAssetDeliverableUnit(
-                reader.GetString("DELIVERABLEUNITREF"), reader.GetString("CATALOGUEREFERENCE"), reader.GetString("XMLCLOB"));
+                reader.GetString("DELIVERABLEUNITREF"), reader.GetString("CATALOGUEREFERENCE"),
+                reader.GetString("XMLCLOB"), reader.GetString("files"));
         }
     }
 
