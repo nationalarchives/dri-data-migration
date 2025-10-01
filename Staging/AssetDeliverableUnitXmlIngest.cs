@@ -14,9 +14,9 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
 {
     public readonly HashSet<string> Predicates = [];
     private readonly GraphAssert assert = new(logger, cacheClient);
-    private readonly DimensionParser dimensionParser = new(logger);
-    private readonly DateParser dateParser = new(logger);
     private readonly RdfXmlLoader rdfXmlLoader = new(logger);
+    private readonly AssetDeliverableUnitOriginDateIngest dateIngest = new(logger);
+    private readonly AssetDeliverableUnitSealIngest sealIngest = new(logger, cacheClient);
     private readonly JsonSerializerOptions jsonSerializerOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
@@ -84,7 +84,8 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         AddWebArchive(graph, rdf, id);
         await AddCourtCasesAsync(graph, rdf, id, assetReference, cancellationToken);
         await AddWitnessAsync(graph, rdf, id, cancellationToken);
-        AddOriginDates(graph, rdf, id, existing);
+
+        dateIngest.AddOriginDates(graph, rdf, id, existing);
 
         await assert.ExistingOrNewWithRelationshipAsync(graph, id, rdf, IngestVocabulary.Language, CacheEntityKind.Language,
             Vocabulary.AssetHasLanguage, Vocabulary.LanguageName, cancellationToken);
@@ -106,7 +107,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
 
         await AddCopyrightAsync(graph, rdf, id, cancellationToken);
         AddLegalStatus(graph, rdf, id);
-        await AddSeal(graph, rdf, existing, id, cancellationToken);
+        await sealIngest.AddSealAsync(graph, rdf, existing, id, cancellationToken);
     }
 
     private async Task AddVariationRelations(IGraph graph, IGraph rdf, IUriNode id,
@@ -181,81 +182,6 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         if (foundWebArchive is ILiteralNode webArchiveNode && !string.IsNullOrWhiteSpace(webArchiveNode.Value))
         {
             graph.Assert(id, Vocabulary.AssetHasUkGovernmentWebArchive, new UriNode(new Uri(webArchiveNode.AsValuedNode().AsString())));
-        }
-    }
-
-    private void AddOriginDates(IGraph graph, IGraph rdf, INode id, IGraph existing)
-    {
-        var foundCoverage = rdf.GetTriplesWithPredicate(IngestVocabulary.Coverage).FirstOrDefault()?.Object;
-        var startNode = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateStart).SingleOrDefault()?.Object ??
-            existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginApproximateDateStart).SingleOrDefault()?.Object ??
-            CacheClient.NewId;
-        var endNode = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateEnd).SingleOrDefault()?.Object ??
-            existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginApproximateDateEnd).SingleOrDefault()?.Object ??
-            CacheClient.NewId;
-        if (foundCoverage is not null)
-        {
-            var start = rdf.GetTriplesWithSubjectPredicate(foundCoverage, IngestVocabulary.StartDate).FirstOrDefault()?.Object as ILiteralNode;
-            if (start is not null && string.IsNullOrWhiteSpace(start.Value))
-            {
-                start = rdf.GetTriplesWithSubjectPredicate(foundCoverage, IngestVocabulary.FullDate).FirstOrDefault()?.Object as ILiteralNode;
-            }
-            if (start is not null && !string.IsNullOrWhiteSpace(start.Value))
-            {
-                var startYmd = dateParser.ParseDate(start.Value);
-                if (startYmd.DateKind == DateParser.DateType.Date)
-                {
-                    graph.Assert(id, Vocabulary.AssetHasOriginDateStart, startNode);
-                    GraphAssert.YearMonthDay(graph, startNode, startYmd.Year, startYmd.Month, startYmd.Day);
-                    var end = rdf.GetTriplesWithSubjectPredicate(foundCoverage, IngestVocabulary.EndDate).FirstOrDefault()?.Object as ILiteralNode;
-                    if (end is not null && string.IsNullOrWhiteSpace(end.Value))
-                    {
-                        end = rdf.GetTriplesWithSubjectPredicate(foundCoverage, IngestVocabulary.FullDate).FirstOrDefault()?.Object as ILiteralNode;
-                    }
-                    if (end is not null && !string.IsNullOrWhiteSpace(end.Value))
-                    {
-                        var endYmd = dateParser.ParseDate(end.Value);
-                        if (endYmd.DateKind == DateParser.DateType.Date)
-                        {
-                            graph.Assert(id, Vocabulary.AssetHasOriginDateEnd, endNode);
-                            GraphAssert.YearMonthDay(graph, endNode, endYmd.Year, endYmd.Month, endYmd.Day);
-                        }
-                    }
-                }
-                else if (startYmd.DateKind == DateParser.DateType.Approximate)
-                {
-                    graph.Assert(id, Vocabulary.AssetHasOriginApproximateDateStart, startNode);
-                    GraphAssert.YearMonthDay(graph, startNode, startYmd.Year, startYmd.Month, startYmd.Day);
-                    var end = rdf.GetTriplesWithSubjectPredicate(foundCoverage, IngestVocabulary.EndDate).FirstOrDefault()?.Object as ILiteralNode;
-                    if (end is not null && !string.IsNullOrWhiteSpace(end.Value))
-                    {
-                        var endYmd = dateParser.ParseDate(end.Value);
-                        if (endYmd.DateKind == DateParser.DateType.Approximate)
-                        {
-                            graph.Assert(id, Vocabulary.AssetHasOriginApproximateDateEnd, endNode);
-                            GraphAssert.YearMonthDay(graph, endNode, endYmd.Year, endYmd.Month, endYmd.Day);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                var dateRangeNode = rdf.GetTriplesWithSubjectPredicate(foundCoverage, IngestVocabulary.DateRange).FirstOrDefault()?.Object as ILiteralNode;
-                if (dateRangeNode is not null && !string.IsNullOrWhiteSpace(dateRangeNode.Value))
-                {
-                    var yearRange = dateParser.ParseDateRange(null, dateRangeNode.Value);
-                    if (yearRange.DateRangeKind == DateParser.DateRangeType.Date)
-                    {
-                        graph.Assert(id, Vocabulary.AssetHasOriginDateStart, startNode);
-                        GraphAssert.YearMonthDay(graph, startNode, yearRange.FirstYear, yearRange.FirstMonth, yearRange.FirstDay);
-                        if (yearRange.SecondYear.HasValue)
-                        {
-                            graph.Assert(id, Vocabulary.AssetHasOriginDateEnd, endNode);
-                            GraphAssert.YearMonthDay(graph, endNode, yearRange.SecondYear, yearRange.SecondMonth, yearRange.SecondDay);
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -338,163 +264,6 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         }
 
         return null;
-    }
-
-    private async Task AddSeal(IGraph graph, IGraph rdf, IGraph existing, INode id, CancellationToken cancellationToken)
-    {
-        await assert.ExistingOrNewWithRelationshipAsync(graph, id, rdf, IngestVocabulary.TypeOfSeal, CacheEntityKind.SealCategory,
-            Vocabulary.SealAssetHasSealCategory, Vocabulary.SealCategoryName, cancellationToken);
-
-        var obverseOrReverse = rdf.GetTriplesWithPredicate(IngestVocabulary.Face).SingleOrDefault()?.Object as ILiteralNode;
-
-        var dateNode = rdf.GetTriplesWithPredicate(IngestVocabulary.DateOfOriginalSeal).FirstOrDefault()?.Object as ILiteralNode;
-        if (dateNode is not null && !string.IsNullOrWhiteSpace(dateNode.Value))
-        {
-            var range = dateParser.ParseDateRange(obverseOrReverse?.Value, dateNode.Value);
-            if (range.DateRangeKind == DateParser.DateRangeType.Date)
-            {
-                var startNode = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SealAssetHasStartDate).SingleOrDefault()?.Object ??
-                    CacheClient.NewId;
-                graph.Assert(id, Vocabulary.SealAssetHasStartDate, startNode);
-                GraphAssert.YearMonthDay(graph, startNode, range.FirstYear, range.FirstMonth, range.FirstDay);
-                if (range.SecondYear.HasValue)
-                {
-                    var endNode = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SealAssetHasEndDate).SingleOrDefault()?.Object ??
-                        CacheClient.NewId;
-                    graph.Assert(id, Vocabulary.SealAssetHasEndDate, endNode);
-                    GraphAssert.YearMonthDay(graph, endNode, range.SecondYear, range.SecondMonth, range.SecondDay);
-                }
-            }
-            else if (range.DateRangeKind == DateParser.DateRangeType.IdenticalObverseAndReverse)
-            {
-                var startObverseNode = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SealAssetHasObverseStartDate).SingleOrDefault()?.Object ??
-                    CacheClient.NewId;
-                graph.Assert(id, Vocabulary.SealAssetHasObverseStartDate, startObverseNode);
-                GraphAssert.YearMonthDay(graph, startObverseNode, range.FirstYear, range.FirstMonth, range.FirstDay);
-                var startReverseNode = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SealAssetHasReverseStartDate).SingleOrDefault()?.Object ??
-                    CacheClient.NewId;
-                graph.Assert(id, Vocabulary.SealAssetHasReverseStartDate, startReverseNode);
-                GraphAssert.YearMonthDay(graph, startReverseNode, range.FirstYear, range.FirstMonth, range.FirstDay);
-                if (range.SecondYear.HasValue)
-                {
-                    var endObverseNode = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SealAssetHasObverseEndDate).SingleOrDefault()?.Object ??
-                        CacheClient.NewId;
-                    graph.Assert(id, Vocabulary.SealAssetHasObverseEndDate, endObverseNode);
-                    GraphAssert.YearMonthDay(graph, endObverseNode, range.SecondYear, range.SecondMonth, range.SecondDay);
-                    var endReverseNode = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SealAssetHasReverseEndDate).SingleOrDefault()?.Object ??
-                        CacheClient.NewId;
-                    graph.Assert(id, Vocabulary.SealAssetHasReverseEndDate, endReverseNode);
-                    GraphAssert.YearMonthDay(graph, endReverseNode, range.SecondYear, range.SecondMonth, range.SecondDay);
-                }
-            }
-            else if (range.DateRangeKind == DateParser.DateRangeType.Obverse)
-            {
-                var startObverseNode = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SealAssetHasObverseStartDate).SingleOrDefault()?.Object ??
-                    CacheClient.NewId;
-                graph.Assert(id, Vocabulary.SealAssetHasObverseStartDate, startObverseNode);
-                GraphAssert.YearMonthDay(graph, startObverseNode, range.FirstYear, range.FirstMonth, range.FirstDay);
-                if (range.SecondYear.HasValue)
-                {
-                    var endObverseNode = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SealAssetHasObverseEndDate).SingleOrDefault()?.Object ??
-                        CacheClient.NewId;
-                    graph.Assert(id, Vocabulary.SealAssetHasObverseEndDate, endObverseNode);
-                    GraphAssert.YearMonthDay(graph, endObverseNode, range.SecondYear, range.SecondMonth, range.SecondDay);
-                }
-            }
-            else if (range.DateRangeKind == DateParser.DateRangeType.Reverse)
-            {
-                var startReverseNode = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SealAssetHasReverseStartDate).SingleOrDefault()?.Object ??
-                    CacheClient.NewId;
-                graph.Assert(id, Vocabulary.SealAssetHasReverseStartDate, startReverseNode);
-                GraphAssert.YearMonthDay(graph, startReverseNode, range.FirstYear, range.FirstMonth, range.FirstDay);
-                if (range.SecondYear.HasValue)
-                {
-                    var endReverseNode = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SealAssetHasReverseEndDate).SingleOrDefault()?.Object ??
-                        CacheClient.NewId;
-                    graph.Assert(id, Vocabulary.SealAssetHasReverseEndDate, endReverseNode);
-                    GraphAssert.YearMonthDay(graph, endReverseNode, range.SecondYear, range.SecondMonth, range.SecondDay);
-                }
-            }
-        }
-        var dimensionNode = rdf.GetTriplesWithPredicate(IngestVocabulary.Dimensions).SingleOrDefault()?.Object as ILiteralNode;
-        if (dimensionNode is not null && !string.IsNullOrWhiteSpace(dimensionNode.Value))
-        {
-            var dimension = dimensionParser.ParseCentimetre(obverseOrReverse?.Value, dimensionNode.Value);
-
-            if (dimension.DimensionKind == DimensionParser.DimensionType.Fragment)
-            {
-                graph.Assert(id, Vocabulary.AssetHasDimension, Vocabulary.FragmentDimension);
-            }
-            else if (dimension.DimensionKind == DimensionParser.DimensionType.ObverseFragment)
-            {
-                graph.Assert(id, Vocabulary.SealAssetHasObverseDimension, Vocabulary.FragmentDimension);
-            }
-            else if (dimension.DimensionKind == DimensionParser.DimensionType.ReverseFragment)
-            {
-                graph.Assert(id, Vocabulary.SealAssetHasReverseDimension, Vocabulary.FragmentDimension);
-            }
-            else if (dimension.DimensionKind == DimensionParser.DimensionType.ObverseAndReverseFragment)
-            {
-                graph.Assert(id, Vocabulary.SealAssetHasObverseDimension, Vocabulary.FragmentDimension);
-                graph.Assert(id, Vocabulary.SealAssetHasReverseDimension, Vocabulary.FragmentDimension);
-            }
-            else if (dimension.DimensionKind == DimensionParser.DimensionType.Obverse)
-            {
-                var sealAssetHasObverseDimension = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SealAssetHasObverseDimension).SingleOrDefault()?.Object ??
-                    CacheClient.NewId;
-                graph.Assert(id, Vocabulary.SealAssetHasObverseDimension, sealAssetHasObverseDimension);
-                GraphAssert.Integer(graph, sealAssetHasObverseDimension, dimension.FirstMm, Vocabulary.FirstDimensionMillimetre);
-                GraphAssert.Integer(graph, sealAssetHasObverseDimension, dimension.SecondMm, Vocabulary.SecondDimensionMillimetre);
-            }
-            else if (dimension.DimensionKind == DimensionParser.DimensionType.Reverse)
-            {
-                var sealAssetHasReverseDimension = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SealAssetHasReverseDimension).SingleOrDefault()?.Object ??
-                    CacheClient.NewId;
-                graph.Assert(id, Vocabulary.SealAssetHasReverseDimension, sealAssetHasReverseDimension);
-                GraphAssert.Integer(graph, sealAssetHasReverseDimension, dimension.FirstMm, Vocabulary.FirstDimensionMillimetre);
-                GraphAssert.Integer(graph, sealAssetHasReverseDimension, dimension.SecondMm, Vocabulary.SecondDimensionMillimetre);
-            }
-            else if (dimension.DimensionKind == DimensionParser.DimensionType.Dimension)
-            {
-                var assetHasDimension = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasDimension).SingleOrDefault()?.Object ??
-                    CacheClient.NewId;
-                graph.Assert(id, Vocabulary.AssetHasDimension, assetHasDimension);
-                GraphAssert.Integer(graph, assetHasDimension, dimension.FirstMm, Vocabulary.FirstDimensionMillimetre);
-                GraphAssert.Integer(graph, assetHasDimension, dimension.SecondMm, Vocabulary.SecondDimensionMillimetre);
-            }
-            else if (dimension.DimensionKind == DimensionParser.DimensionType.FragmentObverseSecondReverse)
-            {
-                var sealAssetHasReverseDimension = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SealAssetHasReverseDimension).SingleOrDefault()?.Object ??
-                    CacheClient.NewId;
-                graph.Assert(id, Vocabulary.SealAssetHasObverseDimension, Vocabulary.FragmentDimension);
-                graph.Assert(id, Vocabulary.SealAssetHasReverseDimension, sealAssetHasReverseDimension);
-                GraphAssert.Integer(graph, sealAssetHasReverseDimension, dimension.SecondFirstMm, Vocabulary.FirstDimensionMillimetre);
-                GraphAssert.Integer(graph, sealAssetHasReverseDimension, dimension.SecondSecondMm, Vocabulary.SecondDimensionMillimetre);
-            }
-            else if (dimension.DimensionKind == DimensionParser.DimensionType.FirstObverseFragmentReverse)
-            {
-                var sealAssetHasObverseDimension = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SealAssetHasObverseDimension).SingleOrDefault()?.Object ??
-                    CacheClient.NewId;
-                graph.Assert(id, Vocabulary.SealAssetHasObverseDimension, sealAssetHasObverseDimension);
-                GraphAssert.Integer(graph, sealAssetHasObverseDimension, dimension.FirstMm, Vocabulary.FirstDimensionMillimetre);
-                GraphAssert.Integer(graph, sealAssetHasObverseDimension, dimension.SecondMm, Vocabulary.SecondDimensionMillimetre);
-                graph.Assert(id, Vocabulary.SealAssetHasReverseDimension, Vocabulary.FragmentDimension);
-            }
-            else if (dimension.DimensionKind == DimensionParser.DimensionType.IdenticalObverseAndReverse ||
-                dimension.DimensionKind == DimensionParser.DimensionType.FirstObverseSecondReverse)
-            {
-                var sealAssetHasObverseDimension = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SealAssetHasObverseDimension).SingleOrDefault()?.Object ??
-                    CacheClient.NewId;
-                var sealAssetHasReverseDimension = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SealAssetHasReverseDimension).SingleOrDefault()?.Object ??
-                    CacheClient.NewId;
-                graph.Assert(id, Vocabulary.SealAssetHasObverseDimension, sealAssetHasObverseDimension);
-                GraphAssert.Integer(graph, sealAssetHasObverseDimension, dimension.FirstMm, Vocabulary.FirstDimensionMillimetre);
-                GraphAssert.Integer(graph, sealAssetHasObverseDimension, dimension.SecondMm, Vocabulary.SecondDimensionMillimetre);
-                graph.Assert(id, Vocabulary.SealAssetHasReverseDimension, sealAssetHasReverseDimension);
-                GraphAssert.Integer(graph, sealAssetHasReverseDimension, dimension.SecondFirstMm, Vocabulary.FirstDimensionMillimetre);
-                GraphAssert.Integer(graph, sealAssetHasReverseDimension, dimension.SecondSecondMm, Vocabulary.SecondDimensionMillimetre);
-            }
-        }
     }
 
     private async Task AddCopyrightAsync(IGraph graph, IGraph rdf, INode id, CancellationToken cancellationToken)
