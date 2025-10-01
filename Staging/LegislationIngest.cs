@@ -4,8 +4,8 @@ using VDS.RDF;
 
 namespace Staging;
 
-public class LegislationIngest(ISparqlClient sparqlClient, ILogger<LegislationIngest> logger, ICacheClient cacheClient)
-    : StagingIngest<DriLegislation>(sparqlClient, logger, cacheClient, "LegislationGraph")
+public class LegislationIngest(ISparqlClient sparqlClient, ILogger<LegislationIngest> logger) :
+    StagingIngest<DriLegislation>(sparqlClient, logger, "LegislationGraph")
 {
     internal override Task<Graph?> BuildAsync(IGraph existing, DriLegislation dri, CancellationToken cancellationToken)
     {

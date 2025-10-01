@@ -1,13 +1,12 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
-using System.Text;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 
 namespace Staging;
 
-public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<VariationFileIngest> logger)
-    : StagingIngest<DriVariationFile>(sparqlClient, logger, cacheClient, "VariationFileGraph")
+public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<VariationFileIngest> logger) :
+    StagingIngest<DriVariationFile>(sparqlClient, logger, "VariationFileGraph")
 {
     private readonly VariationFileXmlIngest xmlIngest = new(logger, cacheClient);
 

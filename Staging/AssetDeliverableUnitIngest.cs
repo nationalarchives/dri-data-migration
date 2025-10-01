@@ -5,7 +5,8 @@ using VDS.RDF;
 namespace Staging;
 
 public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient sparqlClient,
-    ILogger<AssetDeliverableUnitIngest> logger) : StagingIngest<DriAssetDeliverableUnit>(sparqlClient, logger, cacheClient, "AssetDeliverableUnitGraph")
+    ILogger<AssetDeliverableUnitIngest> logger) :
+    StagingIngest<DriAssetDeliverableUnit>(sparqlClient, logger, "AssetDeliverableUnitGraph")
 {
     private readonly AssetDeliverableUnitXmlIngest xmlIngest = new(logger, cacheClient);
 

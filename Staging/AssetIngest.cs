@@ -4,8 +4,8 @@ using VDS.RDF;
 
 namespace Staging;
 
-public class AssetIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<AssetIngest> logger)
-    : StagingIngest<DriAsset>(sparqlClient, logger, cacheClient, "AssetGraph")
+public class AssetIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<AssetIngest> logger) :
+    StagingIngest<DriAsset>(sparqlClient, logger, "AssetGraph")
 {
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriAsset dri, CancellationToken cancellationToken)
     {
