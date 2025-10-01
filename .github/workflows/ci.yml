@@ -38,3 +38,8 @@ jobs:
         run: |
             cd Tests
             dotnet run --no-restore --project "Rdf.Tests" --configuration Release
+
+      - name: Test Staging
+        run: |
+            cd Tests
+            dotnet run --no-restore --project "Staging.Tests" --configuration Release
