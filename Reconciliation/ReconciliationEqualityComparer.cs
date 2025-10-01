@@ -1,6 +1,4 @@
-﻿using Api;
-
-namespace Reconciliation;
+﻿namespace Reconciliation;
 
 internal static class ReconciliationEqualityComparer
 {

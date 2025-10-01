@@ -5,5 +5,5 @@ namespace Api;
 
 public interface IDataComparison
 {
-    Task<ReconciliationSummary> ReconcileAsync(CancellationToken cancellationToken);
+    Task ReconcileAsync(CancellationToken cancellationToken);
 }

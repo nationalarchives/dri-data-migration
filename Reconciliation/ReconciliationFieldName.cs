@@ -1,4 +1,4 @@
-﻿namespace Api;
+﻿namespace Reconciliation;
 
 public enum ReconciliationFieldName
 {

@@ -1,4 +1,4 @@
-﻿namespace Api;
+﻿namespace Staging;
 
 public enum CacheEntityKind
 {

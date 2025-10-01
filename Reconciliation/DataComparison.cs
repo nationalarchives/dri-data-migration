@@ -10,14 +10,14 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
     private readonly ReconciliationSettings settings = reconciliationSettings.Value;
     private const string missing = "MISSING IMPORT LOCATION";
 
-    public async Task<ReconciliationSummary> ReconcileAsync(CancellationToken cancellationToken)
+    public async Task ReconcileAsync(CancellationToken cancellationToken)
     {
         //TODO: use sensitive name in logs
         logger.ReconciliationStarted(settings.MapKind, settings.Code);
         var expected = await GetExpectedDataAsync(cancellationToken);
         logger.ReconciliationRecordCount(expected.Count);
 
-        ReconciliationSummary summary = new(0, 0, 0, 0, 0);
+        var summary = new ReconciliationSummary(0, 0, 0, 0, 0);
         List<Dictionary<ReconciliationFieldName, object>> page;
         var offset = 0;
         do
@@ -48,8 +48,6 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
         }
 
         logger.ReconciliationFinished();
-
-        return summary;
     }
 
     private async Task<List<Dictionary<ReconciliationFieldName, object>>> GetExpectedDataAsync(CancellationToken cancellationToken)
