@@ -23,7 +23,6 @@ public sealed class RdfExporterTest
         exporter = new RdfExporter(logger, options, sparqlClient.Object);
     }
 
-
     [TestMethod("Reads access conditions")]
     public async Task FetchesAccessConditions()
     {

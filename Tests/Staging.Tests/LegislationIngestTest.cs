@@ -7,10 +7,10 @@ using VDS.RDF;
 namespace Staging.Tests;
 
 [TestClass]
-public sealed class AccessConditionIngestTest
+public sealed class LegislationIngestTest
 {
-    private readonly DriAccessCondition dri = new(new Uri("http://example.com/access-condition#ac1"), "Access condition name");
-    private readonly FakeLogger<AccessConditionIngest> logger = new();
+    private readonly DriLegislation dri = new(new Uri("http://example.com/legislation1"), "Section1");
+    private readonly FakeLogger<LegislationIngest> logger = new();
     private readonly Mock<ISparqlClient> client = new();
 
     [TestInitialize]
@@ -24,7 +24,8 @@ public sealed class AccessConditionIngestTest
     {
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(new Graph());
-        var ingest = new AccessConditionIngest(client.Object, logger);
+
+        var ingest = new LegislationIngest(client.Object, logger);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 
@@ -39,12 +40,12 @@ public sealed class AccessConditionIngestTest
     {
         var existing = new Graph();
         var id = CacheClient.NewId;
-        existing.Assert(id, Vocabulary.AccessConditionCode, new LiteralNode(dri.Id));
-        existing.Assert(id, Vocabulary.AccessConditionName, new LiteralNode("Updated name"));
+        existing.Assert(id, Vocabulary.LegislationHasUkLegislation, new UriNode(dri.Link));
+        existing.Assert(id, Vocabulary.LegislationSectionReference, new LiteralNode("Updated section"));
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
-        var ingest = new AccessConditionIngest(client.Object, logger);
+        var ingest = new LegislationIngest(client.Object, logger);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 
@@ -59,12 +60,12 @@ public sealed class AccessConditionIngestTest
     {
         var existing = new Graph();
         var id = CacheClient.NewId;
-        existing.Assert(id, Vocabulary.AccessConditionCode, new LiteralNode(dri.Id));
-        existing.Assert(id, Vocabulary.AccessConditionName, new LiteralNode(dri.Name));
+        existing.Assert(id, Vocabulary.LegislationHasUkLegislation, new UriNode(dri.Link));
+        existing.Assert(id, Vocabulary.LegislationSectionReference, new LiteralNode(dri.Section));
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
-        var ingest = new AccessConditionIngest(client.Object, logger);
+        var ingest = new LegislationIngest(client.Object, logger);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 
