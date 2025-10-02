@@ -99,7 +99,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         }
         if (dri.PreviousId is not null)
         {
-            var past = await cacheClient.CacheFetchOrNew(CacheEntityKind.SensititvityReview, dri.PreviousId.ToString(), Vocabulary.SensitivityReviewDriId, cancellationToken);
+            var past = await cacheClient.CacheFetchOrNew(CacheEntityKind.SensititvityReview, dri.PreviousId, Vocabulary.SensitivityReviewDriId, cancellationToken);
             graph.Assert(id, Vocabulary.SensitivityReviewHasPastSensitivityReview, past);
         }
 
@@ -168,7 +168,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         }
         else
         {
-            var variation = await cacheClient.CacheFetch(CacheEntityKind.Variation, dri.TargetId.ToString(), cancellationToken);
+            var variation = await cacheClient.CacheFetch(CacheEntityKind.Variation, dri.TargetId, cancellationToken);
             if (variation is null)
             {
                 logger.AssociatedVariationNotFound(dri.TargetReference); //TODO: sensitive name?

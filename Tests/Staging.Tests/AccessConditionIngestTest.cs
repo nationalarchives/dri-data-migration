@@ -9,7 +9,7 @@ namespace Staging.Tests;
 [TestClass]
 public sealed class AccessConditionIngestTest
 {
-    private readonly DriAccessCondition dri = new(new Uri("http://example.com/access-condition#ac1"), "Access condition name");
+    private readonly DriAccessCondition dri = new(new("http://example.com/access-condition#ac1"), "Access condition name");
     private readonly FakeLogger<AccessConditionIngest> logger = new();
     private readonly Mock<ISparqlClient> client = new();
 
@@ -17,6 +17,12 @@ public sealed class AccessConditionIngestTest
     public void TestInitialize()
     {
         client.Reset();
+    }
+
+    [TestMethod("Id matches link fragment")]
+    public void IdCalculation()
+    {
+        dri.Id.Should().Be("ac1");
     }
 
     [TestMethod("Asserts new graph")]

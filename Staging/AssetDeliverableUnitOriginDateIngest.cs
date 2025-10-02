@@ -4,11 +4,11 @@ using VDS.RDF;
 
 namespace Staging;
 
-public class AssetDeliverableUnitOriginDateIngest(ILogger logger)
+internal class AssetDeliverableUnitOriginDateIngest(ILogger logger)
 {
     private readonly DateParser dateParser = new(logger);
 
-    public void AddOriginDates(IGraph graph, IGraph rdf, INode id, IGraph existing)
+    internal void AddOriginDates(IGraph graph, IGraph rdf, INode id, IGraph existing)
     {
         var foundCoverage = rdf.GetTriplesWithPredicate(IngestVocabulary.Coverage).FirstOrDefault()?.Object;
         var startNode = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateStart).SingleOrDefault()?.Object ??

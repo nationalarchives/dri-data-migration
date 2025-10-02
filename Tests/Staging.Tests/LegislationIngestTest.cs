@@ -9,7 +9,7 @@ namespace Staging.Tests;
 [TestClass]
 public sealed class LegislationIngestTest
 {
-    private readonly DriLegislation dri = new(new Uri("http://example.com/legislation1"), "Section1");
+    private readonly DriLegislation dri = new(new("http://example.com/legislation1"), "Section1");
     private readonly FakeLogger<LegislationIngest> logger = new();
     private readonly Mock<ISparqlClient> client = new();
 
@@ -17,6 +17,12 @@ public sealed class LegislationIngestTest
     public void TestInitialize()
     {
         client.Reset();
+    }
+
+    [TestMethod("Id matches link")]
+    public void IdCalculation()
+    {
+        dri.Id.Should().Be(dri.Link.ToString());
     }
 
     [TestMethod("Asserts new graph")]

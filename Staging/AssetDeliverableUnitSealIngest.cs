@@ -4,13 +4,13 @@ using VDS.RDF;
 
 namespace Staging;
 
-public class AssetDeliverableUnitSealIngest(ILogger logger, ICacheClient cacheClient)
+internal class AssetDeliverableUnitSealIngest(ILogger logger, ICacheClient cacheClient)
 {
     private readonly GraphAssert assert = new(logger, cacheClient);
     private readonly DimensionParser dimensionParser = new(logger);
     private readonly DateParser dateParser = new(logger);
 
-    public async Task AddSealAsync(IGraph graph, IGraph rdf, IGraph existing, INode id, CancellationToken cancellationToken)
+    internal async Task AddSealAsync(IGraph graph, IGraph rdf, IGraph existing, INode id, CancellationToken cancellationToken)
     {
         await assert.ExistingOrNewWithRelationshipAsync(graph, id, rdf, IngestVocabulary.TypeOfSeal, CacheEntityKind.SealCategory,
             Vocabulary.SealAssetHasSealCategory, Vocabulary.SealCategoryName, cancellationToken);

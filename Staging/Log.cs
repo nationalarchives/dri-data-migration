@@ -95,7 +95,7 @@ internal static partial class Log
     [LoggerMessage(EventId = 30, Level = LogLevel.Warning, Message = "Invalid {integer} integer value")]
     internal static partial void InvalidIntegerValue(this ILogger logger, string integer);
 
-    [LoggerMessage(EventId = 31, Level = LogLevel.Debug, Message = "Malformed RDF: {e}")]
+    [LoggerMessage(EventId = 31, Level = LogLevel.Debug, Message = "Malformed RDF")]
     internal static partial void MalformedRdf(this ILogger logger, RdfParseException e);
 
     [LoggerMessage(EventId = 32, Level = LogLevel.Warning, Message = "Unable to load RDF: {message}")]

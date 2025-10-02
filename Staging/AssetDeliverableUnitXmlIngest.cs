@@ -124,8 +124,8 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             {
                 var decodedPath = HttpUtility.UrlDecode(redactedFile.Value);
                 var variationName = GetPartialPath(decodedPath);
-                var variationId = files?.SingleOrDefault(f => f.Name == variationName &&
-                    (decodedPath.Contains($"{f.Location}/") || decodedPath.Contains($"{f.UnderscoredLocation}/")))?.Id;
+                var variationId = files?.SingleOrDefault(f =>
+                    f.Name == variationName && HasPathPartialMatch(decodedPath, f.Location))?.Id;
                 IUriNode? redactedVariation = null;
                 if (variationId is not null)
                 {
@@ -312,8 +312,13 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
 
     private static string GetPartialPath(string path) => path.Substring(path.LastIndexOf('/') + 1);
 
-    private record RelationVariation(string Id, string Location, string Name)
+    private record RelationVariation(string Id, string Location, string Name);
+
+    private bool HasPathPartialMatch(string fullPath, string partialPath)
     {
-        internal string UnderscoredLocation = Location.Replace(' ', '_');
+        var fullPathSegemnts = fullPath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+        return partialPath.Split('/', StringSplitOptions.RemoveEmptyEntries).All(p =>
+            fullPathSegemnts.Contains(p) || fullPathSegemnts.Contains(p.Replace(' ', '_')));
     }
 }

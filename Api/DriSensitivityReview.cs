@@ -12,5 +12,5 @@ public record DriSensitivityReview(Uri Link, string TargetReference, Uri TargetL
 {
     public string Id => Link.Segments.Last();
     public string TargetId => TargetLink.Segments.Last();
-    public string PreviousId => PreviousLink?.Segments.Last();
+    public string? PreviousId => PreviousLink?.Segments.Last();
 }

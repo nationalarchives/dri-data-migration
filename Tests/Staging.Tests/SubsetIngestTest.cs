@@ -7,11 +7,21 @@ using VDS.RDF;
 namespace Staging.Tests;
 
 [TestClass]
-public sealed class GroundForRetentionIngestTest
+public sealed class SubsetIngestTest
 {
-    private readonly DriGroundForRetention dri = new("Ground for retention label", "Ground for retention comment");
-    private readonly FakeLogger<GroundForRetentionIngest> logger = new();
+    private readonly DriSubset dri = new("Subset1", "/subset1", "Subset parent");
+    private readonly FakeLogger<SubsetIngest> logger = new();
     private readonly Mock<ISparqlClient> client = new();
+    private readonly Mock<ICacheClient> cache;
+    private readonly IUriNode broaderSubset = CacheClient.NewId;
+
+    public SubsetIngestTest()
+    {
+        cache = new();
+        cache.Setup(c => c.CacheFetchOrNew(CacheEntityKind.Subset, dri.ParentReference!,
+            Vocabulary.SubsetReference, CancellationToken.None))
+            .ReturnsAsync(broaderSubset);
+    }
 
     [TestInitialize]
     public void TestInitialize()
@@ -19,10 +29,10 @@ public sealed class GroundForRetentionIngestTest
         client.Reset();
     }
 
-    [TestMethod("Id matches code")]
+    [TestMethod("Id matches reference")]
     public void IdCalculation()
     {
-        dri.Id.Should().Be(dri.Code);
+        dri.Id.Should().Be(dri.Reference);
     }
 
     [TestMethod("Asserts new graph")]
@@ -31,13 +41,13 @@ public sealed class GroundForRetentionIngestTest
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(new Graph());
 
-        var ingest = new GroundForRetentionIngest(client.Object, logger);
+        var ingest = new SubsetIngest(cache.Object, client.Object, logger);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 
         recordIngestedCount.Should().Be(1);
         client.Verify(c => c.ApplyDiffAsync(
-            It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 2 && !r.RemovedTriples.Any()),
+            It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 4 && !r.RemovedTriples.Any()),
             CancellationToken.None), Times.Once);
     }
 
@@ -46,12 +56,16 @@ public sealed class GroundForRetentionIngestTest
     {
         var existing = new Graph();
         var id = CacheClient.NewId;
-        existing.Assert(id, Vocabulary.GroundForRetentionCode, new LiteralNode(dri.Id));
-        existing.Assert(id, Vocabulary.GroundForRetentionDescription, new LiteralNode("Updated comment"));
+        existing.Assert(id, Vocabulary.SubsetReference, new LiteralNode(dri.Reference));
+        var oldBroaderSubset = CacheClient.NewId;
+        existing.Assert(id, Vocabulary.SubsetHasBroaderSubset, oldBroaderSubset);
+        var retention = CacheClient.NewId;
+        existing.Assert(id, Vocabulary.SubsetHasRetention, retention);
+        existing.Assert(retention, Vocabulary.ImportLocation, new LiteralNode(dri.Directory));
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
-        var ingest = new GroundForRetentionIngest(client.Object, logger);
+        var ingest = new SubsetIngest(cache.Object, client.Object, logger);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 
@@ -66,12 +80,15 @@ public sealed class GroundForRetentionIngestTest
     {
         var existing = new Graph();
         var id = CacheClient.NewId;
-        existing.Assert(id, Vocabulary.GroundForRetentionCode, new LiteralNode(dri.Id));
-        existing.Assert(id, Vocabulary.GroundForRetentionDescription, new LiteralNode(dri.Description));
+        existing.Assert(id, Vocabulary.SubsetReference, new LiteralNode(dri.Reference));
+        existing.Assert(id, Vocabulary.SubsetHasBroaderSubset, broaderSubset);
+        var retention = CacheClient.NewId;
+        existing.Assert(id, Vocabulary.SubsetHasRetention, retention);
+        existing.Assert(retention, Vocabulary.ImportLocation, new LiteralNode(dri.Directory));
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
-        var ingest = new GroundForRetentionIngest(client.Object, logger);
+        var ingest = new SubsetIngest(cache.Object, client.Object, logger);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 
