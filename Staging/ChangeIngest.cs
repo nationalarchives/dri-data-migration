@@ -5,7 +5,7 @@ using VDS.RDF.Nodes;
 
 namespace Staging;
 
-public class ChangeIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<SubsetIngest> logger) :
+public class ChangeIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<ChangeIngest> logger) :
     StagingIngest<DriChange>(sparqlClient, logger, "ChangeGraph")
 {
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriChange dri, CancellationToken cancellationToken)
