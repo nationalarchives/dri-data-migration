@@ -4,9 +4,9 @@ using System.Text.RegularExpressions;
 
 namespace Staging;
 
-public partial class DateParser(ILogger logger)
+internal partial class DateParser(ILogger logger)
 {
-    public YearMonthDay ParseDate(string dateText)
+    internal YearMonthDay ParseDate(string dateText)
     {
         var trimmedDate = dateText.Trim();
         if (trimmedDate.StartsWith('[') && trimmedDate.IndexOf(']') == trimmedDate.Length - 1)
@@ -33,7 +33,7 @@ public partial class DateParser(ILogger logger)
         return new YearMonthDay(DateType.None);
     }
 
-    public DateRange ParseDateRange(string? obverseOrReverseText, string dateText)
+    internal DateRange ParseDateRange(string? obverseOrReverseText, string dateText)
     {
         var trimmedDate = dateText.Trim();
         if (trimmedDate.StartsWith('[') && trimmedDate.IndexOf(']') == trimmedDate.Length - 1)
@@ -110,9 +110,9 @@ public partial class DateParser(ILogger logger)
         return new DateRange(DateRangeType.None);
     }
 
-    public record YearMonthDay(DateType DateKind, int? Year = null, int? Month = null, int? Day = null);
+    internal record YearMonthDay(DateType DateKind, int? Year = null, int? Month = null, int? Day = null);
 
-    public record DateRange(DateRangeType DateRangeKind, int? FirstYear = null, int? FirstMonth = null, int? FirstDay = null, int? SecondYear = null, int? SecondMonth = null, int? SecondDay = null);
+    internal record DateRange(DateRangeType DateRangeKind, int? FirstYear = null, int? FirstMonth = null, int? FirstDay = null, int? SecondYear = null, int? SecondMonth = null, int? SecondDay = null);
 
     [GeneratedRegex("^(?<startYear>\\d{4})-(?<endYear>\\d{4})$")]
     public static partial Regex YearRange();
@@ -151,7 +151,7 @@ public partial class DateParser(ILogger logger)
         Reverse
     }
 
-    public static bool TryParseDate(string date, out DateTimeOffset dt)
+    internal static bool TryParseDate(string date, out DateTimeOffset dt)
     {
         if (string.IsNullOrWhiteSpace(date))
         {

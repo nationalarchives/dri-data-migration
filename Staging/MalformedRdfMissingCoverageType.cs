@@ -7,7 +7,7 @@ namespace Staging;
 
 internal class MalformedRdfMissingCoverageType(ILogger logger)
 {
-    public Graph? GetRdf(XmlNode rdfNode, Graph rdf)
+    internal Graph? GetRdf(XmlNode rdfNode, Graph rdf)
     {
         try
         {

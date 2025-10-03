@@ -6,7 +6,7 @@ namespace Staging;
 
 internal class MissingRdfOldNamespace(ILogger logger)
 {
-    public XmlElement? GetRdfNode(XmlDocument doc)
+    internal XmlElement? GetRdfNode(XmlDocument doc)
     {
         try
         {

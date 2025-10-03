@@ -3,9 +3,9 @@ using System.Text.RegularExpressions;
 
 namespace Staging;
 
-public partial class DimensionParser(ILogger logger)
+internal partial class DimensionParser(ILogger logger)
 {
-    public Dimension ParseCentimetre(string? obverseOrReverseText, string dimensionText)
+    internal Dimension ParseCentimetre(string? obverseOrReverseText, string dimensionText)
     {
         var trimmedDimension = dimensionText.Trim();
         if (trimmedDimension == "Fragment")
@@ -234,7 +234,7 @@ public partial class DimensionParser(ILogger logger)
         return new Dimension(dimensionType, g1.FirstMm, g2.FirstMm);
     }
 
-    public enum DimensionType
+    internal enum DimensionType
     {
         None,
         Dimension,

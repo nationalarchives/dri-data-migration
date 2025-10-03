@@ -5,12 +5,12 @@ using VDS.RDF.Parsing;
 
 namespace Staging;
 
-public class RdfXmlLoader(ILogger logger)
+internal class RdfXmlLoader(ILogger logger)
 {
     private MissingRdfOldNamespace missingRdfOldNamespace = new(logger);
     private MalformedRdfMissingCoverageType malformedRdfMissingCoverageType = new(logger);
 
-    public IGraph? GetRdf(string xml)
+    internal IGraph? GetRdf(string xml)
     {
         var doc = new XmlDocument();
         doc.LoadXml(xml);
@@ -18,7 +18,7 @@ public class RdfXmlLoader(ILogger logger)
         return GetRdf(doc);
     }
 
-    public IGraph? GetRdf(XmlDocument doc)
+    internal IGraph? GetRdf(XmlDocument doc)
     {
         var namespaceManager = new XmlNamespaceManager(doc.NameTable);
         namespaceManager.AddNamespace("rdf", NamespaceMapper.RDF);
