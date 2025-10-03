@@ -13,7 +13,6 @@ namespace Staging;
 public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheClient)
 {
     public readonly HashSet<string> Predicates = [];
-    private readonly GraphAssert assert = new(logger, cacheClient);
     private readonly RdfXmlLoader rdfXmlLoader = new(logger);
     private readonly AssetDeliverableUnitOriginDateIngest dateIngest = new(logger);
     private readonly AssetDeliverableUnitSealIngest sealIngest = new(logger, cacheClient);
@@ -68,13 +67,13 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             [IngestVocabulary.SeparatedMaterial] = Vocabulary.AssetConnectedAssetNote,
             [IngestVocabulary.AttachmentFormerReference] = Vocabulary.EmailAttachmentReference
         });
-        assert.Date(graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
+        GraphAssert.Date(logger, graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
         {
             [IngestVocabulary.Session_date] = Vocabulary.CourtSessionDate,
             [IngestVocabulary.Hearing_date] = Vocabulary.InquiryHearingDate
         });
         GraphAssert.MultiText(graph, id, rdf, IngestVocabulary.Title, Vocabulary.AssetName);
-        assert.Integer(graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
+        GraphAssert.Integer(logger, graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
         {
             [IngestVocabulary.StartImageNumber] = Vocabulary.ImageSequenceStart,
             [IngestVocabulary.EndImageNumber] = Vocabulary.ImageSequenceEnd
@@ -88,22 +87,27 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
 
         dateIngest.AddOriginDates(graph, rdf, id, existing);
 
-        await assert.ExistingOrNewWithRelationshipAsync(graph, id, rdf, IngestVocabulary.Language, CacheEntityKind.Language,
-            Vocabulary.AssetHasLanguage, Vocabulary.LanguageName, cancellationToken);
+        await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, id, rdf,
+            IngestVocabulary.Language, CacheEntityKind.Language, Vocabulary.AssetHasLanguage,
+            Vocabulary.LanguageName, cancellationToken);
 
-        await assert.ExistingOrNewWithRelationshipAsync(graph, id, rdf, IngestVocabulary.Counties, CacheEntityKind.GeographicalPlace,
+        await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, id, rdf,
+            IngestVocabulary.Counties, CacheEntityKind.GeographicalPlace,
             Vocabulary.AssetHasAssociatedGeographicalPlace, Vocabulary.GeographicalPlaceName, cancellationToken);
-        await assert.ExistingOrNewWithRelationshipAsync(graph, id, rdf, IngestVocabulary.County, CacheEntityKind.GeographicalPlace,
+        await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, id, rdf,
+            IngestVocabulary.County, CacheEntityKind.GeographicalPlace,
             Vocabulary.AssetHasAssociatedGeographicalPlace, Vocabulary.GeographicalPlaceName, cancellationToken);
 
         var retention = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasRetention).SingleOrDefault()?.Object ?? CacheClient.NewId;
         graph.Assert(id, Vocabulary.AssetHasRetention, retention);
-        await assert.ExistingOrNewWithRelationshipAsync(graph, retention, rdf, IngestVocabulary.HeldBy, CacheEntityKind.FormalBody,
+        await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, retention, rdf,
+            IngestVocabulary.HeldBy, CacheEntityKind.FormalBody,
             Vocabulary.RetentionHasFormalBody, Vocabulary.FormalBodyName, cancellationToken);
 
         var creation = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasCreation).SingleOrDefault()?.Object ?? CacheClient.NewId;
         graph.Assert(id, Vocabulary.AssetHasCreation, creation);
-        await assert.ExistingOrNewWithRelationshipAsync(graph, creation, rdf, IngestVocabulary.Creator, CacheEntityKind.FormalBody,
+        await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, creation, rdf,
+            IngestVocabulary.Creator, CacheEntityKind.FormalBody,
             Vocabulary.CreationHasFormalBody, Vocabulary.FormalBodyName, cancellationToken);
 
         await AddCopyrightAsync(graph, rdf, id, cancellationToken);
@@ -238,7 +242,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
                 [new UriNode(new($"{IngestVocabulary.TnaNamespace}case_summary_{caseIndex}_judgment"))] = Vocabulary.CourtCaseSummaryJudgment,
                 [new UriNode(new($"{IngestVocabulary.TnaNamespace}case_summary_{caseIndex}_reasons_for_judgment"))] = Vocabulary.CourtCaseSummaryReasonsForJudgment
             });
-            assert.Date(graph, courtCase, rdf, new Dictionary<IUriNode, IUriNode>()
+            GraphAssert.Date(logger, graph, courtCase, rdf, new Dictionary<IUriNode, IUriNode>()
             {
                 [new UriNode(new($"{IngestVocabulary.TnaNamespace}hearing_start_date_{caseIndex}"))] = Vocabulary.CourtCaseHearingStartDate,
                 [new UriNode(new($"{IngestVocabulary.TnaNamespace}hearing_end_date_{caseIndex}"))] = Vocabulary.CourtCaseHearingEndDate

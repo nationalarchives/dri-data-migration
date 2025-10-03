@@ -6,13 +6,13 @@ namespace Staging;
 
 internal class AssetDeliverableUnitSealIngest(ILogger logger, ICacheClient cacheClient)
 {
-    private readonly GraphAssert assert = new(logger, cacheClient);
     private readonly DimensionParser dimensionParser = new(logger);
     private readonly DateParser dateParser = new(logger);
 
     internal async Task AddSealAsync(IGraph graph, IGraph rdf, IGraph existing, INode id, CancellationToken cancellationToken)
     {
-        await assert.ExistingOrNewWithRelationshipAsync(graph, id, rdf, IngestVocabulary.TypeOfSeal, CacheEntityKind.SealCategory,
+        await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, id, rdf,
+            IngestVocabulary.TypeOfSeal, CacheEntityKind.SealCategory,
             Vocabulary.SealAssetHasSealCategory, Vocabulary.SealCategoryName, cancellationToken);
 
         var obverseOrReverse = rdf.GetTriplesWithPredicate(IngestVocabulary.Face).SingleOrDefault()?.Object as ILiteralNode;

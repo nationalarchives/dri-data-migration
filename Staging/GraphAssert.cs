@@ -7,9 +7,9 @@ using VDS.RDF.Parsing;
 
 namespace Staging;
 
-public class GraphAssert(ILogger logger, ICacheClient cacheClient)
+internal static class GraphAssert
 {
-    public static void Text(IGraph graph, INode id, Dictionary<IUriNode, string?> predicates)
+    internal static void Text(IGraph graph, INode id, Dictionary<IUriNode, string?> predicates)
     {
         foreach (var predicate in predicates)
         {
@@ -17,7 +17,7 @@ public class GraphAssert(ILogger logger, ICacheClient cacheClient)
         }
     }
 
-    public static void Text(IGraph graph, INode id, string? value, IUriNode immediatePredicate)
+    internal static void Text(IGraph graph, INode id, string? value, IUriNode immediatePredicate)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {
@@ -25,7 +25,7 @@ public class GraphAssert(ILogger logger, ICacheClient cacheClient)
         }
     }
 
-    public static void Text(IGraph graph, INode id, IGraph rdf,
+    internal static void Text(IGraph graph, INode id, IGraph rdf,
         Dictionary<IUriNode, IUriNode> predicates)
     {
         foreach (var predicate in predicates)
@@ -34,7 +34,7 @@ public class GraphAssert(ILogger logger, ICacheClient cacheClient)
         }
     }
 
-    public static void Text(IGraph graph, INode id, IGraph rdf,
+    internal static void Text(IGraph graph, INode id, IGraph rdf,
         IUriNode findPredicate, IUriNode immediatePredicate)
     {
         var found = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
@@ -44,7 +44,7 @@ public class GraphAssert(ILogger logger, ICacheClient cacheClient)
         }
     }
 
-    public static void MultiText(IGraph graph, INode id, IGraph rdf,
+    internal static void MultiText(IGraph graph, INode id, IGraph rdf,
         IUriNode findPredicate, IUriNode immediatePredicate)
     {
         foreach (var found in rdf.GetTriplesWithPredicate(findPredicate).Select(t => t.Object).Cast<ILiteralNode>())
@@ -53,7 +53,7 @@ public class GraphAssert(ILogger logger, ICacheClient cacheClient)
         }
     }
 
-    public static void Base64(IGraph graph, INode id, string? value, IUriNode immediatePredicate)
+    internal static void Base64(IGraph graph, INode id, string? value, IUriNode immediatePredicate)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {
@@ -62,7 +62,7 @@ public class GraphAssert(ILogger logger, ICacheClient cacheClient)
         }
     }
 
-    public static void Integer(IGraph graph, INode id, int? value, IUriNode immediatePredicate)
+    internal static void Integer(IGraph graph, INode id, int? value, IUriNode immediatePredicate)
     {
         if (value.HasValue)
         {
@@ -70,16 +70,16 @@ public class GraphAssert(ILogger logger, ICacheClient cacheClient)
         }
     }
 
-    public void Integer(IGraph graph, INode id, IGraph rdf,
+    internal static void Integer(ILogger logger, IGraph graph, INode id, IGraph rdf,
         Dictionary<IUriNode, IUriNode> predicates)
     {
         foreach (var predicate in predicates)
         {
-            Integer(graph, id, rdf, predicate.Key, predicate.Value);
+            Integer(logger, graph, id, rdf, predicate.Key, predicate.Value);
         }
     }
 
-    public void Integer(IGraph graph, INode id, IGraph rdf,
+    internal static void Integer(ILogger logger, IGraph graph, INode id, IGraph rdf,
         IUriNode findPredicate, IUriNode immediatePredicate)
     {
         var found = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
@@ -96,7 +96,7 @@ public class GraphAssert(ILogger logger, ICacheClient cacheClient)
         }
     }
 
-    public static void Date(IGraph graph, INode id, Dictionary<IUriNode, DateTimeOffset?> predicates)
+    internal static void Date(IGraph graph, INode id, Dictionary<IUriNode, DateTimeOffset?> predicates)
     {
         foreach (var predicate in predicates)
         {
@@ -104,7 +104,7 @@ public class GraphAssert(ILogger logger, ICacheClient cacheClient)
         }
     }
 
-    public static void Date(IGraph graph, INode id, DateTimeOffset? value, IUriNode immediatePredicate)
+    internal static void Date(IGraph graph, INode id, DateTimeOffset? value, IUriNode immediatePredicate)
     {
         if (value.HasValue)
         {
@@ -112,16 +112,16 @@ public class GraphAssert(ILogger logger, ICacheClient cacheClient)
         }
     }
 
-    public void Date(IGraph graph, INode id, IGraph rdf,
+    internal static void Date(ILogger logger, IGraph graph, INode id, IGraph rdf,
         Dictionary<IUriNode, IUriNode> predicates)
     {
         foreach (var predicate in predicates)
         {
-            Date(graph, id, rdf, predicate.Key, predicate.Value);
+            Date(logger, graph, id, rdf, predicate.Key, predicate.Value);
         }
     }
 
-    public void Date(IGraph graph, INode id, IGraph rdf,
+    internal static void Date(ILogger logger, IGraph graph, INode id, IGraph rdf,
         IUriNode findPredicate, IUriNode immediatePredicate)
     {
         var found = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
@@ -154,7 +154,8 @@ public class GraphAssert(ILogger logger, ICacheClient cacheClient)
         }
     }
 
-    public async Task<IUriNode?> ExistingOrNewWithRelationshipAsync(IGraph graph, INode id, IGraph rdf,
+    internal static async Task<IUriNode?> ExistingOrNewWithRelationshipAsync(ICacheClient cacheClient,
+        IGraph graph, INode id, IGraph rdf,
         IUriNode findPredicate, CacheEntityKind cacheEntityKind,
         IUriNode immediatePredicate, IUriNode foundPredicate,
         CancellationToken cancellationToken)

@@ -8,7 +8,6 @@ namespace Staging;
 public class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
 {
     public readonly HashSet<string> Predicates = [];
-    private readonly GraphAssert assert = new(logger, cacheClient);
     private readonly DateParser dateParser = new(logger);
     private readonly RdfXmlLoader rdfXmlLoader = new(logger);
 
@@ -35,17 +34,15 @@ public class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
             [IngestVocabulary.DctermsDescription] = IngestVocabulary.DctermsDescription //TODO: remove after checking
         });
 
-        await assert.ExistingOrNewWithRelationshipAsync(graph, id, rdf, IngestVocabulary.ScanLocation, CacheEntityKind.GeographicalPlace,
+        await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, id, rdf,
+            IngestVocabulary.ScanLocation, CacheEntityKind.GeographicalPlace,
             Vocabulary.ScannedVariationHasScannerGeographicalPlace, Vocabulary.GeographicalPlaceName, cancellationToken);
 
         AddImageNodes(graph, rdf, id);
 
         var datedNote = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.VariationHasDatedNote).SingleOrDefault()?.Object ?? CacheClient.NewId;
-        if (datedNote is not null)
-        {
-            var noteDate = existing.GetTriplesWithSubjectPredicate(datedNote, Vocabulary.DatedNoteHasDate).SingleOrDefault()?.Object ?? CacheClient.NewId;
-            AddDatedNote(graph, rdf, id, datedNote, noteDate); //TODO: could be overengineering
-        }
+        var noteDate = existing.GetTriplesWithSubjectPredicate(datedNote, Vocabulary.DatedNoteHasDate).SingleOrDefault()?.Object ?? CacheClient.NewId;
+        AddDatedNote(graph, rdf, id, datedNote, noteDate); //TODO: could be overengineering
     }
 
     private void AddImageNodes(IGraph graph, IGraph rdf, INode id)
