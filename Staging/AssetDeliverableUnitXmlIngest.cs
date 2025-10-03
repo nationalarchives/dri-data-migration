@@ -49,6 +49,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             [IngestVocabulary.AdministrativeBackground] = Vocabulary.AssetSummary,
             [IngestVocabulary.RelatedMaterial] = Vocabulary.AssetRelationDescription,
             [IngestVocabulary.TransRelatedMaterial] = Vocabulary.AssetRelationDescription,
+            [IngestVocabulary.RelatedIaid] = Vocabulary.AssetRelationIdentifier,
             [IngestVocabulary.PhysicalDescription] = Vocabulary.AssetPhysicalDescription,
             [IngestVocabulary.PhysicalFormat] = Vocabulary.AssetPhysicalDescription,
             [IngestVocabulary.EvidenceProvidedBy] = Vocabulary.EvidenceProviderName, //TODO: check if can be split and turned into entities

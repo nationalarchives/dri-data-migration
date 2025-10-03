@@ -872,6 +872,12 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Consignment TDR Id".
 
+:assetRelationIdentifier a owl:DatatypeProperty;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset relation identifier".
+
 :assetRelationDescription a owl:DatatypeProperty;
 	rdfs:domain :Asset;
 	rdfs:range xsd:string;
