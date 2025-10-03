@@ -92,7 +92,7 @@ internal static class StagingReconciliationParser
         {
             for (var i = 1; i < dt.Length; i++)
             {
-                sb.Append(dt[i].PadLeft(2, '0'));
+                sb.Append(dt[i]);
             }
         }
 

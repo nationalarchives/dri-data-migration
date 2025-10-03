@@ -138,18 +138,18 @@ public class GraphAssert(ILogger logger, ICacheClient cacheClient)
         }
     }
 
-    public static void YearMonthDay(IGraph graph, INode id, int? year, int? month, int? day)
+    internal static void YearMonthDay(IGraph graph, INode id, int? year, int? month, int? day)
     {
-        if (year.HasValue)
+        if (year is not null)
         {
             graph.Assert(id, Vocabulary.Year, new LiteralNode(year.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
-            if (month.HasValue)
+            if (month is not null)
             {
-                graph.Assert(id, Vocabulary.Month, new LiteralNode($"--{month}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
+                graph.Assert(id, Vocabulary.Month, new LiteralNode($"--{month.Value.ToString().PadLeft(2, '0')}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
             }
-            if (day.HasValue)
+            if (day is not null)
             {
-                graph.Assert(id, Vocabulary.Day, new LiteralNode($"---{day}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
+                graph.Assert(id, Vocabulary.Day, new LiteralNode($"---{day.Value.ToString().PadLeft(2, '0')}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
             }
         }
     }
