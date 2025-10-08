@@ -78,7 +78,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:changeDateTime ?changeDateTime;
                 ex:changeHasOperator ?operator.
             ?operator ex:operatorIdentifier ?operatorIdentifier;
-                ex:operatorName ?operatorName.
+                ex:personFullName ?operatorName.
         } where {
             bind(@id as ?variationDriId)
             ?variation ex:variationName ?variationName;
@@ -169,7 +169,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 optional {
                     ?change ex:changeHasOperator ?operator.
                     optional { ?operator ex:operatorIdentifier ?operatorIdentifier }
-                    optional { ?operator ex:operatorName ?operatorName }
+                    optional { ?operator ex:personFullName ?operatorName }
                 }
             }
         }

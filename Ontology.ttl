@@ -300,10 +300,62 @@ this:schema a owl:Ontology;
 	rdfs:label "Change";
 	rdfs:comment "A thing describing a generic change to a thing.".
 
+:Person a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:Person;
+	rdfs:label "Person".
+
 :Operator a owl:Class;
+	rdfs:subClassOf :Person;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Operator";
 	rdfs:comment "A person that performs operation on data.".
+
+:NextOfKinRelationship a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Next of kin relationship".
+
+:Kinship a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Kinship".
+
+:Wife a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Wife".
+
+:Mother a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Mother".
+
+:Father a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Father".
+
+:Sister a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sister".
+
+:Brother a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Brother".
+
+:Uncle a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Uncle".
+
+:BattalionMembership a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Battalion membership".
+
+:Battalion a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Battalion".
 
 
 # Object properties
@@ -536,6 +588,19 @@ this:schema a owl:Ontology;
 	rdfs:range :Asset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation has asset".
+
+:assetHasPerson a owl:ObjectProperty;
+	rdfs:domain :Asset;
+	rdfs:range :Person;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has person".
+
+:personHasAsset a owl:ObjectProperty;
+	owl:inverseOf :assetHasPerson;
+	rdfs:domain :Person;
+	rdfs:range :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Person has asset".
 
 :variationHasChange a owl:ObjectProperty;
 	rdfs:domain :Variation;
@@ -771,6 +836,48 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Change has operator".
 
+:personHasBattalionMembership a owl:ObjectProperty;
+	rdfs:domain :Person;
+	rdfs:range :BattalionMembership;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Person has battalion membership".
+
+:personHasContactPoint a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:domain :Person;
+	rdfs:range :GeographicalPlace;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Person has contact point".
+
+:personHasBirthAddress a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:domain :Person;
+	rdfs:range :GeographicalPlace;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Person has birth address".
+
+:personHasNextOfKinRelationship a owl:ObjectProperty;
+	rdfs:domain :Person;
+	rdfs:range :NextOfKinRelationship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Person has next of kin relationship".
+
+:nextOfKinRelationshipHasNextOfKin a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:domain :NextOfKinRelationship;
+	rdfs:range :Person;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Next of kin relationship has next of kin".
+
+:nextOfKinRelationshipHasKinship a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:domain :NextOfKinRelationship;
+	rdfs:range :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Next of kin relationship has kinship".
+
+:battalionMembershipHasBattalion a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:domain :BattalionMembership;
+	rdfs:range :Battalion;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Battalion membership has battalion".
+
 
 ## Data type properties
 
@@ -857,6 +964,13 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:base64Binary;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset DRI XML".
+
+:wo409SubsetDriXml a owl:DatatypeProperty;
+	rdfs:domain :Asset;
+	rdfs:range xsd:base64Binary;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "WO 409 subset DRI XML";
+	rdfs:comment "Special case (WO 409 series), where additional information is only available at the level of the subset in the source.".
 
 :batchDriId a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :Asset;
@@ -1384,9 +1498,43 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Operator identifier".
 
-:operatorName a owl:DatatypeProperty;
-	rdfs:domain :Operator;
+:personFullName a owl:DatatypeProperty;
+	rdfs:domain :Person;
 	rdfs:subPropertyOf :name;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Operator name".
+	rdfs:label "Person full name".
+
+:personGivenName a owl:DatatypeProperty;
+	rdfs:domain :Person;
+	rdfs:subPropertyOf :name;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Person given name".
+
+:personFamilyName a owl:DatatypeProperty;
+	rdfs:domain :Person;
+	rdfs:subPropertyOf :name;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Person family name".
+
+:personDateOfBirth a owl:DatatypeProperty;
+	rdfs:domain :Person;
+	rdfs:range xsd:date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Person date of birth".
+
+:nationalRegistrationNumber a owl:DatatypeProperty;
+	rdfs:domain :Person;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "National registration number".
+
+:battalionName a owl:DatatypeProperty;
+	rdfs:domain :Battalion;
+	rdfs:subPropertyOf :name;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Battalion name".

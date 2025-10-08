@@ -143,7 +143,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:changeDateTime ?changeDateTimeV;
                 ex:changeHasOperator ?operatorV.
             ?operatorV ex:operatorIdentifier ?operatorIdentifierV;
-                ex:operatorName ?operatorNameV.
+                ex:personFullName ?operatorNameV.
             ?originDateStart ex:year ?startYear;
                 ex:month ?startMonth;
                 ex:day ?startDay.
@@ -202,7 +202,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 ex:changeDateTime ?changeDateTime;
                 ex:changeHasOperator ?operator.
             ?operator ex:operatorIdentifier ?operatorIdentifier;
-                ex:operatorName ?operatorName.
+                ex:personFullName ?operatorName.
         } where {
             bind(@code as ?assetReference)
             ?s ex:assetDriId ?assetDriId;
@@ -347,7 +347,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                     optional {
                         ?changeV ex:changeHasOperator ?operatorV.
                         optional { ?operatorV ex:operatorIdentifier ?operatorIdentifierV }
-                        optional { ?operatorV ex:operatorName ?operatorNameV }
+                        optional { ?operatorV ex:personFullName ?operatorNameV }
                     }
                 }
             }
@@ -485,7 +485,7 @@ public class ItemModel(HttpClient httpClient, IConfiguration configuration) : Pa
                 optional {
                     ?change ex:changeHasOperator ?operator.
                     optional { ?operator ex:operatorIdentifier ?operatorIdentifier }
-                    optional { ?operator ex:operatorName ?operatorName }
+                    optional { ?operator ex:personFullName ?operatorName }
                 }
             }
         }
