@@ -7,8 +7,8 @@ namespace Staging;
 
 internal class RdfXmlLoader(ILogger logger)
 {
-    private MissingRdfOldNamespace missingRdfOldNamespace = new(logger);
-    private MalformedRdfMissingCoverageType malformedRdfMissingCoverageType = new(logger);
+    private readonly MissingRdfOldNamespace missingRdfOldNamespace = new(logger);
+    private readonly MalformedRdfMissingCoverageType malformedRdfMissingCoverageType = new(logger);
 
     internal IGraph? GetRdf(string xml)
     {
@@ -22,7 +22,7 @@ internal class RdfXmlLoader(ILogger logger)
     {
         var namespaceManager = new XmlNamespaceManager(doc.NameTable);
         namespaceManager.AddNamespace("rdf", NamespaceMapper.RDF);
-        var rdfNode = doc.DocumentElement.SelectSingleNode("descendant::rdf:RDF", namespaceManager);
+        var rdfNode = doc.DocumentElement?.SelectSingleNode("descendant::rdf:RDF", namespaceManager);
         if (rdfNode is null)
         {
             rdfNode = missingRdfOldNamespace.GetRdfNode(doc);

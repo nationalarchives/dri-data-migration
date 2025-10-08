@@ -25,46 +25,37 @@ internal class MissingRdfOldNamespace(ILogger logger)
         namespaceManager.AddNamespace("rdf", NamespaceMapper.RDF);
         namespaceManager.AddNamespace("t", "http://www.tessella.com/XIP/v4");
         namespaceManager.AddNamespace("tnaxm", IngestVocabulary.TnaNamespaceWithSlash.ToString());
-        var metadata = doc.DocumentElement.SelectSingleNode("descendant::t:Metadata", namespaceManager) ??
-            doc.DocumentElement.SelectSingleNode("descendant::tnaxm:metadata", namespaceManager)?.ParentNode;
+        var metadata = doc.DocumentElement?.SelectSingleNode("descendant::t:Metadata", namespaceManager) ??
+            doc.DocumentElement?.SelectSingleNode("descendant::tnaxm:metadata", namespaceManager)?.ParentNode;
         if (metadata is null)
         {
             return null;
         }
         var metadataChild = metadata.FirstChild;
-        var tna = metadataChild.Attributes.GetNamedItem("xmlns:tnaxm") as XmlAttribute;
-        tna.Value = IngestVocabulary.TnaNamespace.ToString();
+        if (metadataChild is null)
+        {
+            return null;
+        }
+        var tna = metadataChild.Attributes?.GetNamedItem("xmlns:tnaxm") as XmlAttribute;
+        if (tna is not null)
+        {
+            tna.Value = IngestVocabulary.TnaNamespace.ToString();
+        }
         var missingRdf = doc.CreateElement("rdf:RDF", NamespaceMapper.RDF);
         var description = doc.CreateElement("rdf:Description", NamespaceMapper.RDF);
         var about = doc.CreateAttribute("rdf:about", NamespaceMapper.RDF);
-        about.Value = "http://www.w3.org/TR/rdf-syntax-grammar";
+        about.Value = "http://example.com/subject";
         description.Attributes.Append(about);
-        var parseType = doc.CreateAttribute("rdf:parseType", NamespaceMapper.RDF);
-        parseType.Value = "Resource";
+        var blankNode = doc.CreateAttribute("rdf:parseType", NamespaceMapper.RDF);
+        blankNode.Value = "Resource";
         foreach (var child in metadataChild.ChildNodes.OfType<XmlElement>())
         {
             if (child.LocalName == "provenance")
             {
                 continue;
             }
-            var clonedChild = child.Clone();
-            if (clonedChild.HasChildNodes && clonedChild.ChildNodes.Count > 1)
-            {
-                clonedChild.Attributes.Append(parseType);
-            }
-            var allowedAttributes = new List<XmlAttribute>();
-            foreach (var attr in clonedChild.Attributes.OfType<XmlAttribute>())
-            {
-                if (!attr.Name.StartsWith("xsi:"))
-                {
-                    allowedAttributes.Add(attr);
-                }
-            }
-            clonedChild.Attributes.RemoveAll();
-            foreach (var attr in allowedAttributes)
-            {
-                clonedChild.Attributes.Append(attr);
-            }
+            var clonedChild = (XmlElement)child.CloneNode(true);
+            Repair(doc, clonedChild, blankNode);
             description.AppendChild(clonedChild);
         }
         missingRdf.AppendChild(description);
@@ -75,5 +66,56 @@ internal class MissingRdfOldNamespace(ILogger logger)
         metadataChild.PrependChild(missingRdf);
 
         return missingRdf;
+    }
+
+    private static void Repair(XmlDocument doc, XmlElement node, XmlAttribute blankNode)
+    {
+        bool markedBlankNode = false;
+        var isBlankNode = node.ChildNodes.OfType<XmlElement>().Count() > 1 &&
+            (node.ParentNode is null || node.ParentNode.OfType<XmlElement>().Count() > 1);
+        var isPartOfBlankNode = node.ParentNode is not null && node.ParentNode.OfType<XmlElement>().Count() > 1 &&
+            node.ChildNodes.OfType<XmlElement>().Any();
+        if (isBlankNode || isPartOfBlankNode)
+        {
+            markedBlankNode = true;
+            node.Attributes.Append((XmlAttribute)blankNode.Clone());
+        }
+        var allowedAttributes = new List<XmlAttribute>();
+        if (node.Attributes?.Count > 0)
+        {
+            foreach (var attr in node.Attributes.OfType<XmlAttribute>())
+            {
+                if (attr.Name == "type")
+                {
+                    XmlAttribute typedAttr;
+                    if (markedBlankNode)
+                    {
+                        typedAttr = doc.CreateAttribute("rdf:ID", NamespaceMapper.RDF);
+                    }
+                    else
+                    {
+                        typedAttr = doc.CreateAttribute("rdf:datatype", NamespaceMapper.RDF);
+                    }
+                    typedAttr.Value = attr.Value;
+                    allowedAttributes.Add(typedAttr);
+                }
+                else
+                {
+                    if (!attr.Name.StartsWith("xsi:"))
+                    {
+                        allowedAttributes.Add(attr);
+                    }
+                }
+            }
+            node.RemoveAllAttributes();
+            foreach (var attr in allowedAttributes)
+            {
+                node.Attributes.Append(attr);
+            }
+        }
+        foreach (var childNode in node.ChildNodes.OfType<XmlElement>())
+        {
+            Repair(doc, childNode, blankNode);
+        }
     }
 }

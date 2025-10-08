@@ -28,9 +28,13 @@ internal class MalformedRdfMissingCoverageType(ILogger logger)
         if (coverage is not null)
         {
             var coverageTypeNode = rdfNode.OwnerDocument.CreateElement("tna:MissingType", IngestVocabulary.TnaNamespace.ToString());
-            var coverageChild = coverage.FirstChild.Clone();
+            var coverageChild = coverage.FirstChild?.Clone();
+            if (coverageChild is null)
+            {
+                return null;
+            }
             coverageTypeNode.AppendChild(coverageChild);
-            coverage.ReplaceChild(coverageTypeNode, coverage.FirstChild);
+            coverage.ReplaceChild(coverageTypeNode, coverage.FirstChild!);
             new RdfXmlParser().Load(rdf, new StringReader(rdfNode.OuterXml));
             return rdf;
         }
