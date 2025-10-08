@@ -14,5 +14,7 @@ public enum CacheEntityKind
     InquiryAppearanceByWitnessAndDescription,
     GeographicalPlace,
     SealCategory,
-    Operator
+    Operator,
+    Person,
+    Battalion
 }

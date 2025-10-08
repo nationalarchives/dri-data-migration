@@ -70,6 +70,12 @@ internal static partial class Log
     [LoggerMessage(EventId = 22, Level = LogLevel.Information, Message = "Updated {size} changes")]
     internal static partial void IngestedChanges(this ILogger logger, int size);
 
-    [LoggerMessage(EventId = 23, Level = LogLevel.Information, Message = "Migration stage {stage} skipped")]
+    [LoggerMessage(EventId = 23, Level = LogLevel.Information, Message = "Ingesting {size} WO 409 subset deliverable units")]
+    internal static partial void IngestingWo409SubsetDeliverableUnits(this ILogger logger, int size);
+
+    [LoggerMessage(EventId = 24, Level = LogLevel.Information, Message = "Updated {size} WO 409 subset deliverable units")]
+    internal static partial void IngestedWo409SubsetDeliverableUnits(this ILogger logger, int size);
+
+    [LoggerMessage(EventId = 25, Level = LogLevel.Information, Message = "Migration stage {stage} skipped")]
     internal static partial void EtlStageSkipped(this ILogger logger, Api.EtlStageType stage);
 }

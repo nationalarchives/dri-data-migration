@@ -16,6 +16,7 @@ public static class StagingServiceCollectionExtensions
         services.AddSingleton<IStagingIngest<DriSubset>, SubsetIngest>();
         services.AddSingleton<IStagingIngest<DriAsset>, AssetIngest>();
         services.AddSingleton<IStagingIngest<DriAssetDeliverableUnit>, AssetDeliverableUnitIngest>();
+        services.AddSingleton<IStagingIngest<DriWo409SubsetDeliverableUnit>, Wo409SubsetDeliverableUnitIngest>();
         services.AddSingleton<IStagingIngest<DriVariation>, VariationIngest>();
         services.AddSingleton<IStagingIngest<DriVariationFile>, VariationFileIngest>();
         services.AddSingleton<IStagingIngest<DriSensitivityReview>, SensitivityReviewIngest>();

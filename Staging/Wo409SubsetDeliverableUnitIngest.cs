@@ -1,0 +1,224 @@
+﻿using Api;
+using Microsoft.Extensions.Logging;
+using System.Xml;
+using VDS.RDF;
+using VDS.RDF.Nodes;
+using VDS.RDF.Parsing;
+
+namespace Staging;
+
+public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient sparqlClient,
+    ILogger<Wo409SubsetDeliverableUnitIngest> logger) :
+    StagingIngest<DriWo409SubsetDeliverableUnit>(sparqlClient, logger, "Wo409SubsetDeliverableUnitGraph")
+{
+    private readonly RdfXmlLoader rdfXmlLoader = new(logger);
+    private readonly IUriNode wo409 = new UriNode(new Uri("http://example.com/subject"));
+    private readonly Uri givenName = new("http://example.com/given");
+    private readonly Uri familyName = new("http://example.com/familyName");
+    private readonly IUriNode rdfsObject = new UriNode(new Uri(RdfSpecsHelper.RdfObject));
+    public readonly HashSet<string> Predicates = [];
+
+    internal override async Task<Graph?> BuildAsync(IGraph existing,
+        DriWo409SubsetDeliverableUnit dri, CancellationToken cancellationToken)
+    {
+        var driId = new LiteralNode(dri.Id);
+        var id = existing.GetTriplesWithPredicateObject(Vocabulary.AssetDriId, driId).FirstOrDefault()?.Subject as IUriNode;
+        if (id is null)
+        {
+            logger.AssetNotFound(dri.Id);
+            return null;
+        }
+
+        var graph = new Graph();
+        graph.Assert(id, Vocabulary.AssetDriId, driId);
+        if (!string.IsNullOrEmpty(dri.Xml))
+        {
+            GraphAssert.Base64(graph, id, dri.Xml, Vocabulary.Wo409SubsetDriXml);
+            await ExtractXmlData(graph, existing, id, dri.Xml, cancellationToken);
+        }
+
+        return graph;
+    }
+
+    internal override void PostIngest()
+    {
+        Console.WriteLine("Distinct RDF predicates:");
+        foreach (var predicate in Predicates.OrderBy(p => p))
+        {
+            Console.WriteLine(predicate);
+        }
+    }
+
+    private async Task ExtractXmlData(IGraph graph, IGraph existing, INode id,
+        string xml, CancellationToken cancellationToken)
+    {
+        var doc = new XmlDocument();
+        doc.LoadXml(xml);
+
+        var rdf = rdfXmlLoader.GetRdf(doc);
+        if (rdf is null)
+        {
+            logger.AssetXmlMissingRdf(id.AsValuedNode().AsString());
+            return;
+        }
+
+        Predicates.UnionWith(rdf.Triples.PredicateNodes.Cast<IUriNode>().Select(p => p.Uri.ToString()).ToHashSet());
+
+        var subjectTriple = rdf.GetTriplesWithSubjectPredicate(wo409, IngestVocabulary.Subject).SingleOrDefault();
+        if (subjectTriple is null)
+        {
+            return;
+        }
+
+        var person = await AddPersonAsync(graph, rdf, id, cancellationToken);
+        if (person is null)
+        {
+            return;
+        }
+
+        GraphAssert.Text(graph, person, rdf, IngestVocabulary.NationalRegistrationNumber,
+            Vocabulary.NationalRegistrationNumber);
+
+        var contactPoint = await GetAddressAsync(rdf, subjectTriple.Object, cancellationToken);
+        if (contactPoint is not null)
+        {
+            graph.Assert(person, Vocabulary.PersonHasContactPoint, contactPoint);
+        }
+
+        await AddBirthAsync(graph, rdf, subjectTriple.Object, person, cancellationToken);
+        await AddPlaceAsync(graph, existing, rdf, person, cancellationToken);
+        await AddRelationAsync(graph, existing, rdf, subjectTriple.Object, person, cancellationToken);
+    }
+
+    private async Task<IUriNode?> AddPersonAsync(IGraph graph, IGraph rdf,
+        INode id, CancellationToken cancellationToken)
+    {
+        var names = rdf.GetTriplesWithPredicate(IngestVocabulary.NamePart).Select(t => t.Object).Cast<ILiteralNode>();
+        var firstName = names.SingleOrDefault(n => n.DataType == givenName)?.Value;
+        var lastName = names.SingleOrDefault(n => n.DataType == familyName)?.Value;
+        var fullName = string.IsNullOrWhiteSpace(firstName) ? null :
+            string.IsNullOrWhiteSpace(lastName) ? firstName : $"{firstName} {lastName}";
+        if (string.IsNullOrWhiteSpace(fullName))
+        {
+            return null;
+        }
+
+        var person = await cacheClient.CacheFetchOrNew(CacheEntityKind.Person, fullName,
+            Vocabulary.PersonFullName, cancellationToken);
+        graph.Assert(id, Vocabulary.AssetHasPerson, person);
+        graph.Assert(person, Vocabulary.PersonGivenName, new LiteralNode(firstName));
+        graph.Assert(person, Vocabulary.PersonFamilyName, new LiteralNode(lastName));
+
+        return person;
+    }
+
+    private async Task AddBirthAsync(IGraph graph, IGraph rdf, INode subjectId,
+        IUriNode person, CancellationToken cancellationToken)
+    {
+        var birth = rdf.GetTriplesWithSubjectPredicate(subjectId, IngestVocabulary.Birth)
+            .SingleOrDefault()?.Object as IBlankNode;
+        if (birth is not null)
+        {
+            var birthDate = rdf.GetTriplesWithSubjectPredicate(birth, IngestVocabulary.Date)
+                .SingleOrDefault()?.Object as ILiteralNode;
+            if (birthDate is not null && !string.IsNullOrWhiteSpace(birthDate.Value) &&
+                DateParser.TryParseDate(birthDate.Value, out var birthDt))
+            {
+                graph.Assert(person, Vocabulary.PersonDateOfBirth, new DateNode(birthDt));
+            }
+            var birthAddress = await GetAddressAsync(rdf, birth, cancellationToken);
+            if (birthAddress is not null)
+            {
+                graph.Assert(person, Vocabulary.PersonHasBirthAddress, birthAddress);
+            }
+        }
+    }
+
+    private async Task AddPlaceAsync(IGraph graph, IGraph existing,
+        IGraph rdf, IUriNode person, CancellationToken cancellationToken)
+    {
+        var place = rdf.GetTriplesWithPredicate(IngestVocabulary.County).SingleOrDefault()?.Object as ILiteralNode;
+        if (place is not null && !string.IsNullOrWhiteSpace(place.Value))
+        {
+            var battalionNumber = rdf.GetTriplesWithPredicate(IngestVocabulary.References).SingleOrDefault()?.Object as ILiteralNode;
+            if (battalionNumber is not null && !string.IsNullOrWhiteSpace(battalionNumber.Value))
+            {
+                var membership = existing.GetTriplesWithSubjectPredicate(person, Vocabulary.PersonHasBattalionMembership).SingleOrDefault()?.Object ??
+                    CacheClient.NewId;
+                var unitAndPlace = $"{battalionNumber.Value} {place.Value}";
+                var armyUnit = await cacheClient.CacheFetchOrNew(CacheEntityKind.Battalion, unitAndPlace,
+                    Vocabulary.BattalionName, cancellationToken);
+                graph.Assert(person, Vocabulary.PersonHasBattalionMembership, membership);
+                graph.Assert(membership, Vocabulary.BattalionMembershipHasBattalion, armyUnit);
+            }
+        }
+    }
+
+    private async Task AddRelationAsync(IGraph graph, IGraph existing, IGraph rdf,
+        INode subjectId, IUriNode person, CancellationToken cancellationToken)
+    {
+        var relation = rdf.GetTriplesWithSubjectPredicate(subjectId, IngestVocabulary.Relation)
+            .SingleOrDefault()?.Object as IBlankNode;
+        if (relation is not null)
+        {
+            var relationPerson = rdf.GetTriplesWithSubjectPredicate(relation, IngestVocabulary.Person)
+                .SingleOrDefault()?.Object as IBlankNode;
+            if (relationPerson is not null)
+            {
+                var relationName = rdf.GetTriplesWithSubjectPredicate(relationPerson, IngestVocabulary.NameString)
+                    .SingleOrDefault()?.Object as ILiteralNode;
+                if (relationName is not null && !string.IsNullOrWhiteSpace(relationName.Value))
+                {
+                    var relationship = existing.GetTriplesWithSubjectPredicate(person, Vocabulary.PersonHasNextOfKinRelationship).SingleOrDefault()?.Object ??
+                        CacheClient.NewId;
+                    graph.Assert(person, Vocabulary.PersonHasNextOfKinRelationship, relationship);
+
+                    var personNextOfKin = await cacheClient.CacheFetchOrNew(CacheEntityKind.Person, relationName.Value,
+                        Vocabulary.PersonFullName, cancellationToken);
+                    graph.Assert(relationship, Vocabulary.NextOfKinRelationshipHasNextOfKin, personNextOfKin);
+
+                    var relationType = rdf.GetTriplesWithPredicateObject(rdfsObject, relation)
+                        .SingleOrDefault()?.Subject as IUriNode;
+                    if (relationType is not null)
+                    {
+                        var kinship = GetUriFragment(relationType.Uri) switch
+                        {
+                            "Wife" => Vocabulary.Wife,
+                            "Mother" => Vocabulary.Mother,
+                            "Father" => Vocabulary.Father,
+                            "Sister" => Vocabulary.Sister,
+                            "Brother" => Vocabulary.Brother,
+                            "Uncle" => Vocabulary.Uncle,
+                            _ => null
+                        };
+                        if (kinship is null)
+                        {
+                            logger.UnrecognizedKinship(relationType.Uri);
+                        }
+                        else
+                        {
+                            graph.Assert(relationship, Vocabulary.NextOfKinRelationshipHasKinship, kinship);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private async Task<IUriNode?> GetAddressAsync(IGraph rdf, INode subjectid, CancellationToken cancellationToken)
+    {
+        var address = rdf.GetTriplesWithSubjectPredicate(subjectid, IngestVocabulary.Address)
+            .SingleOrDefault()?.Object as IBlankNode;
+        if (address is not null)
+        {
+            var addressText = rdf.GetTriplesWithSubjectPredicate(address, IngestVocabulary.AddressString)
+                .SingleOrDefault()?.Object as ILiteralNode;
+            if (addressText is not null && !string.IsNullOrWhiteSpace(addressText.Value))
+            {
+                return await cacheClient.CacheFetchOrNew(CacheEntityKind.GeographicalPlace,
+                    addressText.Value, Vocabulary.GeographicalPlaceName, cancellationToken);
+            }
+        }
+        return null;
+    }
+}

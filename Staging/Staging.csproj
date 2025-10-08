@@ -8,11 +8,14 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Sparql\AccessConditionGraph.sparql" />
+    <EmbeddedResource Include="Sparql\Wo409SubsetDeliverableUnitGraph.sparql" />
     <EmbeddedResource Include="Sparql\AssetDeliverableUnitGraph.sparql" />
     <EmbeddedResource Include="Sparql\AssetGraph.sparql" />
     <EmbeddedResource Include="Sparql\GetAccessConditions.sparql" />
     <EmbeddedResource Include="Sparql\GetAsset.sparql" />
     <EmbeddedResource Include="Sparql\GetCopyright.sparql" />
+    <EmbeddedResource Include="Sparql\GetBattalion.sparql" />
+    <EmbeddedResource Include="Sparql\GetPerson.sparql" />
     <EmbeddedResource Include="Sparql\GetOperator.sparql" />
     <EmbeddedResource Include="Sparql\GetSealCategory.sparql" />
     <EmbeddedResource Include="Sparql\GetInquiryAppearanceByWitnessAndDescription.sparql" />

@@ -110,9 +110,12 @@ internal static partial class Log
     [LoggerMessage(EventId = 35, Level = LogLevel.Warning, Message = "Unable to establish sequence of redacted variation {variationPartialName}")]
     internal static partial void UnableEstablishRedactedVariationSequence(this ILogger logger, string variationPartialName);
 
-    [LoggerMessage(EventId = 36, Level = LogLevel.Debug, Message = "Unable to reformat XML: {e}")]
+    [LoggerMessage(EventId = 36, Level = LogLevel.Debug, Message = "Unable to reformat XML")]
     internal static partial void UnableAddRdfToXml(this ILogger logger, Exception e);
 
-    [LoggerMessage(EventId = 37, Level = LogLevel.Debug, Message = "Unable to add missing type to malformed RDF XML: {e}")]
+    [LoggerMessage(EventId = 37, Level = LogLevel.Debug, Message = "Unable to add missing type to malformed RDF XML")]
     internal static partial void UnableAddMissingTypeToXmlRdf(this ILogger logger, Exception e);
+
+    [LoggerMessage(EventId = 38, Level = LogLevel.Warning, Message = "Unrecognized {kinship} kinship")]
+    internal static partial void UnrecognizedKinship(this ILogger logger, Uri kinship);
 }

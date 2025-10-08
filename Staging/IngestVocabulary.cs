@@ -65,6 +65,8 @@ public static class IngestVocabulary
     public static readonly IUriNode Language = new UriNode(new(DctermsNamespace, "language"));
     public static readonly IUriNode Rights = new UriNode(new(DctermsNamespace, "rights"));
     public static readonly IUriNode Coverage = new UriNode(new(DctermsNamespace, "coverage"));
+    public static readonly IUriNode Subject = new UriNode(new(DctermsNamespace, "subject"));
+    public static readonly IUriNode References = new UriNode(new(DctermsNamespace, "references"));
 
     //Local names of predicates are constructed by concatenation with the last path segment due to the lack of end forward slash in the XML namespace declaration.
     public static readonly IUriNode PaperNumber = new UriNode(new($"{TransNamespace}paperNumber"));
@@ -82,6 +84,15 @@ public static class IngestVocabulary
     public static readonly IUriNode Face = new UriNode(new($"{TransNamespace}face"));
 
     public static readonly IUriNode County = new UriNode(new(TnaNamespaceWithSlash, "spatial/county"));
+    public static readonly IUriNode Address = new UriNode(new(TnaNamespaceWithSlash, "spatial/address"));
+    public static readonly IUriNode AddressString = new UriNode(new(TnaNamespaceWithSlash, "spatial/addressString"));
+    public static readonly IUriNode NamePart = new UriNode(new(TnaNamespaceWithSlash, "person/namePart"));
+    public static readonly IUriNode Birth = new UriNode(new(TnaNamespaceWithSlash, "person/birth"));
+    public static readonly IUriNode Date = new UriNode(new(TnaNamespaceWithSlash, "person/date"));
+    public static readonly IUriNode NationalRegistrationNumber = new UriNode(new(TnaNamespaceWithSlash, "person/nationalRegistrationNumber"));
+    public static readonly IUriNode Relation = new UriNode(new(TnaNamespaceWithSlash, "person/relation"));
+    public static readonly IUriNode Person = new UriNode(new(TnaNamespaceWithSlash, "person/person"));
+    public static readonly IUriNode NameString = new UriNode(new(TnaNamespaceWithSlash, "person/nameString"));
 
     public static readonly IUriNode DctermsDescription = new UriNode(new(DctermsNamespace, "description")); //TODO: remove after checking data
 }

@@ -33,4 +33,7 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 10, Level = LogLevel.Information, Message = "Fetching changes at {offset}")]
     internal static partial void GetChanges(this ILogger logger, int offset);
+
+    [LoggerMessage(EventId = 11, Level = LogLevel.Information, Message = "Fetching WO 409 subset deliverable units at {offset}")]
+    internal static partial void GetWo409SubsetDeliverableUnits(this ILogger logger, int offset);
 }

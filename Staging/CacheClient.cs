@@ -24,6 +24,8 @@ public class CacheClient : ICacheClient
     private readonly string geographicalPlaceSparql;
     private readonly string sealCategorySparql;
     private readonly string operatorSparql;
+    private readonly string personSparql;
+    private readonly string battalionSparql;
 
     private readonly string accessConditionsSparql;
     private readonly string legislationsSparql;
@@ -58,6 +60,8 @@ public class CacheClient : ICacheClient
         geographicalPlaceSparql = embedded.GetSparql("GetGeographicalPlace");
         sealCategorySparql = embedded.GetSparql("GetSealCategory");
         operatorSparql = embedded.GetSparql("GetOperator");
+        personSparql = embedded.GetSparql("GetPerson");
+        battalionSparql = embedded.GetSparql("GetBattalion");
 
         accessConditionsSparql = embedded.GetSparql("GetAccessConditions");
         legislationsSparql = embedded.GetSparql("GetLegislations");
@@ -99,7 +103,7 @@ public class CacheClient : ICacheClient
     public Task<IUriNode?> CacheFetch(CacheEntityKind kind, string key, CancellationToken cancellationToken) =>
         CacheFetch(kind, [key], cancellationToken);
 
-    public async Task<IUriNode> CacheFetchOrNew(CacheEntityKind kind, IEnumerable<string> keys, IUriNode predicate, CancellationToken cancellationToken)
+    public async Task<IUriNode?> CacheFetchOrNew(CacheEntityKind kind, IEnumerable<string> keys, IUriNode predicate, CancellationToken cancellationToken)
     {
         var info = ToCacheFetchInfo(kind, string.Join('|', keys));
         if (info is null)
@@ -134,7 +138,7 @@ public class CacheClient : ICacheClient
         });
     }
 
-    public Task<IUriNode> CacheFetchOrNew(CacheEntityKind kind, string key, IUriNode predicate, CancellationToken cancellationToken) =>
+    public Task<IUriNode?> CacheFetchOrNew(CacheEntityKind kind, string key, IUriNode predicate, CancellationToken cancellationToken) =>
         CacheFetchOrNew(kind, [key], predicate, cancellationToken);
 
     public async Task<Dictionary<string, IUriNode>> AccessConditions(CancellationToken cancellationToken)
@@ -157,7 +161,7 @@ public class CacheClient : ICacheClient
 
     private async Task<Dictionary<string, IUriNode>> GetDictionaryAsync(Dictionary<string, IUriNode> results, string sparql, CancellationToken cancellationToken)
     {
-        if (results.Any())
+        if (results.Count != 0)
         {
             return results;
         }
@@ -184,6 +188,8 @@ public class CacheClient : ICacheClient
         CacheEntityKind.GeographicalPlace => new(geographicalPlaceSparql, $"geographical-place-{key}"),
         CacheEntityKind.SealCategory => new(sealCategorySparql, $"seal-category-{key}"),
         CacheEntityKind.Operator => new(operatorSparql, $"operator-{key}"),
+        CacheEntityKind.Person => new(personSparql, $"person-{key}"),
+        CacheEntityKind.Battalion => new(battalionSparql, $"battalion-{key}"),
         _ => null
     };
 
