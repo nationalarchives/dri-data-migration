@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution 
 		Directory.Packages.props = Directory.Packages.props
 		.github\workflows\ontology-test.yml = .github\workflows\ontology-test.yml
 		Ontology.ttl = Ontology.ttl
+		PostSqliteExport.sql = PostSqliteExport.sql
 		README.md = README.md
 		staging.http = staging.http
 	EndProjectSection
