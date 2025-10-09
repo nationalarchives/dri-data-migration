@@ -1,0 +1,29 @@
+name: Publish
+
+on: workflow_dispatch
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 8
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Publish
+        run: dotnet publish Migration --runtime win-x64 --framework net8.0 --configuration Release --self-contained true --output "publish/win-x64/" /p:DebugType=None /p:DebugSymbols=false /p:PublishSingleFile=true
+
+      - name: Upload
+        uses: actions/upload-artifacts@v4
+        with:
+          name: migration
+          path: publish/win-x64/*
+          if-no-files-found: error
