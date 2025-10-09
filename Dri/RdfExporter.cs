@@ -134,6 +134,7 @@ public class RdfExporter : IDriRdfExporter
         var tempReferencePredicate = new UriNode(new Uri(Vocabulary.Namespace, "x-reference"));
         var tempIdPredicate = new UriNode(new Uri(Vocabulary.Namespace, "x-id"));
         var tempTypePredicate = new UriNode(new Uri(Vocabulary.Namespace, "x-type"));
+        var coalesceBlankNode = graph.CreateBlankNode("not-found");
 
         var id = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewDriId).SingleOrDefault().Object as IUriNode;
         var reference = graph.GetTriplesWithSubjectPredicate(subject, tempReferencePredicate).SingleOrDefault().Object as ILiteralNode;
@@ -143,12 +144,22 @@ public class RdfExporter : IDriRdfExporter
         var sensitiveName = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewSensitiveName).SingleOrDefault()?.Object as ILiteralNode;
         var sensitiveDescription = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewSensitiveDescription).SingleOrDefault()?.Object as ILiteralNode;
         var past = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewHasPastSensitivityReview).SingleOrDefault()?.Object as IUriNode;
+        var change = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewHasChange).SingleOrDefault().Object as IBlankNode;
+        var changeDriId = graph.GetTriplesWithSubjectPredicate(change, Vocabulary.ChangeDriId).SingleOrDefault()?.Object as IUriNode;
+        var changeDescription = graph.GetTriplesWithSubjectPredicate(change, Vocabulary.ChangeDescription).SingleOrDefault()?.Object as ILiteralNode;
+        var changeDateTime = graph.GetTriplesWithSubjectPredicate(change, Vocabulary.ChangeDateTime).SingleOrDefault()?.Object as ILiteralNode;
+        var operatorId = graph.GetTriplesWithSubjectPredicate(change, Vocabulary.ChangeHasOperator).SingleOrDefault()?.Object as IBlankNode;
+        var operatorIdentifier = graph.GetTriplesWithSubjectPredicate(operatorId ?? coalesceBlankNode, Vocabulary.OperatorIdentifier).SingleOrDefault()?.Object as IUriNode;
+        var operatorName = graph.GetTriplesWithSubjectPredicate(operatorId ?? coalesceBlankNode, Vocabulary.OperatorName).SingleOrDefault()?.Object as ILiteralNode;
+
         if (targetType!.Uri.Fragment == "#DeliverableUnit")
         {
             return new DriSensitivityReview(id!.Uri, reference.AsValuedNode().AsString(), targetId!.Uri, targetType!.Uri,
                 null, [], null, past?.Uri, sensitiveName?.AsValuedNode().AsString(), sensitiveDescription?.AsValuedNode().AsString(),
                 date?.AsValuedNode().AsDateTimeOffset(), null, null, null,
-                null, null, null, null);
+                null, null, null, null, changeDriId?.Uri, changeDescription?.AsValuedNode().AsString(),
+                changeDateTime?.AsValuedNode().AsDateTimeOffset(), operatorIdentifier?.Uri,
+                operatorName?.AsValuedNode().AsString());
         }
 
         var restriction = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewHasSensitivityReviewRestriction).SingleOrDefault().Object as IBlankNode;
@@ -157,11 +168,11 @@ public class RdfExporter : IDriRdfExporter
         var duration = graph.GetTriplesWithSubjectPredicate(restriction, Vocabulary.SensitivityReviewRestrictionDuration).SingleOrDefault()?.Object as ILiteralNode;
         var description = graph.GetTriplesWithSubjectPredicate(restriction, Vocabulary.SensitivityReviewRestrictionDescription).SingleOrDefault()?.Object as ILiteralNode;
         var retentionRestriction = graph.GetTriplesWithSubjectPredicate(restriction, Vocabulary.SensitivityReviewRestrictionHasRetentionRestriction).SingleOrDefault()?.Object as IBlankNode;
-        var instrumentNumber = graph.GetTriplesWithSubjectPredicate(retentionRestriction, Vocabulary.RetentionInstrumentNumber).SingleOrDefault()?.Object as ILiteralNode;
-        var instrumentSignedDate = graph.GetTriplesWithSubjectPredicate(retentionRestriction, Vocabulary.RetentionInstrumentSignatureDate).SingleOrDefault()?.Object as ILiteralNode;
-        var restrictionReviewDate = graph.GetTriplesWithSubjectPredicate(retentionRestriction, Vocabulary.RetentionRestrictionReviewDate).SingleOrDefault()?.Object as ILiteralNode;
-        var ground = graph.GetTriplesWithSubjectPredicate(retentionRestriction, Vocabulary.RetentionRestrictionHasGroundForRetention).SingleOrDefault()?.Object as IBlankNode;
-        var groundCode = graph.GetTriplesWithSubjectPredicate(ground, Vocabulary.GroundForRetentionCode).SingleOrDefault()?.Object as IUriNode;
+        var instrumentNumber = graph.GetTriplesWithSubjectPredicate(retentionRestriction ?? coalesceBlankNode, Vocabulary.RetentionInstrumentNumber).SingleOrDefault()?.Object as ILiteralNode;
+        var instrumentSignedDate = graph.GetTriplesWithSubjectPredicate(retentionRestriction ?? coalesceBlankNode, Vocabulary.RetentionInstrumentSignatureDate).SingleOrDefault()?.Object as ILiteralNode;
+        var restrictionReviewDate = graph.GetTriplesWithSubjectPredicate(retentionRestriction ?? coalesceBlankNode, Vocabulary.RetentionRestrictionReviewDate).SingleOrDefault()?.Object as ILiteralNode;
+        var ground = graph.GetTriplesWithSubjectPredicate(retentionRestriction ?? coalesceBlankNode, Vocabulary.RetentionRestrictionHasGroundForRetention).SingleOrDefault()?.Object as IBlankNode;
+        var groundCode = graph.GetTriplesWithSubjectPredicate(ground ?? coalesceBlankNode, Vocabulary.GroundForRetentionCode).SingleOrDefault()?.Object as IUriNode;
         var condition = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewHasAccessCondition).SingleOrDefault().Object as IBlankNode;
         var accessCode = graph.GetTriplesWithSubjectPredicate(condition, Vocabulary.AccessConditionCode).SingleOrDefault().Object as IUriNode;
         var legislation = graph.GetTriplesWithSubjectPredicate(restriction, Vocabulary.SensitivityReviewRestrictionHasLegislation).SingleOrDefault().Object as IBlankNode;
@@ -175,7 +186,10 @@ public class RdfExporter : IDriRdfExporter
             date?.AsValuedNode().AsDateTimeOffset(), startDate?.AsValuedNode().AsDateTimeOffset(),
             duration?.AsValuedNode().AsInteger(), description?.AsValuedNode().AsString(),
             instrumentNumber?.AsValuedNode().AsInteger(), instrumentSignedDate?.AsValuedNode().AsDateTimeOffset(),
-            restrictionReviewDate?.AsValuedNode().AsDateTimeOffset(), groundCode?.Uri);
+            restrictionReviewDate?.AsValuedNode().AsDateTimeOffset(), groundCode?.Uri,
+            changeDriId?.Uri, changeDescription?.AsValuedNode().AsString(),
+            changeDateTime?.AsValuedNode().AsDateTimeOffset(), operatorIdentifier?.Uri,
+            operatorName?.AsValuedNode().AsString());
     }
 
     private static DriVariation VariationBySubject(IGraph graph, IUriNode subject)

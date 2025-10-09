@@ -773,6 +773,19 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Subset has sensitivity review".
 
+:sensitivityReviewHasChange a owl:ObjectProperty;
+	rdfs:domain :SensitivityReview;
+	rdfs:range :Change;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sensitivity review has change".
+
+:changeHasSensitivityReview a owl:ObjectProperty, owl:InverseFunctionalProperty;
+	owl:inverseOf :sensitivityReviewHasChange;
+	rdfs:domain :Change;
+	rdfs:range :SensitivityReview;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Change has sensitivity review".
+
 :sensitivityReviewRestrictionHasLegislation a owl:ObjectProperty;
 	rdfs:domain :SensitivityReviewRestriction;
 	rdfs:range :Legislation;

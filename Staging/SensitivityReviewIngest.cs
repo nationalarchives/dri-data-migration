@@ -23,7 +23,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
 
         var graph = new Graph();
 
-        var proceed = await AddSensitivityReview(graph, id, dri, cancellationToken);
+        var proceed = await AddSensitivityReviewAsync(graph, id, dri, cancellationToken);
         if (!proceed)
         {
             return null;
@@ -35,17 +35,18 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
             return null;
         }
 
-        proceed = await AddTargetAssociation(graph, id, dri, cancellationToken);
+        proceed = await AddTargetAssociationAsync(graph, id, dri, cancellationToken);
         if (!proceed)
         {
             return null;
         }
 
-        proceed = await AddRetentionRestriction(graph, id, restriction, retentionRestriction, dri, cancellationToken);
+        proceed = await AddRetentionRestrictionAsync(graph, id, restriction, retentionRestriction, dri, cancellationToken);
         if (!proceed)
         {
             return null;
         }
+        await AddChangeAsync(graph, id, dri, cancellationToken);
 
         return graph;
     }
@@ -73,7 +74,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         }
     }
 
-    private async Task<bool> AddSensitivityReview(IGraph graph, INode id, DriSensitivityReview dri, CancellationToken cancellationToken)
+    private async Task<bool> AddSensitivityReviewAsync(IGraph graph, INode id, DriSensitivityReview dri, CancellationToken cancellationToken)
     {
         graph.Assert(id, Vocabulary.SensitivityReviewDriId, new LiteralNode(dri.Id));
         GraphAssert.Date(graph, id, dri.Date, Vocabulary.SensitivityReviewDate);
@@ -146,7 +147,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         return true;
     }
 
-    private async Task<bool> AddTargetAssociation(IGraph graph, INode id, DriSensitivityReview dri, CancellationToken cancellationToken)
+    private async Task<bool> AddTargetAssociationAsync(IGraph graph, INode id, DriSensitivityReview dri, CancellationToken cancellationToken)
     {
         if (dri.TargetType.Fragment == "#DeliverableUnit")
         {
@@ -180,7 +181,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         return true;
     }
 
-    private async Task<bool> AddRetentionRestriction(Graph graph, INode id, INode restriction, INode retentionRestriction,
+    private async Task<bool> AddRetentionRestrictionAsync(Graph graph, INode id, INode restriction, INode retentionRestriction,
         DriSensitivityReview dri, CancellationToken cancellationToken)
     {
         var existing = graph.Triples.Count;
@@ -240,5 +241,29 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
             }
         }
         return true;
+    }
+
+    private async Task AddChangeAsync(IGraph graph, INode id, DriSensitivityReview dri,
+        CancellationToken cancellationToken)
+    {
+        if (dri.ChangeId is null)
+        {
+            return;
+        }
+        var change = await cacheClient.CacheFetchOrNew(CacheEntityKind.Change, dri.ChangeId,
+            Vocabulary.ChangeDriId, cancellationToken);
+        graph.Assert(id, Vocabulary.SensitivityReviewHasChange, change);
+        GraphAssert.Text(graph, change, dri.ChangeDescription, Vocabulary.ChangeDescription);
+        if (dri.ChangeTimestamp is not null)
+        {
+            graph.Assert(change, Vocabulary.ChangeDateTime, new DateTimeNode(dri.ChangeTimestamp.Value));
+        }
+        if (dri.ChangeOperatorId is not null)
+        {
+            var operatorId = await cacheClient.CacheFetchOrNew(CacheEntityKind.Operator,
+                dri.ChangeOperatorId, Vocabulary.OperatorIdentifier, cancellationToken);
+            graph.Assert(change, Vocabulary.ChangeHasOperator, operatorId);
+            GraphAssert.Text(graph, operatorId, dri.ChangeOperatorName, Vocabulary.OperatorName);
+        }
     }
 }

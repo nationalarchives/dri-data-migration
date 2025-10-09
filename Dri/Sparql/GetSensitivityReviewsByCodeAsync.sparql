@@ -32,6 +32,15 @@ construct {
         ];
         ex:sensitivityReviewHasAccessCondition [
             ex:accessConditionCode ?closureType
+        ];
+        ex:sensitivityReviewHasChange [
+            ex:changeDriId ?change;
+            ex:changeDescription ?changeLabel;
+            ex:changeDateTime ?changeTime;
+            ex:changeHasOperator [
+                ex:operatorIdentifier ?changeOperator;
+                ex:operatorName ?changeAgentLabel
+            ]
         ].
 }
 where {
@@ -39,7 +48,8 @@ where {
         select ?closure ?type ?record ?reference ?exemptionAsserted ?titleAlternative
             ?descriptionAlternative ?previous ?reviewDate ?startDate ?closurePeriod
             ?reasonForChange ?rINumber ?rISignedDate ?retentionReconsiderDate ?retentionJustification
-	        (group_concat(?legislation; separator=',') as ?legislations) ?closureType where {
+	        (group_concat(?legislation; separator=',') as ?legislations) ?closureType
+            ?change ?changeOperator ?changeTime ?changeAgentLabel ?changeLabel where {
             bind(@id as ?code)
             bind(replace(@id,' ','_') as ?code2)
             ?closure prov:specializationOf ?record;
@@ -79,6 +89,14 @@ where {
             optional { ?closure dri:rINumber ?rINumber }
             optional { ?closure dri:rISignedDate ?rISignedDate }
     		optional { ?closure dri:retentionJustification ?retentionJustification }
+            optional {
+                ?closure prov:qualifiedGeneration ?qualifiedGeneration.
+                ?qualifiedGeneration prov:atTime ?changeTime;
+    	            prov:activity ?change.
+                ?change rdfs:label ?changeLabel;
+    	            prov:wasAssociatedWith ?changeOperator.
+                ?changeOperator rdfs:label ?changeAgentLabel.
+            }
             filter exists {
                 {
                     ?closure dri:titleAlternative ?titleAlternative
@@ -96,6 +114,7 @@ where {
         group by ?closure ?type ?record ?reference ?exemptionAsserted ?titleAlternative ?descriptionAlternative
 	        ?previous ?reviewDate ?startDate ?closurePeriod ?reasonForChange ?rINumber ?rISignedDate
 	        ?retentionReconsiderDate ?retentionJustification ?closureType
+            ?change ?changeOperator ?changeTime ?changeAgentLabel ?changeLabel
         order by ?reference
         limit @limit offset @offset
     }

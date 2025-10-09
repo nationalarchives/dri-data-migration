@@ -16,5 +16,6 @@ public enum CacheEntityKind
     SealCategory,
     Operator,
     Person,
-    Battalion
+    Battalion,
+    Change
 }

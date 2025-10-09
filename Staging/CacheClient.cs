@@ -26,6 +26,7 @@ public class CacheClient : ICacheClient
     private readonly string operatorSparql;
     private readonly string personSparql;
     private readonly string battalionSparql;
+    private readonly string changeSparql;
 
     private readonly string accessConditionsSparql;
     private readonly string legislationsSparql;
@@ -62,6 +63,7 @@ public class CacheClient : ICacheClient
         operatorSparql = embedded.GetSparql("GetOperator");
         personSparql = embedded.GetSparql("GetPerson");
         battalionSparql = embedded.GetSparql("GetBattalion");
+        changeSparql = embedded.GetSparql("GetChange");
 
         accessConditionsSparql = embedded.GetSparql("GetAccessConditions");
         legislationsSparql = embedded.GetSparql("GetLegislations");
@@ -190,6 +192,7 @@ public class CacheClient : ICacheClient
         CacheEntityKind.Operator => new(operatorSparql, $"operator-{key}"),
         CacheEntityKind.Person => new(personSparql, $"person-{key}"),
         CacheEntityKind.Battalion => new(battalionSparql, $"battalion-{key}"),
+        CacheEntityKind.Change => new(changeSparql, $"change-{key}"),
         _ => null
     };
 

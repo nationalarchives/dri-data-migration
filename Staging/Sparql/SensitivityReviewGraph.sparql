@@ -10,7 +10,8 @@ construct {
         ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName;
         ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription;
         ex:sensitivityReviewHasPastSensitivityReview ?pastSensitivityReview;
-        ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
+        ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction;
+        ex:sensitivityReviewHasChange ?change.
     ?restriction ex:sensitivityReviewRestrictionReviewDate ?sensitivityReviewRestrictionReviewDate;
         ex:sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionCalculationStartDate;
         ex:sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionDuration;
@@ -25,6 +26,10 @@ construct {
         ex:retentionRestrictionHasRetention ?retention.
     ?asset ex:assetHasRetention ?retention.
     ?subset ex:subsetHasRetention ?retention.
+    ?change ex:changeDescription ?changeDescription;
+        ex:changeDateTime ?changeDateTime;
+        ex:changeHasOperator ?changeOperator.
+    ?changeOperator ex:operatorName ?changeAgentLabel.
 } where {
     bind(@id as ?sensitivityReviewDriId)
     ?sr ex:sensitivityReviewDriId ?sensitivityReviewDriId.
@@ -55,6 +60,15 @@ construct {
                 optional { ?asset ex:assetHasRetention ?retention }
                 optional { ?subset ex:subsetHasRetention ?retention }
             }
+        }
+    }
+    optional {
+        ?sr ex:sensitivityReviewHasChange ?change.
+        optional { ?change ex:changeDescription ?changeDescription }
+        optional { ?change ex:changeDateTime ?changeDateTime }
+        optional { 
+            ?change ex:changeHasOperator ?changeOperator.
+            optional { ?changeOperator ex:operatorName ?changeAgentLabel }
         }
     }
 }

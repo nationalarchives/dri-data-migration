@@ -18,7 +18,10 @@ public sealed class SensitivityReviewIngestTest
         "Sensitive name", "Sensitive description", DateTimeOffset.UtcNow.AddDays(-2),
         DateTimeOffset.UtcNow.AddDays(-3), 1, "Restriction description", 2,
         DateTimeOffset.UtcNow.AddDays(-4), DateTimeOffset.UtcNow.AddDays(-5),
-        new("http://example.com/ground-for-retention#gfr1"));
+        new("http://example.com/ground-for-retention#gfr1"),
+        new("http://example.com/change1"), "Change description",
+        DateTimeOffset.UtcNow.AddDays(-6), new("http://example.com/change-operator1"),
+        "Change operator name");
     private readonly FakeLogger<SensitivityReviewIngest> logger = new();
     private readonly Mock<ISparqlClient> client = new();
     private readonly Mock<ICacheClient> cache;
@@ -29,7 +32,9 @@ public sealed class SensitivityReviewIngestTest
     private readonly IUriNode restriction = CacheClient.NewId;
     private readonly IUriNode variation = CacheClient.NewId;
     private readonly IUriNode retentionRestriction = CacheClient.NewId;
-
+    private readonly IUriNode change = CacheClient.NewId;
+    private readonly IUriNode changeOperator = CacheClient.NewId;
+    
     public SensitivityReviewIngestTest()
     {
         cache = new();
@@ -44,6 +49,12 @@ public sealed class SensitivityReviewIngestTest
             .ReturnsAsync(previousSr);
         cache.Setup(c => c.CacheFetch(CacheEntityKind.Variation, dri.TargetId, CancellationToken.None))
             .ReturnsAsync(variation);
+        cache.Setup(c => c.CacheFetchOrNew(CacheEntityKind.Change, dri.ChangeId,
+                Vocabulary.ChangeDriId, CancellationToken.None))
+            .ReturnsAsync(change);
+        cache.Setup(c => c.CacheFetchOrNew(CacheEntityKind.Operator, dri.ChangeOperatorId,
+                Vocabulary.OperatorIdentifier, CancellationToken.None))
+            .ReturnsAsync(changeOperator);
     }
 
     [TestInitialize]
@@ -82,7 +93,7 @@ public sealed class SensitivityReviewIngestTest
 
         recordIngestedCount.Should().Be(1);
         client.Verify(c => c.ApplyDiffAsync(
-            It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 18 && !r.RemovedTriples.Any()),
+            It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 23 && !r.RemovedTriples.Any()),
             CancellationToken.None), Times.Once);
     }
 
@@ -109,6 +120,11 @@ public sealed class SensitivityReviewIngestTest
         existing.Assert(retentionRestriction, Vocabulary.RetentionInstrumentSignatureDate, new DateNode(dri.InstrumentSignedDate!.Value));
         existing.Assert(retentionRestriction, Vocabulary.RetentionRestrictionReviewDate, new DateNode(dri.RestrictionReviewDate!.Value));
         existing.Assert(retentionRestriction, Vocabulary.RetentionRestrictionHasGroundForRetention, gfr);
+        existing.Assert(id, Vocabulary.SensitivityReviewHasChange, change);
+        existing.Assert(change, Vocabulary.ChangeDescription, new LiteralNode(dri.ChangeDescription));
+        existing.Assert(change, Vocabulary.ChangeDateTime, new DateTimeNode(dri.ChangeTimestamp.Value));
+        existing.Assert(change, Vocabulary.ChangeHasOperator, changeOperator);
+        existing.Assert(changeOperator, Vocabulary.OperatorName, new LiteralNode(dri.ChangeOperatorName));
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
@@ -145,6 +161,11 @@ public sealed class SensitivityReviewIngestTest
         existing.Assert(retentionRestriction, Vocabulary.RetentionInstrumentSignatureDate, new DateNode(dri.InstrumentSignedDate!.Value));
         existing.Assert(retentionRestriction, Vocabulary.RetentionRestrictionReviewDate, new DateNode(dri.RestrictionReviewDate!.Value));
         existing.Assert(retentionRestriction, Vocabulary.RetentionRestrictionHasGroundForRetention, gfr);
+        existing.Assert(id, Vocabulary.SensitivityReviewHasChange, change);
+        existing.Assert(change, Vocabulary.ChangeDescription, new LiteralNode(dri.ChangeDescription));
+        existing.Assert(change, Vocabulary.ChangeDateTime, new DateTimeNode(dri.ChangeTimestamp.Value));
+        existing.Assert(change, Vocabulary.ChangeHasOperator, changeOperator);
+        existing.Assert(changeOperator, Vocabulary.OperatorName, new LiteralNode(dri.ChangeOperatorName));
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);

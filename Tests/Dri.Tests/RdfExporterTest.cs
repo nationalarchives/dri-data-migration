@@ -179,11 +179,17 @@ public sealed class RdfExporterTest
         var instrumentSignedDate = DateTimeOffset.UtcNow.AddDays(-3);
         var restrictionReviewDate = DateTimeOffset.UtcNow.AddDays(-4);
         var groundForRetention = new Uri("http://example.com/gfr");
+        var changeDriId = new Uri("http://example.com/change");
+        var changeDescription = "Change description";
+        var changeDateTime = DateTimeOffset.UtcNow.AddDays(-5);
+        var changeOperatorLink = new Uri("http://example.com/operator");
+        var changeOperatorName = "Operator name";
         var expected = new DriSensitivityReview(link, targetReference, targetLink,
             targetType, acLink, [legislationLink], reviewDate, previousSrLink,
             sensitiveName, sensitiveDescription, date, restrictionStartDate,
             restrictionDuration, restrictionDescription, instrumentNumber,
-            instrumentSignedDate, restrictionReviewDate, groundForRetention);
+            instrumentSignedDate, restrictionReviewDate, groundForRetention,
+            changeDriId, changeDescription, changeDateTime, changeOperatorLink, changeOperatorName);
         var graph = new Graph();
         var subject = graph.CreateUriNode(link);
         graph.Assert(subject, Vocabulary.SensitivityReviewDriId, subject);
@@ -214,7 +220,16 @@ public sealed class RdfExporterTest
         var ac = graph.CreateBlankNode();
         graph.Assert(subject, Vocabulary.SensitivityReviewHasAccessCondition, ac);
         graph.Assert(ac, Vocabulary.AccessConditionCode, graph.CreateUriNode(acLink));
-        
+        var change = graph.CreateBlankNode();
+        graph.Assert(subject, Vocabulary.SensitivityReviewHasChange, change);
+        graph.Assert(change, Vocabulary.ChangeDriId, new UriNode(changeDriId));
+        graph.Assert(change, Vocabulary.ChangeDescription, new LiteralNode(changeDescription));
+        graph.Assert(change, Vocabulary.ChangeDateTime, new DateTimeNode(changeDateTime));
+        var operatorId = graph.CreateBlankNode();
+        graph.Assert(change, Vocabulary.ChangeHasOperator, operatorId);
+        graph.Assert(operatorId, Vocabulary.OperatorIdentifier, new UriNode(changeOperatorLink));
+        graph.Assert(operatorId, Vocabulary.OperatorName, new LiteralNode(changeOperatorName));
+
         sparqlClient.Setup(s => s.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(graph);
 
