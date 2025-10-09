@@ -50,6 +50,44 @@ Content-Type: text/turtle
         ]
     ].
 
+### Applying ontology
+POST {{endpoint}}/statements
+Content-Type: application/sparql-update
+Accept: text/turtle
+
+prefix :<http://id.example.com/schema/>
+prefix this:<http://id.example.com/>
+prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+prefix owl:<http://www.w3.org/2002/07/owl#>
+prefix xsd:<http://www.w3.org/2001/XMLSchema#>
+prefix rico:<https://www.ica.org/standards/RiC/ontology#>
+
+insert data {
+  _:b1 <http://www.ontotext.com/owlim/system#schemaTransaction> _:b2.
+
+  <Paste content of the Ontology.ttl>
+}
+
+### Modifying ontology
+POST {{endpoint}}/statements
+Content-Type: application/sparql-update
+Accept: text/turtle
+
+prefix :<http://id.example.com/schema/>
+prefix this:<http://id.example.com/>
+prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+prefix owl:<http://www.w3.org/2002/07/owl#>
+prefix xsd:<http://www.w3.org/2001/XMLSchema#>
+prefix rico:<https://www.ica.org/standards/RiC/ontology#>
+
+delete {
+  <List statements to delete>
+}
+insert {
+  _:b1 <http://www.ontotext.com/owlim/system#schemaTransaction> _:b2.
+}
+where {}
+
 ### Index compacting
 POST {{endpoint}}/statements
 Content-Type: application/sparql-update
