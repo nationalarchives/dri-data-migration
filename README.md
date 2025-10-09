@@ -1,5 +1,6 @@
 [![Ontology CI](https://github.com/nationalarchives/dri-data-migration/actions/workflows/ontology-test.yml/badge.svg)](https://github.com/nationalarchives/dri-data-migration/actions/workflows/ontology-test.yml)
 [![CI](https://github.com/nationalarchives/dri-data-migration/actions/workflows/ci.yml/badge.svg)](https://github.com/nationalarchives/dri-data-migration/actions/workflows/ci.yml)
+[![Publish](https://github.com/nationalarchives/dri-data-migration/actions/workflows/publish.yml/badge.svg)](https://github.com/nationalarchives/dri-data-migration/actions/workflows/publish.yml)
 
 # DRI (Digital Records Infrastructure) data migration
 
