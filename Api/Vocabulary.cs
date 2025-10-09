@@ -192,7 +192,8 @@ public static class Vocabulary
     public static readonly IUriNode ChangeHasOperator = new UriNode(new(Namespace, "changeHasOperator"));
     
     public static readonly IUriNode OperatorIdentifier = new UriNode(new(Namespace, "operatorIdentifier"));
-    
+    public static readonly IUriNode OperatorName = new UriNode(new(Namespace, "operatorName"));
+
     public static readonly IUriNode PersonFullName = new UriNode(new(Namespace, "personFullName"));
     public static readonly IUriNode PersonGivenName = new UriNode(new(Namespace, "personGivenName"));
     public static readonly IUriNode PersonFamilyName = new UriNode(new(Namespace, "personFamilyName"));

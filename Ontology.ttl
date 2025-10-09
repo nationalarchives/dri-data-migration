@@ -300,16 +300,16 @@ this:schema a owl:Ontology;
 	rdfs:label "Change";
 	rdfs:comment "A thing describing a generic change to a thing.".
 
+:Operator a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:Agent;
+	rdfs:label "Operator";
+	rdfs:comment "An agent that performs operation on data.".
+
 :Person a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:seeAlso rico:Person;
 	rdfs:label "Person".
-
-:Operator a owl:Class;
-	rdfs:subClassOf :Person;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Operator";
-	rdfs:comment "A person that performs operation on data.".
 
 :NextOfKinRelationship a owl:Class;
 	rdfs:isDefinedBy this:schema;
@@ -1497,6 +1497,13 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Operator identifier".
+
+:operatorName a owl:DatatypeProperty;
+	rdfs:domain :Operator;
+	rdfs:subPropertyOf :name;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Operator name".
 
 :personFullName a owl:DatatypeProperty;
 	rdfs:domain :Person;

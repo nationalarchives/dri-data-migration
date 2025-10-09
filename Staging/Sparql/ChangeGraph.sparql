@@ -7,7 +7,7 @@ construct {
         ex:changeHasOperator ?operator;
         ex:changeHasAsset ?asset;
         ex:changeHasVariation ?variation.
-    ?operator ex:personFullName ?operatorName.
+    ?operator ex:operatorName ?operatorName.
 } where {
     bind(@id as ?changeDriId)
     ?change ex:changeDriId ?changeDriId;
@@ -15,7 +15,7 @@ construct {
     optional { ?change ex:changeDateTime ?changeDateTime }
     optional {
         ?change ex:changeHasOperator ?operator.
-        optional { ?operator ex:personFullName ?operatorName }
+        optional { ?operator ex:operatorName ?operatorName }
     }
     optional { ?change ex:changeHasAsset ?asset }
     optional { ?change ex:changeHasVariation ?variation }

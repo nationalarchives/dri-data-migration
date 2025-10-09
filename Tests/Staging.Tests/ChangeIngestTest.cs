@@ -62,7 +62,7 @@ public sealed class ChangeIngestTest
         existing.Assert(id, Vocabulary.ChangeDateTime, new DateTimeNode(dri.Timestamp));
         existing.Assert(id, Vocabulary.ChangeHasAsset, asset);
         existing.Assert(id, Vocabulary.ChangeHasOperator, user);
-        existing.Assert(user, Vocabulary.PersonFullName, new LiteralNode(dri.FullName));
+        existing.Assert(user, Vocabulary.OperatorName, new LiteralNode(dri.FullName));
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
@@ -87,7 +87,7 @@ public sealed class ChangeIngestTest
         existing.Assert(id, Vocabulary.ChangeDateTime, new DateTimeNode(dri.Timestamp));
         existing.Assert(id, Vocabulary.ChangeHasAsset, asset);
         existing.Assert(id, Vocabulary.ChangeHasOperator, user);
-        existing.Assert(user, Vocabulary.PersonFullName, new LiteralNode(dri.FullName));
+        existing.Assert(user, Vocabulary.OperatorName, new LiteralNode(dri.FullName));
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
