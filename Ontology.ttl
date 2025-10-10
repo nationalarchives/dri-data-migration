@@ -312,8 +312,8 @@ this:schema a owl:Ontology;
 	rdfs:label "Person".
 
 :Veteran a owl:Class;
+	rdfs:subClassOf :Person;
 	rdfs:isDefinedBy this:schema;
-	rdfs:seeAlso rico:Person;
 	rdfs:label "Veteran".
 
 :NextOfKinRelationship a owl:Class;
