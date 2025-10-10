@@ -96,7 +96,7 @@ internal class MissingRdfOldNamespace(ILogger logger)
                     {
                         typedAttr = doc.CreateAttribute("rdf:datatype", NamespaceMapper.RDF);
                     }
-                    typedAttr.Value = attr.Value;
+                    typedAttr.Value = string.IsNullOrWhiteSpace(attr.Value) ? "Undefined" : attr.Value;
                     allowedAttributes.Add(typedAttr);
                 }
                 else

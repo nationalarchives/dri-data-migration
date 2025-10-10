@@ -15,7 +15,6 @@ public enum CacheEntityKind
     GeographicalPlace,
     SealCategory,
     Operator,
-    Person,
     Battalion,
     Change
 }

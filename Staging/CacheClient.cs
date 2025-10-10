@@ -24,7 +24,6 @@ public class CacheClient : ICacheClient
     private readonly string geographicalPlaceSparql;
     private readonly string sealCategorySparql;
     private readonly string operatorSparql;
-    private readonly string personSparql;
     private readonly string battalionSparql;
     private readonly string changeSparql;
 
@@ -61,7 +60,6 @@ public class CacheClient : ICacheClient
         geographicalPlaceSparql = embedded.GetSparql("GetGeographicalPlace");
         sealCategorySparql = embedded.GetSparql("GetSealCategory");
         operatorSparql = embedded.GetSparql("GetOperator");
-        personSparql = embedded.GetSparql("GetPerson");
         battalionSparql = embedded.GetSparql("GetBattalion");
         changeSparql = embedded.GetSparql("GetChange");
 
@@ -190,7 +188,6 @@ public class CacheClient : ICacheClient
         CacheEntityKind.GeographicalPlace => new(geographicalPlaceSparql, $"geographical-place-{key}"),
         CacheEntityKind.SealCategory => new(sealCategorySparql, $"seal-category-{key}"),
         CacheEntityKind.Operator => new(operatorSparql, $"operator-{key}"),
-        CacheEntityKind.Person => new(personSparql, $"person-{key}"),
         CacheEntityKind.Battalion => new(battalionSparql, $"battalion-{key}"),
         CacheEntityKind.Change => new(changeSparql, $"change-{key}"),
         _ => null

@@ -93,6 +93,7 @@ public static class IngestVocabulary
     public static readonly IUriNode Relation = new UriNode(new(TnaNamespaceWithSlash, "person/relation"));
     public static readonly IUriNode Person = new UriNode(new(TnaNamespaceWithSlash, "person/person"));
     public static readonly IUriNode NameString = new UriNode(new(TnaNamespaceWithSlash, "person/nameString"));
+    public static readonly IUriNode PreviousMilitaryService = new UriNode(new("http://nationalarchives.gov.uk/dataset/homeguard/metadata/previousMilitaryService"));
 
     public static readonly IUriNode DctermsDescription = new UriNode(new(DctermsNamespace, "description")); //TODO: remove after checking data
 }

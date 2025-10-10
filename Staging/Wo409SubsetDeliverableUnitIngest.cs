@@ -70,7 +70,7 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
             return;
         }
 
-        var person = await AddPersonAsync(graph, rdf, id, cancellationToken);
+        var person = await AddPersonAsync(graph, existing, rdf, id, cancellationToken);
         if (person is null)
         {
             return;
@@ -90,7 +90,7 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
         await AddRelationAsync(graph, existing, rdf, subjectTriple.Object, person, cancellationToken);
     }
 
-    private async Task<IUriNode?> AddPersonAsync(IGraph graph, IGraph rdf,
+    private async Task<IUriNode?> AddPersonAsync(IGraph graph, IGraph existing, IGraph rdf,
         INode id, CancellationToken cancellationToken)
     {
         var names = rdf.GetTriplesWithPredicate(IngestVocabulary.NamePart).Select(t => t.Object).Cast<ILiteralNode>();
@@ -102,10 +102,14 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
         {
             return null;
         }
-
-        var person = await cacheClient.CacheFetchOrNew(CacheEntityKind.Person, fullName,
-            Vocabulary.PersonFullName, cancellationToken);
-        graph.Assert(id, Vocabulary.AssetHasPerson, person);
+        var previousMilitaryService = rdf.GetTriplesWithPredicate(IngestVocabulary.PreviousMilitaryService)
+            .SingleOrDefault()?.Object as ILiteralNode;
+        bool isVeteran = previousMilitaryService?.Value == "true";
+        var person = (isVeteran ?
+            existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasVeteran).SingleOrDefault()?.Object as IUriNode :
+            existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasPerson).SingleOrDefault()?.Object as IUriNode) ??
+            CacheClient.NewId;
+        graph.Assert(id, isVeteran ? Vocabulary.AssetHasVeteran : Vocabulary.AssetHasPerson, person);
         graph.Assert(person, Vocabulary.PersonGivenName, new LiteralNode(firstName));
         graph.Assert(person, Vocabulary.PersonFamilyName, new LiteralNode(lastName));
 
@@ -169,35 +173,57 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
                     .SingleOrDefault()?.Object as ILiteralNode;
                 if (relationName is not null && !string.IsNullOrWhiteSpace(relationName.Value))
                 {
-                    var relationship = existing.GetTriplesWithSubjectPredicate(person, Vocabulary.PersonHasNextOfKinRelationship).SingleOrDefault()?.Object ??
-                        CacheClient.NewId;
+                    var relationship = existing.GetTriplesWithSubjectPredicate(person, Vocabulary.PersonHasNextOfKinRelationship)
+                        .SingleOrDefault()?.Object ?? CacheClient.NewId;
                     graph.Assert(person, Vocabulary.PersonHasNextOfKinRelationship, relationship);
 
-                    var personNextOfKin = await cacheClient.CacheFetchOrNew(CacheEntityKind.Person, relationName.Value,
-                        Vocabulary.PersonFullName, cancellationToken);
+                    var personNextOfKin = existing.GetTriplesWithSubjectPredicate(relationship, Vocabulary.NextOfKinRelationshipHasNextOfKin)
+                        .SingleOrDefault()?.Object ?? CacheClient.NewId;
                     graph.Assert(relationship, Vocabulary.NextOfKinRelationshipHasNextOfKin, personNextOfKin);
 
                     var relationType = rdf.GetTriplesWithPredicateObject(rdfsObject, relation)
                         .SingleOrDefault()?.Subject as IUriNode;
                     if (relationType is not null)
                     {
-                        var kinship = GetUriFragment(relationType.Uri) switch
+                        IUriNode[]? kinships = GetUriFragment(relationType.Uri) switch
                         {
-                            "Wife" => Vocabulary.Wife,
-                            "Mother" => Vocabulary.Mother,
-                            "Father" => Vocabulary.Father,
-                            "Sister" => Vocabulary.Sister,
-                            "Brother" => Vocabulary.Brother,
-                            "Uncle" => Vocabulary.Uncle,
+                            "Wife" or "wife" or "w" => [Vocabulary.Wife],
+                            "Mother" => [Vocabulary.Mother],
+                            "Father" or "father" => [Vocabulary.Father],
+                            "Sister" or "sister" => [Vocabulary.Sister],
+                            "Brother" => [Vocabulary.Brother],
+                            "Uncle" => [Vocabulary.Uncle],
+                            "Son" or "Sons" => [Vocabulary.Son],
+                            "Daughter" => [Vocabulary.Daughter],
+                            "Parents" => [Vocabulary.Mother, Vocabulary.Father],
+                            "Grandmother" => [Vocabulary.Grandmother],
+                            "Aunt" => [Vocabulary.Aunt],
+                            "Stepmother" => [Vocabulary.Stepmother],
+                            "Stepfather" => [Vocabulary.Stepfather],
+                            "Stepsister" => [Vocabulary.Stepsister],
+                            "Stepson" => [Vocabulary.Stepson],
+                            "Niece" => [Vocabulary.Niece],
+                            "Sister-in-Law" => [Vocabulary.SisterInLaw],
+                            "Brother-in-Law" => [Vocabulary.BrotherInLaw],
+                            "Mother-in-Law" => [Vocabulary.MotherInLaw],
+                            "Friend" => [Vocabulary.Friend],
+                            "Nephew" => [Vocabulary.Nephew],
+                            "Cousin" => [Vocabulary.Cousin],
+                            "Landlady" => [Vocabulary.Landlady],
+                            "Housekeeper" => [Vocabulary.Housekeeper],
+                            "Undefined" => [Vocabulary.UndefinedKinship],
                             _ => null
                         };
-                        if (kinship is null)
+                        if (kinships is null)
                         {
                             logger.UnrecognizedKinship(relationType.Uri);
                         }
                         else
                         {
-                            graph.Assert(relationship, Vocabulary.NextOfKinRelationshipHasKinship, kinship);
+                            foreach (var kinship in kinships)
+                            {
+                                graph.Assert(relationship, Vocabulary.NextOfKinRelationshipHasKinship, kinship);
+                            }
                         }
                     }
                 }

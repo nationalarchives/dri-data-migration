@@ -4,7 +4,7 @@ construct {
     ?asset ex:assetDriId ?assetDriId;
         ex:wo409SubsetDriXml ?wo409SubsetDriXml;
         ex:nationalRegistrationNumber ?nationalRegistrationNumber;
-        ex:assetHasPerson ?person.
+        ?assetPersonPredicate ?person.
     ?person ex:personGivenName ?personGivenName;
         ex:personFamilyName ?personFamilyName;
         ex:personHasContactPoint ?personHasContactPoint;
@@ -21,7 +21,15 @@ construct {
     optional { ?asset ex:wo409SubsetDriXml ?wo409SubsetDriXml }
     optional { ?asset ex:nationalRegistrationNumber ?nationalRegistrationNumber }
     optional {
-        ?asset ex:assetHasPerson ?person.
+        {
+            ?asset ex:assetHasPerson ?person.
+            bind(ex:assetHasPerson as ?assetPersonPredicate)
+        }
+        union
+        {
+            ?asset ex:assetHasVeteran ?person.
+            bind(ex:assetHasVeteran as ?assetPersonPredicate)
+        }
         optional { ?person ex:personGivenName ?personGivenName }
         optional { ?person ex:personFamilyName ?personFamilyName }
         optional { ?person ex:personHasContactPoint ?personHasContactPoint }

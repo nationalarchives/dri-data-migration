@@ -311,6 +311,11 @@ this:schema a owl:Ontology;
 	rdfs:seeAlso rico:Person;
 	rdfs:label "Person".
 
+:Veteran a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:Person;
+	rdfs:label "Veteran".
+
 :NextOfKinRelationship a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Next of kin relationship".
@@ -348,6 +353,91 @@ this:schema a owl:Ontology;
 	rdfs:subClassOf :Kinship;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Uncle".
+
+:Son a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Son".
+
+:Daughter a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Daughter".
+
+:Grandmother a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Grandmother".
+
+:Aunt a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Aunt".
+
+:Stepmother a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Stepmother".
+
+:Stepfather a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Stepfather".
+
+:Stepsister a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Stepsister".
+
+:Stepson a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Stepson".
+
+:Niece a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Niece".
+
+:SisterInLaw a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Sister-in-law".
+
+:BrotherInLaw a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Brother-in-law".
+
+:MotherInLaw a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Mother-in-law".
+
+:Friend a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Friend".
+
+:Nephew a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Nephew".
+
+:Cousin a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Cousin".
+
+:Landlady a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Landlady".
+
+:Housekeeper a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Housekeeper".
 
 :BattalionMembership a owl:Class;
 	rdfs:isDefinedBy this:schema;
@@ -602,6 +692,19 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Person has asset".
 
+:assetHasVeteran a owl:ObjectProperty;
+	rdfs:domain :Asset;
+	rdfs:range :Veteran;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has veteran".
+
+:veteranHasAsset a owl:ObjectProperty;
+	owl:inverseOf :assetHasVeteran;
+	rdfs:domain :Veteran;
+	rdfs:range :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Veteran has asset".
+
 :variationHasChange a owl:ObjectProperty;
 	rdfs:domain :Variation;
 	rdfs:range :Change;
@@ -855,13 +958,13 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Person has battalion membership".
 
-:personHasContactPoint a owl:ObjectProperty, owl:FunctionalProperty;
+:personHasContactPoint a owl:ObjectProperty;
 	rdfs:domain :Person;
 	rdfs:range :GeographicalPlace;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Person has contact point".
 
-:personHasBirthAddress a owl:ObjectProperty, owl:FunctionalProperty;
+:personHasBirthAddress a owl:ObjectProperty;
 	rdfs:domain :Person;
 	rdfs:range :GeographicalPlace;
 	rdfs:isDefinedBy this:schema;
