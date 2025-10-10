@@ -9,21 +9,21 @@ internal static class StagingReconciliationParser
     private const string file = "file";
 
     internal static IEnumerable<Dictionary<ReconciliationFieldName, object>> Parse(
-        IEnumerable<Dictionary<ReconciliationFieldName, object>> page, string code, string prefix, ReconciliationMapType mapType) =>
-        page.Select(r => Adjust(r, code, prefix)).Where(r => mapType != ReconciliationMapType.Discovery || r[ReconciliationFieldName.FileFolder] as string == file);
+        IEnumerable<Dictionary<ReconciliationFieldName, object>> page, ReconciliationMapType mapType) =>
+        page.Select(r => Adjust(r)).Where(r => mapType != ReconciliationMapType.Discovery || r[ReconciliationFieldName.FileFolder] as string == file);
 
-    private static Dictionary<ReconciliationFieldName, object> Adjust(Dictionary<ReconciliationFieldName, object> row, string code, string filePrefix) =>
-        row.Select(cell => Match(cell, row, code, filePrefix)).Where(kv => kv.Value is not null)
+    private static Dictionary<ReconciliationFieldName, object> Adjust(Dictionary<ReconciliationFieldName, object> row) =>
+        row.Select(cell => Match(cell, row)).Where(kv => kv.Value is not null)
             .ToDictionary(kv => kv.Key, kv => kv.Value!);
 
     private static KeyValuePair<ReconciliationFieldName, object?> Match(KeyValuePair<ReconciliationFieldName, object> cell,
-        Dictionary<ReconciliationFieldName, object> row, string code, string filePrefix) =>
+        Dictionary<ReconciliationFieldName, object> row) =>
             cell.Key switch
             {
                 ReconciliationFieldName.Id => new(cell.Key, ToId(row, cell.Value as string)),
                 ReconciliationFieldName.Reference => new(cell.Key, ToReference(row, cell.Value as string)),
                 ReconciliationFieldName.FileFolder => new(cell.Key, ToFileFolder(cell.Value as Uri)),
-                ReconciliationFieldName.ImportLocation => new(cell.Key, ToImportLocation(row, cell.Value as string, code, filePrefix)),
+                ReconciliationFieldName.ImportLocation => new(cell.Key, ToImportLocation(row, cell.Value as string)),
                 ReconciliationFieldName.VariationName => new(cell.Key, ToVariationName(row, cell.Value as string)),
                 ReconciliationFieldName.OriginStartDate => new(cell.Key, ToOriginDate(cell.Value as string)),
                 ReconciliationFieldName.OriginEndDate => new(cell.Key, ToOriginDate(cell.Value as string)),
@@ -49,19 +49,17 @@ internal static class StagingReconciliationParser
         subject == Vocabulary.Subset.Uri ? folder :
             subject == Vocabulary.Variation.Uri ? file : null;
 
-    private static string? ToImportLocation(Dictionary<ReconciliationFieldName, object> row, string? importLocation, string code, string filePrefix)
+    private static string? ToImportLocation(Dictionary<ReconciliationFieldName, object> row, string? importLocation)
     {
         if (row.TryGetValue(ReconciliationFieldName.FileFolder, out var fileFolder))
         {
-            //TODO: Remove filePrefix and left trim from content?
-            var replaced = importLocation?.Replace(code, filePrefix);
-            if (!string.IsNullOrWhiteSpace(replaced) && replaced.Last() != '/' &&
+            if (!string.IsNullOrWhiteSpace(importLocation) && importLocation.Last() != '/' &&
                 fileFolder.ToString() == Vocabulary.Subset.Uri.ToString())
             {
-                replaced = $"{replaced}/";
+                importLocation = $"{importLocation}/";
             }
 
-            return replaced;
+            return importLocation;
         }
         return null;
     }

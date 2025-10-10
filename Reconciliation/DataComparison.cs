@@ -27,8 +27,7 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
                 settings.FetchPageSize, offset, cancellationToken)).ToList();
             offset += settings.FetchPageSize;
 
-            var adjustedStaging = StagingReconciliationParser.Parse(page, settings.Code,
-                settings.FilePrefix, settings.MapKind).ToList();
+            var adjustedStaging = StagingReconciliationParser.Parse(page, settings.MapKind).ToList();
             var pageSummary = CheckRecords(expected, adjustedStaging);
             summary.Update(pageSummary);
         }

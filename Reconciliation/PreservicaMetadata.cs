@@ -20,7 +20,7 @@ public class PreservicaMetadata(ILogger<PreservicaMetadata> logger, IOptions<Rec
     private Dictionary<ReconciliationFieldName, object?> Filter(Dictionary<string, string> data) =>
         new()
         {
-            [ReconciliationFieldName.ImportLocation] = PreservicaExportParser.ToLocation(data["identifier"]),
+            [ReconciliationFieldName.ImportLocation] = PreservicaExportParser.ToLocation(data["identifier"], settings.Code),
             [ReconciliationFieldName.VariationName] = PreservicaExportParser.ToText(data["file_name"]),
             [ReconciliationFieldName.FileFolder] = PreservicaExportParser.ToText(data["folder"])
         };

@@ -20,7 +20,7 @@ public class PreservicaClosure(ILogger<PreservicaClosure> logger, IOptions<Recon
     private Dictionary<ReconciliationFieldName, object?> Filter(Dictionary<string, string> data) =>
         new()
         {
-            [ReconciliationFieldName.ImportLocation] = PreservicaExportParser.ToLocation(data["identifier"]),
+            [ReconciliationFieldName.ImportLocation] = PreservicaExportParser.ToLocation(data["identifier"], settings.Code),
             [ReconciliationFieldName.FileFolder] = PreservicaExportParser.ToText(data["folder"]),
             [ReconciliationFieldName.AccessConditionName] = PreservicaExportParser.ToText(data["closure_type"]),
             [ReconciliationFieldName.SensitivityReviewDuration] = PreservicaExportParser.ToInt(data["closure_period"]),

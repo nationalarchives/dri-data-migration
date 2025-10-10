@@ -36,7 +36,18 @@ internal static class PreservicaExportParser
     }
 
     internal static readonly Func<string?, string?> ToText = txt => txt;
-    internal static readonly Func<string?, string?> ToLocation = txt => string.IsNullOrWhiteSpace(txt) ? null : HttpUtility.UrlDecode(txt);
+    internal static string? ToLocation(string? txt, string code)
+    {
+        if (string.IsNullOrWhiteSpace(txt))
+        {
+            return null;
+        }
+        var location = HttpUtility.UrlDecode(txt);
+        location = location.Substring(location.IndexOf("/content/"))
+            .Replace("/content/", $"{code}/");
+
+        return location;
+    }
     internal static readonly Func<string?, object?> ToTextList = txt => string.IsNullOrWhiteSpace(txt) ? null : txt.Split(',', StringSplitOptions.RemoveEmptyEntries);
     internal static readonly Func<string?, object?> ToDate = txt => DateTimeOffset.TryParse(txt, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var v) ? v : null; //TODO: Test offset
     internal static readonly Func<string?, object?> ToInt = txt => int.TryParse(txt, out int v) ? v : null;

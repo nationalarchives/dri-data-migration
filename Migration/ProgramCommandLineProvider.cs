@@ -60,13 +60,6 @@ public class ProgramCommandLineProvider : ConfigurationProvider
         Arity = ArgumentArity.ZeroOrOne,
         Required = false
     };
-    private static readonly Option<string> filePrefix = new("--prefix", "-px")
-    {
-        Description = "Starting part of of the identifier in the exported file. This value will be used to replace catalogue reference in the staging data with the reference to match records.",
-        DefaultValueFactory = _ => string.Empty,
-        Arity = ArgumentArity.ExactlyOne,
-        Required = false
-    };
     private static readonly Option<FileInfo> fileLocation = new("--exported-file", "-ef")
     {
         Description = "Location of the exported file.",
@@ -115,7 +108,6 @@ public class ProgramCommandLineProvider : ConfigurationProvider
             """)
         {
             reference,
-            filePrefix,
             fileLocation,
             mapType,
             sparql,
@@ -213,10 +205,6 @@ public class ProgramCommandLineProvider : ConfigurationProvider
             if (parseResult.GetValue(mapType) is ReconciliationMapType mapKind)
             {
                 data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.MapKind)}", mapKind.ToString());
-            }
-            if (parseResult.GetValue(filePrefix) is string prefix)
-            {
-                data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.FilePrefix)}", prefix);
             }
             var info = parseResult.GetValue(fileLocation);
             if (info is not null)
