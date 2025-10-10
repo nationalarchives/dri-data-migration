@@ -38,25 +38,21 @@ public class ProgramHostedService(ILogger<ProgramHostedService> logger,
                 logger.MigrationFailedWithMessage(e.Message);
             }
             logger.MigrationFailedDetails(e);
-            return;
         }
         catch (TaskCanceledException e)
         {
             logger.ProcessCancelled();
             logger.MigrationFailedDetails(e);
-            return;
         }
         catch (SqliteException e) when (e.SqliteErrorCode == SQLitePCL.raw.SQLITE_INTERRUPT)
         {
             logger.ProcessCancelled();
             logger.MigrationFailedDetails(e);
-            return;
         }
         catch (Exception e)
         {
             logger.UnhandledException(e.Message);
             logger.MigrationFailedDetails(e);
-            return;
         }
         applicationLifetime.StopApplication();
     }
