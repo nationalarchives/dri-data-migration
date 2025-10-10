@@ -1,0 +1,24 @@
+﻿prefix ex: <http://id.example.com/schema/>
+
+select ?t ?importLocation ?variationName where {
+    bind(@id as ?id)
+    ?subset ex:subsetHasBroaderSubset*/ex:subsetReference ?id.
+    {
+    	?subset ex:subsetReference ?reference.
+        optional { ?subset ex:subsetHasRetention/ex:importLocation ?importFolder }
+        bind(ex:Subset as ?t)
+        bind(coalesce(?importFolder, ?id) as ?importLocation)
+    }
+    union
+    {
+        ?asset ex:assetHasSubset ?subset;
+            ex:assetHasVariation ?variation.
+        ?variation ex:variationName ?variationName.
+        optional { ?asset ex:assetHasRetention/ex:importLocation ?importFolder }
+        bind(ex:Variation as ?t)
+        bind(concat(coalesce(?importFolder, ?id), '/', ?variationName) as ?importLocation)
+    }
+}
+group by ?t ?importLocation ?variationName
+order by ?importLocation
+limit @limit offset @offset

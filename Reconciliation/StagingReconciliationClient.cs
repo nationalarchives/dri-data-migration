@@ -10,11 +10,17 @@ namespace Reconciliation;
 public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClient) : IStagingReconciliationClient
 {
     public async Task<IEnumerable<Dictionary<ReconciliationFieldName, object>>> FetchAsync(
-        string code, int pageSize, int offset, CancellationToken cancellationToken)
+        ReconciliationMapType mapType, string code, int pageSize, int offset, CancellationToken cancellationToken)
     {
+        var sparqlFileName = mapType switch
+        {
+            ReconciliationMapType.Closure => "ReconciliationPreservicaClosure",
+            ReconciliationMapType.Discovery => "ReconciliationDiscovery",
+            ReconciliationMapType.Metadata => "ReconciliationPreservicaMetadata",
+        };
         var currentAssembly = typeof(StagingReconciliationClient).Assembly;
         var baseName = $"{typeof(StagingReconciliationClient).Namespace}.Sparql";
-        var recordsByCodeSparql = new EmbeddedSparqlResource(currentAssembly, baseName).GetSparql("ReconciliationResultSet");
+        var recordsByCodeSparql = new EmbeddedSparqlResource(currentAssembly, baseName).GetSparql(sparqlFileName);
 
         var sparql = new SparqlParameterizedString(recordsByCodeSparql);
         sparql.SetParameter("id", new LiteralNode(code));
@@ -24,7 +30,8 @@ public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClien
         var dynamicResults = new DynamicSparqlResultSet(results);
 
         return dynamicResults.Select(row =>
-            Map.Select(kv => new KeyValuePair<ReconciliationFieldName, object?>(kv.Value.Field, Map[kv.Key].Conversion(row[kv.Key])))
+            Map.Where(kv => row.ContainsKey(kv.Key))
+            .Select(kv => new KeyValuePair<ReconciliationFieldName, object?>(kv.Value.Field, Map[kv.Key].Conversion(row[kv.Key])))
             .Where(kv => kv.Value is not null)
             .ToDictionary(kv => kv.Key, kv => kv.Value!));
     }
@@ -46,6 +53,7 @@ public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClien
         { "retentionType", new(ReconciliationFieldName.RetentionType, ToText) },
         { Vocabulary.SensitivityReviewDate.Uri.Segments.Last(), new(ReconciliationFieldName.SensitivityReviewDate, ToDateTime) },
         { Vocabulary.SensitivityReviewSensitiveName.Uri.Segments.Last(), new(ReconciliationFieldName.SensitivityReviewSensitiveName, ToText) },
+        { Vocabulary.SensitivityReviewSensitiveDescription.Uri.Segments.Last(), new(ReconciliationFieldName.SensitivityReviewSensitiveDescription, ToText) },
         { "isPublicName", new(ReconciliationFieldName.IsPublicName, ToRequiredBool) },
         { "isPublicDescription", new(ReconciliationFieldName.IsPublicDescription, ToRequiredBool) },
         { Vocabulary.SensitivityReviewRestrictionReviewDate.Uri.Segments.Last(), new(ReconciliationFieldName.SensitivityReviewRestrictionReviewDate, ToDateTime) },

@@ -28,6 +28,8 @@ public class PreservicaClosure(ILogger<PreservicaClosure> logger, IOptions<Recon
             [ReconciliationFieldName.LegislationSectionReference] = PreservicaExportParser.ToTextList(data["foi_exemption_code"]),
             [ReconciliationFieldName.SensitivityReviewDate] = PreservicaExportParser.ToDate(data["foi_exemption_asserted"]),
             [ReconciliationFieldName.IsPublicName] = PreservicaExportParser.ToBool(data["title_public"]),
-            [ReconciliationFieldName.SensitivityReviewSensitiveName] = PreservicaExportParser.ToText(data["title_alternate"])
+            [ReconciliationFieldName.SensitivityReviewSensitiveName] = PreservicaExportParser.ToText(data["title_alternate"]),
+            [ReconciliationFieldName.IsPublicDescription] = PreservicaExportParser.ToBool(data["description_public"]),
+            [ReconciliationFieldName.SensitivityReviewSensitiveDescription] = PreservicaExportParser.ToText(data["description_alternate"])
         };
 }

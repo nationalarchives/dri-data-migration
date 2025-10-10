@@ -6,7 +6,7 @@ namespace Reconciliation;
 internal static partial class Log
 {
     [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "Started {mapType} reconciliation on {code}")]
-    internal static partial void ReconciliationStarted(this ILogger logger, MapType mapType, string code);
+    internal static partial void ReconciliationStarted(this ILogger logger, ReconciliationMapType mapType, string code);
 
     [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "Finished reconciliation")]
     internal static partial void ReconciliationFinished(this ILogger logger);

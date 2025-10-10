@@ -8,7 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Sparql\ReconciliationResultSet.sparql" />
+    <EmbeddedResource Include="Sparql\ReconciliationPreservicaMetadata.sparql" />
+    <EmbeddedResource Include="Sparql\ReconciliationPreservicaClosure.sparql" />
+    <EmbeddedResource Include="Sparql\ReconciliationDiscovery.sparql" />
   </ItemGroup>
 
   <ItemGroup>

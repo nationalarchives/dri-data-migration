@@ -73,7 +73,7 @@ public class ProgramCommandLineProvider : ConfigurationProvider
         Arity = ArgumentArity.ExactlyOne,
         Required = false
     };
-    private static readonly Option<MapType> mapType = new("--mapping", "-mp")
+    private static readonly Option<ReconciliationMapType> mapType = new("--mapping", "-mp")
     {
         Description = "Mapping used to retrieve values from the exported file or Discovery API. Acceptable values: 'Discover', 'Metadata' or 'Closure'.",
         Arity = ArgumentArity.ExactlyOne,
@@ -210,7 +210,7 @@ public class ProgramCommandLineProvider : ConfigurationProvider
             {
                 data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.Code)}", code);
             }
-            if (parseResult.GetValue(mapType) is MapType mapKind)
+            if (parseResult.GetValue(mapType) is ReconciliationMapType mapKind)
             {
                 data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.MapKind)}", mapKind.ToString());
             }
@@ -223,7 +223,7 @@ public class ProgramCommandLineProvider : ConfigurationProvider
             {
                 data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.FileLocation)}", info.FullName);
             }
-            else if (mapKind != MapType.Discovery)
+            else if (mapKind != ReconciliationMapType.Discovery)
             {
                 return [];
             }

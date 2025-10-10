@@ -1,0 +1,74 @@
+﻿prefix ex: <http://id.example.com/schema/>
+
+select ?t ?importLocation ?accessConditionName
+	?sensitivityReviewDate ?sensitivityReviewSensitiveName ?isPublicName
+	?sensitivityReviewSensitiveDescription ?isPublicDescription
+    ?sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionDuration
+	?sensitivityReviewRestrictionEndYear (group_concat(?lsr; separator=',') as ?legislationSectionReference)
+where {
+    bind(@id as ?id)
+    ?subset ex:subsetHasBroaderSubset*/ex:subsetReference ?id.
+    bind(coalesce(?sensitivityReviewSensitiveNameV, ?sensitivityReviewSensitiveNameA) as ?sensitivityReviewSensitiveName)
+    bind(coalesce(?sensitivityReviewSensitiveNameV, ?sensitivityReviewSensitiveNameA) as ?isPublicName)
+    bind(coalesce(?sensitivityReviewSensitiveDescriptionV, ?sensitivityReviewSensitiveDescriptionA) as ?sensitivityReviewSensitiveDescription)
+    bind(coalesce(?sensitivityReviewSensitiveDescriptionV, ?sensitivityReviewSensitiveDescriptionA) as ?isPublicDescription)
+    {
+    	?subset ex:subsetReference ?reference.
+        optional { ?subset ex:subsetHasRetention/ex:importLocation ?importFolder }
+        bind(ex:Subset as ?t)
+        bind(coalesce(?importFolder, ?id) as ?importLocation)
+    }
+    union
+    {
+        ?asset ex:assetHasSubset ?subset;
+            ex:assetHasVariation ?variation.
+        ?variation ex:variationName ?variationName.
+        optional { ?asset ex:assetHasRetention/ex:importLocation ?importFolder }
+        bind(ex:Variation as ?t)
+        bind(concat(coalesce(?importFolder, ?id), '/', ?variationName) as ?importLocation)
+        optional {
+            ?asset ex:variationHasSensitivityReview ?srA.
+            filter not exists { ?futureSrA ex:sensitivityReviewHasPastSensitivityReview ?srA }
+            optional {
+                ?srA ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveNameA.
+            }
+            optional {
+                ?srA ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescriptionA.
+            }
+        }
+        optional {
+            ?variation ex:variationHasSensitivityReview ?sr.
+            filter not exists { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?sr }
+            optional { 
+                ?sr ex:sensitivityReviewHasAccessCondition ?ac.
+                ?ac ex:accessConditionName ?accessConditionName.
+            }
+            optional { ?sr ex:sensitivityReviewDate ?sensitivityReviewDate }
+            optional {
+                ?sr ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveNameV.
+            }
+            optional {
+                ?sr ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescriptionV.
+            }
+            optional {
+                ?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
+                optional { ?restriction ex:sensitivityReviewRestrictionReviewDate ?sensitivityReviewRestrictionReviewDate }
+                optional { ?restriction ex:sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionCalculationStartDate }
+                optional { ?restriction ex:sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionDuration }
+                optional { ?restriction ex:sensitivityReviewRestrictionEndYear ?sensitivityReviewRestrictionEndYear }
+                optional {
+                    ?restriction ex:sensitivityReviewRestrictionHasLegislation ?legislation.
+                    ?legislation ex:legislationSectionReference ?legislationSectionReference.
+                }
+            }
+            bind(coalesce(?legislationSectionReference, "open") as ?lsr)
+        }
+    }
+}
+group by ?t ?importLocation ?accessConditionName
+	?sensitivityReviewDate ?sensitivityReviewSensitiveName ?isPublicName
+	?sensitivityReviewSensitiveDescription ?isPublicDescription
+    ?sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionDuration
+	?sensitivityReviewRestrictionEndYear
+order by ?importLocation
+limit @limit offset @offset

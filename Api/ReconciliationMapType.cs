@@ -1,6 +1,6 @@
 ﻿namespace Api;
 
-public enum MapType
+public enum ReconciliationMapType
 {
     Discovery,
     Metadata,

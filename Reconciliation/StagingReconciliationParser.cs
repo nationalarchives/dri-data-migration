@@ -9,8 +9,8 @@ internal static class StagingReconciliationParser
     private const string file = "file";
 
     internal static IEnumerable<Dictionary<ReconciliationFieldName, object>> Parse(
-        IEnumerable<Dictionary<ReconciliationFieldName, object>> page, string code, string prefix, MapType mapType) =>
-        page.Select(r => Adjust(r, code, prefix)).Where(r => mapType != MapType.Discovery || r[ReconciliationFieldName.FileFolder] as string == file);
+        IEnumerable<Dictionary<ReconciliationFieldName, object>> page, string code, string prefix, ReconciliationMapType mapType) =>
+        page.Select(r => Adjust(r, code, prefix)).Where(r => mapType != ReconciliationMapType.Discovery || r[ReconciliationFieldName.FileFolder] as string == file);
 
     private static Dictionary<ReconciliationFieldName, object> Adjust(Dictionary<ReconciliationFieldName, object> row, string code, string filePrefix) =>
         row.Select(cell => Match(cell, row, code, filePrefix)).Where(kv => kv.Value is not null)
@@ -53,6 +53,7 @@ internal static class StagingReconciliationParser
     {
         if (row.TryGetValue(ReconciliationFieldName.FileFolder, out var fileFolder))
         {
+            //TODO: Remove filePrefix and left trim from content?
             var replaced = importLocation?.Replace(code, filePrefix);
             if (!string.IsNullOrWhiteSpace(replaced) && replaced.Last() != '/' &&
                 fileFolder.ToString() == Vocabulary.Subset.Uri.ToString())

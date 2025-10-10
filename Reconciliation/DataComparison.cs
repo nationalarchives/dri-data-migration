@@ -23,7 +23,7 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
         do
         {
             logger.GetReconciliationRecords(offset);
-            page = (await client.FetchAsync(settings.Code,
+            page = (await client.FetchAsync(settings.MapKind, settings.Code,
                 settings.FetchPageSize, offset, cancellationToken)).ToList();
             offset += settings.FetchPageSize;
 
@@ -54,9 +54,9 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
     {
         var source = settings.MapKind switch
         {
-            MapType.Discovery => sources.SingleOrDefault(s => s is DiscoveryRecord),
-            MapType.Closure => sources.SingleOrDefault(s => s is PreservicaClosure),
-            MapType.Metadata => sources.SingleOrDefault(s => s is PreservicaMetadata),
+            ReconciliationMapType.Discovery => sources.SingleOrDefault(s => s is DiscoveryRecord),
+            ReconciliationMapType.Closure => sources.SingleOrDefault(s => s is PreservicaClosure),
+            ReconciliationMapType.Metadata => sources.SingleOrDefault(s => s is PreservicaMetadata),
             _ => null
         };
 
@@ -79,7 +79,9 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
         foreach (var stagingRow in staging)
         {
             var stagingImportLocation = (stagingRow[ReconciliationFieldName.ImportLocation] as string)!;
-            var stagingIdentifier = stagingRow[ReconciliationFieldName.Reference] as string ?? stagingImportLocation;
+            var stagingIdentifier = stagingRow.ContainsKey(ReconciliationFieldName.Reference) ?
+                stagingRow[ReconciliationFieldName.Reference] as string : stagingImportLocation ??
+                stagingImportLocation;
             var expectedRow = expected.SingleOrDefault(p => SelectIdentifier(p).Equals(SelectIdentifier(stagingRow)));
 
             if (expectedRow is null)
@@ -140,7 +142,7 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
     }
 
     private string? SelectIdentifier(Dictionary<ReconciliationFieldName, object> item) =>
-        settings.MapKind == MapType.Discovery ?
+        settings.MapKind == ReconciliationMapType.Discovery ?
                 item[ReconciliationFieldName.Id] as string :
                 item[ReconciliationFieldName.ImportLocation] as string; //TODO: handle null
 }

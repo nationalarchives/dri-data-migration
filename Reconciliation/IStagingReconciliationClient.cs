@@ -1,7 +1,9 @@
-﻿namespace Reconciliation;
+﻿using Api;
+
+namespace Reconciliation;
 
 public interface IStagingReconciliationClient
 {
     Task<IEnumerable<Dictionary<ReconciliationFieldName, object>>> FetchAsync(
-        string code, int pageSize, int offset, CancellationToken cancellationToken);
+        ReconciliationMapType mapType, string code, int pageSize, int offset, CancellationToken cancellationToken);
 }
