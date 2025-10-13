@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace Reconciliation;
 
-public class PreservicaClosure(ILogger<PreservicaClosure> logger, IOptions<ReconciliationSettings> reconciliationSettings) : IReconciliationSource
+public class ClosureSource(ILogger<ClosureSource> logger, IOptions<ReconciliationSettings> reconciliationSettings) : IReconciliationSource
 {
     private readonly ReconciliationSettings settings = reconciliationSettings.Value;
 

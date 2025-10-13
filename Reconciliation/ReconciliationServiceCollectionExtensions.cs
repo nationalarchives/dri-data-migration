@@ -9,9 +9,9 @@ public static class ReconciliationServiceCollectionExtensions
     {
         services.AddHttpClient<IReconciliationSparqlClient, ReconciliationSparqlClient>(h => h.Timeout = TimeSpan.FromMinutes(3));
         services.AddSingleton<IStagingReconciliationClient, StagingReconciliationClient>();
-        services.AddHttpClient<IReconciliationSource, DiscoveryRecord>();
-        services.AddSingleton<IReconciliationSource, PreservicaClosure>();
-        services.AddSingleton<IReconciliationSource, PreservicaMetadata>();
+        services.AddHttpClient<IReconciliationSource, DiscoverySource>();
+        services.AddSingleton<IReconciliationSource, ClosureSource>();
+        services.AddSingleton<IReconciliationSource, MetadataSource>();
         services.AddSingleton<IDataComparison, DataComparison>();
 
         return services;

@@ -53,9 +53,9 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
     {
         var source = settings.MapKind switch
         {
-            ReconciliationMapType.Discovery => sources.SingleOrDefault(s => s is DiscoveryRecord),
-            ReconciliationMapType.Closure => sources.SingleOrDefault(s => s is PreservicaClosure),
-            ReconciliationMapType.Metadata => sources.SingleOrDefault(s => s is PreservicaMetadata),
+            ReconciliationMapType.Discovery => sources.SingleOrDefault(s => s is DiscoverySource),
+            ReconciliationMapType.Closure => sources.SingleOrDefault(s => s is ClosureSource),
+            ReconciliationMapType.Metadata => sources.SingleOrDefault(s => s is MetadataSource),
             _ => null
         };
 
