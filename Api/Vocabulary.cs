@@ -116,7 +116,7 @@ public static class Vocabulary
     public static readonly IUriNode SensitivityReviewHasSensitivityReviewRestriction = new UriNode(new(Namespace, "sensitivityReviewHasSensitivityReviewRestriction"));
     public static readonly IUriNode SensitivityReviewHasAccessCondition = new UriNode(new(Namespace, "sensitivityReviewHasAccessCondition"));
     public static readonly IUriNode SensitivityReviewHasChange = new UriNode(new(Namespace, "sensitivityReviewHasChange"));
-    
+
     public static readonly IUriNode SensitivityReviewRestrictionCalculationStartDate = new UriNode(new(Namespace, "sensitivityReviewRestrictionCalculationStartDate"));
     public static readonly IUriNode SensitivityReviewRestrictionDuration = new UriNode(new(Namespace, "sensitivityReviewRestrictionDuration"));
     public static readonly IUriNode SensitivityReviewRestrictionEndYear = new UriNode(new(Namespace, "sensitivityReviewRestrictionEndYear"));
@@ -130,7 +130,7 @@ public static class Vocabulary
 
     public static readonly IUriNode AccessConditionCode = new UriNode(new(Namespace, "accessConditionCode"));
     public static readonly IUriNode AccessConditionName = new UriNode(new(Namespace, "accessConditionName"));
-    
+
     public static readonly IUriNode RetentionRestrictionHasGroundForRetention = new UriNode(new(Namespace, "retentionRestrictionHasGroundForRetention"));
     public static readonly IUriNode RetentionRestrictionHasRetention = new UriNode(new(Namespace, "retentionRestrictionHasRetention"));
     public static readonly IUriNode RetentionInstrumentNumber = new UriNode(new(Namespace, "retentionInstrumentNumber"));
@@ -139,16 +139,16 @@ public static class Vocabulary
 
     public static readonly IUriNode GroundForRetentionCode = new UriNode(new(Namespace, "groundForRetentionCode"));
     public static readonly IUriNode GroundForRetentionDescription = new UriNode(new(Namespace, "groundForRetentionDescription"));
-    
+
     public static readonly IUriNode LanguageName = new UriNode(new(Namespace, "languageName"));
-    
+
     public static readonly IUriNode CopyrightTitle = new UriNode(new(Namespace, "copyrightTitle"));
-    
+
     public static readonly IUriNode RetentionHasFormalBody = new UriNode(new(Namespace, "retentionHasFormalBody"));
     public static readonly IUriNode CreationHasFormalBody = new UriNode(new(Namespace, "creationHasFormalBody"));
-    
+
     public static readonly IUriNode FormalBodyName = new UriNode(new(Namespace, "formalBodyName"));
-    
+
     public static readonly IUriNode PublicRecord = new UriNode(new(Namespace, "PublicRecord"));
     public static readonly IUriNode NotPublicRecord = new UriNode(new(Namespace, "NotPublicRecord"));
     public static readonly IUriNode WelshPublicRecord = new UriNode(new(Namespace, "WelshPublicRecord"));
@@ -164,14 +164,14 @@ public static class Vocabulary
 
     public static readonly IUriNode InquiryWitnessName = new UriNode(new(Namespace, "inquiryWitnessName"));
     public static readonly IUriNode InquiryWitnessAppearanceDescription = new UriNode(new(Namespace, "inquiryWitnessAppearanceDescription"));
-    
+
     public static readonly IUriNode DatedNoteHasDate = new UriNode(new(Namespace, "datedNoteHasDate"));
     public static readonly IUriNode ArchivistNote = new UriNode(new(Namespace, "archivistNote"));
 
     public static readonly IUriNode Year = new UriNode(new(Namespace, "year"));
     public static readonly IUriNode Month = new UriNode(new(Namespace, "month"));
     public static readonly IUriNode Day = new UriNode(new(Namespace, "day"));
-    
+
     public static readonly IUriNode GeographicalPlaceName = new UriNode(new(Namespace, "geographicalPlaceName"));
 
     public static readonly IUriNode ImageSplit = new UriNode(new(Namespace, "ImageSplit"));
@@ -179,20 +179,20 @@ public static class Vocabulary
     public static readonly IUriNode ManualImageCrop = new UriNode(new(Namespace, "ManualImageCrop"));
     public static readonly IUriNode AutoImageDeskew = new UriNode(new(Namespace, "AutoImageDeskew"));
     public static readonly IUriNode ManualImageDeskew = new UriNode(new(Namespace, "ManualImageDeskew"));
-    
+
     public static readonly IUriNode SealCategoryName = new UriNode(new(Namespace, "sealCategoryName"));
-    
+
     public static readonly IUriNode FragmentDimension = new UriNode(new(Namespace, "FragmentDimension"));
     public static readonly IUriNode FirstDimensionMillimetre = new UriNode(new(Namespace, "firstDimensionMillimetre"));
     public static readonly IUriNode SecondDimensionMillimetre = new UriNode(new(Namespace, "secondDimensionMillimetre"));
-    
+
     public static readonly IUriNode ChangeDriId = new UriNode(new(Namespace, "changeDriId"));
     public static readonly IUriNode ChangeDateTime = new UriNode(new(Namespace, "changeDateTime"));
     public static readonly IUriNode ChangeDescription = new UriNode(new(Namespace, "changeDescription"));
     public static readonly IUriNode ChangeHasAsset = new UriNode(new(Namespace, "changeHasAsset"));
     public static readonly IUriNode ChangeHasVariation = new UriNode(new(Namespace, "changeHasVariation"));
     public static readonly IUriNode ChangeHasOperator = new UriNode(new(Namespace, "changeHasOperator"));
-    
+
     public static readonly IUriNode OperatorIdentifier = new UriNode(new(Namespace, "operatorIdentifier"));
     public static readonly IUriNode OperatorName = new UriNode(new(Namespace, "operatorName"));
 
@@ -207,31 +207,45 @@ public static class Vocabulary
     public static readonly IUriNode PersonHasNextOfKinRelationship = new UriNode(new(Namespace, "personHasNextOfKinRelationship"));
     public static readonly IUriNode NextOfKinRelationshipHasNextOfKin = new UriNode(new(Namespace, "nextOfKinRelationshipHasNextOfKin"));
     public static readonly IUriNode BattalionMembershipHasBattalion = new UriNode(new(Namespace, "battalionMembershipHasBattalion"));
-    
+
     public static readonly IUriNode NextOfKinRelationshipHasKinship = new UriNode(new(Namespace, "nextOfKinRelationshipHasKinship"));
     public static readonly IUriNode Wife = new UriNode(new(Namespace, "Wife"));
+    public static readonly IUriNode Husband = new UriNode(new(Namespace, "Husband"));
     public static readonly IUriNode Mother = new UriNode(new(Namespace, "Mother"));
     public static readonly IUriNode Father = new UriNode(new(Namespace, "Father"));
     public static readonly IUriNode Sister = new UriNode(new(Namespace, "Sister"));
     public static readonly IUriNode Brother = new UriNode(new(Namespace, "Brother"));
     public static readonly IUriNode Uncle = new UriNode(new(Namespace, "Uncle"));
     public static readonly IUriNode Son = new UriNode(new(Namespace, "Son"));
+    public static readonly IUriNode AdoptedSon = new UriNode(new(Namespace, "AdoptedSon"));
     public static readonly IUriNode Daughter = new UriNode(new(Namespace, "Daughter"));
     public static readonly IUriNode Grandmother = new UriNode(new(Namespace, "Grandmother"));
+    public static readonly IUriNode Grandfather = new UriNode(new(Namespace, "Grandfather"));
+    public static readonly IUriNode Grandson = new UriNode(new(Namespace, "Grandson"));
     public static readonly IUriNode Aunt = new UriNode(new(Namespace, "Aunt"));
     public static readonly IUriNode Stepmother = new UriNode(new(Namespace, "Stepmother"));
     public static readonly IUriNode Stepfather = new UriNode(new(Namespace, "Stepfather"));
+    public static readonly IUriNode Stepuncle = new UriNode(new(Namespace, "Stepuncle"));
     public static readonly IUriNode Stepsister = new UriNode(new(Namespace, "Stepsister"));
+    public static readonly IUriNode Stepbrother = new UriNode(new(Namespace, "Stepbrother"));
+    public static readonly IUriNode HalfBrother = new UriNode(new(Namespace, "HalfBrother"));
+    public static readonly IUriNode FosterFather = new UriNode(new(Namespace, "FosterFather"));
+    public static readonly IUriNode FosterMother = new UriNode(new(Namespace, "FosterMother"));
     public static readonly IUriNode Stepson = new UriNode(new(Namespace, "Stepson"));
     public static readonly IUriNode Niece = new UriNode(new(Namespace, "Niece"));
     public static readonly IUriNode SisterInLaw = new UriNode(new(Namespace, "SisterInLaw"));
     public static readonly IUriNode BrotherInLaw = new UriNode(new(Namespace, "BrotherInLaw"));
     public static readonly IUriNode MotherInLaw = new UriNode(new(Namespace, "MotherInLaw"));
+    public static readonly IUriNode FatherInLaw = new UriNode(new(Namespace, "FatherInLaw"));
+    public static readonly IUriNode SonInLaw = new UriNode(new(Namespace, "SonInLaw"));
     public static readonly IUriNode Nephew = new UriNode(new(Namespace, "Nephew"));
     public static readonly IUriNode Cousin = new UriNode(new(Namespace, "Cousin"));
+    public static readonly IUriNode Fiance = new UriNode(new(Namespace, "Fiance"));
+    public static readonly IUriNode Fiancee = new UriNode(new(Namespace, "Fiancee"));
     public static readonly IUriNode Friend = new UriNode(new(Namespace, "Friend"));
     public static readonly IUriNode Landlady = new UriNode(new(Namespace, "Landlady"));
     public static readonly IUriNode Housekeeper = new UriNode(new(Namespace, "Housekeeper"));
+    public static readonly IUriNode Guardian = new UriNode(new(Namespace, "Guardian"));
     public static readonly IUriNode UndefinedKinship = new UriNode(new(Namespace, "UndefinedKinship"));
 
     public static readonly IUriNode BattalionName = new UriNode(new(Namespace, "battalionName"));

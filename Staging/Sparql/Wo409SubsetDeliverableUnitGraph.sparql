@@ -3,23 +3,24 @@
 construct {
     ?asset ex:assetDriId ?assetDriId;
         ex:wo409SubsetDriXml ?wo409SubsetDriXml;
-        ex:nationalRegistrationNumber ?nationalRegistrationNumber;
         ?assetPersonPredicate ?person.
     ?person ex:personGivenName ?personGivenName;
         ex:personFamilyName ?personFamilyName;
+        ex:personFullName ?personFullName;
         ex:personHasContactPoint ?personHasContactPoint;
         ex:personDateOfBirth ?personDateOfBirth;
         ex:personHasBirthAddress ?personHasBirthAddress;
         ex:personHasBattalionMembership ?battalionMembership;
+        ex:nationalRegistrationNumber ?nationalRegistrationNumber;
         ex:personHasNextOfKinRelationship ?nextOfKinRelationship.
     ?battalionMembership ex:battalionMembershipHasBattalion ?battalionMembershipHasBattalion.
     ?nextOfKinRelationship ex:nextOfKinRelationshipHasNextOfKin ?nextOfKinRelationshipHasNextOfKin;
         ex:nextOfKinRelationshipHasKinship ?nextOfKinRelationshipHasKinship.
+    ?nextOfKinRelationshipHasNextOfKin ex:personFullName ?nextOfKinPersonFullName.
 } where {
     bind(@id as ?assetDriId)
     ?asset ex:assetDriId ?assetDriId.
     optional { ?asset ex:wo409SubsetDriXml ?wo409SubsetDriXml }
-    optional { ?asset ex:nationalRegistrationNumber ?nationalRegistrationNumber }
     optional {
         {
             ?asset ex:assetHasPerson ?person.
@@ -32,16 +33,21 @@ construct {
         }
         optional { ?person ex:personGivenName ?personGivenName }
         optional { ?person ex:personFamilyName ?personFamilyName }
+        optional { ?person ex:personFullName ?personFullName }
         optional { ?person ex:personHasContactPoint ?personHasContactPoint }
         optional { ?person ex:personDateOfBirth ?personDateOfBirth }
         optional { ?person ex:personHasBirthAddress ?personHasBirthAddress }
+        optional { ?person ex:nationalRegistrationNumber ?nationalRegistrationNumber }
         optional {
             ?person ex:personHasBattalionMembership ?battalionMembership.
             optional { ?battalionMembership ex:battalionMembershipHasBattalion ?battalionMembershipHasBattalion }
         }
         optional {
             ?person ex:personHasNextOfKinRelationship ?nextOfKinRelationship.
-            optional { ?nextOfKinRelationship ex:nextOfKinRelationshipHasNextOfKin ?nextOfKinRelationshipHasNextOfKin }
+            optional { 
+                ?nextOfKinRelationship ex:nextOfKinRelationshipHasNextOfKin ?nextOfKinRelationshipHasNextOfKin.
+                optional { ?nextOfKinRelationshipHasNextOfKin ex:personFullName ?nextOfKinPersonFullName }
+            }
             optional { ?nextOfKinRelationship ex:nextOfKinRelationshipHasKinship ?nextOfKinRelationshipHasKinship }
         }
     }

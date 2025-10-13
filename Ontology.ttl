@@ -329,6 +329,11 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Wife".
 
+:Husband a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Husband".
+
 :Mother a owl:Class;
 	rdfs:subClassOf :Kinship;
 	rdfs:isDefinedBy this:schema;
@@ -359,6 +364,21 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Son".
 
+:AdoptedSon a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Adopted son".
+
+:AdoptedMother a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Adopted mother".
+
+:AdoptedDaughter a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Adopted daughter".
+
 :Daughter a owl:Class;
 	rdfs:subClassOf :Kinship;
 	rdfs:isDefinedBy this:schema;
@@ -368,6 +388,16 @@ this:schema a owl:Ontology;
 	rdfs:subClassOf :Kinship;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Grandmother".
+
+:Grandfather a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Grandfather".
+
+:Grandson a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Grandson".
 
 :Aunt a owl:Class;
 	rdfs:subClassOf :Kinship;
@@ -384,6 +414,21 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Stepfather".
 
+:Stepuncle a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Stepuncle".
+
+:FosterMother a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Foster mother".
+
+:FosterFather a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Foster father".
+
 :Stepsister a owl:Class;
 	rdfs:subClassOf :Kinship;
 	rdfs:isDefinedBy this:schema;
@@ -393,6 +438,16 @@ this:schema a owl:Ontology;
 	rdfs:subClassOf :Kinship;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Stepson".
+
+:Stepbrother a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Stepbrother".
+
+:HalfBrother a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Half brother".
 
 :Niece a owl:Class;
 	rdfs:subClassOf :Kinship;
@@ -414,6 +469,21 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Mother-in-law".
 
+:FatherInLaw a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Father-in-law".
+
+:SonInLaw a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Son-in-law".
+
+:NotRelated a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Not related".
+
 :Friend a owl:Class;
 	rdfs:subClassOf :Kinship;
 	rdfs:isDefinedBy this:schema;
@@ -429,6 +499,16 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Cousin".
 
+:Fiance a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Fiance".
+
+:Fiancee a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Fiancee".
+
 :Landlady a owl:Class;
 	rdfs:subClassOf :Kinship;
 	rdfs:isDefinedBy this:schema;
@@ -438,6 +518,16 @@ this:schema a owl:Ontology;
 	rdfs:subClassOf :Kinship;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Housekeeper".
+
+:Guardian a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Guardian".
+
+:UndefinedKinship a owl:Class;
+	rdfs:subClassOf :Kinship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Undefined kinship".
 
 :BattalionMembership a owl:Class;
 	rdfs:isDefinedBy this:schema;
@@ -982,7 +1072,7 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Next of kin relationship has next of kin".
 
-:nextOfKinRelationshipHasKinship a owl:ObjectProperty, owl:FunctionalProperty;
+:nextOfKinRelationshipHasKinship a owl:ObjectProperty;
 	rdfs:domain :NextOfKinRelationship;
 	rdfs:range :Kinship;
 	rdfs:isDefinedBy this:schema;
