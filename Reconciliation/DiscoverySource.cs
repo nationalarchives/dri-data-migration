@@ -54,12 +54,12 @@ public class DiscoverySource(HttpClient httpClient, ILogger<DiscoverySource> log
             [ReconciliationFieldName.Reference] = r.Reference!.Replace(' ', '/'),
             [ReconciliationFieldName.OriginStartDate] = r.NumStartDate,
             [ReconciliationFieldName.OriginEndDate] = r.NumEndDate,
+            [ReconciliationFieldName.ClosureStatus] = r.ClosureStatus,
             [ReconciliationFieldName.AccessConditionCode] = r.ClosureType,
+            [ReconciliationFieldName.RetentionBody] = string.Join(';', r.HeldBy),
             [ReconciliationFieldName.SensitivityReviewDuration] = ToDuration(r.ClosureType, r.ClosureCode),
             [ReconciliationFieldName.SensitivityReviewEndYear] = ToEndYear(r.ClosureType, r.ClosureCode),
             //[ReconciliationFieldName.SensitivityReviewRestrictionReviewDate] = ToDate(r.OpeningDate),
-            //[ReconciliationFieldName.IsPublicName] = r.ClosureStatus,
-            //[ReconciliationFieldName.IsPublicDescription] = r.ClosureStatus,
         }).Select(d => d.Where(kv => kv.Value is not null).ToDictionary(kv => kv.Key, kv => kv.Value!));
 
     private static readonly string[] YearDuration = ["D", "U"];
