@@ -218,6 +218,8 @@ public static class Vocabulary
     public static readonly IUriNode Uncle = new UriNode(new(Namespace, "Uncle"));
     public static readonly IUriNode Son = new UriNode(new(Namespace, "Son"));
     public static readonly IUriNode AdoptedSon = new UriNode(new(Namespace, "AdoptedSon"));
+    public static readonly IUriNode AdoptedMother = new UriNode(new(Namespace, "AdoptedMother"));
+    public static readonly IUriNode AdoptedDaughter = new UriNode(new(Namespace, "AdoptedDaughter"));
     public static readonly IUriNode Daughter = new UriNode(new(Namespace, "Daughter"));
     public static readonly IUriNode Grandmother = new UriNode(new(Namespace, "Grandmother"));
     public static readonly IUriNode Grandfather = new UriNode(new(Namespace, "Grandfather"));
@@ -242,6 +244,7 @@ public static class Vocabulary
     public static readonly IUriNode Cousin = new UriNode(new(Namespace, "Cousin"));
     public static readonly IUriNode Fiance = new UriNode(new(Namespace, "Fiance"));
     public static readonly IUriNode Fiancee = new UriNode(new(Namespace, "Fiancee"));
+    public static readonly IUriNode NotRelated = new UriNode(new(Namespace, "NotRelated"));
     public static readonly IUriNode Friend = new UriNode(new(Namespace, "Friend"));
     public static readonly IUriNode Landlady = new UriNode(new(Namespace, "Landlady"));
     public static readonly IUriNode Housekeeper = new UriNode(new(Namespace, "Housekeeper"));
