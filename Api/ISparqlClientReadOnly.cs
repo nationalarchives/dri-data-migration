@@ -17,3 +17,4 @@ public interface ISparqlClientReadOnly
 
 public interface IDriSparqlClient : ISparqlClientReadOnly;
 public interface IReconciliationSparqlClient : ISparqlClientReadOnly;
+public interface IExportSparqlClient : ISparqlClientReadOnly;

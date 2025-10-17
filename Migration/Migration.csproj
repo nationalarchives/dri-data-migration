@@ -27,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Dri\Dri.csproj" />
     <ProjectReference Include="..\Etl\Etl.csproj" />
+    <ProjectReference Include="..\Exporter\Exporter.csproj" />
     <ProjectReference Include="..\Reconciliation\Reconciliation.csproj" />
     <ProjectReference Include="..\Staging\Staging.csproj" />
   </ItemGroup>

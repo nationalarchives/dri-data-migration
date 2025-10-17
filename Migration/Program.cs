@@ -15,11 +15,13 @@ builder.Services.AddSerilog((_, loggerConfiguration) =>
 builder.Services.AddOptions<StagingSettings>().BindConfiguration(StagingSettings.Prefix);
 builder.Services.AddOptions<DriSettings>().BindConfiguration(DriSettings.Prefix);
 builder.Services.AddOptions<ReconciliationSettings>().BindConfiguration(ReconciliationSettings.Prefix);
+builder.Services.AddOptions<ExportSettings>().BindConfiguration(ExportSettings.Prefix);
 
 builder.Services.AddDriExport();
 builder.Services.AddStagingIngest();
 builder.Services.AddMigration();
 builder.Services.AddReconciliation();
+builder.Services.AddExporter();
 
 builder.Services.AddHostedService<ProgramHostedService>();
 

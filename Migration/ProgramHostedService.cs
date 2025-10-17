@@ -1,30 +1,32 @@
 ﻿using Api;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Migration;
 
-public class ProgramHostedService(ILogger<ProgramHostedService> logger,
-    IOptions<StagingSettings> stagingSettings, IOptions<ReconciliationSettings> reconciliationSettings,
-    IDataProcessing dataProcessing, IDataComparison dataComparison, IHostApplicationLifetime applicationLifetime)
+public class ProgramHostedService(ILogger<ProgramHostedService> logger, IConfiguration configuration,
+    IDataProcessing dataProcessing, IDataComparison dataComparison, IOutputGenerator generator,
+    IHostApplicationLifetime applicationLifetime)
     : IHostedService
 {
     async Task IHostedService.StartAsync(CancellationToken cancellationToken)
     {
         try
         {
-            if (stagingSettings?.Value.Code is not null)
+            var command = configuration.GetSection("app").GetValue<string>("command");
+            switch (command)
             {
-                await dataProcessing.EtlAsync(cancellationToken);
-            }
-            else
-            {
-                if (reconciliationSettings?.Value.Code is not null)
-                {
+                case "migrate":
+                    await dataProcessing.EtlAsync(cancellationToken);
+                    break;
+                case "reconcile":
                     await dataComparison.ReconcileAsync(cancellationToken);
-                }
+                    break;
+                case "export":
+                    await generator.GenerateOutputAsync(cancellationToken);
+                    break;
             }
         }
         catch (MigrationException e)

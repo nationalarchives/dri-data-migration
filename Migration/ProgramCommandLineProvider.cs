@@ -58,7 +58,7 @@ public class ProgramCommandLineProvider : ConfigurationProvider
     };
     private static readonly Option<int> restartFromOffset = new("--restart-from-offset", "-rfo")
     {
-        Description = "Additional option, designed to by used in the restart scenario. Works only when --restart-from-stage option is set. Allows to control the starting point of the paging query (only at a given stage set by --restart-from-stage option) in adition to the starting stage. Defaults to 0.",
+        Description = "Additional option, designed to by used in the restart scenario. When migration command is used, it requires --restart-from-stage option. Defaults to 0.",
         DefaultValueFactory = _ => 0,
         Arity = ArgumentArity.ZeroOrOne,
         Required = false
@@ -99,6 +99,7 @@ public class ProgramCommandLineProvider : ConfigurationProvider
     private readonly IEnumerable<string> args;
     private readonly Command MigrateCommand;
     private readonly Command ReconcileCommand;
+    private readonly Command ExportCommand;
 
     public ProgramCommandLineProvider(IEnumerable<string> args)
     {
@@ -130,14 +131,40 @@ public class ProgramCommandLineProvider : ConfigurationProvider
             pageSize,
             discoveryRecordsUri
         };
+
+        ExportCommand = new Command("export", """
+            Performs data export of migrated data into JSON file(s).
+            """)
+        {
+            reference,
+            sparql,
+            pageSize,
+            restartFromOffset
+        };
     }
 
     public override void Load()
     {
         var migrationParse = ParseMigrationCommand();
         var reconciliationParse = ParseReconciliationCommand();
+        var exportParse = ParseExportCommand();
 
-        Data = migrationParse.Count != 0 ? migrationParse : reconciliationParse;
+        if (migrationParse.Count != 0)
+        {
+            Data = migrationParse;
+            Data.Add("app:command", MigrateCommand.Name);
+        }
+        else if (reconciliationParse.Count != 0)
+        {
+            Data = reconciliationParse;
+            Data.Add("app:command", ReconcileCommand.Name);
+        }
+        else if (exportParse.Count != 0)
+        {
+            Data = exportParse;
+            Data.Add("app:command", ExportCommand.Name);
+        }
+
         if (!Data.Any())
         {
             PrintHelp();
@@ -249,15 +276,50 @@ public class ProgramCommandLineProvider : ConfigurationProvider
         return data;
     }
 
+    private Dictionary<string, string?> ParseExportCommand()
+    {
+        var data = new Dictionary<string, string?>();
+        ParseResult? parseResult = null;
+        try
+        {
+            parseResult = ExportCommand.Parse(args.ToArray());
+        }
+        catch
+        {
+            return [];
+        }
+
+        if (parseResult.Errors.Count == 0 && parseResult.UnmatchedTokens.Count == 0)
+        {
+            if (parseResult.GetValue(reference) is string code)
+            {
+                data.Add($"{ExportSettings.Prefix}:{nameof(ExportSettings.Code)}", code);
+            }
+            if (parseResult.GetValue(sparql) is Uri uri)
+            {
+                data.Add($"{ExportSettings.Prefix}:{nameof(ExportSettings.SparqlConnectionString)}", uri.ToString());
+            }
+            if (parseResult.GetValue(pageSize) is int size)
+            {
+                data.Add($"{ExportSettings.Prefix}:{nameof(ExportSettings.FetchPageSize)}", size.ToString());
+            }
+            data.Add($"{ExportSettings.Prefix}:{nameof(ExportSettings.RestartFromOffset)}", parseResult.GetValue(restartFromOffset).ToString());
+        }
+
+        return data;
+    }
+
     private void PrintHelp()
     {
         var root = new RootCommand
         {
             MigrateCommand,
-            ReconcileCommand
+            ReconcileCommand,
+            ExportCommand
         };
         root.Parse(args.ToArray()).Invoke();
         MigrateCommand.Parse("-h").Invoke();
         ReconcileCommand.Parse("-h").Invoke();
+        ExportCommand.Parse("-h").Invoke();
     }
 }
