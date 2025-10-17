@@ -24,21 +24,24 @@ public class ProgramCommandLineProvider : ConfigurationProvider
         Description = "DRI query SPARQL endpoint. Defaults to 'http://localhost:7200/repositories/dri'.",
         DefaultValueFactory = _ => new Uri("http://localhost:7200/repositories/dri"),
         Arity = ArgumentArity.ExactlyOne,
-        Required = true
+        Required = true,
+        CustomParser = UriArgumentParser()
     };
     private static readonly Option<Uri> sparql = new("--sparql", "-sq")
     {
         Description = "Staging query SPARQL endpoint. Defaults to 'http://localhost:7200/repositories/staging'.",
         DefaultValueFactory = _ => new Uri("http://localhost:7200/repositories/staging"),
         Arity = ArgumentArity.ExactlyOne,
-        Required = true
+        Required = true,
+        CustomParser = UriArgumentParser()
     };
     private static readonly Option<Uri> sparqlUpdate = new("--sparql-update", "-su")
     {
         Description = "Staging update SPARQL endpoint. Defaults to 'http://localhost:7200/repositories/staging/statements'.",
         DefaultValueFactory = a => new Uri("http://localhost:7200/repositories/staging/statements"),
         Arity = ArgumentArity.ZeroOrOne,
-        Required = false
+        Required = false,
+        CustomParser = UriArgumentParser()
     };
     private static readonly Option<int> pageSize = new("--page-size", "-ps")
     {
@@ -79,6 +82,19 @@ public class ProgramCommandLineProvider : ConfigurationProvider
         Arity = ArgumentArity.ExactlyOne,
         Required = false
     };
+
+    private static Func<System.CommandLine.Parsing.ArgumentResult, Uri?> UriArgumentParser()
+    {
+        return argumentResult =>
+        {
+            if (Uri.TryCreate(argumentResult.Tokens.Single().Value, UriKind.Absolute, out var uri))
+            {
+                return uri;
+            }
+            argumentResult.AddError("Invalid URI");
+            return null;
+        };
+    }
 
     private readonly IEnumerable<string> args;
     private readonly Command MigrateCommand;
