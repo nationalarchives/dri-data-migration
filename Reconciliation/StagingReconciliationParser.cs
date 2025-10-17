@@ -10,7 +10,7 @@ internal static class StagingReconciliationParser
 
     internal static IEnumerable<Dictionary<ReconciliationFieldName, object>> Parse(
         IEnumerable<Dictionary<ReconciliationFieldName, object>> page, ReconciliationMapType mapType) =>
-        page.Select(r => Adjust(r)).Where(r => mapType != ReconciliationMapType.Discovery || r[ReconciliationFieldName.FileFolder] as string == file);
+        page.Select(r => Adjust(r));
 
     private static Dictionary<ReconciliationFieldName, object> Adjust(Dictionary<ReconciliationFieldName, object> row) =>
         row.Select(cell => Match(cell, row)).Where(kv => kv.Value is not null)
@@ -32,6 +32,7 @@ internal static class StagingReconciliationParser
                 ReconciliationFieldName.LegislationSectionReference => new(cell.Key, ToLegislationReferences(cell.Value as string)),
                 ReconciliationFieldName.SensitivityReviewEndYear => new(cell.Key, cell.Value as int?),
                 ReconciliationFieldName.RetentionType => new(cell.Key, ToRetentionType(cell.Value as string)),
+                ReconciliationFieldName.ClosureStatus => new(cell.Key, ToClosureStatus(row, cell.Value as string)),
                 _ => new KeyValuePair<ReconciliationFieldName, object?>(cell.Key, cell.Value),
             };
 
@@ -71,7 +72,7 @@ internal static class StagingReconciliationParser
             return fileFolder is not null && fileFolder.ToString() == Vocabulary.Subset.Uri.ToString() ?
                 variationName?.Split('/').Last() : variationName;
         }
-        return null;
+        return variationName;
     }
 
     private static int? ToOriginDate(string? date)
@@ -113,4 +114,20 @@ internal static class StagingReconciliationParser
             string acn when acn.Contains("retained") => acn.Replace(' ', '_'),
             _ => accessConditionName
         };
+
+    private static string? ToClosureStatus(Dictionary<ReconciliationFieldName, object> row, string? accessConditionCode)
+    {
+        if (accessConditionCode is null)
+        {
+            return null;
+        }
+        var isPublicDescription = (bool)row.GetValueOrDefault(ReconciliationFieldName.IsPublicDescription, true);
+        
+        return accessConditionCode switch
+        {
+            "A" or "I" => "O",
+            "F" or "C" or "U" or "V" or "W" => isPublicDescription ? "D" : "C",
+            _ => null
+        };
+    }
 }

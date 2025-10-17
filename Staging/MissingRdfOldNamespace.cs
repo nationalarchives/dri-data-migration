@@ -55,7 +55,7 @@ internal class MissingRdfOldNamespace(ILogger logger)
                 continue;
             }
             var clonedChild = (XmlElement)child.CloneNode(true);
-            Repair(doc, clonedChild, blankNode);
+            Repair(doc, clonedChild, blankNode, false);
             description.AppendChild(clonedChild);
         }
         missingRdf.AppendChild(description);
@@ -68,14 +68,15 @@ internal class MissingRdfOldNamespace(ILogger logger)
         return missingRdf;
     }
 
-    private static void Repair(XmlDocument doc, XmlElement node, XmlAttribute blankNode)
+    private static void Repair(XmlDocument doc, XmlElement node, XmlAttribute blankNode, bool isParentBlankNode)
     {
         bool markedBlankNode = false;
         var isBlankNode = node.ChildNodes.OfType<XmlElement>().Count() > 1 &&
             (node.ParentNode is null || node.ParentNode.OfType<XmlElement>().Count() > 1);
         var isPartOfBlankNode = node.ParentNode is not null && node.ParentNode.OfType<XmlElement>().Count() > 1 &&
             node.ChildNodes.OfType<XmlElement>().Any();
-        if (isBlankNode || isPartOfBlankNode)
+        var isEmbeddedBlankNode = isParentBlankNode && node.ChildNodes.OfType<XmlElement>().Any();
+        if (isBlankNode || isPartOfBlankNode || isEmbeddedBlankNode)
         {
             markedBlankNode = true;
             node.Attributes.Append((XmlAttribute)blankNode.Clone());
@@ -96,7 +97,10 @@ internal class MissingRdfOldNamespace(ILogger logger)
                     {
                         typedAttr = doc.CreateAttribute("rdf:datatype", NamespaceMapper.RDF);
                     }
-                    typedAttr.Value = string.IsNullOrWhiteSpace(attr.Value) ? "Undefined" : attr.Value;
+                    typedAttr.Value = string.IsNullOrWhiteSpace(attr.Value) ?
+                        "Undefined" : attr.Value.Trim().Replace(" & ", "_").Replace(" and ", "_")
+                        .Replace("; ", "_").Replace(", ", "_").Replace(' ', '-')
+                        .Replace('(', '-').Replace(')', '-').Replace('\'', '-');
                     allowedAttributes.Add(typedAttr);
                 }
                 else
@@ -115,7 +119,7 @@ internal class MissingRdfOldNamespace(ILogger logger)
         }
         foreach (var childNode in node.ChildNodes.OfType<XmlElement>())
         {
-            Repair(doc, childNode, blankNode);
+            Repair(doc, childNode, blankNode, markedBlankNode);
         }
     }
 }

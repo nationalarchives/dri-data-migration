@@ -6,7 +6,7 @@ using System.Net.Http.Json;
 
 namespace Reconciliation;
 
-public class DiscoveryRecord(HttpClient httpClient, ILogger<DiscoveryRecord> logger, IOptions<ReconciliationSettings> reconciliationSettings) : IReconciliationSource
+public class DiscoverySource(HttpClient httpClient, ILogger<DiscoverySource> logger, IOptions<ReconciliationSettings> reconciliationSettings) : IReconciliationSource
 {
     private readonly ReconciliationSettings settings = reconciliationSettings.Value;
 
@@ -54,12 +54,12 @@ public class DiscoveryRecord(HttpClient httpClient, ILogger<DiscoveryRecord> log
             [ReconciliationFieldName.Reference] = r.Reference!.Replace(' ', '/'),
             [ReconciliationFieldName.OriginStartDate] = r.NumStartDate,
             [ReconciliationFieldName.OriginEndDate] = r.NumEndDate,
+            [ReconciliationFieldName.ClosureStatus] = r.ClosureStatus,
             [ReconciliationFieldName.AccessConditionCode] = r.ClosureType,
+            [ReconciliationFieldName.RetentionBody] = string.Join(';', r.HeldBy),
             [ReconciliationFieldName.SensitivityReviewDuration] = ToDuration(r.ClosureType, r.ClosureCode),
             [ReconciliationFieldName.SensitivityReviewEndYear] = ToEndYear(r.ClosureType, r.ClosureCode),
             //[ReconciliationFieldName.SensitivityReviewRestrictionReviewDate] = ToDate(r.OpeningDate),
-            //[ReconciliationFieldName.IsPublicName] = r.ClosureStatus,
-            //[ReconciliationFieldName.IsPublicDescription] = r.ClosureStatus,
         }).Select(d => d.Where(kv => kv.Value is not null).ToDictionary(kv => kv.Key, kv => kv.Value!));
 
     private static readonly string[] YearDuration = ["D", "U"];

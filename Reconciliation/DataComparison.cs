@@ -53,9 +53,9 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
     {
         var source = settings.MapKind switch
         {
-            ReconciliationMapType.Discovery => sources.SingleOrDefault(s => s is DiscoveryRecord),
-            ReconciliationMapType.Closure => sources.SingleOrDefault(s => s is PreservicaClosure),
-            ReconciliationMapType.Metadata => sources.SingleOrDefault(s => s is PreservicaMetadata),
+            ReconciliationMapType.Discovery => sources.SingleOrDefault(s => s is DiscoverySource),
+            ReconciliationMapType.Closure => sources.SingleOrDefault(s => s is ClosureSource),
+            ReconciliationMapType.Metadata => sources.SingleOrDefault(s => s is MetadataSource),
             _ => null
         };
 
@@ -77,15 +77,16 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
         var diffCount = 0;
         foreach (var stagingRow in staging)
         {
-            var stagingImportLocation = (stagingRow[ReconciliationFieldName.ImportLocation] as string)!;
             var stagingIdentifier = stagingRow.ContainsKey(ReconciliationFieldName.Reference) ?
-                stagingRow[ReconciliationFieldName.Reference] as string : stagingImportLocation ??
-                stagingImportLocation;
+                stagingRow[ReconciliationFieldName.Reference] as string :
+                stagingRow.ContainsKey(ReconciliationFieldName.ImportLocation) ?
+                stagingRow[ReconciliationFieldName.ImportLocation] as string : string.Empty;
             var expectedRow = expected.SingleOrDefault(p => SelectIdentifier(p).Equals(SelectIdentifier(stagingRow)));
-
+            var isFolder = stagingRow.ContainsKey(ReconciliationFieldName.FileFolder) ?
+                stagingRow[ReconciliationFieldName.FileFolder] as string == "folder" : false;
             if (expectedRow is null)
             {
-                if (stagingImportLocation.EndsWith('/'))
+                if (isFolder)
                 {
                     logger.ReconciliationFolderAdditional(stagingIdentifier);
                     additionalFolderCount++;

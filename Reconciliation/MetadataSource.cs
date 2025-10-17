@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace Reconciliation;
 
-public class PreservicaMetadata(ILogger<PreservicaMetadata> logger, IOptions<ReconciliationSettings> reconciliationSettings) : IReconciliationSource
+public class MetadataSource(ILogger<MetadataSource> logger, IOptions<ReconciliationSettings> reconciliationSettings) : IReconciliationSource
 {
     private readonly ReconciliationSettings settings = reconciliationSettings.Value;
 
