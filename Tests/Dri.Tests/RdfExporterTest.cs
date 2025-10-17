@@ -210,7 +210,7 @@ public sealed class RdfExporterTest
         graph.Assert(restriction, Vocabulary.SensitivityReviewRestrictionHasRetentionRestriction, retentionRestriction);
         var legislation = graph.CreateBlankNode();
         graph.Assert(restriction, Vocabulary.SensitivityReviewRestrictionHasLegislation, legislation);
-        graph.Assert(legislation, Vocabulary.LegislationHasUkLegislation, graph.CreateLiteralNode(legislationLink.ToString()));
+        graph.Assert(legislation, Vocabulary.LegislationHasUkLegislation, graph.CreateUriNode(legislationLink));
         graph.Assert(retentionRestriction, Vocabulary.RetentionInstrumentNumber, new LongNode(instrumentNumber));
         graph.Assert(retentionRestriction, Vocabulary.RetentionInstrumentSignatureDate, new DateTimeNode(instrumentSignedDate));
         graph.Assert(retentionRestriction, Vocabulary.RetentionRestrictionReviewDate, new DateTimeNode(restrictionReviewDate));

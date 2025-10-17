@@ -176,9 +176,8 @@ public class RdfExporter : IDriRdfExporter
         var condition = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewHasAccessCondition).SingleOrDefault().Object as IBlankNode;
         var accessCode = graph.GetTriplesWithSubjectPredicate(condition, Vocabulary.AccessConditionCode).SingleOrDefault().Object as IUriNode;
         var legislation = graph.GetTriplesWithSubjectPredicate(restriction, Vocabulary.SensitivityReviewRestrictionHasLegislation).SingleOrDefault().Object as IBlankNode;
-        var legislations = graph.GetTriplesWithSubjectPredicate(legislation, Vocabulary.LegislationHasUkLegislation).SingleOrDefault()?.Object as ILiteralNode;
-        var legislationUris = legislations is null ? [] :
-            legislations.AsValuedNode().AsString().Split(',', StringSplitOptions.RemoveEmptyEntries).Select(l => new Uri(l));
+        var legislationUris = graph.GetTriplesWithSubjectPredicate(legislation, Vocabulary.LegislationHasUkLegislation)
+            .Select(t => t.Object).Cast<IUriNode>().Select(u => u.Uri);
 
         return new DriSensitivityReview(id!.Uri, reference.AsValuedNode().AsString(), targetId!.Uri, targetType!.Uri,
             accessCode!.Uri, legislationUris, reviewDate?.AsValuedNode().AsDateTimeOffset(),

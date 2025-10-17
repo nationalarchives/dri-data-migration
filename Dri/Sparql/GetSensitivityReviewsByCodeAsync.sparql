@@ -27,7 +27,7 @@ construct {
             	]
         	];
             ex:sensitivityReviewRestrictionHasLegislation [
-                ex:legislationHasUkLegislation ?legislations
+                ex:legislationHasUkLegislation ?exemptionCode
             ]
         ];
         ex:sensitivityReviewHasAccessCondition [
@@ -44,18 +44,14 @@ construct {
         ].
 }
 where {
+    ?closure dri:closureType ?closureType.
+    ?record a ?type.
     {
-        select ?closure ?type ?record ?reference ?exemptionAsserted ?titleAlternative
-            ?descriptionAlternative ?previous ?reviewDate ?startDate ?closurePeriod
-            ?reasonForChange ?rINumber ?rISignedDate ?retentionReconsiderDate ?retentionJustification
-	        (group_concat(?legislation; separator=',') as ?legislations) ?closureType
-            ?change ?changeOperator ?changeTime ?changeAgentLabel ?changeLabel where {
+        select ?closure ?record ?reference where {
             bind(@id as ?code)
             bind(replace(@id,' ','_') as ?code2)
-            ?closure prov:specializationOf ?record;
-                dri:closureType ?closureType.
-            ?record a ?type;
-                rdfs:label ?reference.
+            ?closure prov:specializationOf ?record.
+            ?record rdfs:label ?reference.
             {
                 ?record ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code.
             }
@@ -71,32 +67,6 @@ where {
             {
                 ?record dri:isPartOfSeries/rdfs:label ?code2.
             }
-            optional { ?closure dri:closurePeriod ?closurePeriod }
-            optional { ?closure dri:startDate ?startDate }
-            optional { ?closure dri:exemptionAsserted ?exemptionAsserted }
-            optional { ?closure dri:reviewDate ?reviewDate }
-            optional { ?closure dri:retentionReconsiderDate ?retentionReconsiderDate }
-            optional {
-                ?closure dri:exemptionCode ?exemptionCode.
-                bind(str(?exemptionCode) as ?legislation)
-            }
-            optional { ?closure dri:titleAlternative ?titleAlternative }
-            optional { ?closure dcterms:alternative ?descriptionAlternative }
-            optional { ?closure prov:wasRevisionOf ?previous }
-            optional {
-                ?closure prov:qualifiedInfluence/prov:influencer/rdfs:label ?reasonForChange
-            }
-            optional { ?closure dri:rINumber ?rINumber }
-            optional { ?closure dri:rISignedDate ?rISignedDate }
-    		optional { ?closure dri:retentionJustification ?retentionJustification }
-            optional {
-                ?closure prov:qualifiedGeneration ?qualifiedGeneration.
-                ?qualifiedGeneration prov:atTime ?changeTime;
-    	            prov:activity ?change.
-                ?change rdfs:label ?changeLabel;
-    	            prov:wasAssociatedWith ?changeOperator.
-                ?changeOperator rdfs:label ?changeAgentLabel.
-            }
             filter exists {
                 {
                     ?closure dri:titleAlternative ?titleAlternative
@@ -111,11 +81,30 @@ where {
                 }
             }
         }
-        group by ?closure ?type ?record ?reference ?exemptionAsserted ?titleAlternative ?descriptionAlternative
-	        ?previous ?reviewDate ?startDate ?closurePeriod ?reasonForChange ?rINumber ?rISignedDate
-	        ?retentionReconsiderDate ?retentionJustification ?closureType
-            ?change ?changeOperator ?changeTime ?changeAgentLabel ?changeLabel
         order by ?reference
         limit @limit offset @offset
+    }
+    optional { ?closure dri:closurePeriod ?closurePeriod }
+    optional { ?closure dri:startDate ?startDate }
+    optional { ?closure dri:exemptionAsserted ?exemptionAsserted }
+    optional { ?closure dri:reviewDate ?reviewDate }
+    optional { ?closure dri:retentionReconsiderDate ?retentionReconsiderDate }
+    optional { ?closure dri:exemptionCode ?exemptionCode }
+    optional { ?closure dri:titleAlternative ?titleAlternative }
+    optional { ?closure dcterms:alternative ?descriptionAlternative }
+    optional { ?closure prov:wasRevisionOf ?previous }
+    optional {
+        ?closure prov:qualifiedInfluence/prov:influencer/rdfs:label ?reasonForChange
+    }
+    optional { ?closure dri:rINumber ?rINumber }
+    optional { ?closure dri:rISignedDate ?rISignedDate }
+    optional { ?closure dri:retentionJustification ?retentionJustification }
+    optional {
+        ?closure prov:qualifiedGeneration ?qualifiedGeneration.
+        ?qualifiedGeneration prov:atTime ?changeTime;
+    	    prov:activity ?change.
+        ?change rdfs:label ?changeLabel;
+    	    prov:wasAssociatedWith ?changeOperator.
+        ?changeOperator rdfs:label ?changeAgentLabel.
     }
 }
