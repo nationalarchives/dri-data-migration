@@ -6,8 +6,8 @@ services:
         #https://learn.microsoft.com/en-us/windows/wsl/wsl-config#wslconfig
         #https://docs.oracle.com/en/java/javase/21/gctuning/available-collectors.html
         environment:
-            GDB_HEAP_SIZE: "16G"
-            GDB_JAVA_OPTS: "-Dgraphdb.page.cache.size=5G -Dgraphdb.query.memory.threshold=1G -XX:+UseParallelGC"
+            GDB_HEAP_SIZE: "30G"
+            GDB_JAVA_OPTS: "-Dgraphdb.page.cache.size=6G -Dgraphdb.query.memory.threshold=4G -Dgraphdb.home=/opt/graphdb/home -XX:+UseSerialGC"
         #command:
         #    - "-s"
         ports:
