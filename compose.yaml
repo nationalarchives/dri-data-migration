@@ -1,7 +1,10 @@
 services:
     graphdb:
-        image: ontotext/graphdb:11.0.2
+        image: ontotext/graphdb:11.0.2 #https://hub.docker.com/r/ontotext/graphdb/
         container_name: graphdb
+        #https://graphdb.ontotext.com/documentation/11.0/configuring-graphdb-memory.html#configuring-graphdb-memory
+        #https://learn.microsoft.com/en-us/windows/wsl/wsl-config#wslconfig
+        #https://docs.oracle.com/en/java/javase/21/gctuning/available-collectors.html
         environment:
             GDB_HEAP_SIZE: "16G"
             GDB_JAVA_OPTS: "-Dgraphdb.page.cache.size=5G -Dgraphdb.query.memory.threshold=1G -XX:+UseParallelGC"
