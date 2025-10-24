@@ -24,7 +24,7 @@ public class SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> opti
         limit $limit offset $offset
         """;
     private readonly string fileXmlSql = """
-        select f.FILEREF, f.FILELOCATION, f.NAME, x.XMLCLOB from dufile f
+        select f.FILEREF, f.FILELOCATION, f.NAME, f.MANIFESTATIONREF, x.XMLCLOB from dufile f
         join xmlmetadata x on x.METADATAREF = f.FMETADATAREF
         where f.Code = $code
         order by f.rowid
@@ -77,7 +77,7 @@ public class SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> opti
 
         static DriVariationFile mapping(SqliteDataReader reader) =>
             new(reader.GetString("FILEREF"), reader.GetString("FILELOCATION"),
-                reader.GetString("NAME"), reader.GetString("XMLCLOB"));
+                reader.GetString("NAME"), reader.GetString("MANIFESTATIONREF"), reader.GetString("XMLCLOB"));
 
         return Get(fileXmlSql, offset, mapping, cancellationToken);
     }
