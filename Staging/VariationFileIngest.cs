@@ -23,6 +23,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
         var graph = new Graph();
         graph.Assert(id, Vocabulary.VariationDriId, driId);
         graph.Assert(id, Vocabulary.VariationRelativeLocation, new LiteralNode($"{dri.Location}/{dri.Name}", new Uri(XmlSpecsHelper.XmlSchemaDataTypeAnyUri)));
+        GraphAssert.Text(graph, id, dri.ManifestationId, Vocabulary.VariationDriManifestationId);
         if (!string.IsNullOrEmpty(dri.Xml))
         {
             GraphAssert.Base64(graph, id, dri.Xml, Vocabulary.VariationDriXml);

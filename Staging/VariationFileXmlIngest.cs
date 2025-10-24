@@ -33,6 +33,7 @@ public class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
             [IngestVocabulary.ScanOperator] = Vocabulary.ScannerOperatorIdentifier,
             [IngestVocabulary.DctermsDescription] = IngestVocabulary.DctermsDescription //TODO: remove after checking
         });
+        GraphAssert.Integer(logger, graph, id, rdf, IngestVocabulary.Ordinal, Vocabulary.VariationSequence);
 
         await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, id, rdf,
             IngestVocabulary.ScanLocation, CacheEntityKind.GeographicalPlace,

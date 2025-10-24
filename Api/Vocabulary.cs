@@ -83,6 +83,7 @@ public static class Vocabulary
     public static readonly IUriNode Variation = new UriNode(new(Namespace, "Variation"));
     public static readonly IUriNode VariationHasAsset = new UriNode(new(Namespace, "variationHasAsset"));
     public static readonly IUriNode VariationDriId = new UriNode(new(Namespace, "variationDriId"));
+    public static readonly IUriNode VariationDriManifestationId = new UriNode(new(Namespace, "variationDriManifestationId"));
     public static readonly IUriNode VariationDriXml = new UriNode(new(Namespace, "variationDriXml"));
     public static readonly IUriNode VariationName = new UriNode(new(Namespace, "variationName"));
     public static readonly IUriNode VariationNote = new UriNode(new(Namespace, "variationNote"));
@@ -90,6 +91,7 @@ public static class Vocabulary
     public static readonly IUriNode VariationPhysicalConditionDescription = new UriNode(new(Namespace, "variationPhysicalConditionDescription"));
     public static readonly IUriNode VariationReferenceGoogleId = new UriNode(new(Namespace, "variationReferenceGoogleId"));
     public static readonly IUriNode VariationReferenceParentGoogleId = new UriNode(new(Namespace, "variationReferenceParentGoogleId"));
+    public static readonly IUriNode VariationSequence = new UriNode(new(Namespace, "variationSequence"));
     public static readonly IUriNode RedactedVariationSequence = new UriNode(new(Namespace, "redactedVariationSequence"));
     public static readonly IUriNode ScannerOperatorIdentifier = new UriNode(new(Namespace, "scannerOperatorIdentifier"));
     public static readonly IUriNode ScannerIdentifier = new UriNode(new(Namespace, "scannerIdentifier"));

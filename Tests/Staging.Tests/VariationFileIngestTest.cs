@@ -36,7 +36,7 @@ public sealed class VariationFileIngestTest
             </rdf:RDF>
         </RdfNode>
         """;
-    private readonly DriVariationFile dri = new("Variation1", "/subset1", "Variation name", xml);
+    private readonly DriVariationFile dri = new("Variation1", "/subset1", "Variation name", "Manifestation1", xml);
     private readonly FakeLogger<VariationFileIngest> logger = new();
     private readonly Mock<ISparqlClient> client = new();
     private readonly Mock<ICacheClient> cache;
@@ -58,7 +58,7 @@ public sealed class VariationFileIngestTest
         client.Reset();
     }
 
-    [TestMethod("Asserts new graph")]
+    [TestMethod(DisplayName = "Asserts new graph")]
     public async Task Adds()
     {
         var existing = new Graph();
@@ -78,12 +78,13 @@ public sealed class VariationFileIngestTest
             CancellationToken.None), Times.Once);
     }
 
-    [TestMethod("Asserts updated graph")]
+    [TestMethod(DisplayName = "Asserts updated graph")]
     public async Task Updates()
     {
         var existing = new Graph();
         var id = CacheClient.NewId;
         existing.Assert(id, Vocabulary.VariationDriId, new LiteralNode(dri.Id));
+        existing.Assert(id, Vocabulary.VariationDriManifestationId, new LiteralNode(dri.ManifestationId));
         existing.Assert(id, Vocabulary.VariationRelativeLocation, new LiteralNode($"{dri.Location}/{dri.Name}", new Uri(XmlSpecsHelper.XmlSchemaDataTypeAnyUri)));
         var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(dri.Xml));
         existing.Assert(id, Vocabulary.VariationDriXml, new LiteralNode(base64, new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
@@ -118,12 +119,13 @@ public sealed class VariationFileIngestTest
             CancellationToken.None), Times.Once);
     }
 
-    [TestMethod("Does nothing if completly matches existing data")]
+    [TestMethod(DisplayName = "Does nothing if completly matches existing data")]
     public async Task IsIdempotent()
     {
         var existing = new Graph();
         var id = CacheClient.NewId;
         existing.Assert(id, Vocabulary.VariationDriId, new LiteralNode(dri.Id));
+        existing.Assert(id, Vocabulary.VariationDriManifestationId, new LiteralNode(dri.ManifestationId));
         existing.Assert(id, Vocabulary.VariationRelativeLocation, new LiteralNode($"{dri.Location}/{dri.Name}", new Uri(XmlSpecsHelper.XmlSchemaDataTypeAnyUri)));
         var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(dri.Xml));
         existing.Assert(id, Vocabulary.VariationDriXml, new LiteralNode(base64, new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));

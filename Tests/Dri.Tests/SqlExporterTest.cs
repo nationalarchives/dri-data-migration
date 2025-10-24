@@ -13,7 +13,7 @@ public sealed class SqlExporterTest
     private const string Series = "Series 1";
     private const string SqlSchema = $"""
             create table dufile
-                (DELIVERABLEUNITREF TEXT, CATALOGUEREFERENCE TEXT, DMETADATAREF TEXT, FILEREF TEXT, FMETADATAREF TEXT, FILELOCATION TEXT, NAME TEXT, Code TEXT);
+                (DELIVERABLEUNITREF TEXT, CATALOGUEREFERENCE TEXT, DMETADATAREF TEXT, MANIFESTATIONREF TEXT, FILEREF TEXT, FMETADATAREF TEXT, FILELOCATION TEXT, NAME TEXT, Code TEXT);
             create table xmlmetadata
                 (METADATAREF TEXT, XMLCLOB TEXT);
             create table auditchange
@@ -37,7 +37,7 @@ public sealed class SqlExporterTest
         exporter = new SqlExporter(logger, options);
     }
 
-    [TestMethod("Reads asset deliverable units")]
+    [TestMethod(DisplayName = "Reads asset deliverable units")]
     public void FetchesAssetDeliverableUnits()
     {
         var sqliteInMemory = "Data Source=file:memdb-asset?mode=memory&cache=shared";
@@ -50,12 +50,12 @@ public sealed class SqlExporterTest
         dris.Should().ContainSingle().And.BeEquivalentTo([expected]);
     }
 
-    [TestMethod("Reads variation files")]
+    [TestMethod(DisplayName = "Reads variation files")]
     public void FetchesVariationFiles()
     {
         var sqliteInMemory = "Data Source=file:memdb-variation?mode=memory&cache=shared";
         options.Value.SqlConnectionString = sqliteInMemory;
-        var expected = new DriVariationFile("Variation1", "Location", "Variation name", "<xml/>");
+        var expected = new DriVariationFile("Variation1", "Location", "Variation name", "Manifestation1", "<xml/>");
         PopulateVariation(expected, sqliteInMemory);
 
         var dris = exporter.GetVariationFiles(0, CancellationToken.None);
@@ -63,7 +63,7 @@ public sealed class SqlExporterTest
         dris.Should().ContainSingle().And.BeEquivalentTo([expected]);
     }
 
-    [TestMethod("Reads changes")]
+    [TestMethod(DisplayName = "Reads changes")]
     public void FetchesChanges()
     {
         var sqliteInMemory = "Data Source=file:memdb-change?mode=memory&cache=shared";
@@ -100,7 +100,7 @@ public sealed class SqlExporterTest
     {
         var metadataRef = "Metadata reference variation";
         var data = $"""
-            insert into dufile(FILEREF, FMETADATAREF, FILELOCATION, NAME, Code) values('{dri.Id}', '{metadataRef}', '{dri.Location}', '{dri.Name}', '{Series}');
+            insert into dufile(FILEREF, FMETADATAREF, FILELOCATION, NAME, Code, MANIFESTATIONREF) values('{dri.Id}', '{metadataRef}', '{dri.Location}', '{dri.Name}', '{Series}', '{dri.ManifestationId}');
             insert into xmlmetadata(METADATAREF, XMLCLOB) values('{metadataRef}', '{dri.Xml}');
         """;
 

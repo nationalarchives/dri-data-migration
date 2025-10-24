@@ -1372,6 +1372,14 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation DRI Id".
 
+:variationDriManifestationId a owl:DatatypeProperty;
+	rdfs:domain :Variation;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation DRI manifestation Id";
+	rdfs:comment "This identifier is used to group variations into Preservica Information Objects (PIO). Within the asset context: each redacted variation is a separate PIO while the remaining variations are bundled together into another PIO.".
+
 :variationName a owl:DatatypeProperty;
 	rdfs:seeAlso rico:title;
 	rdfs:domain :Variation;
@@ -1419,6 +1427,12 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation reference parent Google Id".
+
+:variationSequence a owl:DatatypeProperty;
+	rdfs:domain :Variation;
+	rdfs:range xsd:integer;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation sequence".
 
 :redactedVariationSequence a owl:DatatypeProperty;
 	rdfs:domain :RedactedVariation;
