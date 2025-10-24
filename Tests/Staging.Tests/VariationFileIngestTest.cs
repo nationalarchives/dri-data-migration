@@ -74,7 +74,7 @@ public sealed class VariationFileIngestTest
 
         recordIngestedCount.Should().Be(1);
         client.Verify(c => c.ApplyDiffAsync(
-            It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 20 && !r.RemovedTriples.Any()),
+            It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 21 && !r.RemovedTriples.Any()),
             CancellationToken.None), Times.Once);
     }
 
