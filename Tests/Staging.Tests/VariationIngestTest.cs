@@ -28,13 +28,13 @@ public sealed class VariationIngestTest
         client.Reset();
     }
 
-    [TestMethod("Id matches link path segment")]
+    [TestMethod(DisplayName = "Id matches link path segment")]
     public void IdCalculation()
     {
         dri.Id.Should().Be("variation1");
     }
 
-    [TestMethod("Asserts new graph")]
+    [TestMethod(DisplayName = "Asserts new graph")]
     public async Task Adds()
     {
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
@@ -50,7 +50,7 @@ public sealed class VariationIngestTest
             CancellationToken.None), Times.Once);
     }
 
-    [TestMethod("Asserts updated graph")]
+    [TestMethod(DisplayName = "Asserts updated graph")]
     public async Task Updates()
     {
         var existing = new Graph();
@@ -71,7 +71,7 @@ public sealed class VariationIngestTest
             CancellationToken.None), Times.Once);
     }
 
-    [TestMethod("Does nothing if completly matches existing data")]
+    [TestMethod(DisplayName = "Does nothing if completly matches existing data")]
     public async Task IsIdempotent()
     {
         var existing = new Graph();

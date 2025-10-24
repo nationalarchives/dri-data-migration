@@ -23,7 +23,7 @@ public sealed class RdfExporterTest
         exporter = new RdfExporter(logger, options, sparqlClient.Object);
     }
 
-    [TestMethod("Reads access conditions")]
+    [TestMethod(DisplayName = "Reads access conditions")]
     public async Task FetchesAccessConditions()
     {
         var link = new Uri("http://example.com/ac");
@@ -43,7 +43,7 @@ public sealed class RdfExporterTest
         dris.Should().ContainSingle().And.BeEquivalentTo([expected]);
     }
 
-    [TestMethod("Reads legislations")]
+    [TestMethod(DisplayName = "Reads legislations")]
     public async Task FetchesLegislations()
     {
         var link = new Uri("http://example.com/l");
@@ -63,7 +63,7 @@ public sealed class RdfExporterTest
         dris.Should().ContainSingle().And.BeEquivalentTo([expected]);
     }
 
-    [TestMethod("Reads grounds for retention")]
+    [TestMethod(DisplayName = "Reads grounds for retention")]
     public async Task FetchesGroundsForRetentionAsync()
     {
         var code = "X";
@@ -83,7 +83,7 @@ public sealed class RdfExporterTest
         dris.Should().ContainSingle().And.BeEquivalentTo([expected]);
     }
 
-    [TestMethod("Reads subsets")]
+    [TestMethod(DisplayName = "Reads subsets")]
     public async Task FetchesSubsets()
     {
         var reference = "Subset";
@@ -108,7 +108,7 @@ public sealed class RdfExporterTest
         dris.Should().ContainSingle().And.BeEquivalentTo([expected]);
     }
 
-    [TestMethod("Reads assets")]
+    [TestMethod(DisplayName = "Reads assets")]
     public async Task FetchesAssets()
     {
         var link = new Uri("http://example.com/asset");
@@ -135,7 +135,7 @@ public sealed class RdfExporterTest
         dris.Should().ContainSingle().And.BeEquivalentTo([expected]);
     }
 
-    [TestMethod("Reads variations")]
+    [TestMethod(DisplayName = "Reads variations")]
     public async Task FetchesVariations()
     {
         var link = new Uri("http://example.com/variation");
@@ -158,7 +158,7 @@ public sealed class RdfExporterTest
         dris.Should().ContainSingle().And.BeEquivalentTo([expected]);
     }
 
-    [TestMethod("Reads sensitivity reviews")]
+    [TestMethod(DisplayName = "Reads sensitivity reviews")]
     public async Task FetchesSensitivityReviews()
     {
         var link = new Uri("http://example.com/sr");

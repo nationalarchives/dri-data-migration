@@ -13,7 +13,7 @@ public sealed class SparqlClientReadOnlyTest
 {
     private static readonly Uri baseUri = new("http://example.com/");
 
-    [TestMethod("Reads graph")]
+    [TestMethod(DisplayName = "Reads graph")]
     public async Task ReadsGraph()
     {
         var subject = "urn:subject";
@@ -43,7 +43,7 @@ public sealed class SparqlClientReadOnlyTest
         graph.Should().BeEquivalentTo(expected);
     }
 
-    [TestMethod("Reads results")]
+    [TestMethod(DisplayName = "Reads results")]
     public async Task ReadsResults()
     {
         var sparql = "select ?o where { ?s ?p ?o }";
@@ -86,7 +86,7 @@ public sealed class SparqlClientReadOnlyTest
         result.Should().ContainSingle().Which.Should().BeEquivalentTo(expected, o => o.ComparingByValue<KeyValuePair<string, INode>>());
     }
 
-    [TestMethod("Reads subject")]
+    [TestMethod(DisplayName = "Reads subject")]
     public async Task ReadsSubject()
     {
         var subject = "urn:subject";
@@ -108,7 +108,7 @@ public sealed class SparqlClientReadOnlyTest
         result.Should().BeEquivalentTo(expected);
     }
 
-    [TestMethod("Reads dictionary")]
+    [TestMethod(DisplayName = "Reads dictionary")]
     public async Task ReadsDictionary()
     {
         var subject = "urn:subject";

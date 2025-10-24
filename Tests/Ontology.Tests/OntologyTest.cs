@@ -11,13 +11,13 @@ public sealed class OntologyTest
 {
     private readonly string fileLocation = $"{Directory.GetCurrentDirectory()}/../../../../../Ontology.ttl";
 
-    [TestMethod("Valid Turtle syntax")]
+    [TestMethod(DisplayName = "Valid Turtle syntax")]
     public void ValidTurtle() =>
         FluentActions.Invoking(() =>
             FileLoader.Load(new Graph(), fileLocation, new TurtleParser()))
         .Should().NotThrow("Ontology has a valid Turtle syntax");
 
-    [TestMethod("Types are defined by schema")]
+    [TestMethod(DisplayName = "Types are defined by schema")]
     [DataRow(OntologyHelper.OwlClass, "classes")]
     [DataRow(OntologyHelper.OwlObjectProperty, "object properties")]
     [DataRow(OntologyHelper.OwlDatatypeProperty, "data type properties")]
@@ -38,7 +38,7 @@ public sealed class OntologyTest
             .And.HaveCount(classesDefinedBy.Count(), $"all {typeName} should be defined by {schema}");
     }
 
-    [TestMethod("Object properties domains and ranges are Ontology classes")]
+    [TestMethod(DisplayName = "Object properties domains and ranges are Ontology classes")]
     public void ObjectPropertiesDomainRange()
     {
         var rdfType = new UriNode(new Uri(RdfSpecsHelper.RdfType));
@@ -69,7 +69,7 @@ public sealed class OntologyTest
         }
     }
 
-    [TestMethod("Data type properties domains are Ontology classes")]
+    [TestMethod(DisplayName = "Data type properties domains are Ontology classes")]
     public void DataTypePropertiesDomainRange()
     {
         var rdfType = new UriNode(new Uri(RdfSpecsHelper.RdfType));
