@@ -79,7 +79,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             [IngestVocabulary.EndImageNumber] = Vocabulary.ImageSequenceEnd
         });
 
-        await AddVariationRelations(graph, rdf, id, doc, filesJson, cancellationToken);
+        await AddVariationRelationsAsync(graph, rdf, id, doc, filesJson, cancellationToken);
         AddFilmDuration(graph, rdf, id);
         AddWebArchive(graph, rdf, id);
         await AddCourtCasesAsync(graph, rdf, id, assetReference, cancellationToken);
@@ -115,7 +115,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         await sealIngest.AddSealAsync(graph, rdf, existing, id, cancellationToken);
     }
 
-    private async Task AddVariationRelations(IGraph graph, IGraph rdf, IUriNode id,
+    private async Task AddVariationRelationsAsync(IGraph graph, IGraph rdf, IUriNode id,
         XmlDocument doc, string filesJson, CancellationToken cancellationToken)
     {
         var redacted = rdf.GetTriplesWithPredicate(IngestVocabulary.HasRedactedFile).Select(t => t.Object).Cast<ILiteralNode>();
