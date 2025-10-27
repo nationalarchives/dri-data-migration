@@ -11,24 +11,27 @@ construct {
     	ex:variationName ?label.
 } where {
     {
-        select distinct ?d ?assetReference ?label where {
-            bind(@id as ?code)
-            bind(replace(@id,' ','_') as ?code2)
-            ?d ^dri:file/dri:parent/rdfs:label ?assetReference;
-                rdfs:label ?label.
+        select ?d ?assetReference ?label where {
+            ?d rdfs:label ?label;
+                ^dri:file/dri:parent/rdfs:label ?assetReference.
             {
-                ?d a dri:File;
-        	        dri:directory*/rdfs:label ?code.
-            }
-            union
-            {
-                ?d a dri:File;
-        	        ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code.
-            }
-            union
-            {
-                ?d a dri:File;
-        	        ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code2.
+                select ?d where {
+                    bind(@id as ?code)
+                    bind(replace(@id,' ','_') as ?code2)
+                    ?d a dri:File.
+                    {
+                        ?d dri:directory*/rdfs:label ?code.
+                    }
+                    union
+                    {
+                        ?d ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code.
+                    }
+                    union
+                    {
+                        ?d ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code2.
+                    }
+                }
+                group by ?d
             }
         }
         order by ?assetReference
