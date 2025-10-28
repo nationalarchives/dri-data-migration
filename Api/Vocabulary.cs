@@ -177,6 +177,7 @@ public static class Vocabulary
     public static readonly IUriNode GeographicalPlaceName = new UriNode(new(Namespace, "geographicalPlaceName"));
 
     public static readonly IUriNode ImageSplit = new UriNode(new(Namespace, "ImageSplit"));
+    public static readonly IUriNode CompositeImageSplit = new UriNode(new(Namespace, "CompositeImageSplit"));
     public static readonly IUriNode AutoImageCrop = new UriNode(new(Namespace, "AutoImageCrop"));
     public static readonly IUriNode ManualImageCrop = new UriNode(new(Namespace, "ManualImageCrop"));
     public static readonly IUriNode ImageDeskew = new UriNode(new(Namespace, "ImageDeskew"));

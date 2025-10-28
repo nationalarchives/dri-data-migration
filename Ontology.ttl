@@ -252,6 +252,11 @@ this:schema a owl:Ontology;
 	rdfs:label "Image split";
 	rdfs:comment "Additional information about it found in 'Metadata Fields for Digitised records.xlsx'.".
 
+:CompositeImageSplit a owl:Class;
+	rdfs:subClassOf :ImageSplit;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Composite image split".
+
 :ImageCrop a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Image crop";

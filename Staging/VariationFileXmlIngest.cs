@@ -52,9 +52,15 @@ public class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
         if (foundImageSplit is ILiteralNode imageSplitNode && !string.IsNullOrWhiteSpace(imageSplitNode.Value) &&
             imageSplitNode.Value != "no")
         {
-            if (imageSplitNode.Value == "yes")
+            var split = imageSplitNode.Value switch
             {
-                graph.Assert(id, Vocabulary.ScannedVariationHasImageSplit, Vocabulary.ImageSplit);
+                "yes" => Vocabulary.ImageSplit,
+                "composite" => Vocabulary.CompositeImageSplit,
+                _ => null
+            };
+            if (split is not null)
+            {
+                graph.Assert(id, Vocabulary.ScannedVariationHasImageSplit, split);
             }
             else
             {
