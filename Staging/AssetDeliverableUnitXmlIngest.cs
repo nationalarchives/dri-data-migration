@@ -45,6 +45,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             [IngestVocabulary.ContentManagementSystemContainer] = Vocabulary.AssetDescription,
             [IngestVocabulary.Summary] = Vocabulary.AssetDescription,
             [IngestVocabulary.AdditionalInformation] = Vocabulary.AssetDescription,
+            [IngestVocabulary.ItemDescription] = Vocabulary.AssetDescription,
             [IngestVocabulary.AdministrativeBackground] = Vocabulary.AssetSummary,
             [IngestVocabulary.RelatedMaterial] = Vocabulary.AssetRelationDescription,
             [IngestVocabulary.TransRelatedMaterial] = Vocabulary.AssetRelationDescription,

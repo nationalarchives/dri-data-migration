@@ -41,6 +41,7 @@ public static class IngestVocabulary
     public static readonly IUriNode SeparatedMaterial = new UriNode(new($"{TnaNamespace}separatedMaterial"));
     public static readonly IUriNode ContentManagementSystemContainer = new UriNode(new($"{TnaNamespace}contentManagementSystemContainer"));
     public static readonly IUriNode RelatedIaid = new UriNode(new($"{TnaNamespace}relatedIaid"));
+    public static readonly IUriNode ItemDescription = new UriNode(new($"{TnaNamespace}itemDescription"));
 
     public static readonly IUriNode Note = new UriNode(new($"{TnaNamespace}note"));
     public static readonly IUriNode CuratedDateNote = new UriNode(new($"{TnaNamespace}curatedDateNote"));
