@@ -10,6 +10,7 @@ insert into temptop(TOPLEVELREF, DESCRIPTION)
 select TOPLEVELREF,
     case 
 	    when substr(DESCRIPTION,1,10) = 'WO/16/409/' then 'WO 409'
+        when substr(CATALOGUEREFERENCE,1,5) = 'WO/95' then 'WO 95'
 	    else DESCRIPTION
     end as Code from deliverableunit
 where DELIVERABLEUNITREF = TOPLEVELREF and DELETED = 'F';
