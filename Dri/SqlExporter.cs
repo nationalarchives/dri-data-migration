@@ -9,46 +9,29 @@ using System.Threading;
 
 namespace Dri;
 
-public class SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> options) : IDriSqlExporter
+public class SqlExporter : IDriSqlExporter
 {
-    private readonly DriSettings settings = options.Value;
-    private readonly string duXmlSql = """
-        select d.DELIVERABLEUNITREF, d.CATALOGUEREFERENCE, x.XMLCLOB,
-            concat('[',group_concat(distinct json_object('id', f.FILEREF, 'location', f.FILELOCATION, 'name', f.NAME )),']') as files
-        from dufile d
-        join xmlmetadata x on x.METADATAREF = d.DMETADATAREF
-        join dufile f on f.DELIVERABLEUNITREF = d.DELIVERABLEUNITREF
-        where d.Code = $code
-        group by d.DELIVERABLEUNITREF, d.CATALOGUEREFERENCE, x.XMLCLOB
-        order by d.rowid
-        limit $limit offset $offset
-        """;
-    private readonly string fileXmlSql = """
-        select f.FILEREF, f.FILELOCATION, f.NAME, f.MANIFESTATIONREF, x.XMLCLOB from dufile f
-        join xmlmetadata x on x.METADATAREF = f.FMETADATAREF
-        where f.Code = $code
-        order by f.rowid
-        limit $limit offset $offset
-        """;
-    private readonly string auditSql = """
-        select distinct t.TABLENAME, a.CHANGEREF, a.PRIMARYKEYVALUE, a.DATETIME, a.USERNAME, a.FULLNAME, a.XMLDIFF from auditchange a
-        join tableinvolved t on t.TABLEINVOLVEDREF = a.TABLEINVOLVEDREF
-        join dufile d on (d.DELIVERABLEUNITREF = a.PRIMARYKEYVALUE and t.TABLENAME = 'DeliverableUnit') or
-        	(d.FILEREF = a.PRIMARYKEYVALUE and t.TABLENAME = 'DigitalFile')
-        where a.XMLDIFF is not null and instr(username, 'du') = 0 and d.Code = $code
-        order by a.rowid
-        limit $limit offset $offset
-        """;
-    private readonly string duWo409XmlSql = """
-        select d.DELIVERABLEUNITREF, x.XMLCLOB from xmlmetadata x
-        join deliverableunit p on p.METADATAREF = x.METADATAREF
-        join deliverableunit du on du.PARENTREF = p.DELIVERABLEUNITREF
-        join dufile d on d.DELIVERABLEUNITREF = du.DELIVERABLEUNITREF
-        where d.Code = 'WO 409' and $code = 'WO 409'
-        group by d.DELIVERABLEUNITREF, x.XMLCLOB
-        order by d.rowid
-        limit $limit offset $offset
-        """;
+    private readonly ILogger<SqlExporter> logger;
+    private readonly DriSettings settings;
+    private readonly string duXmlSql;
+    private readonly string fileXmlSql;
+    private readonly string auditSql;
+    private readonly string duWo409XmlSql;
+
+    public SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> options)
+    {
+        this.logger = logger;
+        settings = options.Value;
+
+        var currentAssembly = typeof(SqlExporter).Assembly;
+        var baseName = $"{typeof(SqlExporter).Namespace}.Sql";
+        var embedded = new EmbeddedResource(currentAssembly, baseName);
+
+        duXmlSql = embedded.GetSql(nameof(GetAssetDeliverableUnits));
+        fileXmlSql = embedded.GetSql(nameof(GetVariationFiles));
+        auditSql = embedded.GetSql(nameof(GetChanges));
+        duWo409XmlSql = embedded.GetSql(nameof(GetWo409SubsetDeliverableUnits));
+    }
 
     public IEnumerable<DriAssetDeliverableUnit> GetAssetDeliverableUnits(int offset, CancellationToken cancellationToken)
     {

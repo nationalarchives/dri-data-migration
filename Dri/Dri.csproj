@@ -14,6 +14,10 @@
     <EmbeddedResource Include="Sparql\GetSensitivityReviewsByCodeAsync.sparql" />
     <EmbeddedResource Include="Sparql\GetSubsetsByCodeAsync.sparql" />
     <EmbeddedResource Include="Sparql\GetVariationsByCodeAsync.sparql" />
+    <EmbeddedResource Include="Sql\GetChanges.sql" />
+    <EmbeddedResource Include="Sql\GetVariationFiles.sql" />
+    <EmbeddedResource Include="Sql\GetWo409SubsetDeliverableUnits.sql" />
+    <EmbeddedResource Include="Sql\GetAssetDeliverableUnits.sql" />
   </ItemGroup>
 
   <ItemGroup>
