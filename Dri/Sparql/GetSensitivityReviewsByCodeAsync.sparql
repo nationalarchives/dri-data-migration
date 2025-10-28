@@ -34,7 +34,7 @@ construct {
             ex:accessConditionCode ?closureType
         ];
         ex:sensitivityReviewHasChange [
-            ex:changeDriId ?change;
+            ex:changeDriId ?qualifiedGeneration;
             ex:changeDescription ?changeLabel;
             ex:changeDateTime ?changeTime;
             ex:changeHasOperator [
