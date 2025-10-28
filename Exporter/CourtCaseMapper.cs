@@ -1,6 +1,4 @@
 ﻿using Api;
-using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF;
 
 namespace Exporter;
@@ -33,8 +31,8 @@ internal static class CourtCaseMapper
                 Summary = courtCaseSummary,
                 SummaryJudgment = courtCaseSummaryJudgment,
                 SummaryReasonsForJudgment = courtCaseSummaryReasonsForJudgment,
-                HearingStartDate = courtCaseHearingStartDate,
-                HearingEndDate = courtCaseHearingEndDate
+                HearingStartDate = RecordMapper.ToDate(courtCaseHearingStartDate),
+                HearingEndDate = RecordMapper.ToDate(courtCaseHearingEndDate)
             });
         }
 

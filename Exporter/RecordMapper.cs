@@ -1,7 +1,4 @@
 ﻿using Api;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 
@@ -69,6 +66,7 @@ internal static partial class RecordMapper
         var sr = SensitivityReviewMapper.GetSensitivityReview(graph, asset, variations);
         var copyrightTitles = CopyrightMapper.GetCopyrights(graph, asset);
         var location = LocationMapper.GetLocation(graph, asset);
+        var relationships = RelationMapper.GetRelations(graph, asset, assetReference, redactedVariationSequence);
 
         return new()
         {
@@ -109,11 +107,11 @@ internal static partial class RecordMapper
             FilmDuration = filmDuration,
             EvidenceProvider = evidenceProviderName,
             Investigation = investigationName,
-            InquiryHearingDate = inquiryHearingDate,
+            InquiryHearingDate = ToDate(inquiryHearingDate),
             InquirySessionDescription = inquirySessionDescription,
             InquiryAppearances = inquiryAppearances,
             CourtSession = courtSessionDescription,
-            CourtSessionDate = courtSessionDate,
+            CourtSessionDate = ToDate(courtSessionDate),
             CourtCases = courtCases,
             SealOwnerName = sealOwnerName,
             SealColour = sealColour,
@@ -130,24 +128,24 @@ internal static partial class RecordMapper
             SealObverseEndDate = sealAssetHasObverseEndDate,
             SealReverseStartDate = sealAssetHasReverseStartDate,
             SealReverseEndDate = sealAssetHasReverseEndDate,
-            FoiAssertedDate = sr.FoiAssertedDate,
+            FoiAssertedDate = ToDate(sr.FoiAssertedDate),
             AccessConditionName = sr.AccessConditionName,
             AccessConditionCode = sr.AccessConditionCode,
-            ClosureReviewDate = sr.ReviewDate,
-            ClosureStartDate = sr.ClosureStartDate,
+            ClosureReviewDate = ToDate(sr.ReviewDate),
+            ClosureStartDate = ToDate(sr.ClosureStartDate),
             ClosurePeriod = sr.ClosurePeriod,
             ClosureEndYear = sr.EndYear,
             ClosureDescription = sr.Description,
             FoiExemptions = sr.FoiExemptions,
             InstrumentNumber = sr.InstrumentNumber,
-            InstrumentSignedDate = sr.InstrumentSignedDate,
-            RetentionReconsiderDate = sr.RetentionReconsiderDate,
+            InstrumentSignedDate = ToDate(sr.InstrumentSignedDate),
+            RetentionReconsiderDate = ToDate(sr.RetentionReconsiderDate),
             GroundForRetentionCode = sr.GroundForRetentionCode,
             GroundForRetentionDescription = sr.GroundForRetentionDescription,
             DigitalFileCount = variations.Count,
             Changes = changes,
             DigitalFiles = files,
-            Relationships = null,
+            Relationships = relationships
         };
     }
 
@@ -156,4 +154,6 @@ internal static partial class RecordMapper
 
     private static string? BuildReference(long? redactedSequence, string assetReference) =>
         redactedSequence is null ? assetReference : $"{assetReference}/{redactedSequence}";
+
+    internal static DateOnly? ToDate(DateTimeOffset? dt) => dt is null ? null : DateOnly.FromDateTime(dt.Value.Date);
 }

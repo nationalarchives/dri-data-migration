@@ -1,6 +1,4 @@
 ﻿using Api;
-using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF;
 
 namespace Exporter;
@@ -14,6 +12,7 @@ internal static class VariationMapper
         foreach (var variation in variationSubjects)
         {
             var variationName = graph.GetSingleText(variation, Vocabulary.VariationName);
+            var variationSequence = graph.GetSingleNumber(variation, Vocabulary.VariationSequence);
             var redactedVariationSequence = graph.GetSingleNumber(variation, Vocabulary.RedactedVariationSequence);
             var variationNote = graph.GetSingleText(variation, Vocabulary.VariationNote);
             var variationRelativeLocation = graph.GetSingleText(variation, Vocabulary.VariationRelativeLocation);
@@ -35,11 +34,10 @@ internal static class VariationMapper
                 noteDate = YmdMapper.GetYmd(graph, variationHasDatedNote, Vocabulary.DatedNoteHasDate);
             }
 
-
             variations.Add(new()
             {
                 FileName = variationName,
-                //TODO: Add SortOrder=,
+                SortOrder = variationSequence,
                 RedactionSequence = redactedVariationSequence,
                 Note = variationNote,
                 Location = variationRelativeLocation,

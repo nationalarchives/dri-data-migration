@@ -2,11 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Rdf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 
@@ -40,15 +35,13 @@ public class RecordRetrieval(ILogger<RecordRetrieval> logger, IOptions<ExportSet
     {
         logger.MappingRecord(subject.Uri);
 
-        var asset = graph.GetTriplesWithSubject(subject);
-        var variations = asset.WithPredicate(Vocabulary.AssetHasVariation)
-            .Select(t => t.Object).Cast<IUriNode>();
+        var variations = graph.GetUriNodes(subject, Vocabulary.AssetHasVariation);
         //ValueTuple used as a workaround for a null key
         Dictionary<ValueTuple<long?>, List<IUriNode>> variationGroups = [];
         foreach (var variation in variations)
         {
-            var redactedVariationSequence = (graph.GetTriplesWithSubjectPredicate(variation, Vocabulary.RedactedVariationSequence)
-                .SingleOrDefault()?.Object as ILiteralNode)?.AsValuedNode().AsInteger();
+            var redactedVariationSequence = graph.GetSingleLiteral(variation, Vocabulary.RedactedVariationSequence)
+                ?.AsValuedNode().AsInteger();
             var key = ValueTuple.Create(redactedVariationSequence);
             if (!variationGroups.ContainsKey(key))
             {

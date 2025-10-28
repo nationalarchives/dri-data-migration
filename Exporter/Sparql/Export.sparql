@@ -14,6 +14,7 @@ construct {
         ex:assetConnectedAssetNote ?assetConnectedAssetNote;
         ex:assetRelationDescription ?assetRelationDescription;
         ex:assetPhysicalDescription ?assetPhysicalDescription;
+        ex:assetRelationIdentifier ?assetRelationIdentifier;
         ex:paperNumber ?paperNumber;
         ex:assetUsageRestrictionDescription ?assetUsageRestrictionDescription;
         ex:assetHasUkGovernmentWebArchive ?assetHasUkGovernmentWebArchive;
@@ -73,6 +74,7 @@ construct {
     ?srsb ex:sensitivityReviewSensitiveName ?sbSensitivityReviewSensitiveName.
     ?variation ex:variationName ?variationName;
         ex:redactedVariationSequence ?redactedVariationSequence;
+        ex:variationSequence ?variationSequence;
         ex:variationNote ?variationNote;
         ex:variationRelativeLocation ?variationRelativeLocation;
         ex:variationPhysicalConditionDescription ?variationPhysicalConditionDescription;
@@ -119,16 +121,18 @@ construct {
     ?retention ex:importLocation ?importLocation;
         ex:retentionHasFormalBody ?retentionHasFormalBody.
     ?retentionHasFormalBody ex:formalBodyName ?retentionFormalBodyName.
-    ?vChange ex:changeDescription ?vChangeDescription;
+    ?vChange ex:changeDriId ?vChangeDriId;
+        ex:changeDescription ?vChangeDescription;
         ex:changeDateTime ?vChangeDateTime;
         ex:changeHasOperator ?vChangeOperator.
-    ?vChangeOperator ex:operatorName ?vChangeAgentLabel.
+    ?vChangeOperator ex:operatorIdentifier ?vOperatorIdentifier;
+        ex:operatorName ?vOperatorName.
     ?changeV ex:changeDriId ?changeDriIdV;
         ex:changeDescription ?changeDescriptionV;
         ex:changeDateTime ?changeDateTimeV;
         ex:changeHasOperator ?operatorV.
     ?operatorV ex:operatorIdentifier ?operatorIdentifierV;
-        ex:personFullName ?operatorNameV.
+        ex:operatorName ?operatorNameV.
     ?originDateStart ex:year ?startYear;
         ex:month ?startMonth;
         ex:day ?startDay.
@@ -179,29 +183,37 @@ construct {
     ?sr ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName;
         ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription;
         ex:sensitivityReviewHasChange ?aChange.
-    ?aChange ex:changeDescription ?aChangeDescription;
+    ?aChange ex:changeDriId ?aChangeDriId;
+        ex:changeDescription ?aChangeDescription;
         ex:changeDateTime ?aChangeDateTime;
         ex:changeHasOperator ?aChangeOperator.
-    ?aChangeOperator ex:operatorName ?aChangeAgentLabel.
+    ?aChangeOperator ex:operatorIdentifier ?aOperatorIdentifier;
+        ex:operatorName ?aOperatorName.
     ?change ex:changeDriId ?changeDriId;
         ex:changeDescription ?changeDescription;
         ex:changeDateTime ?changeDateTime;
         ex:changeHasOperator ?operator.
     ?operator ex:operatorIdentifier ?operatorIdentifier;
-        ex:personFullName ?operatorName.
+        ex:operatorName ?operatorName.
 } where {
-    bind(@id as ?reference)
-    {
-        ?asset ex:assetReference ?reference.
-    }
-    union
-    {
-        ?parentSubset ex:subsetReference ?reference;
-            ex:subsetHasNarrowerSubset*/ex:subsetHasAsset ?asset.
-    }
     ?asset ex:assetDriId ?assetDriId;
         ex:assetReference ?assetReference;
         ex:assetHasSubset ?subset.
+    {
+        select ?asset where {
+            bind(@id as ?reference)
+            {
+                ?asset ex:assetReference ?reference.
+            }
+            union
+            {
+                ?parentSubset ex:subsetReference ?reference;
+                    ex:subsetHasNarrowerSubset*/ex:subsetHasAsset ?asset.
+            }
+        }
+        order by ?asset
+        limit @limit offset @offset
+    }
     optional { ?asset ex:assetName ?assetName }
     optional { ?asset ex:assetPastReference ?assetPastReference }
     optional { ?asset ex:assetDescription ?assetDescription }
@@ -212,6 +224,7 @@ construct {
     optional { ?asset ex:assetSourceInternalName ?assetSourceInternalName }
     optional { ?asset ex:assetConnectedAssetNote ?assetConnectedAssetNote }
     optional { ?asset ex:assetRelationDescription ?assetRelationDescription }
+    optional { ?asset ex:assetRelationIdentifier ?assetRelationIdentifier }
     optional { ?asset ex:assetPhysicalDescription ?assetPhysicalDescription }
     optional { ?asset ex:paperNumber ?paperNumber }
     optional { ?asset ex:assetUsageRestrictionDescription ?assetUsageRestrictionDescription }
@@ -358,7 +371,7 @@ construct {
         optional {
             ?change ex:changeHasOperator ?operator.
             optional { ?operator ex:operatorIdentifier ?operatorIdentifier }
-            optional { ?operator ex:personFullName ?operatorName }
+            optional { ?operator ex:operatorName ?operatorName }
         }
     }
     optional {
@@ -398,6 +411,7 @@ construct {
         optional { ?variation ex:scannerOperatorIdentifier ?scannerOperatorIdentifier }
         optional { ?variation ex:scannerIdentifier ?scannerIdentifier }
         optional { ?variation ex:redactedVariationSequence ?redactedVariationSequence }
+        optional { ?variation ex:variationSequence ?variationSequence }
         optional {
             ?variation ex:variationHasDatedNote ?datedNote.
             optional { ?datedNote ex:archivistNote ?archivistNote }
@@ -452,11 +466,13 @@ construct {
             }
             optional {
                 ?srv ex:sensitivityReviewHasChange ?vChange.
+                ?vChange ex:changeDriId ?vChangeDriId.
                 optional { ?vChange ex:changeDescription ?vChangeDescription }
                 optional { ?vChange ex:changeDateTime ?vChangeDateTime }
                 optional { 
                     ?vChange ex:changeHasOperator ?vChangeOperator.
-                    ?vChangeOperator ex:operatorName ?vChangeAgentLabel.
+                    optional { ?vChangeOperator ex:operatorIdentifier ?vOperatorIdentifier }
+                    optional { ?vChangeOperator ex:operatorName ?vOperatorName }
                 }
             }
         }
@@ -468,7 +484,7 @@ construct {
             optional {
                 ?changeV ex:changeHasOperator ?operatorV.
                 optional { ?operatorV ex:operatorIdentifier ?operatorIdentifierV }
-                optional { ?operatorV ex:personFullName ?operatorNameV }
+                optional { ?operatorV ex:operatorName ?operatorNameV }
             }
         }
     }
@@ -479,11 +495,13 @@ construct {
         optional { ?sr ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription }
         optional {
             ?sr ex:sensitivityReviewHasChange ?aChange.
+            ?aChange ex:changeDriId ?aChangeDriId.
             optional { ?aChange ex:changeDescription ?aChangeDescription }
             optional { ?aChange ex:changeDateTime ?aChangeDateTime }
             optional { 
                 ?aChange ex:changeHasOperator ?aChangeOperator.
-                ?aChangeOperator ex:operatorName ?aChangeAgentLabel.
+                optional { ?aChangeOperator ex:operatorIdentifier ?aOperatorIdentifier }
+                optional { ?aChangeOperator ex:operatorName ?aOperatorName }
             }
         }
     }

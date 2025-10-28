@@ -1,6 +1,4 @@
 ﻿using Api;
-using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF;
 
 namespace Exporter;
@@ -37,8 +35,8 @@ internal static class ChangeMapper
             var changeDriId = graph.GetSingleText(change, Vocabulary.ChangeDriId);
             var changeDescription = graph.GetSingleText(change, Vocabulary.ChangeDescription);
             var changeDateTime = graph.GetSingleDate(change, Vocabulary.ChangeDateTime);
-            var operatorName = graph.GetSingleText(change, Vocabulary.OperatorName);
-            var operatorIdentifier = graph.GetSingleText(change, Vocabulary.OperatorIdentifier);
+            var operatorName = graph.GetSingleTransitiveLiteral(change, Vocabulary.ChangeHasOperator, Vocabulary.OperatorName)?.Value;
+            var operatorIdentifier = graph.GetSingleTransitiveLiteral(change, Vocabulary.ChangeHasOperator, Vocabulary.OperatorIdentifier)?.Value;
 
             changes.Add(new()
             {

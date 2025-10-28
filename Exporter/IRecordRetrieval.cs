@@ -1,9 +1,4 @@
-﻿using Api;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Exporter;
+﻿namespace Exporter;
 
 public interface IRecordRetrieval
 {

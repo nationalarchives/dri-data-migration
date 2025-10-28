@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Api;
+﻿namespace Exporter;
 
 public class RecordOutput
 {
@@ -42,11 +39,11 @@ public class RecordOutput
     public TimeSpan? FilmDuration { get; set; }
     public string? EvidenceProvider { get; set; }
     public string? Investigation { get; set; }
-    public DateTimeOffset? InquiryHearingDate { get; set; }
+    public DateOnly? InquiryHearingDate { get; set; }
     public string? InquirySessionDescription { get; set; }
     public IEnumerable<InquiryAppearance>? InquiryAppearances { get; set; }
     public string? CourtSession { get; set; }
-    public DateTimeOffset? CourtSessionDate { get; set; }
+    public DateOnly? CourtSessionDate { get; set; }
     public IEnumerable<CourtCase>? CourtCases { get; set; }
     public string? SealOwnerName { get; set; }
     public string? SealColour { get; set; }
@@ -63,24 +60,24 @@ public class RecordOutput
     public string? SealObverseEndDate { get; set; }
     public string? SealReverseStartDate { get; set; }
     public string? SealReverseEndDate { get; set; }
-    public DateTimeOffset? FoiAssertedDate { get; set; }
+    public DateOnly? FoiAssertedDate { get; set; }
     public string? AccessConditionName { get; set; }
     public string? AccessConditionCode { get; set; }
-    public DateTimeOffset? ClosureReviewDate { get; set; }
-    public DateTimeOffset? ClosureStartDate { get; set; }
+    public DateOnly? ClosureReviewDate { get; set; }
+    public DateOnly? ClosureStartDate { get; set; }
     public int? ClosurePeriod { get; set; }
     public int? ClosureEndYear { get; set; }
     public string? ClosureDescription { get; set; }
     public IEnumerable<Legislation>? FoiExemptions { get; set; }
     public long? InstrumentNumber { get; set; }
-    public DateTimeOffset? InstrumentSignedDate { get; set; }
-    public DateTimeOffset? RetentionReconsiderDate { get; set; }
+    public DateOnly? InstrumentSignedDate { get; set; }
+    public DateOnly? RetentionReconsiderDate { get; set; }
     public string? GroundForRetentionCode { get; set; }
     public string? GroundForRetentionDescription { get; set; }
     public int DigitalFileCount { get; set; }
     public IEnumerable<Change>? Changes { get; set; }
     public IEnumerable<Variation>? DigitalFiles { get; set; }
-    public IEnumerable<RelationshipType>? Relationships { get; set; }
+    public IEnumerable<RecordRelationship>? Relationships { get; set; }
 
     public class InquiryAppearance
     {
@@ -95,8 +92,8 @@ public class RecordOutput
         public string? Summary { get; set; }
         public string? SummaryJudgment { get; set; }
         public string? SummaryReasonsForJudgment { get; set; }
-        public DateTimeOffset? HearingStartDate { get; set; }
-        public DateTimeOffset? HearingEndDate { get; set; }
+        public DateOnly? HearingStartDate { get; set; }
+        public DateOnly? HearingEndDate { get; set; }
     }
 
     public class Dimension
@@ -118,19 +115,19 @@ public class RecordOutput
     public class Variation
     {
         public string FileName { get; set; }
-        public int SortOrder { get; set; }
+        public long? SortOrder { get; set; }
         public long? RedactionSequence { get; set; }
         public string? Note { get; set; }
         public string? Location { get; set; }
         public string? PhysicalConditionDescription { get; set; }
         public string? ReferenceGoogleId { get; set; }
-        public  string? ReferenceParentGoogleId { get; set; }
+        public string? ReferenceParentGoogleId { get; set; }
         public string? ScannerOperatorIdentifier { get; set; }
         public string? ScannerIdentifier { get; set; }
-        public  string? ArchivistNote { get; set; }
+        public string? ArchivistNote { get; set; }
         public string? ArchivistNoteDate { get; set; }
         public string? ScannerGeographicalPlace { get; set; }
-        public  string? ScannedImageCrop { get; set; }
+        public string? ScannedImageCrop { get; set; }
         public string? ScannedImageDeskew { get; set; }
         public string? ScannedImageSplit { get; set; }
     }

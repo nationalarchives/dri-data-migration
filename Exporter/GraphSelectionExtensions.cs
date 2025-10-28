@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using VDS.RDF.Nodes;
+﻿using VDS.RDF.Nodes;
 
 namespace VDS.RDF;
 
 internal static class GraphSelectionExtensions
 {
-    private static INode? GetSingle(this IGraph graph, IUriNode subject, IUriNode predicate) =>
-        graph.GetTriplesWithSubjectPredicate(subject, predicate).SingleOrDefault()?.Object;
-
     internal static ILiteralNode? GetSingleLiteral(this IGraph graph, IUriNode subject, IUriNode predicate) =>
-        GetSingle(graph, subject, predicate) as ILiteralNode;
+        GetLiteralNodes(graph, subject, predicate).SingleOrDefault();
 
     internal static DateTimeOffset? GetSingleDate(this IGraph graph, IUriNode subject, IUriNode predicate) =>
         GetSingleLiteral(graph, subject, predicate)?.AsValuedNode().AsDateTimeOffset();
@@ -34,6 +28,9 @@ internal static class GraphSelectionExtensions
 
         return GetSingleLiteral(graph, parent, immediatePredicate);
     }
+
+    internal static IEnumerable<ILiteralNode> GetLiteralNodes(this IGraph graph, IUriNode subject, IUriNode predicate) =>
+        graph.GetTriplesWithSubjectPredicate(subject, predicate).Select(t => t.Object).Cast<ILiteralNode>();
 
     internal static IEnumerable<IUriNode> GetUriNodes(this IGraph graph, IUriNode subject, IUriNode predicate) =>
         graph.GetTriplesWithSubjectPredicate(subject, predicate).Select(t => t.Object).Cast<IUriNode>();
