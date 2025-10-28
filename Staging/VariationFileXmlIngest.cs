@@ -88,6 +88,7 @@ public class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
             {
                 "auto" => Vocabulary.AutoImageDeskew,
                 "manual" => Vocabulary.ManualImageDeskew,
+                "yes" => Vocabulary.ImageDeskew,
                 _ => null
             };
             if (deskew is not null)

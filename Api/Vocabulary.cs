@@ -179,6 +179,7 @@ public static class Vocabulary
     public static readonly IUriNode ImageSplit = new UriNode(new(Namespace, "ImageSplit"));
     public static readonly IUriNode AutoImageCrop = new UriNode(new(Namespace, "AutoImageCrop"));
     public static readonly IUriNode ManualImageCrop = new UriNode(new(Namespace, "ManualImageCrop"));
+    public static readonly IUriNode ImageDeskew = new UriNode(new(Namespace, "ImageDeskew"));
     public static readonly IUriNode AutoImageDeskew = new UriNode(new(Namespace, "AutoImageDeskew"));
     public static readonly IUriNode ManualImageDeskew = new UriNode(new(Namespace, "ManualImageDeskew"));
 
