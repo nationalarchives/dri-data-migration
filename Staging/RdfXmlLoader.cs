@@ -34,9 +34,10 @@ internal class RdfXmlLoader(ILogger logger)
                 BaseUri = new Uri("http://example.com")
             };
             rdf.NamespaceMap.AddNamespace("tna", IngestVocabulary.TnaNamespace);
+            var rdfXml = rdfNode.OuterXml.Replace("rdf:datetype", "rdf:datatype");
             try
             {
-                new RdfXmlParser().Load(rdf, new StringReader(rdfNode.OuterXml));
+                new RdfXmlParser().Load(rdf, new StringReader(rdfXml));
                 return rdf;
             }
             catch (RdfParseException e)
