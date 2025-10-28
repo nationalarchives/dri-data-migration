@@ -46,7 +46,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         {
             return null;
         }
-        await AddChangeAsync(graph, id, dri, cancellationToken);
+        await AddChangeAsync(graph, existing, id, dri, cancellationToken);
 
         return graph;
     }
@@ -243,16 +243,17 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         return true;
     }
 
-    private async Task AddChangeAsync(IGraph graph, INode id, DriSensitivityReview dri,
-        CancellationToken cancellationToken)
+    private async Task AddChangeAsync(IGraph graph, IGraph existing, INode id,
+        DriSensitivityReview dri, CancellationToken cancellationToken)
     {
         if (dri.ChangeId is null)
         {
             return;
         }
-        var change = await cacheClient.CacheFetchOrNew(CacheEntityKind.Change, dri.ChangeId,
-            Vocabulary.ChangeDriId, cancellationToken);
+        var change = existing.GetTriplesWithPredicate(Vocabulary.ChangeDriId)
+            .SingleOrDefault(t => t.Object.AsValuedNode().AsString() == dri.ChangeId)?.Subject ?? CacheClient.NewId;
         graph.Assert(id, Vocabulary.SensitivityReviewHasChange, change);
+        GraphAssert.Text(graph, change, dri.ChangeId, Vocabulary.ChangeDriId);
         GraphAssert.Text(graph, change, dri.ChangeDescription, Vocabulary.ChangeDescription);
         if (dri.ChangeTimestamp is not null)
         {

@@ -26,7 +26,8 @@ construct {
         ex:retentionRestrictionHasRetention ?retention.
     ?asset ex:assetHasRetention ?retention.
     ?subset ex:subsetHasRetention ?retention.
-    ?change ex:changeDescription ?changeDescription;
+    ?change ex:changeDriId ?changeDriId;
+        ex:changeDescription ?changeDescription;
         ex:changeDateTime ?changeDateTime;
         ex:changeHasOperator ?changeOperator.
     ?changeOperator ex:operatorName ?changeAgentLabel.
@@ -64,6 +65,7 @@ construct {
     }
     optional {
         ?sr ex:sensitivityReviewHasChange ?change.
+        ?change ex:changeDriId ?changeDriId.
         optional { ?change ex:changeDescription ?changeDescription }
         optional { ?change ex:changeDateTime ?changeDateTime }
         optional { 
