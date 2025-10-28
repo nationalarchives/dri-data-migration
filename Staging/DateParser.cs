@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using static Staging.DateParser;
 
 namespace Staging;
 
@@ -21,16 +22,11 @@ internal partial class DateParser(ILogger logger)
 
         if (TryParseDate(trimmedDate, out var singleDate))
         {
-            return new YearMonthDay(dateType, singleDate.Year, singleDate.Month, singleDate.Day);
-        }
-
-        if (int.TryParse(trimmedDate, out var singleYear))
-        {
-            return new YearMonthDay(dateType, singleYear);
+            return new(dateType, singleDate.Year, singleDate.Month, singleDate.Day);
         }
 
         logger.UnrecognizedYearMonthDayFormat(dateText);
-        return new YearMonthDay(DateType.None);
+        return new(DateType.None);
     }
 
     internal DateRange ParseDateRange(string? obverseOrReverseText, string dateText)
@@ -110,6 +106,8 @@ internal partial class DateParser(ILogger logger)
         return new DateRange(DateRangeType.None);
     }
 
+    internal record Ymd(int? Year = null, int? Month = null, int? Day = null);
+    
     internal record YearMonthDay(DateType DateKind, int? Year = null, int? Month = null, int? Day = null);
 
     internal record DateRange(DateRangeType DateRangeKind, int? FirstYear = null, int? FirstMonth = null, int? FirstDay = null, int? SecondYear = null, int? SecondMonth = null, int? SecondDay = null);
@@ -151,7 +149,7 @@ internal partial class DateParser(ILogger logger)
         Reverse
     }
 
-    internal static bool TryParseDate(string date, out DateTimeOffset dt)
+    internal static bool TryParseDate(string date, out Ymd? dt)
     {
         if (string.IsNullOrWhiteSpace(date))
         {
@@ -159,23 +157,39 @@ internal partial class DateParser(ILogger logger)
             return false;
         }
         date = date.Replace(" Sept ", " Sep ");
+        date = date.EndsWith(" Sept") ? date.Replace(" Sept", " Sep") : date;
+        if (DateTimeOffset.TryParseExact(date, "yyyy MMM", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var ym1))
+        {
+            dt = new(ym1.Year, ym1.Month);
+            return true;
+        }
+        if (DateTimeOffset.TryParseExact(date, "yyyy MMMM", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var ym2))
+        {
+            dt = new(ym2.Year, ym2.Month);
+            return true;
+        }
         if (DateTimeOffset.TryParse(date, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt1))
         {
-            dt = dt1;
+            dt = new(dt1.Year, dt1.Month, dt1.Day);
             return true;
         }
         if (DateTimeOffset.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt2))
         {
-            dt = dt2;
+            dt = new(dt2.Year, dt2.Month, dt2.Day);
             return true;
         }
         if (DateTimeOffset.TryParseExact(date, "yyyy MMM d", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt3))
         {
-            dt = dt3;
+            dt = new(dt3.Year, dt3.Month, dt3.Day);
+            return true;
+        }
+        if (int.TryParse(date, out var singleYear))
+        {
+            dt = new(singleYear);
             return true;
         }
 
-        dt = default;
+        dt = null;
         return false;
     }
 }

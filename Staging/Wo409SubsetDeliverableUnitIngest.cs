@@ -119,7 +119,7 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
             if (birthDate is not null && !string.IsNullOrWhiteSpace(birthDate.Value) &&
                 DateParser.TryParseDate(birthDate.Value, out var birthDt))
             {
-                graph.Assert(person, Vocabulary.PersonDateOfBirth, new DateNode(birthDt));
+                graph.Assert(person, Vocabulary.PersonDateOfBirth, new DateNode(new DateTimeOffset((int)birthDt!.Year!, (int)birthDt!.Month!, (int)birthDt!.Day!, 0, 0, 0, TimeSpan.Zero)));
             }
             var birthAddress = await GetAddressAsync(rdf, birth, cancellationToken);
             if (birthAddress is not null)

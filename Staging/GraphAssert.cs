@@ -129,7 +129,7 @@ internal static class GraphAssert
         {
             if (DateParser.TryParseDate(foundNode.Value, out var dt))
             {
-                graph.Assert(id, immediatePredicate, new DateNode(dt));
+                graph.Assert(id, immediatePredicate, new DateNode(new DateTimeOffset((int)dt!.Year!, (int)dt!.Month!, (int)dt!.Day!, 0, 0, 0, TimeSpan.Zero)));
             }
             else
             {
