@@ -93,7 +93,7 @@ public sealed class SensitivityReviewIngestTest
 
         recordIngestedCount.Should().Be(1);
         client.Verify(c => c.ApplyDiffAsync(
-            It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 23 && !r.RemovedTriples.Any()),
+            It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 24 && !r.RemovedTriples.Any()),
             CancellationToken.None), Times.Once);
     }
 
@@ -121,6 +121,7 @@ public sealed class SensitivityReviewIngestTest
         existing.Assert(retentionRestriction, Vocabulary.RetentionRestrictionReviewDate, new DateNode(dri.RestrictionReviewDate!.Value));
         existing.Assert(retentionRestriction, Vocabulary.RetentionRestrictionHasGroundForRetention, gfr);
         existing.Assert(id, Vocabulary.SensitivityReviewHasChange, change);
+        existing.Assert(change, Vocabulary.ChangeDriId, new LiteralNode(dri.ChangeId));
         existing.Assert(change, Vocabulary.ChangeDescription, new LiteralNode(dri.ChangeDescription));
         existing.Assert(change, Vocabulary.ChangeDateTime, new DateTimeNode(dri.ChangeTimestamp.Value));
         existing.Assert(change, Vocabulary.ChangeHasOperator, changeOperator);
@@ -162,6 +163,7 @@ public sealed class SensitivityReviewIngestTest
         existing.Assert(retentionRestriction, Vocabulary.RetentionRestrictionReviewDate, new DateNode(dri.RestrictionReviewDate!.Value));
         existing.Assert(retentionRestriction, Vocabulary.RetentionRestrictionHasGroundForRetention, gfr);
         existing.Assert(id, Vocabulary.SensitivityReviewHasChange, change);
+        existing.Assert(change, Vocabulary.ChangeDriId, new LiteralNode(dri.ChangeId));
         existing.Assert(change, Vocabulary.ChangeDescription, new LiteralNode(dri.ChangeDescription));
         existing.Assert(change, Vocabulary.ChangeDateTime, new DateTimeNode(dri.ChangeTimestamp.Value));
         existing.Assert(change, Vocabulary.ChangeHasOperator, changeOperator);
