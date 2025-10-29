@@ -1120,13 +1120,21 @@ this:schema a owl:Ontology;
 	rdfs:label "Subset reference";
 	rdfs:comment "Unique reference of the :Subset. It is a catalogue reference.".
 
-:assetName a owl:DatatypeProperty;
+:assetName a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:seeAlso rico:title;
 	rdfs:domain :Asset;
 	rdfs:range xsd:string;
 	rdfs:subPropertyOf :name;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset name".
+
+:assetAlternativeName a owl:DatatypeProperty;
+	rdfs:seeAlso rico:title;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :name;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset alternative name".
 
 :assetDescription a owl:DatatypeProperty;
 	rdfs:seeAlso rico:generalDescription;

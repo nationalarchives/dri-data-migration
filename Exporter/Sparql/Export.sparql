@@ -4,6 +4,7 @@ construct {
     ?asset ex:assetDriId ?assetDriId;
         ex:assetReference ?assetReference;
         ex:assetName ?assetName;
+        ex:assetAlternativeName ?assetAlternativeName;
         ex:assetPastReference ?assetPastReference;
         ex:assetDescription ?assetDescription;
         ex:assetSummary ?assetSummary;
@@ -215,6 +216,7 @@ construct {
         limit @limit offset @offset
     }
     optional { ?asset ex:assetName ?assetName }
+    optional { ?asset ex:assetAlternativeName ?assetAlternativeName }
     optional { ?asset ex:assetPastReference ?assetPastReference }
     optional { ?asset ex:assetDescription ?assetDescription }
     optional { ?asset ex:assetSummary ?assetSummary }

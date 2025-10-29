@@ -44,15 +44,6 @@ internal static class GraphAssert
         }
     }
 
-    internal static void MultiText(IGraph graph, INode id, IGraph rdf,
-        IUriNode findPredicate, IUriNode immediatePredicate)
-    {
-        foreach (var found in rdf.GetTriplesWithPredicate(findPredicate).Select(t => t.Object).Cast<ILiteralNode>())
-        {
-            Text(graph, id, found.Value, immediatePredicate);
-        }
-    }
-
     internal static void Base64(IGraph graph, INode id, string? value, IUriNode immediatePredicate)
     {
         if (!string.IsNullOrWhiteSpace(value))

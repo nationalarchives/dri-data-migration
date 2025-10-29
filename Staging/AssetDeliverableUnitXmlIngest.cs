@@ -73,13 +73,13 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             [IngestVocabulary.Session_date] = Vocabulary.CourtSessionDate,
             [IngestVocabulary.Hearing_date] = Vocabulary.InquiryHearingDate
         });
-        GraphAssert.MultiText(graph, id, rdf, IngestVocabulary.Title, Vocabulary.AssetName);
         GraphAssert.Integer(logger, graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
         {
             [IngestVocabulary.StartImageNumber] = Vocabulary.ImageSequenceStart,
             [IngestVocabulary.EndImageNumber] = Vocabulary.ImageSequenceEnd
         });
 
+        AddNames(graph, doc, id);
         await AddVariationRelationsAsync(graph, rdf, id, doc, filesJson, cancellationToken);
         AddFilmDuration(graph, rdf, id);
         AddWebArchive(graph, rdf, id);
@@ -114,6 +114,33 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         await AddCopyrightAsync(graph, rdf, id, cancellationToken);
         AddLegalStatus(graph, rdf, id);
         await sealIngest.AddSealAsync(graph, rdf, existing, id, cancellationToken);
+    }
+
+    private static void AddNames(IGraph graph, XmlDocument doc, IUriNode id)
+    {
+        var namespaceManager = new XmlNamespaceManager(doc.NameTable);
+        namespaceManager.AddNamespace("dcterms", IngestVocabulary.DctermsNamespace.ToString());
+        var titles = doc.SelectNodes("descendant::dcterms:title", namespaceManager);
+        if (titles is null)
+        {
+            return;
+        }
+        for (int i = 0; i < titles.Count; i++)
+        {
+            var title = titles.Item(i)?.InnerText;
+            if (title is null)
+            {
+                continue;
+            }
+            if (i == 0)
+            {
+                GraphAssert.Text(graph, id, title, Vocabulary.AssetName);
+            }
+            else
+            {
+                GraphAssert.Text(graph, id, title, Vocabulary.AssetAlternativeName);
+            }
+        }
     }
 
     private async Task AddVariationRelationsAsync(IGraph graph, IGraph rdf, IUriNode id,

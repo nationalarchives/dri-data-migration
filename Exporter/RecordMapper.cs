@@ -11,8 +11,8 @@ internal static partial class RecordMapper
     {
         var assetDriId = graph.GetSingleText(asset, Vocabulary.AssetDriId);
         var assetReference = graph.GetSingleText(asset, Vocabulary.AssetReference);
-        //TODO: Must be replaced with primary and secondary
         var assetName = graph.GetSingleText(asset, Vocabulary.AssetName);
+        var assetAlternativeName = graph.GetSingleText(asset, Vocabulary.AssetAlternativeName);
         var assetPastReference = graph.GetSingleText(asset, Vocabulary.AssetPastReference);
         var assetDescription = graph.GetSingleText(asset, Vocabulary.AssetDescription);
         var assetSummary = graph.GetSingleText(asset, Vocabulary.AssetSummary);
@@ -74,7 +74,7 @@ internal static partial class RecordMapper
             IaId = BuildIaId(redactedVariationSequence, assetDriId),
             Reference = BuildReference(redactedVariationSequence, assetReference),
             Title = assetName,
-            TranslatedTitle = null,
+            TranslatedTitle = assetAlternativeName,
             PublishedTitle = sr.SensitiveName ?? assetName,
             Description = assetDescription,
             PublishedDescription = sr.SensitiveDescription ?? assetDescription,
