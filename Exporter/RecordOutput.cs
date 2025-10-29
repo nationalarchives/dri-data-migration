@@ -106,7 +106,7 @@ public class RecordOutput
     public class Change
     {
         public string DriId { get; set; }
-        public string? Description { get; set; }
+        public string? DescriptionBase64 { get; set; }
         public DateTimeOffset? Timestamp { get; set; }
         public string? OperatorName { get; set; }
         public string? OperatorIdentifier { get; set; }

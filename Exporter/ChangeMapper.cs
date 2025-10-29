@@ -41,7 +41,7 @@ internal static class ChangeMapper
             changes.Add(new()
             {
                 DriId = changeDriId!,
-                Description = changeDescription,
+                DescriptionBase64 = changeDescription,
                 Timestamp = changeDateTime,
                 OperatorName = operatorName,
                 OperatorIdentifier = operatorIdentifier
