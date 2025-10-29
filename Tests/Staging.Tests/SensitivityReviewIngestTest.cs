@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Testing;
 using Moq;
+using System.Text;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
@@ -122,7 +123,7 @@ public sealed class SensitivityReviewIngestTest
         existing.Assert(retentionRestriction, Vocabulary.RetentionRestrictionHasGroundForRetention, gfr);
         existing.Assert(id, Vocabulary.SensitivityReviewHasChange, change);
         existing.Assert(change, Vocabulary.ChangeDriId, new LiteralNode(dri.ChangeId));
-        existing.Assert(change, Vocabulary.ChangeDescription, new LiteralNode(dri.ChangeDescription));
+        existing.Assert(change, Vocabulary.ChangeDescription, new LiteralNode(Convert.ToBase64String(Encoding.UTF8.GetBytes(dri.ChangeDescription)), new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
         existing.Assert(change, Vocabulary.ChangeDateTime, new DateTimeNode(dri.ChangeTimestamp.Value));
         existing.Assert(change, Vocabulary.ChangeHasOperator, changeOperator);
         existing.Assert(changeOperator, Vocabulary.OperatorName, new LiteralNode(dri.ChangeOperatorName));
@@ -164,7 +165,7 @@ public sealed class SensitivityReviewIngestTest
         existing.Assert(retentionRestriction, Vocabulary.RetentionRestrictionHasGroundForRetention, gfr);
         existing.Assert(id, Vocabulary.SensitivityReviewHasChange, change);
         existing.Assert(change, Vocabulary.ChangeDriId, new LiteralNode(dri.ChangeId));
-        existing.Assert(change, Vocabulary.ChangeDescription, new LiteralNode(dri.ChangeDescription));
+        existing.Assert(change, Vocabulary.ChangeDescription, new LiteralNode(Convert.ToBase64String(Encoding.UTF8.GetBytes(dri.ChangeDescription)), new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
         existing.Assert(change, Vocabulary.ChangeDateTime, new DateTimeNode(dri.ChangeTimestamp.Value));
         existing.Assert(change, Vocabulary.ChangeHasOperator, changeOperator);
         existing.Assert(changeOperator, Vocabulary.OperatorName, new LiteralNode(dri.ChangeOperatorName));

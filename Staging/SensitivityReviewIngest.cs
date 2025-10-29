@@ -254,7 +254,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
             .SingleOrDefault(t => t.Object.AsValuedNode().AsString() == dri.ChangeId)?.Subject ?? CacheClient.NewId;
         graph.Assert(id, Vocabulary.SensitivityReviewHasChange, change);
         GraphAssert.Text(graph, change, dri.ChangeId, Vocabulary.ChangeDriId);
-        GraphAssert.Text(graph, change, dri.ChangeDescription, Vocabulary.ChangeDescription);
+        GraphAssert.Base64(graph, change, dri.ChangeDescription, Vocabulary.ChangeDescription);
         if (dri.ChangeTimestamp is not null)
         {
             graph.Assert(change, Vocabulary.ChangeDateTime, new DateTimeNode(dri.ChangeTimestamp.Value));

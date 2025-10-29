@@ -635,7 +635,7 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has change".
 
-:changeHasAsset a owl:ObjectProperty, owl:InverseFunctionalProperty;
+:changeHasAsset a owl:ObjectProperty;
 	owl:inverseOf :assetHasChange;
 	rdfs:domain :Change;
 	rdfs:range :Asset;
@@ -806,7 +806,7 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation has change".
 
-:changeHasVariation a owl:ObjectProperty, owl:InverseFunctionalProperty;
+:changeHasVariation a owl:ObjectProperty;
 	owl:inverseOf :variationHasChange;
 	rdfs:domain :Change;
 	rdfs:range :Variation;
@@ -977,7 +977,7 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Sensitivity review has change".
 
-:changeHasSensitivityReview a owl:ObjectProperty, owl:InverseFunctionalProperty;
+:changeHasSensitivityReview a owl:ObjectProperty;
 	owl:inverseOf :sensitivityReviewHasChange;
 	rdfs:domain :Change;
 	rdfs:range :SensitivityReview;
