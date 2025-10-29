@@ -23,7 +23,7 @@ public class RecordRetrieval(ILogger<RecordRetrieval> logger, IOptions<ExportSet
         {
             { "id", settings.Code },
             { "limit", settings.FetchPageSize },
-            { "offset", offset}
+            { "offset", offset }
         }, cancellationToken);
 
         return graph.GetTriplesWithPredicate(Vocabulary.AssetDriId)

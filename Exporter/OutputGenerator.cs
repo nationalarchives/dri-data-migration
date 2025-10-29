@@ -37,8 +37,7 @@ public class OutputGenerator(ILogger<OutputGenerator> logger, IOptions<ExportSet
             offset += settings.FetchPageSize;
             Serialize(records);
             logger.RecordsExported();
-
-        } while (records.Any() && records.Count == settings.FetchPageSize);
+        } while (records.Any());
         logger.ExportFinished();
     }
 
