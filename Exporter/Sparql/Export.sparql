@@ -74,6 +74,7 @@ construct {
     ?broaderRetention ex:importLocation ?sbImportLocation.
     ?srsb ex:sensitivityReviewSensitiveName ?sbSensitivityReviewSensitiveName.
     ?variation ex:variationName ?variationName;
+        ex:variationDriManifestationId ?variationDriManifestationId;
         ex:redactedVariationSequence ?redactedVariationSequence;
         ex:variationSequence ?variationSequence;
         ex:variationNote ?variationNote;
@@ -405,6 +406,7 @@ construct {
     optional {
         ?asset ex:assetHasVariation ?variation.
         optional { ?variation ex:variationName ?variationName }
+        optional { ?variation ex:variationDriManifestationId ?variationDriManifestationId }
         optional { ?variation ex:variationNote ?variationNote }
         optional { ?variation ex:variationRelativeLocation ?variationRelativeLocation }
         optional { ?variation ex:variationPhysicalConditionDescription ?variationPhysicalConditionDescription }

@@ -2,6 +2,7 @@
 
 construct {
     ?variation ex:variationDriId ?variationDriId;
+        ex:variationDriManifestationId ?variationDriManifestationId;
         ex:variationDriXml ?variationDriXml;
         ex:variationNote ?variationNote;
         ex:variationRelativeLocation ?variationRelativeLocation;
@@ -24,6 +25,7 @@ construct {
 } where {
     bind(@id as ?variationDriId)
     ?variation ex:variationDriId ?variationDriId.
+    optional { ?variation ex:variationDriManifestationId ?variationDriManifestationId }
     optional { ?variation ex:variationDriXml ?variationDriXml }
     optional { ?variation ex:variationNote ?variationNote }
     optional { ?variation ex:variationRelativeLocation ?variationRelativeLocation }

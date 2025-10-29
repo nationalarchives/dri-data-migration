@@ -67,10 +67,11 @@ internal static partial class RecordMapper
         var copyrightTitles = CopyrightMapper.GetCopyrights(graph, asset);
         var location = LocationMapper.GetLocation(graph, asset);
         var relationships = RelationMapper.GetRelations(graph, asset, assetReference, redactedVariationSequence);
+        var recordId = GetRecordId(graph, variations);
 
         return new()
         {
-            RecordId = assetDriId,//TODO: Temporary, to be replaced
+            RecordId = recordId,
             IaId = BuildIaId(redactedVariationSequence, assetDriId),
             Reference = BuildReference(redactedVariationSequence, assetReference),
             Title = assetName,
@@ -148,6 +149,9 @@ internal static partial class RecordMapper
             Relationships = relationships
         };
     }
+
+    private static string? GetRecordId(IGraph graph, List<IUriNode> variations) =>
+        variations.Select(v => graph.GetSingleText(v, Vocabulary.VariationDriManifestationId)).FirstOrDefault();
 
     private static string? BuildIaId(long? redactedSequence, string assetDriId) =>
         redactedSequence is null ? Guid.Parse(assetDriId).ToString("N") : $"{Guid.Parse(assetDriId):N}_{redactedSequence}";
