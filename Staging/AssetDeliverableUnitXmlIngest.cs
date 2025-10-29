@@ -86,7 +86,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         await AddCourtCasesAsync(graph, rdf, id, assetReference, cancellationToken);
         await AddWitnessAsync(graph, rdf, id, cancellationToken);
 
-        dateIngest.AddOriginDates(graph, rdf, id, existing);
+        dateIngest.AddOriginDates(graph, rdf, id, doc, existing);
 
         await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, id, rdf,
             IngestVocabulary.Language, CacheEntityKind.Language, Vocabulary.AssetHasLanguage,
@@ -347,7 +347,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
 
     private record RelationVariation(string Id, string Location, string Name);
 
-    private bool HasPathPartialMatch(string fullPath, string partialPath)
+    private static bool HasPathPartialMatch(string fullPath, string partialPath)
     {
         var fullPathSegemnts = fullPath.Split('/', StringSplitOptions.RemoveEmptyEntries);
 

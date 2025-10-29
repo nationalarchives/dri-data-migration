@@ -1,5 +1,6 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
+using System.Xml;
 using VDS.RDF;
 
 namespace Staging;
@@ -8,7 +9,7 @@ internal class AssetDeliverableUnitOriginDateIngest(ILogger logger)
 {
     private readonly DateParser dateParser = new(logger);
 
-    internal void AddOriginDates(IGraph graph, IGraph rdf, INode id, IGraph existing)
+    internal void AddOriginDates(IGraph graph, IGraph rdf, INode id, XmlDocument doc, IGraph existing)
     {
         var foundCoverage = rdf.GetTriplesWithPredicate(IngestVocabulary.Coverage).FirstOrDefault()?.Object;
         var startNode = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateStart).SingleOrDefault()?.Object ??
@@ -17,7 +18,32 @@ internal class AssetDeliverableUnitOriginDateIngest(ILogger logger)
         var endNode = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateEnd).SingleOrDefault()?.Object ??
             existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginApproximateDateEnd).SingleOrDefault()?.Object ??
             CacheClient.NewId;
-        if (foundCoverage is not null)
+        if (foundCoverage is null)
+        {
+            var namespaceManager = new XmlNamespaceManager(doc.NameTable);
+            namespaceManager.AddNamespace("t", "http://www.tessella.com/XIP/v4");
+            var start = doc.DocumentElement?.SelectSingleNode("descendant::t:CoverageFrom", namespaceManager);
+            if (start is not null && !string.IsNullOrWhiteSpace(start.InnerText))
+            {
+                var startYmd = dateParser.ParseDate(start.InnerText);
+                if (startYmd.DateKind == DateParser.DateType.Date)
+                {
+                    graph.Assert(id, Vocabulary.AssetHasOriginDateStart, startNode);
+                    GraphAssert.YearMonthDay(graph, startNode, startYmd.Year, startYmd.Month, startYmd.Day);
+                }
+            }
+            var end = doc.DocumentElement?.SelectSingleNode("descendant::t:CoverageTo", namespaceManager);
+            if (end is not null && !string.IsNullOrWhiteSpace(end.InnerText))
+            {
+                var endYmd = dateParser.ParseDate(end.InnerText);
+                if (endYmd.DateKind == DateParser.DateType.Date)
+                {
+                    graph.Assert(id, Vocabulary.AssetHasOriginDateEnd, endNode);
+                    GraphAssert.YearMonthDay(graph, endNode, endYmd.Year, endYmd.Month, endYmd.Day);
+                }
+            }
+        }
+        else
         {
             var start = rdf.GetTriplesWithSubjectPredicate(foundCoverage, IngestVocabulary.StartDate).FirstOrDefault()?.Object as ILiteralNode;
             if (start is not null && string.IsNullOrWhiteSpace(start.Value))
