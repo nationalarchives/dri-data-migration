@@ -21,7 +21,7 @@ internal static class GraphAssert
     {
         if (!string.IsNullOrWhiteSpace(value))
         {
-            graph.Assert(id, immediatePredicate, new LiteralNode(value));
+            graph.Assert(id, immediatePredicate, new LiteralNode(value.ReplaceLineEndings("\n")));
         }
     }
 
