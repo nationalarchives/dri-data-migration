@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using static Staging.DateParser;
 
 namespace Staging;
 
@@ -168,17 +167,17 @@ internal partial class DateParser(ILogger logger)
             dt = new(ym2.Year, ym2.Month);
             return true;
         }
-        if (DateTimeOffset.TryParse(date, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt1))
+        if (DateTimeOffset.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt1))
         {
             dt = new(dt1.Year, dt1.Month, dt1.Day);
             return true;
         }
-        if (DateTimeOffset.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt2))
+        if (DateTimeOffset.TryParseExact(date, "yyyy MMM d", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt2))
         {
             dt = new(dt2.Year, dt2.Month, dt2.Day);
             return true;
         }
-        if (DateTimeOffset.TryParseExact(date, "yyyy MMM d", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt3))
+        if (DateTimeOffset.TryParse(date, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt3))
         {
             dt = new(dt3.Year, dt3.Month, dt3.Day);
             return true;
