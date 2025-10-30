@@ -1,5 +1,4 @@
 ﻿using Api;
-using Rdf;
 using VDS.RDF;
 using VDS.RDF.Dynamic;
 using VDS.RDF.Nodes;
@@ -20,7 +19,7 @@ public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClien
         };
         var currentAssembly = typeof(StagingReconciliationClient).Assembly;
         var baseName = $"{typeof(StagingReconciliationClient).Namespace}.Sparql";
-        var recordsByCodeSparql = new EmbeddedSparqlResource(currentAssembly, baseName).GetSparql(sparqlFileName);
+        var recordsByCodeSparql = new EmbeddedResource(currentAssembly, baseName).GetSparql(sparqlFileName);
 
         var sparql = new SparqlParameterizedString(recordsByCodeSparql);
         sparql.SetParameter("id", new LiteralNode(code));

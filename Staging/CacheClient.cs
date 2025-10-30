@@ -1,7 +1,6 @@
 ﻿using Api;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-using Rdf;
 using VDS.RDF;
 
 namespace Staging;
@@ -43,7 +42,7 @@ public class CacheClient : ICacheClient
 
         var currentAssembly = typeof(CacheClient).Assembly;
         var baseName = $"{typeof(CacheClient).Namespace}.Sparql";
-        var embedded = new EmbeddedSparqlResource(currentAssembly, baseName);
+        var embedded = new EmbeddedResource(currentAssembly, baseName);
 
         srSparql = embedded.GetSparql("GetSensitivityReview");
         assetSparql = embedded.GetSparql("GetAsset");

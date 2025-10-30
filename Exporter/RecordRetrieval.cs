@@ -1,7 +1,6 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Rdf;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 
@@ -11,7 +10,7 @@ public class RecordRetrieval(ILogger<RecordRetrieval> logger, IOptions<ExportSet
     IExportSparqlClient sparqlClient) : IRecordRetrieval
 {
     private readonly ExportSettings settings = options.Value;
-    private readonly string sparql = new EmbeddedSparqlResource(
+    private readonly string sparql = new EmbeddedResource(
         typeof(RecordRetrieval).Assembly, $"{typeof(RecordRetrieval).Namespace}.Sparql")
         .GetSparql("Export");
 

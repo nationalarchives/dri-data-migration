@@ -1,7 +1,6 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Rdf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +15,7 @@ public class RdfExporter : IDriRdfExporter
 {
     private readonly ILogger<RdfExporter> logger;
     private readonly IDriSparqlClient sparqlClient;
-    private readonly EmbeddedSparqlResource embedded;
+    private readonly EmbeddedResource embedded;
     private readonly DriSettings settings;
 
     public RdfExporter(ILogger<RdfExporter> logger, IOptions<DriSettings> driSettings,

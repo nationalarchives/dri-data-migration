@@ -1,6 +1,5 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
-using Rdf;
 using VDS.RDF;
 
 namespace Staging;
@@ -18,7 +17,7 @@ public abstract class StagingIngest<T> : IStagingIngest<T> where T : IDriRecord
 
         var currentAssembly = typeof(StagingIngest<>).Assembly;
         var baseName = $"{typeof(StagingIngest<>).Namespace}.Sparql";
-        var embedded = new EmbeddedSparqlResource(currentAssembly, baseName);
+        var embedded = new EmbeddedResource(currentAssembly, baseName);
         graphSparql = embedded.GetSparql(sparqlFileName);
     }
 
