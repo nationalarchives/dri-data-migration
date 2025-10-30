@@ -47,7 +47,7 @@ public sealed class VariationFileIngestTest
     public VariationFileIngestTest()
     {
         cache = new();
-        cache.Setup(c => c.CacheFetchOrNew(CacheEntityKind.GeographicalPlace, new string[] { "Scan location" },
+        cache.Setup(c => c.CacheFetchOrNew(CacheEntityKind.GeographicalPlace, "Scan location",
             Vocabulary.GeographicalPlaceName, CancellationToken.None))
             .ReturnsAsync(scanLocation);
     }

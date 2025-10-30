@@ -83,8 +83,8 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         await AddVariationRelationsAsync(graph, rdf, id, doc, filesJson, cancellationToken);
         AddFilmDuration(graph, rdf, id);
         AddWebArchive(graph, rdf, id);
-        await AddCourtCasesAsync(graph, rdf, id, assetReference, cancellationToken);
-        await AddWitnessAsync(graph, rdf, id, cancellationToken);
+        AddCourtCases(graph, rdf, id, existing, assetReference, cancellationToken);
+        AddWitness(graph, rdf, id, existing, cancellationToken);
 
         dateIngest.AddOriginDates(graph, rdf, id, doc, existing);
 
@@ -218,16 +218,16 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         }
     }
 
-    private async Task AddWitnessAsync(IGraph graph, IGraph rdf, INode id, CancellationToken cancellationToken)
+    private void AddWitness(IGraph graph, IGraph rdf, INode id, IGraph existing, CancellationToken cancellationToken)
     {
         var found = false;
         var witnessIndex = 1;
-        var foundWitness = await FetchWitnessIdAsync(graph, rdf, id, witnessIndex, cancellationToken); //TODO: check if names could be split on ',' and 'and' and turned into entities
+        var foundWitness = FetchWitnessId(graph, rdf, id, existing, witnessIndex, cancellationToken); //TODO: check if names could be split on ',' and 'and' and turned into entities
         while (foundWitness is not null)
         {
             found = true;
             witnessIndex++;
-            foundWitness = await FetchWitnessIdAsync(graph, rdf, id, witnessIndex, cancellationToken);
+            foundWitness = FetchWitnessId(graph, rdf, id, existing, witnessIndex, cancellationToken);
         }
         if (found)
         {
@@ -235,7 +235,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         }
     }
 
-    private async Task<IUriNode?> FetchWitnessIdAsync(IGraph graph, IGraph rdf, INode id, int witnessIndex, CancellationToken cancellationToken)
+    private static IUriNode? FetchWitnessId(IGraph graph, IGraph rdf, INode id, IGraph existing, int witnessIndex, CancellationToken cancellationToken)
     {
         var foundWitness = rdf.GetTriplesWithPredicate(new UriNode(new($"{IngestVocabulary.TnaNamespace}witness_list_{witnessIndex}"))).SingleOrDefault()?.Object;
         if (foundWitness is ILiteralNode witnessNode && !string.IsNullOrWhiteSpace(witnessNode.Value))
@@ -243,7 +243,9 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             var foundDescription = rdf.GetTriplesWithPredicate(new UriNode(new($"{IngestVocabulary.TnaNamespace}subject_role_{witnessIndex}"))).SingleOrDefault()?.Object as ILiteralNode;
             if (foundDescription is not null)
             {
-                var witnessId = await cacheClient.CacheFetchOrNew(CacheEntityKind.InquiryAppearanceByWitnessAndDescription, [witnessNode.Value, foundDescription.Value], Vocabulary.InquiryWitnessName, cancellationToken);
+                var witnessId = existing.GetTriplesWithPredicateObject(Vocabulary.InquiryWitnessName, new LiteralNode(witnessNode.Value))
+                    .SingleOrDefault(t => existing.ContainsTriple(new Triple(t.Subject, Vocabulary.InquiryWitnessAppearanceDescription, new LiteralNode(foundDescription.Value))))?.Subject as IUriNode
+                    ?? CacheClient.NewId;
                 GraphAssert.Text(graph, witnessId, witnessNode.Value, Vocabulary.InquiryWitnessName); //TODO: check if can be split
                 GraphAssert.Text(graph, witnessId, foundDescription.Value, Vocabulary.InquiryWitnessAppearanceDescription);
                 graph.Assert(id, Vocabulary.InquiryAssetHasInquiryAppearance, witnessId);
@@ -255,11 +257,11 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         return null;
     }
 
-    private async Task AddCourtCasesAsync(IGraph graph, IGraph rdf, INode id, string assetReference, CancellationToken cancellationToken)
+    private void AddCourtCases(IGraph graph, IGraph rdf, INode id, IGraph existing, string assetReference, CancellationToken cancellationToken)
     {
         var found = false;
         var caseIndex = 1;
-        var courtCase = await FetchCourtCaseIdAsync(graph, rdf, id, caseIndex, assetReference, cancellationToken);
+        var courtCase = FetchCourtCaseId(graph, rdf, id, existing, caseIndex, assetReference, cancellationToken);
         while (courtCase is not null)
         {
             found = true;
@@ -277,7 +279,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             });
 
             caseIndex++;
-            courtCase = await FetchCourtCaseIdAsync(graph, rdf, id, caseIndex, assetReference, cancellationToken);
+            courtCase = FetchCourtCaseId(graph, rdf, id, existing, caseIndex, assetReference, cancellationToken);
         }
         if (found)
         {
@@ -285,13 +287,16 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         }
     }
 
-    private async Task<IUriNode?> FetchCourtCaseIdAsync(IGraph graph, IGraph rdf, INode id, int caseIndex, string assetReference, CancellationToken cancellationToken)
+    private IUriNode? FetchCourtCaseId(IGraph graph, IGraph rdf, INode id, IGraph existing, int caseIndex, string assetReference, CancellationToken cancellationToken)
     {
         var foundCase = rdf.GetTriplesWithPredicate(new UriNode(new($"{IngestVocabulary.TnaNamespace}case_id_{caseIndex}"))).SingleOrDefault()?.Object;
         if (foundCase is ILiteralNode caseNode && !string.IsNullOrWhiteSpace(caseNode.Value))
         {
-            var caseId = await cacheClient.CacheFetchOrNew(CacheEntityKind.CourtCaseByCaseAndAsset, [caseNode.Value, assetReference], Vocabulary.CourtCaseReference, cancellationToken);
+            var caseReference = new LiteralNode(caseNode.Value);
+            var caseId = existing.GetTriplesWithPredicateObject(Vocabulary.CourtCaseReference, caseReference).SingleOrDefault()?.Subject as IUriNode
+                    ?? CacheClient.NewId;
             graph.Assert(id, Vocabulary.CourtAssetHasCourtCase, caseId);
+            graph.Assert(caseId, Vocabulary.CourtCaseReference, caseReference);
 
             return caseId;
         }

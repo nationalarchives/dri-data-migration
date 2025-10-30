@@ -18,7 +18,6 @@
     <EmbeddedResource Include="Sparql\GetBattalion.sparql" />
     <EmbeddedResource Include="Sparql\GetOperator.sparql" />
     <EmbeddedResource Include="Sparql\GetSealCategory.sparql" />
-    <EmbeddedResource Include="Sparql\GetInquiryAppearanceByWitnessAndDescription.sparql" />
     <EmbeddedResource Include="Sparql\GetGroundsForRetention.sparql" />
     <EmbeddedResource Include="Sparql\GetFormalBody.sparql" />
     <EmbeddedResource Include="Sparql\GetGeographicalPlace.sparql" />
@@ -27,7 +26,6 @@
     <EmbeddedResource Include="Sparql\GetSensitivityReview.sparql" />
     <EmbeddedResource Include="Sparql\GetLanguage.sparql" />
     <EmbeddedResource Include="Sparql\GetSubset.sparql" />
-    <EmbeddedResource Include="Sparql\GetCourtCaseByCaseAndAsset.sparql" />
     <EmbeddedResource Include="Sparql\GetVariation.sparql" />
     <EmbeddedResource Include="Sparql\GroundForRetentionGraph.sparql" />
     <EmbeddedResource Include="Sparql\LegislationGraph.sparql" />

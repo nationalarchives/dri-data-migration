@@ -166,7 +166,7 @@ internal static class GraphAssert
         {
             return null;
         }
-        var nodeId = await cacheClient.CacheFetchOrNew(cacheEntityKind, [name], foundPredicate, cancellationToken);
+        var nodeId = await cacheClient.CacheFetchOrNew(cacheEntityKind, name, foundPredicate, cancellationToken);
         graph.Assert(id, immediatePredicate, nodeId);
 
         return nodeId;
