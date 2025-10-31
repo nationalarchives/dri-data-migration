@@ -38,11 +38,11 @@ internal static partial class LocationMapper
                 location.Original : location.Original.Replace(previous, string.Empty);
             if (!string.IsNullOrWhiteSpace(location.SensitiveName))
             {
-                published.Add(location.SensitiveName);
+                published.Add(location.SensitiveName.Trim('/'));
             }
             else if (!string.IsNullOrWhiteSpace(segment))
             {
-                published.Add(segment);
+                published.Add(segment.Trim('/'));
             }
             if (!string.IsNullOrWhiteSpace(location.Original))
             {
@@ -50,7 +50,7 @@ internal static partial class LocationMapper
             }
         }
 
-        var sensitive = string.Join(string.Empty, published);
+        var sensitive = string.Join('/', published);
 
         return new(original, sensitive);
     }
