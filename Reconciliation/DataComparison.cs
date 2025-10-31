@@ -31,7 +31,7 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
             var pageSummary = CheckRecords(expected, adjustedStaging);
             summary.Update(pageSummary);
         }
-        while (page.Any() && page.Count == settings.FetchPageSize);
+        while (page.Any());
 
         var missingSummary = CheckMissing(expected);
         summary.Update(missingSummary);

@@ -1,20 +1,25 @@
 ﻿prefix ex: <http://id.example.com/schema/>
 
 select ?assetDriId ?reference ?redactedVariationSequence
-    (group_concat(distinct ?assetName; separator=',') as ?variationName)
-	?retentionBodyName ?isPublicDescription 
+    ?variationName
+	?retentionBodyName ?isPublicDescription
     ?startOriginDate ?endOriginDate ?accessConditionCode ?closureStatus
     ?sensitivityReviewRestrictionReviewDate
 	?sensitivityReviewRestrictionCalculationStartDate
     ?sensitivityReviewRestrictionDuration
 	?sensitivityReviewRestrictionEndYear
 where {
-    bind(@id as ?id)
-    ?subset ex:subsetHasBroaderSubset*/ex:subsetReference ?id;
-        ex:subsetHasAsset ?asset.
     ?asset ex:assetDriId ?assetDriId;
         ex:assetReference ?reference;
         ex:assetHasVariation ?variation.
+    {
+        select ?asset where {
+            bind(@id as ?id)
+            ?asset ex:assetHasSubset/ex:subsetHasBroaderSubset*/ex:subsetReference ?id.
+        }
+        order by ?asset
+        limit @limit offset @offset
+    }
     optional { ?asset ex:assetName ?assetName }
     optional {
         ?asset ex:assetHasRetention ?assetHasRetention.
@@ -22,10 +27,13 @@ where {
         ?retentionHasFormalBody ex:formalBodyName ?retentionBodyName.
     }
     optional {
-        ?asset ex:variationHasSensitivityReview ?srA.
+        ?asset ex:assetHasSensitivityReview ?srA.
         filter not exists { ?futureSrA ex:sensitivityReviewHasPastSensitivityReview ?srA }
         optional {
             ?srA ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescriptionA.
+        }
+        optional {
+            ?srA ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveNameA.
         }
     }
     optional {
@@ -56,6 +64,9 @@ where {
             ?sr ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescriptionV.
         }
         optional {
+            ?sr ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveNameV.
+        }
+        optional {
             ?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
             optional { ?restriction ex:sensitivityReviewRestrictionReviewDate ?sensitivityReviewRestrictionReviewDate }
             optional { ?restriction ex:sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionCalculationStartDate }
@@ -64,13 +75,5 @@ where {
         }
     }
     bind(coalesce(?sensitivityReviewSensitiveDescriptionV, ?sensitivityReviewSensitiveDescriptionA) as ?isPublicDescription)
+    bind(coalesce(?sensitivityReviewSensitiveNameA, ?sensitivityReviewSensitiveNameA, ?assetName) as ?variationName)
 }
-group by ?assetDriId ?reference ?redactedVariationSequence
-    ?retentionBodyName ?isPublicDescription 
-    ?startOriginDate ?endOriginDate ?accessConditionCode ?closureStatus
-    ?sensitivityReviewRestrictionReviewDate
-	?sensitivityReviewRestrictionCalculationStartDate
-    ?sensitivityReviewRestrictionDuration
-	?sensitivityReviewRestrictionEndYear
-order by ?reference ?redactedVariationSequence
-limit @limit offset @offset
