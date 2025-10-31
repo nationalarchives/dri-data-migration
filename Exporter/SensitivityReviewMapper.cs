@@ -51,7 +51,7 @@ internal static class SensitivityReviewMapper
                 foreach (var legislation in graph.GetUriNodes(restriction, Vocabulary.SensitivityReviewRestrictionHasLegislation))
                 {
                     var legislationHasUkLegislation = graph.GetSingleUriNode(legislation, Vocabulary.LegislationHasUkLegislation)?.Uri;
-                    var legislationSectionReference = graph.GetSingleText(subject, Vocabulary.LegislationSectionReference);
+                    var legislationSectionReference = graph.GetSingleText(legislation, Vocabulary.LegislationSectionReference);
                     legislations.Add(new()
                     {
                         Url = legislationHasUkLegislation!,
