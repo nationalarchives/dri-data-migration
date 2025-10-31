@@ -629,7 +629,7 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Associated geographical place has asset".
 
-:assetHasChange a owl:ObjectProperty;
+:assetHasChange a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	rdfs:domain :Asset;
 	rdfs:range :Change;
 	rdfs:isDefinedBy this:schema;
@@ -800,7 +800,7 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Veteran has asset".
 
-:variationHasChange a owl:ObjectProperty;
+:variationHasChange a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	rdfs:domain :Variation;
 	rdfs:range :Change;
 	rdfs:isDefinedBy this:schema;
@@ -971,7 +971,7 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Subset has sensitivity review".
 
-:sensitivityReviewHasChange a owl:ObjectProperty;
+:sensitivityReviewHasChange a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	rdfs:domain :SensitivityReview;
 	rdfs:range :Change;
 	rdfs:isDefinedBy this:schema;
@@ -1034,7 +1034,7 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Dated note has date".
 
-:operatorHasChange a owl:ObjectProperty;
+:operatorHasChange a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	rdfs:domain :Operator;
 	rdfs:range :Change;
 	rdfs:isDefinedBy this:schema;
