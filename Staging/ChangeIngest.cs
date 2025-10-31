@@ -42,7 +42,10 @@ public class ChangeIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, 
         }
         var person = await cacheClient.CacheFetchOrNew(CacheEntityKind.Operator, dri.UserName, Vocabulary.OperatorIdentifier, cancellationToken);
         graph.Assert(id, Vocabulary.ChangeHasOperator, person);
-        GraphAssert.Text(graph, person, dri.FullName, Vocabulary.OperatorName);
+        if (dri.FullName.Contains(' '))
+        {
+            GraphAssert.Text(graph, person, dri.FullName, Vocabulary.OperatorName);
+        }
 
         return graph;
     }
