@@ -7,7 +7,7 @@ namespace VDS.RDF;
 
 public static class GraphSelectionExtensions
 {
-    public static ILiteralNode? GetSingleLiteral(this IGraph graph, IUriNode subject, IUriNode predicate) =>
+    public static ILiteralNode? GetSingleLiteral(this IGraph graph, INode subject, IUriNode predicate) =>
         GetLiteralNodes(graph, subject, predicate).SingleOrDefault();
 
     public static DateTimeOffset? GetSingleDate(this IGraph graph, IUriNode subject, IUriNode predicate) =>
@@ -16,7 +16,7 @@ public static class GraphSelectionExtensions
     public static long? GetSingleNumber(this IGraph graph, IUriNode subject, IUriNode predicate) =>
         GetSingleLiteral(graph, subject, predicate)?.AsValuedNode().AsInteger();
 
-    public static string? GetSingleText(this IGraph graph, IUriNode subject, IUriNode predicate) =>
+    public static string? GetSingleText(this IGraph graph, INode subject, IUriNode predicate) =>
         GetSingleLiteral(graph, subject, predicate)?.Value;
 
     public static ILiteralNode? GetSingleTransitiveLiteral(this IGraph graph,
@@ -32,7 +32,7 @@ public static class GraphSelectionExtensions
         return GetSingleLiteral(graph, parent, immediatePredicate);
     }
 
-    public static IEnumerable<ILiteralNode> GetLiteralNodes(this IGraph graph, IUriNode subject, IUriNode predicate) =>
+    public static IEnumerable<ILiteralNode> GetLiteralNodes(this IGraph graph, INode subject, IUriNode predicate) =>
         graph.GetTriplesWithSubjectPredicate(subject, predicate).Select(t => t.Object).Cast<ILiteralNode>();
 
     public static IEnumerable<IUriNode> GetUriNodes(this IGraph graph, IUriNode subject, IUriNode predicate) =>

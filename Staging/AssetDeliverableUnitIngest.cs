@@ -13,7 +13,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriAssetDeliverableUnit dri, CancellationToken cancellationToken)
     {
         var driId = new LiteralNode(dri.Id);
-        var id = existing.GetTriplesWithPredicateObject(Vocabulary.AssetDriId, driId).FirstOrDefault()?.Subject as IUriNode;
+        var id = existing.GetSingleUriNodeSubject(Vocabulary.AssetDriId, driId);
         if (id is null)
         {
             logger.AssetNotFound(dri.Id);

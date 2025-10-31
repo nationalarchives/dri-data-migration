@@ -16,12 +16,11 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriSensitivityReview dri, CancellationToken cancellationToken)
     {
         await PreloadAsync(cancellationToken);
-
-        var id = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewDriId).FirstOrDefault()?.Subject ?? CacheClient.NewId;
-        var restriction = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewHasSensitivityReviewRestriction).FirstOrDefault()?.Object ?? CacheClient.NewId;
-        var retentionRestriction = existing.GetTriplesWithPredicate(Vocabulary.SensitivityReviewRestrictionHasRetentionRestriction).FirstOrDefault()?.Object ?? CacheClient.NewId;
+        var driId = new LiteralNode(dri.Id);
+        var id = existing.GetSingleUriNodeSubject(Vocabulary.SensitivityReviewDriId, driId) ?? CacheClient.NewId;
 
         var graph = new Graph();
+        graph.Assert(id, Vocabulary.SensitivityReviewDriId, driId);
 
         var proceed = await AddSensitivityReviewAsync(graph, id, dri, cancellationToken);
         if (!proceed)
@@ -29,6 +28,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
             return null;
         }
 
+        var restriction = existing.GetSingleUriNode(id, Vocabulary.SensitivityReviewHasSensitivityReviewRestriction) ?? CacheClient.NewId;
         proceed = AddRestriction(graph, id, restriction, dri);
         if (!proceed)
         {
@@ -41,6 +41,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
             return null;
         }
 
+        var retentionRestriction = existing.GetSingleUriNode(restriction, Vocabulary.SensitivityReviewRestrictionHasRetentionRestriction) ?? CacheClient.NewId;
         proceed = await AddRetentionRestrictionAsync(graph, id, restriction, retentionRestriction, dri, cancellationToken);
         if (!proceed)
         {
@@ -76,7 +77,6 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
 
     private async Task<bool> AddSensitivityReviewAsync(IGraph graph, INode id, DriSensitivityReview dri, CancellationToken cancellationToken)
     {
-        graph.Assert(id, Vocabulary.SensitivityReviewDriId, new LiteralNode(dri.Id));
         GraphAssert.Date(graph, id, dri.Date, Vocabulary.SensitivityReviewDate);
         GraphAssert.Text(graph, id, new Dictionary<IUriNode, string?>()
         {
@@ -181,7 +181,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         return true;
     }
 
-    private async Task<bool> AddRetentionRestrictionAsync(Graph graph, INode id, INode restriction, INode retentionRestriction,
+    private async Task<bool> AddRetentionRestrictionAsync(Graph graph, IUriNode id, INode restriction, INode retentionRestriction,
         DriSensitivityReview dri, CancellationToken cancellationToken)
     {
         var existing = graph.Triples.Count;
@@ -227,7 +227,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
                 graph.Assert(retentionRestriction, Vocabulary.RetentionRestrictionHasRetention, retention);
                 graph.Assert(asset, Vocabulary.AssetHasRetention, retention);
             }
-            var subset = graph.GetTriplesWithSubjectPredicate(id, Vocabulary.SensitivityReviewHasSubset).SingleOrDefault()?.Object as IUriNode;
+            var subset = graph.GetSingleUriNode(id, Vocabulary.SensitivityReviewHasSubset);
             if (subset is not null)
             {
                 var retention = await cacheClient.CacheFetch(CacheEntityKind.Retention, subset.Uri.ToString(), cancellationToken);

@@ -22,7 +22,7 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
         DriWo409SubsetDeliverableUnit dri, CancellationToken cancellationToken)
     {
         var driId = new LiteralNode(dri.Id);
-        var id = existing.GetTriplesWithPredicateObject(Vocabulary.AssetDriId, driId).FirstOrDefault()?.Subject as IUriNode;
+        var id = existing.GetSingleUriNodeSubject(Vocabulary.AssetDriId, driId);
         if (id is null)
         {
             logger.AssetNotFound(dri.Id);

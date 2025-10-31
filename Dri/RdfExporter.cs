@@ -135,91 +135,88 @@ public class RdfExporter : IDriRdfExporter
         var tempTypePredicate = new UriNode(new Uri(Vocabulary.Namespace, "x-type"));
         var coalesceNode = graph.CreateUriNode(new Uri("http://not.found"));
 
-        var id = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewDriId).SingleOrDefault().Object as IUriNode;
-        var reference = graph.GetTriplesWithSubjectPredicate(subject, tempReferencePredicate).SingleOrDefault().Object as ILiteralNode;
-        var targetType = graph.GetTriplesWithSubjectPredicate(subject, tempTypePredicate).SingleOrDefault().Object as IUriNode;
-        var targetId = graph.GetTriplesWithSubjectPredicate(subject, tempIdPredicate).SingleOrDefault().Object as IUriNode;
-        var date = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewDate).SingleOrDefault()?.Object as ILiteralNode;
-        var sensitiveName = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewSensitiveName).SingleOrDefault()?.Object as ILiteralNode;
-        var sensitiveDescription = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewSensitiveDescription).SingleOrDefault()?.Object as ILiteralNode;
-        var past = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewHasPastSensitivityReview).SingleOrDefault()?.Object as IUriNode;
-        var changeDriId = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.ChangeDriId).SingleOrDefault()?.Object as IUriNode;
-        var changeDescription = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.ChangeDescription).SingleOrDefault()?.Object as ILiteralNode;
-        var changeDateTime = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.ChangeDateTime).SingleOrDefault()?.Object as ILiteralNode;
-        var operatorId = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.ChangeHasOperator).SingleOrDefault()?.Object as IUriNode;
-        var operatorIdentifier = graph.GetTriplesWithSubjectPredicate(operatorId ?? coalesceNode, Vocabulary.OperatorIdentifier).SingleOrDefault()?.Object as IUriNode;
-        var operatorName = graph.GetTriplesWithSubjectPredicate(operatorId ?? coalesceNode, Vocabulary.OperatorName).SingleOrDefault()?.Object as ILiteralNode;
+        var id = graph.GetSingleUriNode(subject, Vocabulary.SensitivityReviewDriId);
+        var reference = graph.GetSingleText(subject, tempReferencePredicate);
+        var targetType = graph.GetSingleUriNode(subject, tempTypePredicate);
+        var targetId = graph.GetSingleUriNode(subject, tempIdPredicate);
+        var date = graph.GetSingleLiteral(subject, Vocabulary.SensitivityReviewDate);
+        var sensitiveName = graph.GetSingleText(subject, Vocabulary.SensitivityReviewSensitiveName);
+        var sensitiveDescription = graph.GetSingleText(subject, Vocabulary.SensitivityReviewSensitiveDescription);
+        var past = graph.GetSingleUriNode(subject, Vocabulary.SensitivityReviewHasPastSensitivityReview);
+        var changeDriId = graph.GetSingleUriNode(subject, Vocabulary.ChangeDriId);
+        var changeDescription = graph.GetSingleText(subject, Vocabulary.ChangeDescription);
+        var changeDateTime = graph.GetSingleLiteral(subject, Vocabulary.ChangeDateTime);
+        var operatorId = graph.GetSingleUriNode(subject, Vocabulary.ChangeHasOperator);
+        var operatorIdentifier = graph.GetSingleUriNode(operatorId ?? coalesceNode, Vocabulary.OperatorIdentifier);
+        var operatorName = graph.GetSingleText(operatorId ?? coalesceNode, Vocabulary.OperatorName);
 
         if (targetType!.Uri.Fragment == "#DeliverableUnit")
         {
-            return new DriSensitivityReview(id!.Uri, reference.AsValuedNode().AsString(), targetId!.Uri, targetType!.Uri,
-                null, [], null, past?.Uri, sensitiveName?.AsValuedNode().AsString(), sensitiveDescription?.AsValuedNode().AsString(),
-                date?.AsValuedNode().AsDateTimeOffset(), null, null, null,
-                null, null, null, null, changeDriId?.Uri, changeDescription?.AsValuedNode().AsString(),
+            return new DriSensitivityReview(id!.Uri, reference!,
+                targetId!.Uri, targetType!.Uri, null, [], null, past?.Uri,
+                sensitiveName, sensitiveDescription, date?.AsValuedNode().AsDateTimeOffset(),
+                null, null, null, null, null, null, null, changeDriId?.Uri, changeDescription,
                 changeDateTime?.AsValuedNode().AsDateTimeOffset(), operatorIdentifier?.Uri,
-                operatorName?.AsValuedNode().AsString());
+                operatorName);
         }
 
-        var reviewDate = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewRestrictionReviewDate).SingleOrDefault()?.Object as ILiteralNode;
-        var startDate = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewRestrictionCalculationStartDate).SingleOrDefault()?.Object as ILiteralNode;
-        var duration = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewRestrictionDuration).SingleOrDefault()?.Object as ILiteralNode;
-        var description = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewRestrictionDescription).SingleOrDefault()?.Object as ILiteralNode;
-        var instrumentNumber = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.RetentionInstrumentNumber).SingleOrDefault()?.Object as ILiteralNode;
-        var instrumentSignedDate = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.RetentionInstrumentSignatureDate).SingleOrDefault()?.Object as ILiteralNode;
-        var restrictionReviewDate = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.RetentionRestrictionReviewDate).SingleOrDefault()?.Object as ILiteralNode;
-        var groundCode = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.GroundForRetentionCode).SingleOrDefault()?.Object as IUriNode;
-        var accessCode = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AccessConditionCode).SingleOrDefault().Object as IUriNode;
+        var reviewDate = graph.GetSingleLiteral(subject, Vocabulary.SensitivityReviewRestrictionReviewDate);
+        var startDate = graph.GetSingleLiteral(subject, Vocabulary.SensitivityReviewRestrictionCalculationStartDate);
+        var duration = graph.GetSingleNumber(subject, Vocabulary.SensitivityReviewRestrictionDuration);
+        var description = graph.GetSingleText(subject, Vocabulary.SensitivityReviewRestrictionDescription);
+        var instrumentNumber = graph.GetSingleNumber(subject, Vocabulary.RetentionInstrumentNumber);
+        var instrumentSignedDate = graph.GetSingleLiteral(subject, Vocabulary.RetentionInstrumentSignatureDate);
+        var restrictionReviewDate = graph.GetSingleLiteral(subject, Vocabulary.RetentionRestrictionReviewDate);
+        var groundCode = graph.GetSingleUriNode(subject, Vocabulary.GroundForRetentionCode);
+        var accessCode = graph.GetSingleUriNode(subject, Vocabulary.AccessConditionCode);
         var legislationUris = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewRestrictionHasLegislation)
             .SelectMany(l => graph.GetTriplesWithSubjectPredicate(l.Object, Vocabulary.LegislationHasUkLegislation)
                 .Select(t => t.Object).Cast<IUriNode>().Select(u => u.Uri));
 
-        return new DriSensitivityReview(id!.Uri, reference.AsValuedNode().AsString(), targetId!.Uri, targetType!.Uri,
+        return new DriSensitivityReview(id!.Uri, reference!, targetId!.Uri, targetType!.Uri,
             accessCode!.Uri, legislationUris, reviewDate?.AsValuedNode().AsDateTimeOffset(),
-            past?.Uri, sensitiveName?.AsValuedNode().AsString(), sensitiveDescription?.AsValuedNode().AsString(),
-            date?.AsValuedNode().AsDateTimeOffset(), startDate?.AsValuedNode().AsDateTimeOffset(),
-            duration?.AsValuedNode().AsInteger(), description?.AsValuedNode().AsString(),
-            instrumentNumber?.AsValuedNode().AsInteger(), instrumentSignedDate?.AsValuedNode().AsDateTimeOffset(),
+            past?.Uri, sensitiveName, sensitiveDescription, date?.AsValuedNode().AsDateTimeOffset(),
+            startDate?.AsValuedNode().AsDateTimeOffset(), duration, description, instrumentNumber,
+            instrumentSignedDate?.AsValuedNode().AsDateTimeOffset(),
             restrictionReviewDate?.AsValuedNode().AsDateTimeOffset(), groundCode?.Uri,
-            changeDriId?.Uri, changeDescription?.AsValuedNode().AsString(),
-            changeDateTime?.AsValuedNode().AsDateTimeOffset(), operatorIdentifier?.Uri,
-            operatorName?.AsValuedNode().AsString());
+            changeDriId?.Uri, changeDescription, changeDateTime?.AsValuedNode().AsDateTimeOffset(),
+            operatorIdentifier?.Uri, operatorName);
     }
 
     private static DriVariation VariationBySubject(IGraph graph, IUriNode subject)
     {
-        var id = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.VariationDriId).SingleOrDefault().Object as IUriNode;
+        var id = graph.GetSingleUriNode(subject, Vocabulary.VariationDriId);
         var asset = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.VariationHasAsset).SingleOrDefault().Object as IBlankNode;
-        var assetReference = graph.GetTriplesWithSubjectPredicate(asset, Vocabulary.AssetReference).SingleOrDefault().Object as ILiteralNode;
+        var assetReference = graph.GetSingleText(asset!, Vocabulary.AssetReference);
         var name = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.VariationName).SingleOrDefault().Object as ILiteralNode;
 
-        return new DriVariation(id!.Uri, name.AsValuedNode().AsString(), assetReference.AsValuedNode().AsString());
+        return new DriVariation(id!.Uri, name.AsValuedNode().AsString(), assetReference!);
     }
 
     private static DriAsset AssetBySubject(IGraph graph, IUriNode subject)
     {
-        var id = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AssetDriId).SingleOrDefault().Object as IUriNode;
-        var reference = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AssetReference).SingleOrDefault().Object as ILiteralNode;
+        var id = graph.GetSingleUriNode(subject, Vocabulary.AssetDriId);
+        var reference = graph.GetSingleText(subject, Vocabulary.AssetReference);
         var subset = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AssetHasSubset).SingleOrDefault().Object as IBlankNode;
-        var subsetReference = graph.GetTriplesWithSubjectPredicate(subset, Vocabulary.SubsetReference).SingleOrDefault().Object as ILiteralNode;
+        var subsetReference = graph.GetSingleText(subset!, Vocabulary.SubsetReference);
         var retention = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AssetHasRetention).SingleOrDefault().Object as IBlankNode;
-        var location = graph.GetTriplesWithSubjectPredicate(retention, Vocabulary.ImportLocation).SingleOrDefault()?.Object as ILiteralNode;
+        var location = graph.GetSingleText(retention!, Vocabulary.ImportLocation);
 
-        return new DriAsset(id!.Uri, reference.AsValuedNode().AsString(), location?.AsValuedNode().AsString(), subsetReference.AsValuedNode().AsString());
+        return new DriAsset(id!.Uri, reference!, location, subsetReference!);
     }
 
     private static DriSubset SusbsetBySubject(IGraph graph, IUriNode subject)
     {
-        var reference = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SubsetReference).SingleOrDefault().Object as ILiteralNode;
+        var reference = graph.GetSingleText(subject, Vocabulary.SubsetReference);
         var retention = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SubsetHasRetention).SingleOrDefault().Object as IBlankNode;
-        var directory = graph.GetTriplesWithSubjectPredicate(retention, Vocabulary.ImportLocation).SingleOrDefault()?.Object as ILiteralNode;
+        var directory = graph.GetSingleText(retention!, Vocabulary.ImportLocation);
         var broader = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SubsetHasBroaderSubset).SingleOrDefault()?.Object as IBlankNode;
-        ILiteralNode? parent = null;
+        string? parent = null;
         if (broader is not null)
         {
-            parent = graph.GetTriplesWithSubjectPredicate(broader, Vocabulary.SubsetReference).SingleOrDefault()?.Object as ILiteralNode;
+            parent = graph.GetSingleText(broader, Vocabulary.SubsetReference);
         }
 
-        return new DriSubset(reference!.AsValuedNode().AsString(), directory?.AsValuedNode().AsString(),
-            parent?.AsValuedNode().AsString());
+        return new DriSubset(reference!, directory, parent);
     }
 }

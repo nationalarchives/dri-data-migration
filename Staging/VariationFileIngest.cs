@@ -13,7 +13,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriVariationFile dri, CancellationToken cancellationToken)
     {
         var driId = new LiteralNode(dri.Id);
-        var id = existing.GetTriplesWithPredicateObject(Vocabulary.VariationDriId, driId).FirstOrDefault()?.Subject;
+        var id = existing.GetSingleUriNodeSubject(Vocabulary.VariationDriId, driId);
         if (id is null)
         {
             logger.VariationNotFound(dri.Name); //TODO: sensitive information?
@@ -35,10 +35,6 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
 
     internal override void PostIngest()
     {
-        Console.WriteLine("Distinct RDF predicates:");
-        foreach (var predicate in xmlIngest.Predicates.OrderBy(p => p))
-        {
-            Console.WriteLine(predicate);
-        }
+        File.AppendAllLines("predicates-file.txt", xmlIngest.Predicates);
     }
 }

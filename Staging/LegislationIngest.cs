@@ -10,7 +10,7 @@ public class LegislationIngest(ISparqlClient sparqlClient, ILogger<LegislationIn
     internal override Task<Graph?> BuildAsync(IGraph existing, DriLegislation dri, CancellationToken cancellationToken)
     {
         var legislation = new UriNode(dri.Link);
-        var id = existing.GetTriplesWithPredicateObject(Vocabulary.LegislationHasUkLegislation, legislation).FirstOrDefault()?.Subject ?? CacheClient.NewId;
+        var id = existing.GetSingleUriNodeSubject(Vocabulary.LegislationHasUkLegislation, legislation) ?? CacheClient.NewId;
 
         var graph = new Graph();
         graph.Assert(id, Vocabulary.LegislationHasUkLegislation, legislation);

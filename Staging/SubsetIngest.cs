@@ -10,8 +10,8 @@ public class SubsetIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, 
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriSubset dri, CancellationToken cancellationToken)
     {
         var subsetReference = new LiteralNode(dri.Reference);
-        var id = existing.GetTriplesWithPredicateObject(Vocabulary.SubsetReference, subsetReference).FirstOrDefault()?.Subject ?? CacheClient.NewId;
-        var retention = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.SubsetHasRetention).FirstOrDefault()?.Object ?? CacheClient.NewId;
+        var id = existing.GetSingleUriNodeSubject(Vocabulary.SubsetReference, subsetReference) ?? CacheClient.NewId;
+        var retention = existing.GetSingleUriNode(id, Vocabulary.SubsetHasRetention) ?? CacheClient.NewId;
 
         var graph = new Graph();
         graph.Assert(id, Vocabulary.SubsetReference, subsetReference);

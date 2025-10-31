@@ -11,7 +11,7 @@ public class ChangeIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, 
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriChange dri, CancellationToken cancellationToken)
     {
         var driId = new LiteralNode(dri.Id);
-        var id = existing.GetTriplesWithPredicateObject(Vocabulary.ChangeDriId, driId).FirstOrDefault()?.Subject ?? CacheClient.NewId;
+        var id = existing.GetSingleUriNodeSubject(Vocabulary.ChangeDriId, driId) ?? CacheClient.NewId;
         var graph = new Graph();
         graph.Assert(id, Vocabulary.ChangeDriId, driId);
         GraphAssert.Base64(graph, id, dri.Diff, Vocabulary.ChangeDescription);

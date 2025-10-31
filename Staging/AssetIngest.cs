@@ -10,8 +10,8 @@ public class AssetIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, I
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriAsset dri, CancellationToken cancellationToken)
     {
         var assetReference = new LiteralNode(dri.Reference);
-        var id = existing.GetTriplesWithPredicateObject(Vocabulary.AssetReference, assetReference).FirstOrDefault()?.Subject ?? CacheClient.NewId;
-        var retention = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasRetention).FirstOrDefault()?.Object ?? CacheClient.NewId;
+        var id = existing.GetSingleUriNodeSubject(Vocabulary.AssetReference, assetReference) ?? CacheClient.NewId;
+        var retention = existing.GetSingleUriNode(id, Vocabulary.AssetHasRetention) ?? CacheClient.NewId;
 
         var subset = await cacheClient.CacheFetch(CacheEntityKind.Subset, dri.SubsetReference, cancellationToken);
         if (subset is null && dri.SubsetReference == "WO 409")//Special case

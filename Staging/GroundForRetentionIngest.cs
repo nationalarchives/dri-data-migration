@@ -10,7 +10,7 @@ public class GroundForRetentionIngest(ISparqlClient sparqlClient, ILogger<Ground
     internal override Task<Graph?> BuildAsync(IGraph existing, DriGroundForRetention dri, CancellationToken cancellationToken)
     {
         var code = new LiteralNode(dri.Code);
-        var id = existing.GetTriplesWithPredicateObject(Vocabulary.GroundForRetentionCode, code).FirstOrDefault()?.Subject ?? CacheClient.NewId;
+        var id = existing.GetSingleUriNodeSubject(Vocabulary.GroundForRetentionCode, code) ?? CacheClient.NewId;
 
         var graph = new Graph();
         graph.Assert(id, Vocabulary.GroundForRetentionCode, code);

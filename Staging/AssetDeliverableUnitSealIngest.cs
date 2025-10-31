@@ -9,7 +9,7 @@ internal class AssetDeliverableUnitSealIngest(ILogger logger, ICacheClient cache
     private readonly DimensionParser dimensionParser = new(logger);
     private readonly DateParser dateParser = new(logger);
 
-    internal async Task AddSealAsync(IGraph graph, IGraph rdf, IGraph existing, INode id, CancellationToken cancellationToken)
+    internal async Task AddSealAsync(IGraph graph, IGraph rdf, IGraph existing, IUriNode id, CancellationToken cancellationToken)
     {
         await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, id, rdf,
             IngestVocabulary.TypeOfSeal, CacheEntityKind.SealCategory,
@@ -88,35 +88,31 @@ internal class AssetDeliverableUnitSealIngest(ILogger logger, ICacheClient cache
         }
     }
 
-    private static void AssertSealDate(IGraph graph, IGraph existing, INode id,
+    private static void AssertSealDate(IGraph graph, IGraph existing, IUriNode id,
         IUriNode startDatePredicate, IUriNode endDatePredicate, DateParser.DateRange range)
     {
-        var startNode = existing.GetTriplesWithSubjectPredicate(id, startDatePredicate).SingleOrDefault()?.Object ??
-            CacheClient.NewId;
+        var startNode = existing.GetSingleUriNode(id, startDatePredicate) ?? CacheClient.NewId;
         graph.Assert(id, startDatePredicate, startNode);
         GraphAssert.YearMonthDay(graph, startNode, range.FirstYear, range.FirstMonth, range.FirstDay);
         if (range.SecondYear.HasValue)
         {
-            var endNode = existing.GetTriplesWithSubjectPredicate(id, endDatePredicate).SingleOrDefault()?.Object ??
-                CacheClient.NewId;
+            var endNode = existing.GetSingleUriNode(id, endDatePredicate) ?? CacheClient.NewId;
             graph.Assert(id, endDatePredicate, endNode);
             GraphAssert.YearMonthDay(graph, endNode, range.SecondYear, range.SecondMonth, range.SecondDay);
         }
     }
 
-    private static void AssertFirstDimension(IGraph graph, IGraph existing, INode id, IUriNode hasDimensionPredicate, DimensionParser.Dimension dimension)
+    private static void AssertFirstDimension(IGraph graph, IGraph existing, IUriNode id, IUriNode hasDimensionPredicate, DimensionParser.Dimension dimension)
     {
-        var assetHasDimension = existing.GetTriplesWithSubjectPredicate(id, hasDimensionPredicate).SingleOrDefault()?.Object ??
-            CacheClient.NewId;
+        var assetHasDimension = existing.GetSingleUriNode(id, hasDimensionPredicate) ?? CacheClient.NewId;
         graph.Assert(id, hasDimensionPredicate, assetHasDimension);
         GraphAssert.Integer(graph, assetHasDimension, dimension.FirstMm, Vocabulary.FirstDimensionMillimetre);
         GraphAssert.Integer(graph, assetHasDimension, dimension.SecondMm, Vocabulary.SecondDimensionMillimetre);
     }
 
-    private static void AssertSecondDimension(IGraph graph, IGraph existing, INode id, IUriNode hasDimensionPredicate, DimensionParser.Dimension dimension)
+    private static void AssertSecondDimension(IGraph graph, IGraph existing, IUriNode id, IUriNode hasDimensionPredicate, DimensionParser.Dimension dimension)
     {
-        var assetHasDimension = existing.GetTriplesWithSubjectPredicate(id, hasDimensionPredicate).SingleOrDefault()?.Object ??
-            CacheClient.NewId;
+        var assetHasDimension = existing.GetSingleUriNode(id, hasDimensionPredicate) ?? CacheClient.NewId;
         graph.Assert(id, hasDimensionPredicate, assetHasDimension);
         GraphAssert.Integer(graph, assetHasDimension, dimension.SecondFirstMm, Vocabulary.FirstDimensionMillimetre);
         GraphAssert.Integer(graph, assetHasDimension, dimension.SecondSecondMm, Vocabulary.SecondDimensionMillimetre);

@@ -9,14 +9,14 @@ internal class AssetDeliverableUnitOriginDateIngest(ILogger logger)
 {
     private readonly DateParser dateParser = new(logger);
 
-    internal void AddOriginDates(IGraph graph, IGraph rdf, INode id, XmlDocument doc, IGraph existing)
+    internal void AddOriginDates(IGraph graph, IGraph rdf, IUriNode id, XmlDocument doc, IGraph existing)
     {
         var foundCoverage = rdf.GetTriplesWithPredicate(IngestVocabulary.Coverage).FirstOrDefault()?.Object;
-        var startNode = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateStart).SingleOrDefault()?.Object ??
-            existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginApproximateDateStart).SingleOrDefault()?.Object ??
+        var startNode = existing.GetSingleUriNode(id, Vocabulary.AssetHasOriginDateStart) ??
+            existing.GetSingleUriNode(id, Vocabulary.AssetHasOriginApproximateDateStart) ??
             CacheClient.NewId;
-        var endNode = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginDateEnd).SingleOrDefault()?.Object ??
-            existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasOriginApproximateDateEnd).SingleOrDefault()?.Object ??
+        var endNode = existing.GetSingleUriNode(id, Vocabulary.AssetHasOriginDateEnd) ??
+            existing.GetSingleUriNode(id, Vocabulary.AssetHasOriginApproximateDateEnd) ??
             CacheClient.NewId;
         if (foundCoverage is null)
         {
