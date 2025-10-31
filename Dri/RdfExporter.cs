@@ -143,11 +143,10 @@ public class RdfExporter : IDriRdfExporter
         var sensitiveName = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewSensitiveName).SingleOrDefault()?.Object as ILiteralNode;
         var sensitiveDescription = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewSensitiveDescription).SingleOrDefault()?.Object as ILiteralNode;
         var past = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewHasPastSensitivityReview).SingleOrDefault()?.Object as IUriNode;
-        var change = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewHasChange).SingleOrDefault().Object as IUriNode;
-        var changeDriId = graph.GetTriplesWithSubjectPredicate(change, Vocabulary.ChangeDriId).SingleOrDefault()?.Object as IUriNode;
-        var changeDescription = graph.GetTriplesWithSubjectPredicate(change, Vocabulary.ChangeDescription).SingleOrDefault()?.Object as ILiteralNode;
-        var changeDateTime = graph.GetTriplesWithSubjectPredicate(change, Vocabulary.ChangeDateTime).SingleOrDefault()?.Object as ILiteralNode;
-        var operatorId = graph.GetTriplesWithSubjectPredicate(change, Vocabulary.ChangeHasOperator).SingleOrDefault()?.Object as IUriNode;
+        var changeDriId = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.ChangeDriId).SingleOrDefault()?.Object as IUriNode;
+        var changeDescription = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.ChangeDescription).SingleOrDefault()?.Object as ILiteralNode;
+        var changeDateTime = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.ChangeDateTime).SingleOrDefault()?.Object as ILiteralNode;
+        var operatorId = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.ChangeHasOperator).SingleOrDefault()?.Object as IUriNode;
         var operatorIdentifier = graph.GetTriplesWithSubjectPredicate(operatorId ?? coalesceNode, Vocabulary.OperatorIdentifier).SingleOrDefault()?.Object as IUriNode;
         var operatorName = graph.GetTriplesWithSubjectPredicate(operatorId ?? coalesceNode, Vocabulary.OperatorName).SingleOrDefault()?.Object as ILiteralNode;
 
@@ -161,20 +160,16 @@ public class RdfExporter : IDriRdfExporter
                 operatorName?.AsValuedNode().AsString());
         }
 
-        var restriction = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewHasSensitivityReviewRestriction).SingleOrDefault().Object as IUriNode;
-        var reviewDate = graph.GetTriplesWithSubjectPredicate(restriction, Vocabulary.SensitivityReviewRestrictionReviewDate).SingleOrDefault()?.Object as ILiteralNode;
-        var startDate = graph.GetTriplesWithSubjectPredicate(restriction, Vocabulary.SensitivityReviewRestrictionCalculationStartDate).SingleOrDefault()?.Object as ILiteralNode;
-        var duration = graph.GetTriplesWithSubjectPredicate(restriction, Vocabulary.SensitivityReviewRestrictionDuration).SingleOrDefault()?.Object as ILiteralNode;
-        var description = graph.GetTriplesWithSubjectPredicate(restriction, Vocabulary.SensitivityReviewRestrictionDescription).SingleOrDefault()?.Object as ILiteralNode;
-        var retentionRestriction = graph.GetTriplesWithSubjectPredicate(restriction, Vocabulary.SensitivityReviewRestrictionHasRetentionRestriction).SingleOrDefault()?.Object as IUriNode;
-        var instrumentNumber = graph.GetTriplesWithSubjectPredicate(retentionRestriction ?? coalesceNode, Vocabulary.RetentionInstrumentNumber).SingleOrDefault()?.Object as ILiteralNode;
-        var instrumentSignedDate = graph.GetTriplesWithSubjectPredicate(retentionRestriction ?? coalesceNode, Vocabulary.RetentionInstrumentSignatureDate).SingleOrDefault()?.Object as ILiteralNode;
-        var restrictionReviewDate = graph.GetTriplesWithSubjectPredicate(retentionRestriction ?? coalesceNode, Vocabulary.RetentionRestrictionReviewDate).SingleOrDefault()?.Object as ILiteralNode;
-        var ground = graph.GetTriplesWithSubjectPredicate(retentionRestriction ?? coalesceNode, Vocabulary.RetentionRestrictionHasGroundForRetention).SingleOrDefault()?.Object as IUriNode;
-        var groundCode = graph.GetTriplesWithSubjectPredicate(ground ?? coalesceNode, Vocabulary.GroundForRetentionCode).SingleOrDefault()?.Object as IUriNode;
-        var condition = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewHasAccessCondition).SingleOrDefault().Object as IUriNode;
-        var accessCode = graph.GetTriplesWithSubjectPredicate(condition, Vocabulary.AccessConditionCode).SingleOrDefault().Object as IUriNode;
-        var legislationUris = graph.GetTriplesWithSubjectPredicate(restriction, Vocabulary.SensitivityReviewRestrictionHasLegislation)
+        var reviewDate = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewRestrictionReviewDate).SingleOrDefault()?.Object as ILiteralNode;
+        var startDate = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewRestrictionCalculationStartDate).SingleOrDefault()?.Object as ILiteralNode;
+        var duration = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewRestrictionDuration).SingleOrDefault()?.Object as ILiteralNode;
+        var description = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewRestrictionDescription).SingleOrDefault()?.Object as ILiteralNode;
+        var instrumentNumber = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.RetentionInstrumentNumber).SingleOrDefault()?.Object as ILiteralNode;
+        var instrumentSignedDate = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.RetentionInstrumentSignatureDate).SingleOrDefault()?.Object as ILiteralNode;
+        var restrictionReviewDate = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.RetentionRestrictionReviewDate).SingleOrDefault()?.Object as ILiteralNode;
+        var groundCode = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.GroundForRetentionCode).SingleOrDefault()?.Object as IUriNode;
+        var accessCode = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AccessConditionCode).SingleOrDefault().Object as IUriNode;
+        var legislationUris = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SensitivityReviewRestrictionHasLegislation)
             .SelectMany(l => graph.GetTriplesWithSubjectPredicate(l.Object, Vocabulary.LegislationHasUkLegislation)
                 .Select(t => t.Object).Cast<IUriNode>().Select(u => u.Uri));
 
