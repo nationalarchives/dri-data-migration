@@ -13,43 +13,43 @@ construct {
     	ex:sensitivityReviewSensitiveName ?titleAlternative;
     	ex:sensitivityReviewSensitiveDescription ?descriptionAlternative;
     	ex:sensitivityReviewHasPastSensitivityReview ?previous;
-    	ex:sensitivityReviewHasSensitivityReviewRestriction [
-            ex:sensitivityReviewRestrictionReviewDate ?reviewDate;
-            ex:sensitivityReviewRestrictionCalculationStartDate ?startDate;
-			ex:sensitivityReviewRestrictionDuration ?closurePeriod;
-        	ex:sensitivityReviewRestrictionDescription ?reasonForChange;
-        	ex:sensitivityReviewRestrictionHasRetentionRestriction [
-         	 	ex:retentionInstrumentNumber ?rINumber;
-            	ex:retentionInstrumentSignatureDate ?rISignedDate;
-            	ex:retentionRestrictionReviewDate ?retentionReconsiderDate;
-            	ex:retentionRestrictionHasGroundForRetention [
-                    ex:groundForRetentionCode ?retentionJustification
-            	]
-        	];
-            ex:sensitivityReviewRestrictionHasLegislation [
-                ex:legislationHasUkLegislation ?exemptionCode
-            ]
-        ];
-        ex:sensitivityReviewHasAccessCondition [
-            ex:accessConditionCode ?closureType
-        ];
-        ex:sensitivityReviewHasChange [
-            ex:changeDriId ?qualifiedGeneration;
-            ex:changeDescription ?changeLabel;
-            ex:changeDateTime ?changeTime;
-            ex:changeHasOperator [
-                ex:operatorIdentifier ?changeOperator;
-                ex:operatorName ?changeAgentLabel
-            ]
-        ].
+    	ex:sensitivityReviewHasSensitivityReviewRestriction ?srr;
+        ex:sensitivityReviewHasAccessCondition ?ac;
+        ex:sensitivityReviewHasChange ?qualifiedGeneration.
+    ?srr ex:sensitivityReviewRestrictionReviewDate ?reviewDate;
+        ex:sensitivityReviewRestrictionCalculationStartDate ?startDate;
+		ex:sensitivityReviewRestrictionDuration ?closurePeriod;
+        ex:sensitivityReviewRestrictionDescription ?reasonForChange;
+        ex:sensitivityReviewRestrictionHasRetentionRestriction ?rr;
+        ex:sensitivityReviewRestrictionHasLegislation ?exemptionCode.
+    ?rr ex:retentionInstrumentNumber ?rINumber;
+        ex:retentionInstrumentSignatureDate ?rISignedDate;
+        ex:retentionRestrictionReviewDate ?retentionReconsiderDate;
+        ex:retentionRestrictionHasGroundForRetention ?gfr.
+    ?gfr ex:groundForRetentionCode ?retentionJustification.
+    ?ac ex:accessConditionCode ?closureType.
+    ?exemptionCode ex:legislationHasUkLegislation ?exemptionCode.
+    ?qualifiedGeneration ex:changeDriId ?qualifiedGeneration;
+        ex:changeDescription ?changeLabel;
+        ex:changeDateTime ?changeTime;
+        ex:changeHasOperator ?changeOperator.
+    ?changeOperator ex:operatorIdentifier ?changeOperator;
+        ex:operatorName ?changeAgentLabel.
 }
 where {
     ?closure dri:closureType ?closureType.
     ?record a ?type.
     {
-        select ?closure ?record ?reference where {
+        select ?closure ?record ?reference ?srr ?rr ?gfr ?ac where {
             bind(@id as ?code)
             bind(replace(@id,' ','_') as ?code2)
+
+            #IRIs created to avoid duplication caused by possible multiple ?exemptionCode
+            bind(iri(concat(str(?closure),'srr')) as ?srr)
+            bind(iri(concat(str(?closure),'rr')) as ?rr)
+            bind(iri(concat(str(?closure),'gfr')) as ?gfr)
+            bind(iri(concat(str(?closure),'ac')) as ?ac)
+
             ?closure prov:specializationOf ?record.
             ?record rdfs:label ?reference.
             {
