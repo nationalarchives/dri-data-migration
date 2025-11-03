@@ -30,13 +30,4 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
 
         return graph;
     }
-
-    internal override void PostIngest()
-    {
-        Console.WriteLine("Distinct RDF predicates:");
-        foreach (var predicate in xmlIngest.Predicates.OrderBy(p => p))
-        {
-            Console.WriteLine(predicate);
-        }
-    }
 }

@@ -32,9 +32,4 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
 
         return graph;
     }
-
-    internal override void PostIngest()
-    {
-        File.AppendAllLines("predicates-file.txt", xmlIngest.Predicates);
-    }
 }
