@@ -33,6 +33,15 @@ services:
               read_only: true
               source: ./backup.nq
               target: /root/graphdb-import/backup.nq
+    otl-dashboard:
+        image: mcr.microsoft.com/dotnet/aspire-dashboard:latest
+        container_name: otl-dashboard
+        ports:
+            - '18888:18888'
+            - '4317:18889'
+        #https://learn.microsoft.com/en-us/dotnet/aspire/fundamentals/dashboard/configuration?tabs=powershell#resources
+        environment:
+            DASHBOARD__FRONTEND__AUTHMODE: "Unsecured"
 
 volumes:
     data:
