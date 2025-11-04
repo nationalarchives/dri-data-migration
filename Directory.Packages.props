@@ -24,7 +24,7 @@
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
     <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageVersion Include="Serilog.Sinks.OpenTelemetry" Version="4.2.0" />
-    <PackageVersion Include="System.CommandLine" Version="2.0.0-rc.1.25451.107" />
+    <PackageVersion Include="System.CommandLine" Version="2.0.0-rc.2.25502.107" />
     <PackageVersion Include="System.CommandLine.Hosting" Version="0.4.0-alpha.25306.1" />
     <PackageVersion Include="System.Text.Json" Version="9.0.7" />
   </ItemGroup>
