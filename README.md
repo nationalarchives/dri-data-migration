@@ -33,9 +33,44 @@ Both the target (staging triplestore) and DRI triplestore can be [hosted using D
 
 # Data extraction
 
-Runs the ETL process for a specified series (collection).
+Runs the ETL process for a specified series (collection).\
+Command: `migrate`
 
-Command: `migrate`.
+```mermaid
+sequenceDiagram
+    box
+        actor User
+        participant ProgramHostedService
+        participant DataProcessing
+        participant IEtl
+    end
+    box
+        participant IDriRdfExporter
+        participant IDriSqlExporter
+        participant IStagingIngest
+        participant Triplestore@{ "type" : "database" }
+        participant SQLite@{ "type" : "database" }
+    end
+    User-)ProgramHostedService: Run migrate command
+    ProgramHostedService-)DataProcessing: Migration started
+    loop Execute available IEtl implementations
+        DataProcessing-)IEtl:
+    end
+    DataProcessing--)ProgramHostedService: Migration finished
+    alt Processing data from the Triplestore
+        IEtl-)IDriRdfExporter: Fetch entities
+        loop Page results
+            IDriRdfExporter->Triplestore: Load data
+            IDriRdfExporter-)IStagingIngest: Ingest
+        end
+    else Processing data from the SQLite database
+        IEtl-)IDriSqlExporter: Fetch entities
+        loop Page results
+            IDriSqlExporter->SQLite: Load data
+            IDriSqlExporter-)IStagingIngest: Ingest
+        end
+    end
+```
 
 ## Examples
 
