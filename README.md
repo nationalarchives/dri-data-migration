@@ -106,7 +106,7 @@ Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/AccessConditionGraph.sparql)
 
 | Source | Target |
-| --- | --- | --- |
+| --- | --- |
 | dri:ClosureType (subject's fragment) | ex:accessConditionCode |
 | dri:ClosureType (rdfs:label) | ex:accessConditionName |
 
@@ -116,7 +116,7 @@ Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/LegislationGraph.sparql)
 
 | Source | Target |
-| --- | --- | --- |
+| --- | --- |
 | dri:exemptionCode/rdfs:label (object's fragment) | ex:legislationSectionReference |
 | dri:exemptionCode | ex:legislationHasUkLegislation |
 
@@ -126,7 +126,7 @@ Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/GroundForRetentionGraph.sparql)
 
 | Source | Target |
-| --- | --- | --- |
+| --- | --- |
 | dri:RetentionJustificationType (rdfs:label) | ex:groundForRetentionCode |
 | dri:RetentionJustificationType (rdfs:comment) | ex:groundForRetentionDescription |
 
@@ -136,7 +136,7 @@ Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/GetSubset.sparql)
 
 | Source | Target |
-| --- | --- | --- |
+| --- | --- |
 | dri:DeliverableUnit (rdfs:label) | ex:subsetReference |
 | dri:DeliverableUnit (dri:parent/rdfs:label) or dri:DeliverableUnit (dri:hasDirectory/rdfs:label) or series code | ex:subsetHasBroaderSubset/ex:subsetReference |
 | dri:DeliverableUnit (dri:hasDirectory/rdfs:label) | ex:subsetHasRetention/ex:importLocation |
@@ -147,7 +147,7 @@ Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/AssetGraph.sparql)
 
 | Source | Target |
-| --- | --- | --- |
+| --- | --- |
 | dri:DeliverableUnit (subject's last URI segment) | ex:assetDriId |
 | dri:DeliverableUnit (rdfs:label) | ex:assetReference |
 | dri:DeliverableUnit (dri:parent/rdfs:label) or series code | ex:assetHasSubset/ex:subsetReference |
@@ -157,7 +157,7 @@ Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/AssetDeliverableUnitGraph.sparql)
 
 | Source | Target |
-| --- | --- | --- |
+| --- | --- |
 | _SQLite_ | |
 | xmlmetadata.XMLCLOB | ex:assetDriXml |
 | _XMLCLOB_ | |
@@ -216,7 +216,7 @@ Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/Wo409SubsetDeliverableUnitGraph.sparql)
 
 | Source | Target |
-| --- | --- | --- |
+| --- | --- |
 | _SQLite_ | |
 | xmlmetadata.XMLCLOB | ex:wo409SubsetDriXml |
 | _XMLCLOB_ | |
@@ -235,7 +235,7 @@ Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/VariationGraph.sparql)
 
 | Source | Target |
-| --- | --- | --- |
+| --- | --- |
 | dri:File (subject's last URI segment) | ex:variationDriId |
 | dri:File (rdfs:label) | ex:variationName |
 | dri:File (^dri:file/dri:parent/rdfs:label) | ex:variationHasAsset/ex:assetReference |
@@ -244,7 +244,7 @@ Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/VariationFileGraph.sparql)
 
 | Source | Target |
-| --- | --- | --- |
+| --- | --- |
 | _SQLite_ | |
 | digitalfile.FILELOCATION + '/' + digitalfile.NAME | ex:variationRelativeLocation |
 | deliverableunitmanifestation.MANIFESTATIONREF | ex:variationDriManifestationId |
@@ -271,7 +271,7 @@ Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/SensitivityReviewGraph.sparql)
 
 | Source | Target |
-| --- | --- | --- |
+| --- | --- |
 | prov:specializationOf (subject's last URI segment) | ex:sensitivityReviewDriId |
 | prov:specializationOf/rdfs:label | ex:sensitivityReviewHasSubset/ex:subsetReference or ex:SensitivityReviewHasAsset/ex:assetReference |
 | prov:specializationOf (object's last URI segment) | ex:sensitivityReviewHasVariation/ex:variationDriId |
