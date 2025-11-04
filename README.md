@@ -102,6 +102,8 @@ Restart from `Sensitivity review` stage at record 100:
 
 ### Access condition
 
+#### Sequence step 1
+
 Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main/Dri/Sparql/GetAccessConditionsAsync.sparql)\
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/AccessConditionGraph.sparql)
 
@@ -111,6 +113,8 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | dri:ClosureType (rdfs:label) | ex:accessConditionName |
 
 ### Legislation
+
+#### Sequence step 2
 
 Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main/Dri/Sparql/GetLegislationsAsync.sparql)\
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/LegislationGraph.sparql)
@@ -122,6 +126,8 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 
 ### Ground for retention
 
+#### Sequence step 3
+
 Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main/Dri/Sparql/GetGroundsForRetentionAsync.sparql)\
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/GroundForRetentionGraph.sparql)
 
@@ -131,6 +137,8 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | dri:RetentionJustificationType (rdfs:comment) | ex:groundForRetentionDescription |
 
 ### Subset
+
+#### Sequence step 4
 
 Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main/Dri/Sparql/GetSubsetsByCodeAsync.sparql)\
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/GetSubset.sparql)
@@ -143,6 +151,8 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 
 ### Asset
 
+#### Sequence step 5
+
 Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main/Dri/Sparql/GetAssetsByCodeAsync.sparql)\
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/AssetGraph.sparql)
 
@@ -152,6 +162,8 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | dri:DeliverableUnit (rdfs:label) | ex:assetReference |
 | dri:DeliverableUnit (dri:parent/rdfs:label) or series code | ex:assetHasSubset/ex:subsetReference |
 | dri:DeliverableUnit (dri:parent/dri:hasDirectory/rdfs:label) | ex:assetHasRetention/ex:importLocation |
+
+#### Sequence step 7
 
 Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main/Dri/Sql/GetAssetDeliverableUnits.sql)\
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/AssetDeliverableUnitGraph.sparql)
@@ -212,6 +224,8 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | trans:dateOfOriginalSeal | ex:sealAssetHasStartDate or ex:sealAssetHasObverseStartDate or ex:sealAssetHasReverseStartDate or ex:sealAssetHasEndDate or ex:sealAssetHasObverseEndDate or ex:sealAssetHasReverseEndDate |
 | trans:dimensions | ex:assetHasDimension or ex:sealAssetHasObverseDimension or ex:sealAssetHasReverseDimension or {any of the previous}/(ex:firstDimensionMillimetre\|ex:secondDimensionMillimetre) |
 
+#### Sequence step 8
+
 Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main/Dri/Sql/GetWo409SubsetDeliverableUnits.sql)\
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/Wo409SubsetDeliverableUnitGraph.sparql)
 
@@ -231,6 +245,8 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 
 ### Variation
 
+#### Sequence step 6
+
 Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main/Dri/Sparql/GetVariationsByCodeAsync.sparql)\
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/VariationGraph.sparql)
 
@@ -239,6 +255,8 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | dri:File (subject's last URI segment) | ex:variationDriId |
 | dri:File (rdfs:label) | ex:variationName |
 | dri:File (^dri:file/dri:parent/rdfs:label) | ex:variationHasAsset/ex:assetReference |
+
+#### Sequence step 9
 
 Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main/Dri/Sql/GetVariationFiles.sql)\
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/VariationFileGraph.sparql)
@@ -267,6 +285,8 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 
 ### Sensitivity review
 
+#### Sequence step 10
+
 Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main/Dri/Sparql/GetSensitivityReviewsByCodeAsync.sparql)\
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/SensitivityReviewGraph.sparql)
 
@@ -294,6 +314,21 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | prov:qualifiedGeneration/prov:atTime | ex:sensitivityReviewHasChange/ex:changeDateTime |
 | prov:qualifiedGeneration/prov:wasAssociatedWith/rdfs:label | ex:sensitivityReviewHasChange/ex:changeHasOperator/ex:operatorName |
 
+### Change
+
+#### Sequence step 11
+
+Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main/Dri/Sql/GetChanges.sql)\
+Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/ChangeGraph.sparql)
+
+| Source | Target |
+| --- | --- |
+| auditchange.CHANGEREF | ex:changeDriId |
+| auditchange.XMLDIFF | ex:changeDescription |
+| auditchange.DATETIME | ex:changeDateTime |
+| tableinvolved.TABLENAME and auditchange.PRIMARYKEYVALUE | ex:changeHasAsset or ex:changeHasVariation |
+| auditchange.USERNAME | ex:changeHasOperator/ex:operatorIdentifier |
+| auditchange.FULLNAME | ex:changeHasOperator/ex:operatorName |
 
 # Data reconciliation
 
