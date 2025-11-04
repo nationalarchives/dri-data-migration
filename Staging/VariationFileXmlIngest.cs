@@ -7,7 +7,6 @@ namespace Staging;
 
 public class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
 {
-    public readonly HashSet<string> Predicates = [];
     private readonly DateParser dateParser = new(logger);
     private readonly RdfXmlLoader rdfXmlLoader = new(logger);
 
@@ -19,8 +18,6 @@ public class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
             logger.VariationXmlMissingRdf(id.AsValuedNode().AsString());
             return;
         }
-
-        Predicates.UnionWith(rdf.Triples.PredicateNodes.Cast<IUriNode>().Select(p => p.Uri.ToString()).ToHashSet());
 
         GraphAssert.Text(graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
         {

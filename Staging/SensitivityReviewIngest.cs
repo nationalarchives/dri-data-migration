@@ -172,7 +172,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
             var variation = await cacheClient.CacheFetch(CacheEntityKind.Variation, dri.TargetId, cancellationToken);
             if (variation is null)
             {
-                logger.AssociatedVariationNotFound(dri.TargetReference); //TODO: sensitive name?
+                logger.AssociatedVariationNotFound(dri.TargetId); //TODO: sensitive name?
                 return false;
             }
             graph.Assert(id, Vocabulary.SensitivityReviewHasVariation, variation);

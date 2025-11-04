@@ -16,7 +16,6 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
     private readonly Uri givenName = new("http://example.com/given");
     private readonly Uri familyName = new("http://example.com/familyName");
     private readonly IUriNode rdfsObject = new UriNode(new Uri(RdfSpecsHelper.RdfObject));
-    public readonly HashSet<string> Predicates = [];
 
     internal override async Task<Graph?> BuildAsync(IGraph existing,
         DriWo409SubsetDeliverableUnit dri, CancellationToken cancellationToken)
@@ -52,8 +51,6 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
             logger.AssetXmlMissingRdf(id.AsValuedNode().AsString());
             return;
         }
-
-        Predicates.UnionWith(rdf.Triples.PredicateNodes.Cast<IUriNode>().Select(p => p.Uri.ToString()).ToHashSet());
 
         var subjectTriple = rdf.GetTriplesWithSubjectPredicate(wo409, IngestVocabulary.Subject).SingleOrDefault();
         if (subjectTriple is null)
@@ -100,9 +97,9 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
             existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasPerson).SingleOrDefault()?.Object as IUriNode) ??
             CacheClient.NewId;
         graph.Assert(id, isVeteran ? Vocabulary.AssetHasVeteran : Vocabulary.AssetHasPerson, person);
-        graph.Assert(person, Vocabulary.PersonGivenName, new LiteralNode(firstName));
-        graph.Assert(person, Vocabulary.PersonFamilyName, new LiteralNode(lastName));
-        graph.Assert(person, Vocabulary.PersonFullName, new LiteralNode(fullName));
+        GraphAssert.Text(graph, person, firstName, Vocabulary.PersonGivenName);
+        GraphAssert.Text(graph, person, lastName, Vocabulary.PersonFamilyName);
+        GraphAssert.Text(graph, person, fullName, Vocabulary.PersonFullName);
 
         return person;
     }

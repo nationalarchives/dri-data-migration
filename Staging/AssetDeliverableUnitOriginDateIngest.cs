@@ -74,7 +74,6 @@ internal class AssetDeliverableUnitOriginDateIngest(ILogger logger)
         }
     }
 
-
     private void ParseDate(IGraph graph, IGraph rdf, INode id, INode foundCoverage,
         INode startNode, INode endNode, DateParser.YearMonthDay startYmd)
     {

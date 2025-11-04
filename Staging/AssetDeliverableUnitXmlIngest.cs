@@ -12,7 +12,6 @@ namespace Staging;
 
 public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheClient)
 {
-    public readonly HashSet<string> Predicates = [];
     private readonly RdfXmlLoader rdfXmlLoader = new(logger);
     private readonly AssetDeliverableUnitOriginDateIngest dateIngest = new(logger);
     private readonly AssetDeliverableUnitSealIngest sealIngest = new(logger, cacheClient);
@@ -34,8 +33,6 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             logger.AssetXmlMissingRdf(id.AsValuedNode().AsString());
             return;
         }
-
-        Predicates.UnionWith(rdf.Triples.PredicateNodes.Cast<IUriNode>().Select(p => p.Uri.ToString()).ToHashSet());
 
         GraphAssert.Text(graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
         {
@@ -91,7 +88,6 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, id, rdf,
             IngestVocabulary.Language, CacheEntityKind.Language, Vocabulary.AssetHasLanguage,
             Vocabulary.LanguageName, cancellationToken);
-
         await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, id, rdf,
             IngestVocabulary.Counties, CacheEntityKind.GeographicalPlace,
             Vocabulary.AssetHasAssociatedGeographicalPlace, Vocabulary.GeographicalPlaceName, cancellationToken);
