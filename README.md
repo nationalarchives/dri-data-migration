@@ -38,36 +38,36 @@ Command: `migrate`
 
 ```mermaid
 sequenceDiagram
-    box
-        actor User
-        participant ProgramHostedService
-        participant DataProcessing
-        participant IEtl
+    actor User
+    participant IHostedService
+    participant IDataProcessing
+    participant IEtl
+    participant IDriRdfExporter
+    participant IDriSqlExporter
+    participant IStagingIngest
+    participant DRIRDF@{ "type" : "database" }
+    participant DRISQL@{ "type" : "database" }
+    participant StagingRDF@{ "type" : "database" }
+    User-)IHostedService: Execute migrate command
+    IHostedService-)IDataProcessing: Migration started
+    loop Run available IEtl implementations
+        IDataProcessing-)IEtl:
     end
-    box
-        participant IDriRdfExporter
-        participant IDriSqlExporter
-        participant IStagingIngest
-        participant Triplestore@{ "type" : "database" }
-        participant SQLite@{ "type" : "database" }
-    end
-    User-)ProgramHostedService: Run migrate command
-    ProgramHostedService-)DataProcessing: Migration started
-    loop Execute available IEtl implementations
-        DataProcessing-)IEtl:
-    end
-    DataProcessing--)ProgramHostedService: Migration finished
-    alt Processing data from the Triplestore
-        IEtl-)IDriRdfExporter: Fetch entities
-        loop Page results
-            IDriRdfExporter->Triplestore: Load data
-            IDriRdfExporter-)IStagingIngest: Ingest
+    alt Processing data from the DRI triplestore
+        loop 
+            IEtl-)IDriRdfExporter: Extract
+            IDriRdfExporter-)DRIRDF: Fetch
+            IDriRdfExporter-)IEtl: IDriRecord entities
+            IEtl-)IStagingIngest: Transform
+            IStagingIngest-)StagingRDF: Load
         end
-    else Processing data from the SQLite database
-        IEtl-)IDriSqlExporter: Fetch entities
-        loop Page results
-            IDriSqlExporter->SQLite: Load data
-            IDriSqlExporter-)IStagingIngest: Ingest
+    else Processing data from the DRI SQL database
+        loop 
+            IEtl-)IDriSqlExporter: Extract
+            IDriSqlExporter-)DRIRDF: Fetch
+            IDriSqlExporter-)IEtl: IDriRecord entities
+            IEtl-)IStagingIngest: Transform
+            IStagingIngest-)StagingRDF: Load
         end
     end
 ```
