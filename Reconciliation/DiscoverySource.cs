@@ -38,7 +38,7 @@ public class DiscoverySource(HttpClient httpClient, ILogger<DiscoverySource> log
         logger.GetDiscoveryRecordsPage(batchStartMark);
         var builder = new UriBuilder(searchRecordsUri)
         {
-            Query = $"sps.recordSeries={code}&sps.batchStartMark={batchStartMark}&sps.resultsPageSize=1000&sps.sortByOption=REFERENCE_ASCENDING&sps.catalogueLevels=Level6"
+            Query = $"sps.recordSeries={code}&sps.batchStartMark={batchStartMark}&sps.resultsPageSize=1000&sps.sortByOption=REFERENCE_ASCENDING"
         };
 
         return await httpClient.GetFromJsonAsync<DiscoverySearchRecordsResponse>(builder.Uri, cancellationToken);
@@ -46,7 +46,7 @@ public class DiscoverySource(HttpClient httpClient, ILogger<DiscoverySource> log
 
     private static IEnumerable<Dictionary<ReconciliationFieldName, object>> Filter(DiscoverySearchRecordsResponse.Record[] records) =>
         records.Where(r => !string.IsNullOrWhiteSpace(r.Reference))
-        .Where(r => r.Reference!.EndsWith("/Z") || r.Reference.Contains("/Z/"))
+        .Where(r => r.Id?.StartsWith('C') == false)
         .Select(r => new Dictionary<ReconciliationFieldName, object?>()
         {
             [ReconciliationFieldName.Id] = r.Id,
