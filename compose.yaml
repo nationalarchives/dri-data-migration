@@ -8,6 +8,7 @@ services:
         environment:
             GDB_HEAP_SIZE: "30G"
             GDB_JAVA_OPTS: "-Dgraphdb.page.cache.size=6G -Dgraphdb.query.memory.threshold=4G -Dgraphdb.home=/opt/graphdb/home -XX:+UseSerialGC"
+        #Uncomment to start in server mode only
         #command:
         #    - "-s"
         ports:
@@ -19,16 +20,10 @@ services:
             - type: volume
               source: import
               target: /root/graphdb-import
-            #Workbench mode
             - type: bind
               read_only: true
               source: ./graphdb.license
               target: /opt/graphdb/home/conf/graphdb.license
-            #Server mode
-            - type: bind
-              read_only: true
-              source: ./graphdb.license
-              target: /opt/graphdb/dist/conf/graphdb.license
             - type: bind
               read_only: true
               source: ./backup.nq
