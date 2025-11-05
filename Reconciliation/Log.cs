@@ -11,7 +11,7 @@ internal static partial class Log
     [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "Finished reconciliation")]
     internal static partial void ReconciliationFinished(this ILogger logger);
 
-    [LoggerMessage(EventId = 3, Level = LogLevel.Warning, Message = "Missing folder {id")]
+    [LoggerMessage(EventId = 3, Level = LogLevel.Warning, Message = "Missing folder {id}")]
     internal static partial void ReconciliationFolderNotFound(this ILogger logger, string id);
 
     [LoggerMessage(EventId = 4, Level = LogLevel.Warning, Message = "Missing file {id}")]
