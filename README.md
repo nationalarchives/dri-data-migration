@@ -14,6 +14,16 @@ To view available commands and options, run:
 Migration.exe --help
 ```
 
+## Logging
+
+Migration services use [Serilog](https://serilog.net/) for structured logging implementation. The default logging configuration is defined in the [appsettings.json](https://github.com/nationalarchives/dri-data-migration/blob/main/Migration/appsettings.json) file.\
+Default location for the log output is `Console` and `logs` folder.
+
+## Docker
+
+The default configuration is defined in the [compose file](https://github.com/nationalarchives/dri-data-migration/blob/main/compose.yaml). This includes [GraphDB](https://graphdb.ontotext.com/documentation/11.0/) engine, which will store both the DRI and Staging repositories. Additionally, it provides an optional [Open Telemetry dashboard](https://learn.microsoft.com/en-us/dotnet/aspire/fundamentals/dashboard/overview).\
+To start, run `docker compose up`.
+
 ## Prerequisites
 
 Data migration operates on two data sources: SQLite and triplestore. [A new table must be created](https://github.com/nationalarchives/dri-data-migration/blob/main/PostSqliteExport.sql) to optimize query performance.\
