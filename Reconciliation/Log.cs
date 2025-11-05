@@ -11,16 +11,16 @@ internal static partial class Log
     [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "Finished reconciliation")]
     internal static partial void ReconciliationFinished(this ILogger logger);
 
-    [LoggerMessage(EventId = 3, Level = LogLevel.Warning, Message = "Folder {id} not found in the staging database")]
+    [LoggerMessage(EventId = 3, Level = LogLevel.Warning, Message = "Missing folder {id")]
     internal static partial void ReconciliationFolderNotFound(this ILogger logger, string id);
 
-    [LoggerMessage(EventId = 4, Level = LogLevel.Warning, Message = "File {id} not found in the staging database")]
+    [LoggerMessage(EventId = 4, Level = LogLevel.Warning, Message = "Missing file {id}")]
     internal static partial void ReconciliationFileNotFound(this ILogger logger, string id);
 
-    [LoggerMessage(EventId = 5, Level = LogLevel.Warning, Message = "Additional folder {id} in the staging database")]
+    [LoggerMessage(EventId = 5, Level = LogLevel.Warning, Message = "Additional folder {id}")]
     internal static partial void ReconciliationFolderAdditional(this ILogger logger, string id);
 
-    [LoggerMessage(EventId = 6, Level = LogLevel.Warning, Message = "Additional file {id} in the staging database")]
+    [LoggerMessage(EventId = 6, Level = LogLevel.Warning, Message = "Additional file {id}")]
     internal static partial void ReconciliationFileAdditional(this ILogger logger, string id);
 
     [LoggerMessage(EventId = 7, Level = LogLevel.Warning, Message = "Identified discrepancy on {id} (fields: {diffs})")]
