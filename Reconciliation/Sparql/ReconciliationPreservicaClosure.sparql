@@ -7,74 +7,96 @@ select ?t ?importLocation ?accessConditionName ?retentionType
 	?sensitivityReviewRestrictionEndYear ?retentionInstrumentNumber ?retentionInstrumentSignatureDate
     ?groundForRetentionCode (group_concat(?lsr; separator=',') as ?legislationSectionReference)
 where {
-    bind(@id as ?id)
-    ?subset ex:subsetHasBroaderSubset*/ex:subsetReference ?id.
-    bind(coalesce(?sensitivityReviewSensitiveNameV, ?sensitivityReviewSensitiveNameA) as ?sensitivityReviewSensitiveName)
-    bind(coalesce(?sensitivityReviewSensitiveNameV, ?sensitivityReviewSensitiveNameA) as ?isPublicName)
-    bind(coalesce(?sensitivityReviewSensitiveDescriptionV, ?sensitivityReviewSensitiveDescriptionA) as ?sensitivityReviewSensitiveDescription)
-    bind(coalesce(?sensitivityReviewSensitiveDescriptionV, ?sensitivityReviewSensitiveDescriptionA) as ?isPublicDescription)
     {
-    	?subset ex:subsetReference ?reference.
-        optional { ?subset ex:subsetHasRetention/ex:importLocation ?importFolder }
-        bind(ex:Subset as ?t)
-        bind(coalesce(?importFolder, ?id) as ?importLocation)
-    }
-    union
-    {
-        ?asset ex:assetHasSubset ?subset;
-            ex:assetHasVariation ?variation.
-        ?variation ex:variationName ?variationName.
-        optional { ?asset ex:assetHasRetention/ex:importLocation ?importFolder }
-        bind(ex:Variation as ?t)
-        bind(concat(coalesce(?importFolder, ?id), '/', ?variationName) as ?importLocation)
-        optional {
-            ?asset ex:variationHasSensitivityReview ?srA.
-            filter not exists { ?futureSrA ex:sensitivityReviewHasPastSensitivityReview ?srA }
-            optional {
-                ?srA ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveNameA.
-            }
-            optional {
-                ?srA ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescriptionA.
-            }
-        }
-        optional {
-            ?variation ex:variationHasSensitivityReview ?sr.
-            filter not exists { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?sr }
-            optional { 
-                ?sr ex:sensitivityReviewHasAccessCondition ?ac.
-                ?ac ex:accessConditionName ?accessConditionName.
-                bind(?accessConditionName as ?retentionType)
-            }
-            optional { ?sr ex:sensitivityReviewDate ?sensitivityReviewDate }
-            optional {
-                ?sr ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveNameV.
-            }
-            optional {
-                ?sr ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescriptionV.
-            }
-            optional {
-                ?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
-                optional { ?restriction ex:sensitivityReviewRestrictionReviewDate ?sensitivityReviewRestrictionReviewDate }
-                optional { ?restriction ex:sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionCalculationStartDate }
-                optional { ?restriction ex:sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionDuration }
-                optional { ?restriction ex:sensitivityReviewRestrictionEndYear ?sensitivityReviewRestrictionEndYear }
+        select ?t ?importLocation ?accessConditionName ?retentionType
+            ?sensitivityReviewDate ?sensitivityReviewSensitiveName ?isPublicName
+            ?sensitivityReviewSensitiveDescription ?isPublicDescription
+            ?sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionDuration
+            ?sensitivityReviewRestrictionEndYear ?retentionInstrumentNumber ?retentionInstrumentSignatureDate
+            ?groundForRetentionCode ?variation where {
+            bind(@id as ?id)
+            ?subset ex:subsetHasBroaderSubset*/ex:subsetReference ?id.
+            {
+    	        optional { ?subset ex:subsetHasRetention/ex:importLocation ?importFolder }
                 optional {
-                    ?restriction ex:sensitivityReviewRestrictionHasLegislation ?legislation.
-                    ?legislation ex:legislationSectionReference ?legislationSectionReference.
-                }
-                optional {
-                    ?restriction ex:sensitivityReviewRestrictionHasRetentionRestriction ?retentionRestriction.
-                    optional { ?retentionRestriction ex:retentionInstrumentNumber ?retentionInstrumentNumber }
-                    optional { ?retentionRestriction ex:retentionInstrumentSignatureDate ?retentionInstrumentSignatureDate }
+                    ?subset ex:subsetHasSensitivityReview ?srS.
+        			filter not exists { ?futureSrS ex:sensitivityReviewHasPastSensitivityReview ?srS }
                     optional {
-                        ?restriction ex:retentionRestrictionHasGroundForRetention ?retentionRestrictionHasGroundForRetention.
-                        ?retentionRestrictionHasGroundForRetention ex:groundForRetentionCode ?groundForRetentionCode.
+                        ?srS ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveNameS.
+                    }
+                    optional {
+                        ?srS ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescriptionS.
                     }
                 }
+                bind(ex:Subset as ?t)
+                bind(coalesce(?importFolder, ?id) as ?importLocation)
+                bind(bnode() as ?variation)
             }
-            bind(coalesce(?legislationSectionReference, "open") as ?lsr)
+            union
+            {
+                ?asset ex:assetHasSubset ?subset;
+                    ex:assetHasVariation ?variation.
+                ?variation ex:variationName ?variationName.
+                optional { ?asset ex:assetHasRetention/ex:importLocation ?importFolder }
+                optional {
+                    ?asset ex:variationHasSensitivityReview ?srA.
+                    filter not exists { ?futureSrA ex:sensitivityReviewHasPastSensitivityReview ?srA }
+                    optional {
+                        ?srA ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveNameA.
+                    }
+                    optional {
+                        ?srA ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescriptionA.
+                    }
+                }
+                optional {
+                    ?variation ex:variationHasSensitivityReview ?sr.
+        			filter not exists { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?sr }
+                    optional {
+                        ?sr ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveNameV.
+                    }
+                    optional {
+                        ?sr ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescriptionV.
+                    }
+					optional { 
+						?sr ex:sensitivityReviewHasAccessCondition ?ac.
+						?ac ex:accessConditionName ?accessConditionName.
+						bind(?accessConditionName as ?retentionType)
+					}
+					optional { ?sr ex:sensitivityReviewDate ?sensitivityReviewDate }
+					optional {
+						?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
+						optional { ?restriction ex:sensitivityReviewRestrictionReviewDate ?sensitivityReviewRestrictionReviewDate }
+						optional { ?restriction ex:sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionCalculationStartDate }
+						optional { ?restriction ex:sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionDuration }
+						optional { ?restriction ex:sensitivityReviewRestrictionEndYear ?sensitivityReviewRestrictionEndYear }
+						optional {
+							?restriction ex:sensitivityReviewRestrictionHasRetentionRestriction ?retentionRestriction.
+							optional { ?retentionRestriction ex:retentionInstrumentNumber ?retentionInstrumentNumber }
+							optional { ?retentionRestriction ex:retentionInstrumentSignatureDate ?retentionInstrumentSignatureDate }
+							optional {
+								?restriction ex:retentionRestrictionHasGroundForRetention ?retentionRestrictionHasGroundForRetention.
+								?retentionRestrictionHasGroundForRetention ex:groundForRetentionCode ?groundForRetentionCode.
+							}
+						}
+					}
+                }
+                bind(concat(coalesce(?importFolder, ?id), '/', ?variationName) as ?importLocation)
+                bind(coalesce(?sensitivityReviewSensitiveNameV, ?sensitivityReviewSensitiveNameA, ?sensitivityReviewSensitiveNameS) as ?sensitivityReviewSensitiveName)
+                bind(coalesce(?sensitivityReviewSensitiveNameV, ?sensitivityReviewSensitiveNameA, ?sensitivityReviewSensitiveNameS) as ?isPublicName)
+                bind(coalesce(?sensitivityReviewSensitiveDescriptionV, ?sensitivityReviewSensitiveDescriptionA, ?sensitivityReviewSensitiveDescriptionS) as ?sensitivityReviewSensitiveDescription)
+                bind(coalesce(?sensitivityReviewSensitiveDescriptionV, ?sensitivityReviewSensitiveDescriptionA, ?sensitivityReviewSensitiveDescriptionS) as ?isPublicDescription)
+                bind(ex:Variation as ?t)
+            }
         }
+        order by ?importLocation
+        limit @limit offset @offset
     }
+    optional {
+        ?variation ex:variationHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
+		?restriction ex:sensitivityReviewRestrictionHasLegislation ?legislation.
+		?legislation ex:legislationSectionReference ?legislationSectionReference.
+	}
+    bind(coalesce(?legislationSectionReference, "open") as ?lsr)
 }
 group by ?t ?importLocation ?accessConditionName ?retentionType
 	?sensitivityReviewDate ?sensitivityReviewSensitiveName ?isPublicName
@@ -82,5 +104,3 @@ group by ?t ?importLocation ?accessConditionName ?retentionType
     ?sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionDuration
 	?sensitivityReviewRestrictionEndYear ?retentionInstrumentNumber ?retentionInstrumentSignatureDate
     ?groundForRetentionCode
-order by ?importLocation
-limit @limit offset @offset
