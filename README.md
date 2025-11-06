@@ -206,7 +206,7 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | dri:DeliverableUnit (subject's last URI segment) | ex:assetDriId |
 | dri:DeliverableUnit (rdfs:label) | ex:assetReference |
 | dri:DeliverableUnit (dri:parent/rdfs:label) or series code | ex:assetHasSubset/ex:subsetReference |
-| dri:DeliverableUnit (dri:parent/dri:hasDirectory/rdfs:label) | ex:assetHasRetention/ex:importLocation |
+| dri:DeliverableUnit (dri:hasDirectory/rdfs:label or dri:parent/dri:hasDirectory/rdfs:label) | ex:assetHasRetention/ex:importLocation |
 
 #### Sequence step 7
 

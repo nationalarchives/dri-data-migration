@@ -27,12 +27,14 @@ construct {
                 ?a a dri:DeliverableUnit;
     	            dri:isPartOfSeries/rdfs:label ?code2.
             }
-            optional { ?a dri:parent/dri:hasDirectory/rdfs:label ?directory }
+            optional { ?a dri:hasDirectory/rdfs:label ?directDirectory }
+            optional { ?a dri:parent/dri:hasDirectory/rdfs:label ?parentDirectory }
             optional { ?a dri:parent/rdfs:label ?parentLabel }
             filter exists {
                 ?m dri:file ?f;
         	        dri:parent ?a.
             }
+            bind(coalesce(?directDirectory, ?parentDirectory) as ?directory)
             bind(coalesce(?parentLabel, ?code) as ?subset)
         }
         order by ?reference
