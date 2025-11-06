@@ -49,6 +49,15 @@ internal static class PreservicaExportParser
 
         return location;
     }
+    internal static string? ToName(string? folderOrFile, string? fileName)
+    {
+        if (folderOrFile != "folder")
+        {
+            return fileName;
+        }
+
+        return fileName == "content" ? null : fileName;
+    }
     internal static readonly Func<string?, object?> ToTextList = txt => string.IsNullOrWhiteSpace(txt) ? null : txt.Split(',', StringSplitOptions.RemoveEmptyEntries);
     internal static readonly Func<string?, object?> ToDate = txt => DateTimeOffset.TryParse(txt, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var v) ? v : null; //TODO: Test offset
     internal static readonly Func<string?, object?> ToInt = txt => int.TryParse(txt, out int v) ? v : null;
