@@ -111,6 +111,7 @@ internal static class StagingReconciliationParser
         accessConditionName switch
         {
             "retained by department under section 3.4" => "retained_under_3.4",
+            "temporarily retained by department" => "temporarily_retained",
             string acn when acn.Contains("retained") => acn.Replace(' ', '_'),
             _ => accessConditionName
         };

@@ -35,7 +35,8 @@ internal static class PreservicaExportParser
         return data;
     }
 
-    internal static readonly Func<string?, string?> ToText = txt => txt;
+    internal static readonly Func<string?, string?> ToText = txt => string.IsNullOrWhiteSpace(txt) ? null : txt;
+    internal static readonly Func<Dictionary<string, string>, string, string?> OptionalToText = (dictionary, key) => dictionary.TryGetValue(key, out var value) ? ToText(value) : null;
     internal static string? ToLocation(string? txt, string code)
     {
         if (string.IsNullOrWhiteSpace(txt))

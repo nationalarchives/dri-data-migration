@@ -1,10 +1,11 @@
 ﻿prefix ex: <http://id.example.com/schema/>
 
-select ?t ?importLocation ?accessConditionName
+select ?t ?importLocation ?accessConditionName ?retentionType
 	?sensitivityReviewDate ?sensitivityReviewSensitiveName ?isPublicName
 	?sensitivityReviewSensitiveDescription ?isPublicDescription
     ?sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionDuration
-	?sensitivityReviewRestrictionEndYear (group_concat(?lsr; separator=',') as ?legislationSectionReference)
+	?sensitivityReviewRestrictionEndYear ?retentionInstrumentNumber ?retentionInstrumentSignatureDate
+    ?groundForRetentionCode (group_concat(?lsr; separator=',') as ?legislationSectionReference)
 where {
     bind(@id as ?id)
     ?subset ex:subsetHasBroaderSubset*/ex:subsetReference ?id.
@@ -42,6 +43,7 @@ where {
             optional { 
                 ?sr ex:sensitivityReviewHasAccessCondition ?ac.
                 ?ac ex:accessConditionName ?accessConditionName.
+                bind(?accessConditionName as ?retentionType)
             }
             optional { ?sr ex:sensitivityReviewDate ?sensitivityReviewDate }
             optional {
@@ -60,15 +62,25 @@ where {
                     ?restriction ex:sensitivityReviewRestrictionHasLegislation ?legislation.
                     ?legislation ex:legislationSectionReference ?legislationSectionReference.
                 }
+                optional {
+                    ?restriction ex:sensitivityReviewRestrictionHasRetentionRestriction ?retentionRestriction.
+                    optional { ?retentionRestriction ex:retentionInstrumentNumber ?retentionInstrumentNumber }
+                    optional { ?retentionRestriction ex:retentionInstrumentSignatureDate ?retentionInstrumentSignatureDate }
+                    optional {
+                        ?restriction ex:retentionRestrictionHasGroundForRetention ?retentionRestrictionHasGroundForRetention.
+                        ?retentionRestrictionHasGroundForRetention ex:groundForRetentionCode ?groundForRetentionCode.
+                    }
+                }
             }
             bind(coalesce(?legislationSectionReference, "open") as ?lsr)
         }
     }
 }
-group by ?t ?importLocation ?accessConditionName
+group by ?t ?importLocation ?accessConditionName ?retentionType
 	?sensitivityReviewDate ?sensitivityReviewSensitiveName ?isPublicName
 	?sensitivityReviewSensitiveDescription ?isPublicDescription
     ?sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionDuration
-	?sensitivityReviewRestrictionEndYear
+	?sensitivityReviewRestrictionEndYear ?retentionInstrumentNumber ?retentionInstrumentSignatureDate
+    ?groundForRetentionCode
 order by ?importLocation
 limit @limit offset @offset
