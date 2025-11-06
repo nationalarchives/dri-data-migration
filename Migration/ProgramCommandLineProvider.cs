@@ -63,10 +63,10 @@ public class ProgramCommandLineProvider : ConfigurationProvider
         Arity = ArgumentArity.ZeroOrOne,
         Required = false
     };
-    private static readonly Option<FileInfo> fileLocation = new("--exported-file", "-ef")
+    private static readonly Option<IEnumerable<string>> fileLocation = new("--exported-file", "-ef")
     {
         Description = "Location of the exported file.",
-        Arity = ArgumentArity.ExactlyOne,
+        Arity = ArgumentArity.ZeroOrMore,
         Required = false
     };
     private static readonly Option<ReconciliationMapType> mapType = new("--mapping", "-mp")
@@ -104,7 +104,17 @@ public class ProgramCommandLineProvider : ConfigurationProvider
     public ProgramCommandLineProvider(IEnumerable<string> args)
     {
         this.args = args;
-        fileLocation.AcceptExistingOnly();
+        fileLocation.Validators.Add(result =>
+        {
+            for (var i = 0; i < result.Tokens.Count; i++)
+            {
+                var fileName = result.Tokens[i].Value;
+                if (!Path.Exists(fileName))
+                {
+                    result.AddError($"File {fileName} not found");
+                }
+            }
+        });
 
         MigrateCommand = new Command("migrate", """
             Performs data migration from a specified source supporting SPARQL 1.1 Protocol.
@@ -249,10 +259,13 @@ public class ProgramCommandLineProvider : ConfigurationProvider
             {
                 data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.MapKind)}", mapKind.ToString());
             }
-            var info = parseResult.GetValue(fileLocation);
-            if (info is not null)
+            var files = parseResult.GetValue(fileLocation);
+            if (files is not null && files.Any())
             {
-                data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.FileLocation)}", info.FullName);
+                for (int i = 0; i < files.Count(); i++)
+                {
+                    data.Add($"{ReconciliationSettings.Prefix}:{nameof(ReconciliationSettings.FileLocation)}:{i}", files.ElementAt(i));
+                }
             }
             else if (mapKind != ReconciliationMapType.Discovery)
             {

@@ -10,11 +10,21 @@ public class ClosureSource(ILogger<ClosureSource> logger, IOptions<Reconciliatio
 
     public async Task<List<Dictionary<ReconciliationFieldName, object>>> GetExpectedDataAsync(CancellationToken cancellationToken)
     {
-        logger.GetReconciliationFile(settings.FileLocation);
-        var preservica = PreservicaExportParser.Parse(settings.FileLocation);
+        var data = new List<Dictionary<ReconciliationFieldName, object>>();
+        var ids = new List<string>();
+        foreach (var file in settings.FileLocation)
+        {
+            logger.GetReconciliationFile(file);
+            var preservica = PreservicaExportParser.Parse(file);
 
-        return preservica.Select(p => Filter(p).Where(kv => kv.Value is not null)
-            .ToDictionary(kv => kv.Key, kv => kv.Value!)).ToList();
+            data.AddRange(preservica.Select(p => Filter(p).Where(kv => kv.Value is not null)
+                .ToDictionary(kv => kv.Key, kv => kv.Value!))
+                .Where(d => !ids.Contains(d[ReconciliationFieldName.ImportLocation] as string))
+                .ToList());
+            ids.AddRange(data.Select(d => d[ReconciliationFieldName.ImportLocation] as string).ToList());
+        }
+
+        return data;
     }
 
     private Dictionary<ReconciliationFieldName, object?> Filter(Dictionary<string, string> data) =>
