@@ -35,8 +35,7 @@ internal static class PreservicaExportParser
         return data;
     }
 
-    internal static readonly Func<string?, string?> ToText = txt => string.IsNullOrWhiteSpace(txt) ? null : txt;
-    internal static readonly Func<Dictionary<string, string>, string, string?> OptionalToText = (dictionary, key) => dictionary.TryGetValue(key, out var value) ? ToText(value) : null;
+    internal static readonly Func<Dictionary<string, string>, string, string?> ToText = (dictionary, key) => dictionary.TryGetValue(key, out var value) ? string.IsNullOrWhiteSpace(value) ? null : value : null;
     internal static string? ToLocation(string? txt, string code)
     {
         if (string.IsNullOrWhiteSpace(txt))
@@ -61,5 +60,5 @@ internal static class PreservicaExportParser
     internal static readonly Func<string?, object?> ToTextList = txt => string.IsNullOrWhiteSpace(txt) ? null : txt.Split(',', StringSplitOptions.RemoveEmptyEntries);
     internal static readonly Func<string?, object?> ToDate = txt => DateTimeOffset.TryParse(txt, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var v) ? v : null; //TODO: Test offset
     internal static readonly Func<string?, object?> ToInt = txt => int.TryParse(txt, out int v) ? v : null;
-    internal static readonly Func<string?, object?> ToBool = txt => string.IsNullOrWhiteSpace(txt) ? null : txt.Equals("TRUE") ? true : txt.Equals("FALSE") ? false : null;
+    internal static readonly Func<Dictionary<string, string>, string, object?> ToBool = (dictionary, key) => dictionary.TryGetValue(key, out var value) ? value == "TRUE" : true;
 }
