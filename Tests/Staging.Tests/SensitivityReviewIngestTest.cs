@@ -50,9 +50,6 @@ public sealed class SensitivityReviewIngestTest
             .ReturnsAsync(previousSr);
         cache.Setup(c => c.CacheFetch(CacheEntityKind.Variation, dri.TargetId, CancellationToken.None))
             .ReturnsAsync(variation);
-        cache.Setup(c => c.CacheFetchOrNew(CacheEntityKind.Change, dri.ChangeId,
-                Vocabulary.ChangeDriId, CancellationToken.None))
-            .ReturnsAsync(change);
         cache.Setup(c => c.CacheFetchOrNew(CacheEntityKind.Operator, dri.ChangeOperatorId,
                 Vocabulary.OperatorIdentifier, CancellationToken.None))
             .ReturnsAsync(changeOperator);

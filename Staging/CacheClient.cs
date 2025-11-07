@@ -21,7 +21,6 @@ public class CacheClient : ICacheClient
     private readonly string sealCategorySparql;
     private readonly string operatorSparql;
     private readonly string battalionSparql;
-    private readonly string changeSparql;
 
     private readonly string accessConditionsSparql;
     private readonly string legislationsSparql;
@@ -54,7 +53,6 @@ public class CacheClient : ICacheClient
         sealCategorySparql = embedded.GetSparql("GetSealCategory");
         operatorSparql = embedded.GetSparql("GetOperator");
         battalionSparql = embedded.GetSparql("GetBattalion");
-        changeSparql = embedded.GetSparql("GetChange");
 
         accessConditionsSparql = embedded.GetSparql("GetAccessConditions");
         legislationsSparql = embedded.GetSparql("GetLegislations");
@@ -155,7 +153,6 @@ public class CacheClient : ICacheClient
         CacheEntityKind.SealCategory => new(sealCategorySparql, $"seal-category-{key}"),
         CacheEntityKind.Operator => new(operatorSparql, $"operator-{key}"),
         CacheEntityKind.Battalion => new(battalionSparql, $"battalion-{key}"),
-        CacheEntityKind.Change => new(changeSparql, $"change-{key}"),
         _ => null
     };
 
