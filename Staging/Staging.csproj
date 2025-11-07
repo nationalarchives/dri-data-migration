@@ -22,7 +22,6 @@
     <EmbeddedResource Include="Sparql\GetFormalBody.sparql" />
     <EmbeddedResource Include="Sparql\GetGeographicalPlace.sparql" />
     <EmbeddedResource Include="Sparql\GetLegislations.sparql" />
-    <EmbeddedResource Include="Sparql\GetRetention.sparql" />
     <EmbeddedResource Include="Sparql\GetSensitivityReview.sparql" />
     <EmbeddedResource Include="Sparql\GetLanguage.sparql" />
     <EmbeddedResource Include="Sparql\GetSubset.sparql" />

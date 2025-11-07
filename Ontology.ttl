@@ -1015,19 +1015,6 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Legislation has UK legislation".
 
-:retentionHasRetentionRestriction a owl:ObjectProperty, owl:FunctionalProperty;
-	rdfs:domain :Retention;
-	rdfs:range :RetentionRestriction;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Retention has retention restriction".
-
-:retentionRestrictionHasRetention a owl:ObjectProperty, owl:FunctionalProperty;
-	owl:inverseOf :retentionHasRetentionRestriction;
-	rdfs:domain :RetentionRestriction;
-	rdfs:range :Retention;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Retention restriction has retention".
-
 :datedNoteHasDate a owl:ObjectProperty;
 	rdfs:domain :DatedNote;
 	rdfs:range :Date;

@@ -135,7 +135,6 @@ public static class Vocabulary
     public static readonly IUriNode AccessConditionName = new UriNode(new(Namespace, "accessConditionName"));
 
     public static readonly IUriNode RetentionRestrictionHasGroundForRetention = new UriNode(new(Namespace, "retentionRestrictionHasGroundForRetention"));
-    public static readonly IUriNode RetentionRestrictionHasRetention = new UriNode(new(Namespace, "retentionRestrictionHasRetention"));
     public static readonly IUriNode RetentionInstrumentNumber = new UriNode(new(Namespace, "retentionInstrumentNumber"));
     public static readonly IUriNode RetentionInstrumentSignatureDate = new UriNode(new(Namespace, "retentionInstrumentSignatureDate"));
     public static readonly IUriNode RetentionRestrictionReviewDate = new UriNode(new(Namespace, "retentionRestrictionReviewDate"));

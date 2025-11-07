@@ -6,7 +6,6 @@ public enum CacheEntityKind
     SensititvityReview,
     Subset,
     Variation,
-    Retention,
     Language,
     FormalBody,
     Copyright,

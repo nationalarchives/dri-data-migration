@@ -14,7 +14,6 @@ public class CacheClient : ICacheClient
     private readonly string assetSparql;
     private readonly string subsetSparql;
     private readonly string variationSparql;
-    private readonly string retentionSparql;
     private readonly string languageSparql;
     private readonly string formalBodySparql;
     private readonly string copyrightSparql;
@@ -48,7 +47,6 @@ public class CacheClient : ICacheClient
         assetSparql = embedded.GetSparql("GetAsset");
         subsetSparql = embedded.GetSparql("GetSubset");
         variationSparql = embedded.GetSparql("GetVariation");
-        retentionSparql = embedded.GetSparql("GetRetention");
         languageSparql = embedded.GetSparql("GetLanguage");
         formalBodySparql = embedded.GetSparql("GetFormalBody");
         copyrightSparql = embedded.GetSparql("GetCopyright");
@@ -150,7 +148,6 @@ public class CacheClient : ICacheClient
         CacheEntityKind.SensititvityReview => new(srSparql, $"sensititvity-review-{key}"),
         CacheEntityKind.Subset => new(subsetSparql, $"subset-{key}"),
         CacheEntityKind.Variation => new(variationSparql, $"variation-{key}"),
-        CacheEntityKind.Retention => new(retentionSparql, $"retention-{key}"),
         CacheEntityKind.Language => new(languageSparql, $"language-{key}"),
         CacheEntityKind.FormalBody => new(formalBodySparql, $"formal-body-{key}"),
         CacheEntityKind.Copyright => new(copyrightSparql, $"copyright-{key}"),

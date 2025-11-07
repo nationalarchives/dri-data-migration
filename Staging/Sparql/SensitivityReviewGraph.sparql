@@ -22,10 +22,7 @@ construct {
     ?retentionRestriction ex:retentionInstrumentNumber ?retentionInstrumentNumber;
         ex:retentionInstrumentSignatureDate ?retentionInstrumentSignatureDate;
         ex:retentionRestrictionReviewDate ?retentionRestrictionReviewDate;
-        ex:retentionRestrictionHasGroundForRetention ?retentionRestrictionHasGroundForRetention;
-        ex:retentionRestrictionHasRetention ?retention.
-    ?asset ex:assetHasRetention ?retention.
-    ?subset ex:subsetHasRetention ?retention.
+        ex:retentionRestrictionHasGroundForRetention ?retentionRestrictionHasGroundForRetention.
     ?change ex:changeDriId ?changeDriId;
         ex:changeDescription ?changeDescription;
         ex:changeDateTime ?changeDateTime;
@@ -56,11 +53,6 @@ construct {
             optional { ?retentionRestriction ex:retentionInstrumentSignatureDate ?retentionInstrumentSignatureDate }
             optional { ?retentionRestriction ex:retentionRestrictionReviewDate ?retentionRestrictionReviewDate }
             optional { ?retentionRestriction ex:retentionRestrictionHasGroundForRetention ?retentionRestrictionHasGroundForRetention }
-            optional {
-                ?retentionRestriction ex:retentionRestrictionHasRetention ?retention.
-                optional { ?asset ex:assetHasRetention ?retention }
-                optional { ?subset ex:subsetHasRetention ?retention }
-            }
         }
     }
     optional {

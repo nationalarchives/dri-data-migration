@@ -215,30 +215,6 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         {
             graph.Assert(id, Vocabulary.SensitivityReviewHasSensitivityReviewRestriction, restriction);
             graph.Assert(restriction, Vocabulary.SensitivityReviewRestrictionHasRetentionRestriction, retentionRestriction);
-            var asset = graph.GetTriplesWithSubjectPredicate(id, Vocabulary.SensitivityReviewHasAsset).SingleOrDefault()?.Object as IUriNode;
-            if (asset is not null)
-            {
-                var retention = await cacheClient.CacheFetch(CacheEntityKind.Retention, asset.Uri.ToString(), cancellationToken);
-                if (retention is null)
-                {
-                    logger.RetentionNotFound(asset.Uri);
-                    return false;
-                }
-                graph.Assert(retentionRestriction, Vocabulary.RetentionRestrictionHasRetention, retention);
-                graph.Assert(asset, Vocabulary.AssetHasRetention, retention);
-            }
-            var subset = graph.GetSingleUriNode(id, Vocabulary.SensitivityReviewHasSubset);
-            if (subset is not null)
-            {
-                var retention = await cacheClient.CacheFetch(CacheEntityKind.Retention, subset.Uri.ToString(), cancellationToken);
-                if (retention is null)
-                {
-                    logger.RetentionNotFound(subset.Uri);
-                    return false;
-                }
-                graph.Assert(retentionRestriction, Vocabulary.RetentionRestrictionHasRetention, retention);
-                graph.Assert(subset, Vocabulary.SubsetHasRetention, retention);
-            }
         }
         return true;
     }
