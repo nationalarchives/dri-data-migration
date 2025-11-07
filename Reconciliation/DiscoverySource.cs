@@ -50,15 +50,15 @@ public class DiscoverySource(HttpClient httpClient, ILogger<DiscoverySource> log
         .Select(r => new Dictionary<ReconciliationFieldName, object?>()
         {
             [ReconciliationFieldName.Id] = r.Id,
-            [ReconciliationFieldName.VariationName] = r.Title,
+            [ReconciliationFieldName.Name] = r.Title,
             [ReconciliationFieldName.Reference] = r.Reference!.Replace(' ', '/'),
-            [ReconciliationFieldName.OriginStartDate] = r.NumStartDate,
-            [ReconciliationFieldName.OriginEndDate] = r.NumEndDate,
+            [ReconciliationFieldName.CoveringDateStart] = r.NumStartDate,
+            [ReconciliationFieldName.CoveringDateEnd] = r.NumEndDate,
             [ReconciliationFieldName.ClosureStatus] = r.ClosureStatus,
             [ReconciliationFieldName.AccessConditionCode] = r.ClosureType,
-            [ReconciliationFieldName.RetentionBody] = string.Join(';', r.HeldBy),
-            [ReconciliationFieldName.SensitivityReviewDuration] = ToDuration(r.ClosureType, r.ClosureCode),
-            [ReconciliationFieldName.SensitivityReviewEndYear] = ToEndYear(r.ClosureType, r.ClosureCode),
+            [ReconciliationFieldName.HeldBy] = string.Join(';', r.HeldBy),
+            [ReconciliationFieldName.ClosurePeriod] = ToDuration(r.ClosureType, r.ClosureCode),
+            [ReconciliationFieldName.ClosureEndYear] = ToEndYear(r.ClosureType, r.ClosureCode),
             //[ReconciliationFieldName.SensitivityReviewRestrictionReviewDate] = ToDate(r.OpeningDate),
         }).Select(d => d.Where(kv => kv.Value is not null).ToDictionary(kv => kv.Key, kv => kv.Value!));
 

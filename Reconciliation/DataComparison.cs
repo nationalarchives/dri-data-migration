@@ -79,8 +79,8 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
         {
             var stagingIdentifier = stagingRow.ContainsKey(ReconciliationFieldName.Reference) ?
                 stagingRow[ReconciliationFieldName.Reference] as string :
-                stagingRow.ContainsKey(ReconciliationFieldName.ImportLocation) ?
-                stagingRow[ReconciliationFieldName.ImportLocation] as string : string.Empty;
+                stagingRow.ContainsKey(ReconciliationFieldName.Location) ?
+                stagingRow[ReconciliationFieldName.Location] as string : string.Empty;
             var expectedRow = expected.SingleOrDefault(p => SelectIdentifier(p).Equals(SelectIdentifier(stagingRow)));
             var isFolder = stagingRow.ContainsKey(ReconciliationFieldName.FileFolder) ?
                 stagingRow[ReconciliationFieldName.FileFolder] as string == "folder" : false;
@@ -144,5 +144,5 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
     private string? SelectIdentifier(Dictionary<ReconciliationFieldName, object> item) =>
         settings.MapKind == ReconciliationMapType.Discovery ?
                 item[ReconciliationFieldName.Id] as string :
-                item[ReconciliationFieldName.ImportLocation] as string; //TODO: handle null
+                item[ReconciliationFieldName.Location] as string; //TODO: handle null
 }

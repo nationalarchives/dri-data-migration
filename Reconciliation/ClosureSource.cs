@@ -19,9 +19,9 @@ public class ClosureSource(ILogger<ClosureSource> logger, IOptions<Reconciliatio
 
             data.AddRange(preservica.Select(p => Filter(p).Where(kv => kv.Value is not null)
                 .ToDictionary(kv => kv.Key, kv => kv.Value!))
-                .Where(d => !ids.Contains(d[ReconciliationFieldName.ImportLocation] as string))
+                .Where(d => !ids.Contains(d[ReconciliationFieldName.Location] as string))
                 .ToList());
-            ids.AddRange(data.Select(d => d[ReconciliationFieldName.ImportLocation] as string).ToList());
+            ids.AddRange(data.Select(d => d[ReconciliationFieldName.Location] as string).ToList());
         }
 
         return data;
@@ -32,21 +32,21 @@ public class ClosureSource(ILogger<ClosureSource> logger, IOptions<Reconciliatio
         var isFolder = data["folder"] == "folder";
         return new()
         {
-            [ReconciliationFieldName.ImportLocation] = PreservicaExportParser.ToLocation(data["identifier"], settings.Code),
+            [ReconciliationFieldName.Location] = PreservicaExportParser.ToLocation(data["identifier"], settings.Code),
             [ReconciliationFieldName.FileFolder] = PreservicaExportParser.ToText(data, "folder"),
             [ReconciliationFieldName.AccessConditionName] = isFolder ? null : PreservicaExportParser.ToText(data, "closure_type"),
             [ReconciliationFieldName.RetentionType] = isFolder ? null : PreservicaExportParser.ToText(data, "retention_type"),
-            [ReconciliationFieldName.SensitivityReviewDuration] = isFolder ? null : PreservicaExportParser.ToInt(data["closure_period"]),
-            [ReconciliationFieldName.SensitivityReviewRestrictionCalculationStartDate] = isFolder ? null : PreservicaExportParser.ToDate(data["closure_start_date"]),
-            [ReconciliationFieldName.LegislationSectionReference] = isFolder ? null : PreservicaExportParser.ToTextList(data["foi_exemption_code"]),
-            [ReconciliationFieldName.SensitivityReviewDate] = isFolder ? null : PreservicaExportParser.ToDate(data["foi_exemption_asserted"]),
-            [ReconciliationFieldName.RetentionInstrumentNumber] = isFolder ? null : PreservicaExportParser.ToText(data, "RI_number"),
-            [ReconciliationFieldName.RetentionInstrumentSignatureDate] = isFolder ? null : PreservicaExportParser.ToText(data, "RI_signed_date"),
+            [ReconciliationFieldName.ClosurePeriod] = isFolder ? null : PreservicaExportParser.ToInt(data["closure_period"]),
+            [ReconciliationFieldName.ClosureStartDate] = isFolder ? null : PreservicaExportParser.ToDate(data["closure_start_date"]),
+            [ReconciliationFieldName.FoiExemptionReference] = isFolder ? null : PreservicaExportParser.ToTextList(data["foi_exemption_code"]),
+            [ReconciliationFieldName.FoiAssertedDate] = isFolder ? null : PreservicaExportParser.ToDate(data["foi_exemption_asserted"]),
+            [ReconciliationFieldName.InstrumentNumber] = isFolder ? null : PreservicaExportParser.ToText(data, "RI_number"),
+            [ReconciliationFieldName.InstrumentSignedDate] = isFolder ? null : PreservicaExportParser.ToText(data, "RI_signed_date"),
             [ReconciliationFieldName.GroundForRetentionCode] = isFolder ? null : PreservicaExportParser.ToText(data, "retention_justification"),
             [ReconciliationFieldName.IsPublicName] = PreservicaExportParser.ToBool(data, "title_public"),
-            [ReconciliationFieldName.SensitivityReviewSensitiveName] = PreservicaExportParser.ToText(data, "title_alternate"),
+            [ReconciliationFieldName.SensitiveName] = PreservicaExportParser.ToText(data, "title_alternate"),
             [ReconciliationFieldName.IsPublicDescription] = PreservicaExportParser.ToBool(data, "description_public"),
-            [ReconciliationFieldName.SensitivityReviewSensitiveDescription] = PreservicaExportParser.ToText(data, "description_alternate")
+            [ReconciliationFieldName.SensitiveDescription] = PreservicaExportParser.ToText(data, "description_alternate")
         };
     }
 }

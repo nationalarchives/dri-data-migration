@@ -19,9 +19,9 @@ public class MetadataSource(ILogger<MetadataSource> logger, IOptions<Reconciliat
 
             data.AddRange(preservica.Select(p => Filter(p).Where(kv => kv.Value is not null)
                 .ToDictionary(kv => kv.Key, kv => kv.Value!))
-                .Where(d => !ids.Contains(d[ReconciliationFieldName.ImportLocation] as string))
+                .Where(d => !ids.Contains(d[ReconciliationFieldName.Location] as string))
                 .ToList());
-            ids.AddRange(data.Select(d => d[ReconciliationFieldName.ImportLocation] as string).ToList());
+            ids.AddRange(data.Select(d => d[ReconciliationFieldName.Location] as string).ToList());
         }
 
         return data;
@@ -30,8 +30,8 @@ public class MetadataSource(ILogger<MetadataSource> logger, IOptions<Reconciliat
     private Dictionary<ReconciliationFieldName, object?> Filter(Dictionary<string, string> data) =>
         new()
         {
-            [ReconciliationFieldName.ImportLocation] = PreservicaExportParser.ToLocation(data["identifier"], settings.Code),
-            [ReconciliationFieldName.VariationName] = PreservicaExportParser.ToName(data["folder"], data["file_name"]),
+            [ReconciliationFieldName.Location] = PreservicaExportParser.ToLocation(data["identifier"], settings.Code),
+            [ReconciliationFieldName.Name] = PreservicaExportParser.ToName(data["folder"], data["file_name"]),
             [ReconciliationFieldName.FileFolder] = PreservicaExportParser.ToText(data, "folder")
         };
 }
