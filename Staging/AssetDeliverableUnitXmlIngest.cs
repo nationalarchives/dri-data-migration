@@ -83,7 +83,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         AddCourtCases(graph, rdf, id, existing, assetReference, cancellationToken);
         AddWitness(graph, rdf, id, existing, cancellationToken);
 
-        dateIngest.AddOriginDates(graph, rdf, id, doc, existing);
+        dateIngest.AddOriginDates(graph, rdf, id, existing);
 
         await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, id, rdf,
             IngestVocabulary.Language, CacheEntityKind.Language, Vocabulary.AssetHasLanguage,
