@@ -143,7 +143,6 @@ Restart from `Sensitivity review` stage at record 100:
 - tnas: http://nationalarchives.gov.uk/metadata/spatial/
 - tnap: http://nationalarchives.gov.uk/metadata/person/
 - trans: http://nationalarchives.gov.uk/dri/transcription
-- xip: http://www.tessella.com/XIP/v4
 
 ### Access condition
 
@@ -257,8 +256,8 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | tna:witness_list_{Sequence} | ex:inquiryAssetHasInquiryAppearance/ex:inquiryWitnessName |
 | tna:subject_role_{Sequence} | ex:inquiryAssetHasInquiryAppearance/ex:inquiryWitnessAppearanceDescription |
 | tna:session | ex:inquirySessionDescription |
-| xip:CoverageFrom or dcterms:coverage/tna:startDate or dcterms:coverage/tna:fullDate or dcterms:coverage/tna:dateRange | ex:assetHasOriginDateStart or ex:assetHasOriginApproximateDateStart |
-| xip:CoverageTo or dcterms:coverage/tna:endDate or dcterms:coverage/tna:fullDate or dcterms:coverage/tna:dateRange | ex:assetHasOriginDateEnd or ex:assetHasOriginApproximateDateEnd |
+| dcterms:coverage/tna:startDate or dcterms:coverage/tna:fullDate or dcterms:coverage/tna:dateRange | ex:assetHasOriginDateStart or ex:assetHasOriginApproximateDateStart |
+| dcterms:coverage/tna:endDate or dcterms:coverage/tna:fullDate or dcterms:coverage/tna:dateRange | ex:assetHasOriginDateEnd or ex:assetHasOriginApproximateDateEnd |
 | dcterms:language | ex:assetHasLanguage/ex:languageName |
 | trans:counties or tnas:county | ex:assetHasAssociatedGeographicalPlace/ex:geographicalPlaceName |
 | tna:heldBy | ex:assetHasRetention/ex:retentionHasFormalBody/ex:formalBodyName |
