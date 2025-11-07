@@ -56,13 +56,11 @@ public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClien
         { Vocabulary.SensitivityReviewSensitiveDescription.Uri.Segments.Last(), new(ReconciliationFieldName.SensitiveDescription, ToText) },
         { "isPublicName", new(ReconciliationFieldName.IsPublicName, ToRequiredBool) },
         { "isPublicDescription", new(ReconciliationFieldName.IsPublicDescription, ToRequiredBool) },
-        { Vocabulary.SensitivityReviewRestrictionReviewDate.Uri.Segments.Last(), new(ReconciliationFieldName.ReviewDate, ToDateTime) },
         { Vocabulary.SensitivityReviewRestrictionCalculationStartDate.Uri.Segments.Last(), new(ReconciliationFieldName.ClosureStartDate, ToDateTime) },
         { Vocabulary.SensitivityReviewRestrictionDuration.Uri.Segments.Last(), new(ReconciliationFieldName.ClosurePeriod, ToTimeSpan) },
         { Vocabulary.SensitivityReviewRestrictionEndYear.Uri.Segments.Last(), new(ReconciliationFieldName.ClosureEndYear, ToInt) },
         { Vocabulary.LegislationSectionReference.Uri.Segments.Last(), new(ReconciliationFieldName.FoiExemptionReference, ToText) },
         { "retentionBodyName", new(ReconciliationFieldName.HeldBy, ToText) },
-        { Vocabulary.RetentionRestrictionReviewDate.Uri.Segments.Last(), new(ReconciliationFieldName.RetentionReconsiderDate, ToDateTime) },
         { Vocabulary.RetentionInstrumentNumber.Uri.Segments.Last(), new(ReconciliationFieldName.InstrumentNumber, ToInt) },
         { Vocabulary.RetentionInstrumentSignatureDate.Uri.Segments.Last(), new(ReconciliationFieldName.InstrumentSignedDate, ToDateTime) },
         { Vocabulary.GroundForRetentionCode.Uri.Segments.Last(), new(ReconciliationFieldName.GroundForRetentionCode, ToText) }

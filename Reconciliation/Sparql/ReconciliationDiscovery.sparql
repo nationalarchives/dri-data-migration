@@ -4,8 +4,7 @@ select ?assetDriId ?reference ?redactedVariationSequence
     ?variationName
 	?retentionBodyName ?isPublicDescription
     ?startOriginDate ?endOriginDate ?accessConditionCode ?closureStatus
-    ?sensitivityReviewRestrictionReviewDate
-	?sensitivityReviewRestrictionCalculationStartDate
+    ?sensitivityReviewRestrictionCalculationStartDate
     ?sensitivityReviewRestrictionDuration
 	?sensitivityReviewRestrictionEndYear
 where {
@@ -68,7 +67,6 @@ where {
         }
         optional {
             ?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
-            optional { ?restriction ex:sensitivityReviewRestrictionReviewDate ?sensitivityReviewRestrictionReviewDate }
             optional { ?restriction ex:sensitivityReviewRestrictionCalculationStartDate ?sensitivityReviewRestrictionCalculationStartDate }
             optional { ?restriction ex:sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionDuration }
             optional { ?restriction ex:sensitivityReviewRestrictionEndYear ?sensitivityReviewRestrictionEndYear }
