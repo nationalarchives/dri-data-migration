@@ -323,6 +323,7 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | tna:imageSplit | ex:scannedVariationHasImageSplit |
 | tna:imageCrop | ex:scannedVariationHasImageCrop |
 | tna:imageDeskew | ex:scannedVariationHasImageDeskew |
+| tna:curatedTitle | ex:variationAlternativeName |
 | tna:archivistNote/tna:archivistNoteInfo | ex:variationHasDatedNote/ex:archivistNote |
 | tna:archivistNote/tna:archivistNoteDate | ex:variationHasDatedNote/ex:datedNoteHasDate |
 

@@ -1388,6 +1388,14 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation name".
 
+:variationAlternativeName a owl:DatatypeProperty;
+	rdfs:seeAlso rico:title;
+	rdfs:domain :Variation;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :name;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation alternative name".
+
 :variationDriXml a owl:DatatypeProperty;
 	rdfs:domain :Variation;
 	rdfs:range xsd:base64Binary;

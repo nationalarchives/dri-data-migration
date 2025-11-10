@@ -87,6 +87,7 @@ public static class Vocabulary
     public static readonly IUriNode VariationDriManifestationId = new UriNode(new(Namespace, "variationDriManifestationId"));
     public static readonly IUriNode VariationDriXml = new UriNode(new(Namespace, "variationDriXml"));
     public static readonly IUriNode VariationName = new UriNode(new(Namespace, "variationName"));
+    public static readonly IUriNode VariationAlternativeName = new UriNode(new(Namespace, "variationAlternativeName"));
     public static readonly IUriNode VariationNote = new UriNode(new(Namespace, "variationNote"));
     public static readonly IUriNode VariationRelativeLocation = new UriNode(new(Namespace, "variationRelativeLocation"));
     public static readonly IUriNode VariationPhysicalConditionDescription = new UriNode(new(Namespace, "variationPhysicalConditionDescription"));

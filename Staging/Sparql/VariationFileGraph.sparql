@@ -15,6 +15,7 @@ construct {
         ex:scannedVariationHasImageSplit ?scannedVariationHasImageSplit;
         ex:scannedVariationHasImageCrop ?scannedVariationHasImageCrop;
         ex:scannedVariationHasImageDeskew ?scannedVariationHasImageDeskew;
+        ex:variationAlternativeName ?variationAlternativeName;
         <http://purl.org/dc/terms/description> ?dctermsDescription;
         ex:variationHasDatedNote ?datedNote.
     ?datedNote ex:archivistNote ?archivistNote;
@@ -38,6 +39,7 @@ construct {
     optional { ?variation ex:scannedVariationHasImageSplit ?scannedVariationHasImageSplit }
     optional { ?variation ex:scannedVariationHasImageCrop ?scannedVariationHasImageCrop }
     optional { ?variation ex:scannedVariationHasImageDeskew ?scannedVariationHasImageDeskew }
+    optional { ?variation ex:variationAlternativeName ?variationAlternativeName }
     optional { ?variation <http://purl.org/dc/terms/description> ?dctermsDescription }
     optional {
         ?variation ex:variationHasDatedNote ?datedNote.

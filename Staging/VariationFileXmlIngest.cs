@@ -28,6 +28,7 @@ public class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
             [IngestVocabulary.GoogleParentId] = Vocabulary.VariationReferenceParentGoogleId,
             [IngestVocabulary.ScanId] = Vocabulary.ScannerIdentifier,
             [IngestVocabulary.ScanOperator] = Vocabulary.ScannerOperatorIdentifier,
+            [IngestVocabulary.CuratedTitle] = Vocabulary.VariationAlternativeName,
             [IngestVocabulary.DctermsDescription] = IngestVocabulary.DctermsDescription //TODO: remove after checking
         });
         GraphAssert.Integer(logger, graph, id, rdf, IngestVocabulary.Ordinal, Vocabulary.VariationSequence);
