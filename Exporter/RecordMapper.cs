@@ -143,8 +143,8 @@ internal static partial class RecordMapper
             RetentionReconsiderDate = ToDate(sr.RetentionReconsiderDate),
             GroundForRetentionCode = sr.GroundForRetentionCode,
             GroundForRetentionDescription = sr.GroundForRetentionDescription,
-            DigitalFileCount = variations.Count,
             Changes = changes,
+            DigitalFileCount = variations.Count,
             DigitalFiles = files,
             Relationships = relationships
         };

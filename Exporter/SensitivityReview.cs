@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Exporter;
+﻿namespace Exporter;
 
 internal class SensitivityReview
 {
