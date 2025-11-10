@@ -92,6 +92,7 @@ construct {
         ex:variationHasSensitivityReview ?srv;
         ex:variationHasChange ?changeV.
     ?datedNote ex:archivistNote ?archivistNote;
+        ex:archivistNoteAt ?archivistNoteAt;
         ex:datedNoteHasDate ?noteDate.
     ?noteDate ex:year ?datedNoteYear;
         ex:month ?datedNoteMonth;
@@ -405,7 +406,9 @@ construct {
     }
     optional {
         ?asset ex:assetHasVariation ?variation.
-        optional { ?variation ex:variationName ?variationName }
+        optional { ?variation ex:variationAlternativeName ?variationAlternativeName }
+        optional { ?variation ex:variationName ?varName }
+        bind(coalesce(?variationAlternativeName, ?varName) as ?variationName)
         optional { ?variation ex:variationDriManifestationId ?variationDriManifestationId }
         optional { ?variation ex:variationNote ?variationNote }
         optional { ?variation ex:variationRelativeLocation ?variationRelativeLocation }
@@ -419,6 +422,7 @@ construct {
         optional {
             ?variation ex:variationHasDatedNote ?datedNote.
             optional { ?datedNote ex:archivistNote ?archivistNote }
+            optional { ?datedNote ex:archivistNoteAt ?archivistNoteAt }
             optional {
                 ?datedNote ex:datedNoteHasDate ?noteDate.
                 ?noteDate ex:year ?datedNoteYear.
