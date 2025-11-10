@@ -529,8 +529,8 @@ Data is split by variation: redacted and remaining within the asset. Assumption 
 
 Data from the staging triplestore: [query](https://github.com/nationalarchives/dri-data-migration/blob/main/Exporter/Sparql/Export.sparql)
 
-Namespace used in the mapping below:
-- ex: [http://id.example.com/schema/](https://github.com/nationalarchives/dri-data-migration/blob/main/Ontology.ttl)
+Namespace used in the mapping below:\
+ex: [http://id.example.com/schema/](https://github.com/nationalarchives/dri-data-migration/blob/main/Ontology.ttl)
 
 
 | JSON | Staging |
