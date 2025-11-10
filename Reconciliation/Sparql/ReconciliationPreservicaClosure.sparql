@@ -37,6 +37,7 @@ where {
                 ?asset ex:assetHasSubset ?subset;
                     ex:assetHasVariation ?variation.
                 ?variation ex:variationName ?variationName.
+                optional { ?variation ex:variationAlternativeName ?variationAlternativeName }
                 optional { ?asset ex:assetHasRetention/ex:importLocation ?importFolder }
                 optional {
                     ?asset ex:assetHasSensitivityReview ?srA.
@@ -80,7 +81,7 @@ where {
 						}
 					}
                 }
-                bind(concat(coalesce(?importFolder, ?id), '/', ?variationName) as ?importLocation)
+                bind(concat(coalesce(?importFolder, ?id), '/', coalesce(?variationAlternativeName, ?variationName)) as ?importLocation)
                 bind(coalesce(?sensitivityReviewSensitiveNameV, ?sensitivityReviewSensitiveNameA, ?sensitivityReviewSensitiveNameS) as ?sensitivityReviewSensitiveName)
                 bind(coalesce(?sensitivityReviewSensitiveNameV, ?sensitivityReviewSensitiveNameA, ?sensitivityReviewSensitiveNameS) as ?isPublicName)
                 bind(coalesce(?sensitivityReviewSensitiveDescriptionV, ?sensitivityReviewSensitiveDescriptionA, ?sensitivityReviewSensitiveDescriptionS) as ?sensitivityReviewSensitiveDescription)

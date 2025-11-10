@@ -13,9 +13,11 @@ select ?t ?importLocation ?variationName where {
     {
         ?asset ex:assetHasSubset ?subset;
             ex:assetHasVariation ?variation.
-        ?variation ex:variationName ?variationName.
+        ?variation ex:variationName ?varName.
+        optional { ?variation ex:variationAlternativeName ?variationAlternativeName }
         optional { ?asset ex:assetHasRetention/ex:importLocation ?importFolder }
         bind(ex:Variation as ?t)
+        bind(coalesce(?variationAlternativeName, ?varName) as ?variationName)
         bind(concat(coalesce(?importFolder, ?id), '/', ?variationName) as ?importLocation)
     }
 }

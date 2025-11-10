@@ -444,8 +444,8 @@ Data from the staging triplestore: [query](https://github.com/nationalarchives/d
 
 | Name | Source | Staging |
 | --- | --- | --- |
-| Location | identifier | ex:subsetHasRetention/ex:importLocation or series code |
-| Name | file_name | ex:variationName |
+| Location | identifier | (ex:subsetHasRetention/ex:importLocation or series code) or (ex:assetHasRetention/ex:importLocation and (ex:variationAlternativeName or ex:variationName) or series code) |
+| Name | file_name | ex:variationAlternativeName or ex:variationName |
 | FileFolder | folder | rdf:type (ex:Subset or ex:Variation) |
 
 ### Closure CSV
@@ -454,7 +454,7 @@ Data from the staging triplestore: [query](https://github.com/nationalarchives/d
 
 | Name | Source | Staging |
 | --- | --- | --- |
-| Location | identifier | (ex:subsetHasRetention/ex:importLocation or series code) or (ex:assetHasRetention/ex:importLocation or series code and ex:variationName) |
+| Location | identifier | (ex:subsetHasRetention/ex:importLocation or series code) or (ex:assetHasRetention/ex:importLocation or series code and (ex:variationAlternativeName or ex:variationName)) |
 | FileFolder | folder | ex:Subset or ex:Variation |
 | AccessConditionName | closure_type | ex:variationHasSensitivityReview/ex:sensitivityReviewHasAccessCondition/ex:accessConditionName |
 | RetentionType | retention_type | ex:variationHasSensitivityReview/ex:sensitivityReviewHasAccessCondition/ex:accessConditionName |
