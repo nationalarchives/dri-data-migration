@@ -1,7 +1,6 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Globalization;
 using System.Net.Http.Json;
 
 namespace Reconciliation;
@@ -59,7 +58,6 @@ public class DiscoverySource(HttpClient httpClient, ILogger<DiscoverySource> log
             [ReconciliationFieldName.HeldBy] = string.Join(';', r.HeldBy),
             [ReconciliationFieldName.ClosurePeriod] = ToDuration(r.ClosureType, r.ClosureCode),
             [ReconciliationFieldName.ClosureEndYear] = ToEndYear(r.ClosureType, r.ClosureCode),
-            //[ReconciliationFieldName.SensitivityReviewRestrictionReviewDate] = ToDate(r.OpeningDate),
         }).Select(d => d.Where(kv => kv.Value is not null).ToDictionary(kv => kv.Key, kv => kv.Value!));
 
     private static readonly string[] YearDuration = ["D", "U"];
@@ -67,6 +65,4 @@ public class DiscoverySource(HttpClient httpClient, ILogger<DiscoverySource> log
         int.TryParse(txt, out int v) && closureType is not null ? !YearDuration.Contains(closureType) ? v : null : null;
     private static int? ToEndYear(string? closureType, string? txt) =>
         int.TryParse(txt, out int v) && closureType is not null ? YearDuration.Contains(closureType) ? v : null : null;
-    private static DateTimeOffset? ToDate(string? txt) =>
-        DateTimeOffset.TryParseExact(txt, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var v) ? v : null;
 }

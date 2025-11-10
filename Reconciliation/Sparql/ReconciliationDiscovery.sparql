@@ -73,5 +73,5 @@ where {
         }
     }
     bind(coalesce(?sensitivityReviewSensitiveDescriptionV, ?sensitivityReviewSensitiveDescriptionA) as ?isPublicDescription)
-    bind(coalesce(?sensitivityReviewSensitiveNameA, ?sensitivityReviewSensitiveNameA, ?assetName) as ?variationName)
+    bind(coalesce(?sensitivityReviewSensitiveNameV, ?sensitivityReviewSensitiveNameA, ?assetName) as ?variationName)
 }

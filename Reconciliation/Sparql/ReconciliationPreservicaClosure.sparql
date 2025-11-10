@@ -39,7 +39,7 @@ where {
                 ?variation ex:variationName ?variationName.
                 optional { ?asset ex:assetHasRetention/ex:importLocation ?importFolder }
                 optional {
-                    ?asset ex:variationHasSensitivityReview ?srA.
+                    ?asset ex:assetHasSensitivityReview ?srA.
                     filter not exists { ?futureSrA ex:sensitivityReviewHasPastSensitivityReview ?srA }
                     optional {
                         ?srA ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveNameA.
@@ -74,7 +74,7 @@ where {
 							optional { ?retentionRestriction ex:retentionInstrumentNumber ?retentionInstrumentNumber }
 							optional { ?retentionRestriction ex:retentionInstrumentSignatureDate ?retentionInstrumentSignatureDate }
 							optional {
-								?restriction ex:retentionRestrictionHasGroundForRetention ?retentionRestrictionHasGroundForRetention.
+								?retentionRestriction ex:retentionRestrictionHasGroundForRetention ?retentionRestrictionHasGroundForRetention.
 								?retentionRestrictionHasGroundForRetention ex:groundForRetentionCode ?groundForRetentionCode.
 							}
 						}
