@@ -19,6 +19,7 @@ construct {
         <http://purl.org/dc/terms/description> ?dctermsDescription;
         ex:variationHasDatedNote ?datedNote.
     ?datedNote ex:archivistNote ?archivistNote;
+        ex:archivistNoteAt ?archivistNoteAt;
         ex:datedNoteHasDate ?date.
     ?date ex:year ?year;
           ex:month ?month;
@@ -44,6 +45,7 @@ construct {
     optional {
         ?variation ex:variationHasDatedNote ?datedNote.
         optional { ?datedNote ex:archivistNote ?archivistNote }
+        optional { ?datedNote ex:archivistNoteAt ?archivistNoteAt }
         optional {
             ?datedNote ex:datedNoteHasDate ?date.
             optional { ?date ex:year ?year }

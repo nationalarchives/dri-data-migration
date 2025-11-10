@@ -1,5 +1,6 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 
@@ -10,7 +11,7 @@ public class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
     private readonly DateParser dateParser = new(logger);
     private readonly RdfXmlLoader rdfXmlLoader = new(logger);
 
-    public async Task ExtractXmlData(IGraph graph, IGraph existing, INode id, string xml, CancellationToken cancellationToken)
+    public async Task ExtractXmlData(IGraph graph, IGraph existing, IUriNode id, string xml, CancellationToken cancellationToken)
     {
         var rdf = rdfXmlLoader.GetRdf(xml);
         if (rdf is null)
@@ -39,9 +40,7 @@ public class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
 
         AddImageNodes(graph, rdf, id);
 
-        var datedNote = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.VariationHasDatedNote).SingleOrDefault()?.Object ?? CacheClient.NewId;
-        var noteDate = existing.GetTriplesWithSubjectPredicate(datedNote, Vocabulary.DatedNoteHasDate).SingleOrDefault()?.Object ?? CacheClient.NewId;
-        AddDatedNote(graph, rdf, id, datedNote, noteDate); //TODO: could be overengineering
+        AddDatedNote(graph, existing, rdf, id); //TODO: could be overengineering
     }
 
     private void AddImageNodes(IGraph graph, IGraph rdf, INode id)
@@ -106,27 +105,45 @@ public class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
         }
     }
 
-    private void AddDatedNote(IGraph graph, IGraph rdf, INode id, INode datedNode, INode noteDate)
+    private void AddDatedNote(IGraph graph, IGraph existing, IGraph rdf, IUriNode id)
     {
-        var foundNote = rdf.GetTriplesWithPredicate(IngestVocabulary.ArchivistNote).FirstOrDefault()?.Object;
+        var datedNoteNodes = existing.GetUriNodes(id, Vocabulary.VariationHasDatedNote);
+        var foundNote = rdf.GetTriplesWithPredicate(IngestVocabulary.ArchivistNote).SingleOrDefault()?.Object;
         if (foundNote is not null)
         {
-            var info = rdf.GetTriplesWithSubjectPredicate(foundNote, IngestVocabulary.ArchivistNoteInfo).FirstOrDefault()?.Object as ILiteralNode;
+            var info = rdf.GetTriplesWithSubjectPredicate(foundNote, IngestVocabulary.ArchivistNoteInfo).SingleOrDefault()?.Object as ILiteralNode;
             if (info is not null && !string.IsNullOrWhiteSpace(info.Value))
             {
-                graph.Assert(id, Vocabulary.VariationHasDatedNote, datedNode);
-                graph.Assert(datedNode, Vocabulary.ArchivistNote, new LiteralNode(info.Value)); //TODO: review notes to check if can be better modelled
-                var date = rdf.GetTriplesWithSubjectPredicate(foundNote, IngestVocabulary.ArchivistNoteDate).FirstOrDefault()?.Object as ILiteralNode;
+                var datedNote = datedNoteNodes.SingleOrDefault(dn => existing.GetSingleUriNode(dn, Vocabulary.DatedNoteHasDate) is not null) ?? CacheClient.NewId;
+                var noteDate = existing.GetSingleUriNode(datedNote, Vocabulary.DatedNoteHasDate) ?? CacheClient.NewId;
+
+                graph.Assert(id, Vocabulary.VariationHasDatedNote, datedNote);
+                GraphAssert.Text(graph, datedNote, info.Value, Vocabulary.ArchivistNote); //TODO: review notes to check if can be better modelled
+                var date = rdf.GetTriplesWithSubjectPredicate(foundNote, IngestVocabulary.ArchivistNoteDate).SingleOrDefault()?.Object as ILiteralNode;
                 if (date is not null && !string.IsNullOrWhiteSpace(date.Value))
                 {
                     var ymd = dateParser.ParseDate(date.Value);
                     if (ymd.DateKind == DateParser.DateType.Date)
                     {
-                        graph.Assert(datedNode, Vocabulary.DatedNoteHasDate, noteDate);
+                        graph.Assert(datedNote, Vocabulary.DatedNoteHasDate, noteDate);
                         GraphAssert.YearMonthDay(graph, noteDate, ymd.Year, ymd.Month, ymd.Day);
                     }
                 }
             }
         }
+        var curatedDateNote = rdf.GetTriplesWithPredicate(IngestVocabulary.CuratedDateNote).SingleOrDefault()?.Object as ILiteralNode;
+        var curatedDate = rdf.GetTriplesWithPredicate(IngestVocabulary.CuratedDate).SingleOrDefault()?.Object as ILiteralNode;
+        if (curatedDateNote is not null && curatedDate is not null &&
+            !string.IsNullOrWhiteSpace(curatedDateNote.Value) &&
+            !string.IsNullOrWhiteSpace(curatedDate.Value) &&
+            DateTimeOffset.TryParseExact(curatedDate.Value, "yyyy-MM-ddTHH:mm:ssK", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var curatedDt))
+        {
+            var datedNote = datedNoteNodes.SingleOrDefault(dn => existing.GetSingleLiteral(dn, Vocabulary.ArchivistNoteAt) is not null) ?? CacheClient.NewId;
+
+            graph.Assert(id, Vocabulary.VariationHasDatedNote, datedNote);
+            GraphAssert.Text(graph, datedNote, curatedDateNote!.Value, Vocabulary.ArchivistNote);
+            graph.Assert(datedNote, Vocabulary.ArchivistNoteAt, new DateTimeNode(curatedDt));
+        }
     }
+
 }

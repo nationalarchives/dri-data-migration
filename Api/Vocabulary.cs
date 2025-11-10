@@ -170,6 +170,7 @@ public static class Vocabulary
 
     public static readonly IUriNode DatedNoteHasDate = new UriNode(new(Namespace, "datedNoteHasDate"));
     public static readonly IUriNode ArchivistNote = new UriNode(new(Namespace, "archivistNote"));
+    public static readonly IUriNode ArchivistNoteAt = new UriNode(new(Namespace, "archivistNoteAt"));
 
     public static readonly IUriNode Year = new UriNode(new(Namespace, "year"));
     public static readonly IUriNode Month = new UriNode(new(Namespace, "month"));

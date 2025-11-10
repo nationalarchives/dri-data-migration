@@ -44,6 +44,8 @@ public static class IngestVocabulary
     public static readonly IUriNode ItemDescription = new UriNode(new($"{TnaNamespace}itemDescription"));
 
     public static readonly IUriNode Note = new UriNode(new($"{TnaNamespace}note"));
+    public static readonly IUriNode CuratedTitle = new UriNode(new($"{TnaNamespace}curatedTitle"));
+    public static readonly IUriNode CuratedDate = new UriNode(new($"{TnaNamespace}curatedDate"));
     public static readonly IUriNode CuratedDateNote = new UriNode(new($"{TnaNamespace}curatedDateNote"));
     public static readonly IUriNode PhysicalCondition = new UriNode(new($"{TnaNamespace}physicalCondition"));
     public static readonly IUriNode GoogleId = new UriNode(new($"{TnaNamespace}googleId"));

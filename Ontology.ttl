@@ -1653,6 +1653,12 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Archivist note".
 
+:archivistNoteAt a owl:DatatypeProperty;
+	rdfs:domain :DatedNote;
+	rdfs:range xsd:dateTime;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Archivist note at".
+
 :year a owl:DatatypeProperty;
 	rdfs:domain :Date;
 	rdfs:range xsd:gYear;
