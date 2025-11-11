@@ -246,6 +246,7 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | tna:hasRedactedFile | ex:assetHasVariation and ex:redactedVariationSequence |
 | tna:durationMins | ex:filmDuration |
 | tna:webArchiveUrl | ex:assetHasUkGovernmentWebArchive |
+| {Sequence} of the case | ex:courtAssetHasCourtCase/ex:courtCaseSequence |
 | tna:case_id_{Sequence} | ex:courtAssetHasCourtCase/ex:courtCaseReference |
 | tna:case_name_{Sequence} | ex:courtAssetHasCourtCase/ex:courtCaseName |
 | tna:case_summary_{Sequence} | ex:courtAssetHasCourtCase/ex:courtCaseSummary |
@@ -253,6 +254,7 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | tna:case_summary_{Sequence}_reasons_for_judgment | ex:courtAssetHasCourtCase/ex:courtCaseSummaryReasonsForJudgment |
 | tna:hearing_start_date_{Sequence} | ex:courtAssetHasCourtCase/ex:courtCaseHearingStartDate |
 | tna:hearing_end_date_{Sequence} | ex:courtAssetHasCourtCase/ex:courtCaseHearingEndDate |
+| {Sequence} of the inquiry appearance | ex:inquiryAssetHasInquiryAppearance/ex:inquiryAppearanceSequence |
 | tna:witness_list_{Sequence} | ex:inquiryAssetHasInquiryAppearance/ex:inquiryWitnessName |
 | tna:subject_role_{Sequence} | ex:inquiryAssetHasInquiryAppearance/ex:inquiryWitnessAppearanceDescription |
 | tna:session | ex:inquirySessionDescription |
@@ -532,7 +534,6 @@ Data from the staging triplestore: [query](https://github.com/nationalarchives/d
 Namespace used in the mapping below:\
 ex: [http://id.example.com/schema/](https://github.com/nationalarchives/dri-data-migration/blob/main/Ontology.ttl)
 
-
 | JSON | Staging |
 | --- | --- |
 | RecordId | ex:variationDriManifestationId |
@@ -574,10 +575,12 @@ ex: [http://id.example.com/schema/](https://github.com/nationalarchives/dri-data
 | Investigation | ex:investigationName |
 | InquiryHearingDate | ex:inquiryHearingDate |
 | InquirySessionDescription | ex:inquirySessionDescription |
+| InquiryAppearances.Sequence | ex:inquiryAssetHasInquiryAppearance/ex:inquiryAppearanceSequence |
 | InquiryAppearances.WitnessName | ex:inquiryAssetHasInquiryAppearance/ex:inquiryWitnessName |
 | InquiryAppearances.AppearanceDescription | ex:inquiryAssetHasInquiryAppearance/ex:inquiryWitnessAppearanceDescription |
 | CourtSession | ex:courtSessionDescription |
 | CourtSessionDate | ex:courtSessionDate |
+| CourtCases.Sequence | ex:courtAssetHasCourtCase/ex:courtCaseSequence |
 | CourtCases.Name | ex:courtAssetHasCourtCase/ex:courtCaseName |
 | CourtCases.Reference | ex:courtAssetHasCourtCase/ex:courtCaseReference |
 | CourtCases.Summary | ex:courtAssetHasCourtCase/ex:courtCaseSummary |
