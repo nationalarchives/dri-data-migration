@@ -17,10 +17,12 @@ internal static class InquiryAppearanceMapper
         var inquiries = new List<RecordOutput.InquiryAppearance>();
         foreach (var inquiry in appearance)
         {
+            var inquiryWitnessSequence = graph.GetSingleNumber(inquiry, Vocabulary.InquiryWitnessSequence);
             var inquiryWitnessName = graph.GetSingleText(inquiry, Vocabulary.InquiryWitnessName);
             var inquiryWitnessAppearanceDescription = graph.GetSingleText(inquiry, Vocabulary.InquiryWitnessAppearanceDescription);
             inquiries.Add(new()
             {
+                Sequence = inquiryWitnessSequence,
                 WitnessName = inquiryWitnessName,
                 AppearanceDescription = inquiryWitnessAppearanceDescription
             });

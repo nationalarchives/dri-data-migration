@@ -16,6 +16,7 @@ internal static class CourtCaseMapper
         var cases = new List<RecordOutput.CourtCase>();
         foreach (var courtCase in courtCases)
         {
+            var courtCaseSequence = graph.GetSingleNumber(courtCase, Vocabulary.CourtCaseSequence);
             var courtCaseReference = graph.GetSingleText(courtCase, Vocabulary.CourtCaseReference);
             var courtCaseName = graph.GetSingleText(courtCase, Vocabulary.CourtCaseName);
             var courtCaseSummary = graph.GetSingleText(courtCase, Vocabulary.CourtCaseSummary);
@@ -26,6 +27,7 @@ internal static class CourtCaseMapper
 
             cases.Add(new()
             {
+                Sequence = courtCaseSequence,
                 Reference = courtCaseReference,
                 Name = courtCaseName,
                 Summary = courtCaseSummary,

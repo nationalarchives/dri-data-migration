@@ -81,12 +81,14 @@ public class RecordOutput
 
     public class InquiryAppearance
     {
+        public long? Sequence { get; set; }
         public string? WitnessName { get; set; }
         public string? AppearanceDescription { get; set; }
     }
 
     public class CourtCase
     {
+        public long? Sequence { get; set; }
         public string? Name { get; set; }
         public string? Reference { get; set; }
         public string? Summary { get; set; }
