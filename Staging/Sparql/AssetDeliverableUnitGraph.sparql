@@ -103,7 +103,7 @@ construct {
         ex:courtCaseSummaryReasonsForJudgment ?courtCaseSummaryReasonsForJudgment;
         ex:courtCaseHearingStartDate ?courtCaseHearingStartDate;
         ex:courtCaseHearingEndDate ?courtCaseHearingEndDate.
-    ?inquiryAppearance ex:inquiryWitnessSequence ?inquiryWitnessSequence;
+    ?inquiryAppearance ex:inquiryAppearanceSequence ?inquiryAppearanceSequence;
         ex:inquiryWitnessName ?inquiryWitnessName;
         ex:inquiryWitnessAppearanceDescription ?inquiryWitnessAppearanceDescription.
     ?redactedVariation ex:redactedVariationSequence ?redactedVariationSequence
@@ -243,7 +243,7 @@ construct {
     }
     optional {
         ?asset ex:inquiryAssetHasInquiryAppearance ?inquiryAppearance.
-        optional { ?inquiryAppearance ex:inquiryWitnessSequence ?inquiryWitnessSequence }
+        optional { ?inquiryAppearance ex:inquiryAppearanceSequence ?inquiryAppearanceSequence }
         optional { ?inquiryAppearance ex:inquiryWitnessName ?inquiryWitnessName }
         optional { ?inquiryAppearance ex:inquiryWitnessAppearanceDescription ?inquiryWitnessAppearanceDescription }
     }

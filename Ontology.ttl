@@ -1652,11 +1652,11 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Inquiry witness appearance description".
 
-:inquiryWitnessSequence a owl:DatatypeProperty;
+:inquiryAppearanceSequence a owl:DatatypeProperty;
 	rdfs:domain :InquiryAppearance;
 	rdfs:range xsd:integer;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Inquiry witness sequence".
+	rdfs:label "Inquiry appearance sequence".
 
 :archivistNote a owl:DatatypeProperty;
 	rdfs:seeAlso rico:note;

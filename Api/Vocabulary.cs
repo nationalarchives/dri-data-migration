@@ -168,7 +168,7 @@ public static class Vocabulary
 
     public static readonly IUriNode InquiryWitnessName = new UriNode(new(Namespace, "inquiryWitnessName"));
     public static readonly IUriNode InquiryWitnessAppearanceDescription = new UriNode(new(Namespace, "inquiryWitnessAppearanceDescription"));
-    public static readonly IUriNode InquiryWitnessSequence = new UriNode(new(Namespace, "inquiryWitnessSequence"));
+    public static readonly IUriNode InquiryAppearanceSequence = new UriNode(new(Namespace, "inquiryAppearanceSequence"));
 
     public static readonly IUriNode DatedNoteHasDate = new UriNode(new(Namespace, "datedNoteHasDate"));
     public static readonly IUriNode ArchivistNote = new UriNode(new(Namespace, "archivistNote"));

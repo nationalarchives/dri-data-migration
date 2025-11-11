@@ -242,7 +242,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
                 var witnessId = existing.GetTriplesWithPredicateObject(Vocabulary.InquiryWitnessName, new LiteralNode(witnessNode.Value))
                     .SingleOrDefault(t => existing.ContainsTriple(new Triple(t.Subject, Vocabulary.InquiryWitnessAppearanceDescription, new LiteralNode(foundDescription.Value))))?.Subject as IUriNode
                     ?? CacheClient.NewId;
-                GraphAssert.Integer(graph, witnessId, witnessIndex, Vocabulary.InquiryWitnessSequence);
+                GraphAssert.Integer(graph, witnessId, witnessIndex, Vocabulary.InquiryAppearanceSequence);
                 GraphAssert.Text(graph, witnessId, witnessNode.Value, Vocabulary.InquiryWitnessName); //TODO: check if can be split
                 GraphAssert.Text(graph, witnessId, foundDescription.Value, Vocabulary.InquiryWitnessAppearanceDescription);
                 graph.Assert(id, Vocabulary.InquiryAssetHasInquiryAppearance, witnessId);
