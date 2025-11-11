@@ -95,14 +95,16 @@ construct {
         ex:secondDimensionMillimetre ?obverseSecondDimensionMillimetre.
     ?reverseDimension ex:firstDimensionMillimetre ?reverseFirstDimensionMillimetre;
         ex:secondDimensionMillimetre ?reverseSecondDimensionMillimetre.
-    ?courtCase ex:courtCaseReference ?courtCaseReference;
+    ?courtCase ex:courtCaseSequence ?courtCaseSequence;
+        ex:courtCaseReference ?courtCaseReference;
         ex:courtCaseName ?courtCaseName;
         ex:courtCaseSummary ?courtCaseSummary;
         ex:courtCaseSummaryJudgment ?courtCaseSummaryJudgment;
         ex:courtCaseSummaryReasonsForJudgment ?courtCaseSummaryReasonsForJudgment;
         ex:courtCaseHearingStartDate ?courtCaseHearingStartDate;
         ex:courtCaseHearingEndDate ?courtCaseHearingEndDate.
-    ?inquiryAppearance ex:inquiryWitnessName ?inquiryWitnessName;
+    ?inquiryAppearance ex:inquiryWitnessSequence ?inquiryWitnessSequence;
+        ex:inquiryWitnessName ?inquiryWitnessName;
         ex:inquiryWitnessAppearanceDescription ?inquiryWitnessAppearanceDescription.
     ?redactedVariation ex:redactedVariationSequence ?redactedVariationSequence
 } where {
@@ -230,6 +232,7 @@ construct {
     }
     optional {
         ?asset ex:courtAssetHasCourtCase ?courtCase.
+        optional { ?courtCase ex:courtCaseSequence ?courtCaseSequence }
         optional { ?courtCase ex:courtCaseReference ?courtCaseReference }
         optional { ?courtCase ex:courtCaseName ?courtCaseName }
         optional { ?courtCase ex:courtCaseSummary ?courtCaseSummary }
@@ -240,6 +243,7 @@ construct {
     }
     optional {
         ?asset ex:inquiryAssetHasInquiryAppearance ?inquiryAppearance.
+        optional { ?inquiryAppearance ex:inquiryWitnessSequence ?inquiryWitnessSequence }
         optional { ?inquiryAppearance ex:inquiryWitnessName ?inquiryWitnessName }
         optional { ?inquiryAppearance ex:inquiryWitnessAppearanceDescription ?inquiryWitnessAppearanceDescription }
     }

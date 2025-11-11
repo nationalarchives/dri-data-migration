@@ -1632,6 +1632,12 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Court case hearing end date".
 
+:courtCaseSequence a owl:DatatypeProperty;
+	rdfs:domain :CourtCase;
+	rdfs:range xsd:integer;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Court case sequence".
+
 :inquiryWitnessName a owl:DatatypeProperty;
 	rdfs:domain :InquiryAppearance;
 	rdfs:subPropertyOf :name;
@@ -1645,6 +1651,12 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Inquiry witness appearance description".
+
+:inquiryWitnessSequence a owl:DatatypeProperty;
+	rdfs:domain :InquiryAppearance;
+	rdfs:range xsd:integer;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Inquiry witness sequence".
 
 :archivistNote a owl:DatatypeProperty;
 	rdfs:seeAlso rico:note;
