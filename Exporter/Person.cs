@@ -12,6 +12,6 @@ internal class Person
     public string? SeamanServiceNumber { get; set; }
     public string? BattalionName { get; set; }
     public string? NextOfKinName { get; set; }
-    public IEnumerable<string>? NextOfKinType { get; set; }
+    public IEnumerable<string>? NextOfKinTypes { get; set; }
     public bool? IsVeteran { get; set; }
 }

@@ -44,7 +44,7 @@ internal static class PersonMapper
             IsVeteran = veteran is not null ? true : null,
             NationalRegistrationNumber = nationalRegistrationNumber,
             NextOfKinName = nextOfKinName,
-            NextOfKinType = kins,
+            NextOfKinTypes = kins,
             SeamanServiceNumber = seamanServiceNumber
         };
     }

@@ -144,7 +144,6 @@ internal static partial class RecordMapper
             RetentionReconsiderDate = ToDate(sr.RetentionReconsiderDate),
             GroundForRetentionCode = sr.GroundForRetentionCode,
             GroundForRetentionDescription = sr.GroundForRetentionDescription,
-            Changes = changes,
             Address = person?.Address,
             BattalionName = person?.BattalionName,
             BirthAddress = person?.BirthAddress,
@@ -155,8 +154,9 @@ internal static partial class RecordMapper
             IsVeteran = person?.IsVeteran,
             NationalRegistrationNumber = person?.NationalRegistrationNumber,
             NextOfKinName = person?.NextOfKinName,
-            NextOfKinType = person?.NextOfKinType,
+            NextOfKinTypes = person?.NextOfKinTypes,
             SeamanServiceNumber = person?.SeamanServiceNumber,
+            Changes = changes,
             DigitalFileCount = variations.Count,
             DigitalFiles = files,
             Relationships = relationships
