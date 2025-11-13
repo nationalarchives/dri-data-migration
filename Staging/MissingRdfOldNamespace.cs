@@ -55,7 +55,7 @@ internal class MissingRdfOldNamespace(ILogger logger)
                 continue;
             }
             var clonedChild = (XmlElement)child.CloneNode(true);
-            Repair(doc, clonedChild, blankNode, false);
+            MalformedRdfRepair.Repair(doc, clonedChild, blankNode, false);
             description.AppendChild(clonedChild);
         }
         missingRdf.AppendChild(description);
@@ -68,58 +68,4 @@ internal class MissingRdfOldNamespace(ILogger logger)
         return missingRdf;
     }
 
-    private static void Repair(XmlDocument doc, XmlElement node, XmlAttribute blankNode, bool isParentBlankNode)
-    {
-        bool markedBlankNode = false;
-        var isBlankNode = node.ChildNodes.OfType<XmlElement>().Count() > 1 &&
-            (node.ParentNode is null || node.ParentNode.OfType<XmlElement>().Count() > 1);
-        var isPartOfBlankNode = node.ParentNode is not null && node.ParentNode.OfType<XmlElement>().Count() > 1 &&
-            node.ChildNodes.OfType<XmlElement>().Any();
-        var isEmbeddedBlankNode = isParentBlankNode && node.ChildNodes.OfType<XmlElement>().Any();
-        if (isBlankNode || isPartOfBlankNode || isEmbeddedBlankNode)
-        {
-            markedBlankNode = true;
-            node.Attributes.Append((XmlAttribute)blankNode.Clone());
-        }
-        var allowedAttributes = new List<XmlAttribute>();
-        if (node.Attributes?.Count > 0)
-        {
-            foreach (var attr in node.Attributes.OfType<XmlAttribute>())
-            {
-                if (attr.Name == "type")
-                {
-                    XmlAttribute typedAttr;
-                    if (markedBlankNode)
-                    {
-                        typedAttr = doc.CreateAttribute("rdf:ID", NamespaceMapper.RDF);
-                    }
-                    else
-                    {
-                        typedAttr = doc.CreateAttribute("rdf:datatype", NamespaceMapper.RDF);
-                    }
-                    typedAttr.Value = string.IsNullOrWhiteSpace(attr.Value) ?
-                        "Undefined" : attr.Value.Trim().Replace(" & ", "_").Replace(" and ", "_")
-                        .Replace("; ", "_").Replace(", ", "_").Replace(' ', '-')
-                        .Replace('(', '-').Replace(')', '-').Replace('\'', '-');
-                    allowedAttributes.Add(typedAttr);
-                }
-                else
-                {
-                    if (!attr.Name.StartsWith("xsi:"))
-                    {
-                        allowedAttributes.Add(attr);
-                    }
-                }
-            }
-            node.RemoveAllAttributes();
-            foreach (var attr in allowedAttributes)
-            {
-                node.Attributes.Append(attr);
-            }
-        }
-        foreach (var childNode in node.ChildNodes.OfType<XmlElement>())
-        {
-            Repair(doc, childNode, blankNode, markedBlankNode);
-        }
-    }
 }

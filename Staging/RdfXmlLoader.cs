@@ -8,7 +8,6 @@ namespace Staging;
 internal class RdfXmlLoader(ILogger logger)
 {
     private readonly MissingRdfOldNamespace missingRdfOldNamespace = new(logger);
-    private readonly MalformedRdfMissingCoverageType malformedRdfMissingCoverageType = new(logger);
 
     internal IGraph? GetRdf(string xml)
     {
@@ -22,35 +21,47 @@ internal class RdfXmlLoader(ILogger logger)
     {
         var namespaceManager = new XmlNamespaceManager(doc.NameTable);
         namespaceManager.AddNamespace("rdf", NamespaceMapper.RDF);
-        var rdfNode = doc.DocumentElement?.SelectSingleNode("descendant::rdf:RDF", namespaceManager);
-        if (rdfNode is null)
-        {
-            rdfNode = missingRdfOldNamespace.GetRdfNode(doc);
-        }
+        var rdfNode = doc.DocumentElement?.SelectSingleNode("descendant::rdf:RDF", namespaceManager) as XmlElement;
+        rdfNode ??= missingRdfOldNamespace.GetRdfNode(doc);
         if (rdfNode is not null)
         {
-            var rdf = new Graph
-            {
-                BaseUri = new Uri("http://example.com")
-            };
-            rdf.NamespaceMap.AddNamespace("tna", IngestVocabulary.TnaNamespace);
-            var rdfXml = rdfNode.OuterXml.Replace("rdf:datetype", "rdf:datatype");
-            try
-            {
-                new RdfXmlParser().Load(rdf, new StringReader(rdfXml));
-                return rdf;
-            }
-            catch (RdfParseException e)
-            {
-                logger.MalformedRdf(e);
-                return malformedRdfMissingCoverageType.GetRdf(rdfNode, rdf);
-            }
-            catch (Exception e)
-            {
-                logger.UnableLoadRdf(e.Message);
-                return null;
-            }
+            return ParseRdf(doc, rdfNode, false);
         }
         return null;
+    }
+
+    private Graph? ParseRdf(XmlDocument doc, XmlElement rdfNode, bool requiresRepairing)
+    {
+        var graph = new Graph
+        {
+            BaseUri = new Uri("http://example.com")
+        };
+        graph.NamespaceMap.AddNamespace("tna", IngestVocabulary.TnaNamespace);
+        try
+        {
+            var rdfXml = (requiresRepairing?
+                MalformedRdfRepair.GetRepairedRdf(doc):rdfNode)
+                ?.OuterXml.Replace("rdf:datetype", "rdf:datatype");
+            if (string.IsNullOrWhiteSpace(rdfXml))
+            {
+                return null;
+            }
+            new RdfXmlParser().Load(graph, new StringReader(rdfXml));
+            return graph;
+        }
+        catch (RdfParseException e)
+        {
+            logger.MalformedRdf(e);
+            if (requiresRepairing)
+            {
+                return null;
+            }
+            return ParseRdf(doc, rdfNode, true);
+        }
+        catch (Exception e)
+        {
+            logger.UnableLoadRdf(e.Message);
+            return null;
+        }
     }
 }
