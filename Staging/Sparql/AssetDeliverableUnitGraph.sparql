@@ -56,7 +56,8 @@ construct {
         ex:sealAssetHasReverseEndDate ?sealReverseEndDate;
         ex:courtAssetHasCourtCase ?courtCase;
         ex:inquiryAssetHasInquiryAppearance ?inquiryAppearance;
-        ex:assetHasVariation ?redactedVariation.
+        ex:assetHasVariation ?redactedVariation;
+        ex:assetHasPerson ?person.
     ?retention ex:retentionHasFormalBody ?retentionHasFormalBody.
     ?creation ex:creationHasFormalBody ?creationHasFormalBody.
     ?originDateStart ex:year ?startYear;
@@ -106,7 +107,12 @@ construct {
     ?inquiryAppearance ex:inquiryAppearanceSequence ?inquiryAppearanceSequence;
         ex:inquiryWitnessName ?inquiryWitnessName;
         ex:inquiryWitnessAppearanceDescription ?inquiryWitnessAppearanceDescription.
-    ?redactedVariation ex:redactedVariationSequence ?redactedVariationSequence
+    ?redactedVariation ex:redactedVariationSequence ?redactedVariationSequence.
+    ?person ex:personFamilyName ?personFamilyName;
+        ex:personGivenName ?personGivenName;
+        ex:seamanServiceNumber ?seamanServiceNumber;
+        ex:personDateOfBirth ?personDateOfBirth;
+        ex:personHasBirthAddress ?personHasBirthAddress.
 } where {
     bind(@id as ?assetDriId)
     ?asset ex:assetDriId ?assetDriId.
@@ -250,5 +256,13 @@ construct {
     optional {
         ?asset ex:assetHasVariation ?redactedVariation.
         ?redactedVariation ex:redactedVariationSequence ?redactedVariationSequence.
+    }
+    optional {
+        ?asset ex:assetHasPerson ?person.
+        optional { ?person ex:personFamilyName ?personFamilyName }
+        optional { ?person ex:personGivenName ?personGivenName }
+        optional { ?person ex:seamanServiceNumber ?seamanServiceNumber }
+        optional { ?person ex:personDateOfBirth ?personDateOfBirth }
+        optional { ?person ex:personHasBirthAddress ?personHasBirthAddress }
     }
 }

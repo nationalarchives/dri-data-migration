@@ -86,6 +86,12 @@ public static class IngestVocabulary
     public static readonly IUriNode TransRelatedMaterial = new UriNode(new($"{TransNamespace}relatedMaterial"));
     public static readonly IUriNode AdditionalInformation = new UriNode(new($"{TransNamespace}additionalInformation"));
     public static readonly IUriNode Face = new UriNode(new($"{TransNamespace}face"));
+    public static readonly IUriNode OfficialNumber = new UriNode(new($"{TransNamespace}officialNumber"));
+    public static readonly IUriNode Surname = new UriNode(new($"{TransNamespace}surname"));
+    public static readonly IUriNode Forenames = new UriNode(new($"{TransNamespace}forenames"));
+    public static readonly IUriNode PlaceOfBirth = new UriNode(new($"{TransNamespace}placeOfBirth"));
+    public static readonly IUriNode BirthDate = new UriNode(new($"{TransNamespace}birthDate"));
+    public static readonly IUriNode TransDate = new UriNode(new($"{TransNamespace}date"));
 
     public static readonly IUriNode County = new UriNode(new(TnaNamespaceWithSlash, "spatial/county"));
     public static readonly IUriNode Address = new UriNode(new(TnaNamespaceWithSlash, "spatial/address"));

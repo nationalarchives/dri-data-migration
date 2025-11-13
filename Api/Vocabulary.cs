@@ -209,6 +209,7 @@ public static class Vocabulary
     public static readonly IUriNode PersonFamilyName = new UriNode(new(Namespace, "personFamilyName"));
     public static readonly IUriNode PersonDateOfBirth = new UriNode(new(Namespace, "personDateOfBirth"));
     public static readonly IUriNode NationalRegistrationNumber = new UriNode(new(Namespace, "nationalRegistrationNumber"));
+    public static readonly IUriNode SeamanServiceNumber = new UriNode(new(Namespace, "seamanServiceNumber"));
     public static readonly IUriNode PersonHasBattalionMembership = new UriNode(new(Namespace, "personHasBattalionMembership"));
     public static readonly IUriNode PersonHasContactPoint = new UriNode(new(Namespace, "personHasContactPoint"));
     public static readonly IUriNode PersonHasBirthAddress = new UriNode(new(Namespace, "personHasBirthAddress"));

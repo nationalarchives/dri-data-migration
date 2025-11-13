@@ -39,6 +39,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             [IngestVocabulary.BatchIdentifier] = Vocabulary.BatchDriId,
             [IngestVocabulary.TdrConsignmentRef] = Vocabulary.ConsignmentTdrId,
             [IngestVocabulary.Description] = Vocabulary.AssetDescription,
+            [IngestVocabulary.DctermsDescription] = Vocabulary.AssetDescription,
             [IngestVocabulary.ContentManagementSystemContainer] = Vocabulary.AssetDescription,
             [IngestVocabulary.Summary] = Vocabulary.AssetDescription,
             [IngestVocabulary.AdditionalInformation] = Vocabulary.AssetDescription,
@@ -80,8 +81,8 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         await AddVariationRelationsAsync(graph, rdf, id, doc, filesJson, cancellationToken);
         AddFilmDuration(graph, rdf, id);
         AddWebArchive(graph, rdf, id);
-        AddCourtCases(graph, rdf, id, existing, assetReference, cancellationToken);
-        AddWitness(graph, rdf, id, existing, cancellationToken);
+        AddCourtCases(graph, rdf, id, existing, assetReference);
+        AddWitness(graph, rdf, id, existing);
 
         dateIngest.AddOriginDates(graph, rdf, id, existing);
 
@@ -110,6 +111,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         await AddCopyrightAsync(graph, rdf, id, cancellationToken);
         AddLegalStatus(graph, rdf, id);
         await sealIngest.AddSealAsync(graph, rdf, existing, id, cancellationToken);
+        await AddPersonAsync(graph, rdf, id, existing, cancellationToken);
     }
 
     private static void AddNames(IGraph graph, XmlDocument doc, IUriNode id)
@@ -214,16 +216,16 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         }
     }
 
-    private void AddWitness(IGraph graph, IGraph rdf, INode id, IGraph existing, CancellationToken cancellationToken)
+    private void AddWitness(IGraph graph, IGraph rdf, INode id, IGraph existing)
     {
         var found = false;
         var witnessIndex = 1;
-        var foundWitness = FetchWitnessId(graph, rdf, id, existing, witnessIndex, cancellationToken); //TODO: check if names could be split on ',' and 'and' and turned into entities
+        var foundWitness = FetchWitnessId(graph, rdf, id, existing, witnessIndex); //TODO: check if names could be split on ',' and 'and' and turned into entities
         while (foundWitness is not null)
         {
             found = true;
             witnessIndex++;
-            foundWitness = FetchWitnessId(graph, rdf, id, existing, witnessIndex, cancellationToken);
+            foundWitness = FetchWitnessId(graph, rdf, id, existing, witnessIndex);
         }
         if (found)
         {
@@ -231,7 +233,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         }
     }
 
-    private static IUriNode? FetchWitnessId(IGraph graph, IGraph rdf, INode id, IGraph existing, int witnessIndex, CancellationToken cancellationToken)
+    private static IUriNode? FetchWitnessId(IGraph graph, IGraph rdf, INode id, IGraph existing, int witnessIndex)
     {
         var foundWitness = rdf.GetTriplesWithPredicate(new UriNode(new($"{IngestVocabulary.TnaNamespace}witness_list_{witnessIndex}"))).SingleOrDefault()?.Object;
         if (foundWitness is ILiteralNode witnessNode && !string.IsNullOrWhiteSpace(witnessNode.Value))
@@ -254,11 +256,11 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         return null;
     }
 
-    private void AddCourtCases(IGraph graph, IGraph rdf, INode id, IGraph existing, string assetReference, CancellationToken cancellationToken)
+    private void AddCourtCases(IGraph graph, IGraph rdf, INode id, IGraph existing, string assetReference)
     {
         var found = false;
         var caseIndex = 1;
-        var courtCase = FetchCourtCaseId(graph, rdf, id, existing, caseIndex, assetReference, cancellationToken);
+        var courtCase = FetchCourtCaseId(graph, rdf, id, existing, caseIndex, assetReference);
         while (courtCase is not null)
         {
             found = true;
@@ -276,7 +278,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             });
 
             caseIndex++;
-            courtCase = FetchCourtCaseId(graph, rdf, id, existing, caseIndex, assetReference, cancellationToken);
+            courtCase = FetchCourtCaseId(graph, rdf, id, existing, caseIndex, assetReference);
         }
         if (found)
         {
@@ -284,7 +286,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         }
     }
 
-    private IUriNode? FetchCourtCaseId(IGraph graph, IGraph rdf, INode id, IGraph existing, int caseIndex, string assetReference, CancellationToken cancellationToken)
+    private IUriNode? FetchCourtCaseId(IGraph graph, IGraph rdf, INode id, IGraph existing, int caseIndex, string assetReference)
     {
         var foundCase = rdf.GetTriplesWithPredicate(new UriNode(new($"{IngestVocabulary.TnaNamespace}case_id_{caseIndex}"))).SingleOrDefault()?.Object;
         if (foundCase is ILiteralNode caseNode && !string.IsNullOrWhiteSpace(caseNode.Value))
@@ -342,6 +344,41 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             else
             {
                 graph.Assert(id, Vocabulary.AssetHasLegalStatus, statusType);
+            }
+        }
+    }
+
+    private async Task AddPersonAsync(IGraph graph, IGraph rdf, INode id, IGraph existing, CancellationToken cancellationToken)
+    {
+        var surname = rdf.GetTriplesWithPredicate(IngestVocabulary.Surname).SingleOrDefault()?.Object;
+        if (surname is ILiteralNode surnameNode && !string.IsNullOrWhiteSpace(surnameNode.Value))
+        {
+            var person = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasPerson).SingleOrDefault()?.Object as IUriNode
+                ?? CacheClient.NewId;
+            graph.Assert(id, Vocabulary.AssetHasPerson, person);
+            GraphAssert.Text(graph, person, rdf, new Dictionary<IUriNode, IUriNode>
+            {
+                [IngestVocabulary.Surname] = Vocabulary.PersonFamilyName,
+                [IngestVocabulary.Forenames] = Vocabulary.PersonGivenName,
+                [IngestVocabulary.OfficialNumber] = Vocabulary.SeamanServiceNumber
+            });
+
+            var birth = rdf.GetTriplesWithPredicate(IngestVocabulary.BirthDate).SingleOrDefault()?.Object;
+            if (birth is not null)
+            {
+                var birthDate = rdf.GetTriplesWithSubjectPredicate(birth, IngestVocabulary.TransDate).SingleOrDefault()?.Object as ILiteralNode;
+                if (birthDate is not null && DateParser.TryParseDate(birthDate.Value, out var birthDt))
+                {
+                    graph.Assert(person, Vocabulary.PersonDateOfBirth, new DateNode(new DateTimeOffset((int)birthDt!.Year!, (int)birthDt!.Month!, (int)birthDt!.Day!, 0, 0, 0, TimeSpan.Zero)));
+                }
+            }
+
+            var placeOfBirth = rdf.GetTriplesWithPredicate(IngestVocabulary.PlaceOfBirth).SingleOrDefault()?.Object as ILiteralNode;
+            if (placeOfBirth is ILiteralNode placeOfBirthNode && !string.IsNullOrWhiteSpace(placeOfBirthNode.Value))
+            {
+                var birthAddress = await cacheClient.CacheFetchOrNew(CacheEntityKind.GeographicalPlace,
+                    placeOfBirth.Value, Vocabulary.GeographicalPlaceName, cancellationToken);
+                graph.Assert(person, Vocabulary.PersonHasBirthAddress, birthAddress);
             }
         }
     }

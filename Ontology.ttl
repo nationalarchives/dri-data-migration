@@ -321,6 +321,11 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Veteran".
 
+:Seaman a owl:Class;
+	rdfs:subClassOf :Person;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Seaman".
+
 :NextOfKinRelationship a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Next of kin relationship".
@@ -1784,6 +1789,13 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "National registration number".
+
+:seamanServiceNumber a owl:DatatypeProperty;
+	rdfs:domain :Seaman;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Seaman service number".
 
 :battalionName a owl:DatatypeProperty;
 	rdfs:domain :Battalion;
