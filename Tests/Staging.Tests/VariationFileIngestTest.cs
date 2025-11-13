@@ -105,7 +105,7 @@ public sealed class VariationFileIngestTest
         existing.Assert(date, Vocabulary.Year, new LiteralNode("1999", new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
         existing.Assert(date, Vocabulary.Month, new LiteralNode("--01", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
         existing.Assert(date, Vocabulary.Day, new LiteralNode("---02", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
-        existing.Assert(id, IngestVocabulary.DctermsDescription, new LiteralNode("Temporary description to be removed"));
+        existing.Assert(id, IngestVocabulary.Description, new LiteralNode("Temporary description to be removed"));
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
@@ -146,7 +146,7 @@ public sealed class VariationFileIngestTest
         existing.Assert(date, Vocabulary.Year, new LiteralNode("2001", new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
         existing.Assert(date, Vocabulary.Month, new LiteralNode("--09", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
         existing.Assert(date, Vocabulary.Day, new LiteralNode("---30", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
-        existing.Assert(id, IngestVocabulary.DctermsDescription, new LiteralNode("Temporary description to be removed"));
+        existing.Assert(id, IngestVocabulary.Description, new LiteralNode("Temporary description to be removed"));
         
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
