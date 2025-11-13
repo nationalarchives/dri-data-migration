@@ -269,6 +269,11 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | trans:typeOfSeal | ex:sealAssetHasSealCategory/ex:sealCategoryName |
 | trans:dateOfOriginalSeal | ex:sealAssetHasStartDate or ex:sealAssetHasObverseStartDate or ex:sealAssetHasReverseStartDate or ex:sealAssetHasEndDate or ex:sealAssetHasObverseEndDate or ex:sealAssetHasReverseEndDate |
 | trans:dimensions | ex:assetHasDimension or ex:sealAssetHasObverseDimension or ex:sealAssetHasReverseDimension or {any of the previous}/(ex:firstDimensionMillimetre\|ex:secondDimensionMillimetre) |
+| trans:surname | ex:assetHasPerson/ex:personFamilyName |
+| trans:forenames | ex:assetHasPerson/ex:personGivenName |
+| trans:officialNumber | ex:assetHasPerson/ex:seamanServiceNumber |
+| trans:birthDate/trans:date | ex:assetHasPerson/ex:personDateOfBirth |
+| trans:placeOfBirth | ex:personHasBirthAddress/ex:geographicalPlaceName |
 
 #### Sequence step 8
 
@@ -624,6 +629,18 @@ ex: [http://id.example.com/schema/](https://github.com/nationalarchives/dri-data
 | RetentionReconsiderDate | ex:assetHasVariation/ex:variationHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionRestrictionReviewDate |
 | GroundForRetentionCode | ex:assetHasVariation/ex:variationHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionRestrictionHasGroundForRetention/ex:GroundForRetentionCode |
 | GroundForRetentionDescription | ex:assetHasVariation/ex:variationHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionRestrictionHasGroundForRetention/ex:GroundForRetentionDescription |
+| Address | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personHasContactPoint/ex:geographicalPlaceName |
+| BattalionName | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personHasBattalionMembership/ex:battalionMembershipHasBattalion/ex:battalionName |
+| BirthAddress | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personHasBirthAddress/ex:geographicalPlaceName |
+| DateOfBirth | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personDateOfBirth |
+| FamilyName | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personFamilyName |
+| FullName | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personFullName |
+| GivenName | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personGivenName |
+| IsVeteran | ex:assetHasVeteran exists |
+| NationalRegistrationNumber | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:nationalRegistrationNumber |
+| NextOfKinName | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personHasNextOfKinRelationship/ex:nextOfKinRelationshipHasNextOfKin/ex:personFullName |
+| NextOfKinTypes | Last URI segments of (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personHasNextOfKinRelationship/ex:nextOfKinRelationshipHasKinship |
+| SeamanServiceNumber | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:seamanServiceNumber |
 | Changes.DriId | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeDriId |
 | Changes.DescriptionBase64 | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeDescription |
 | Changes.Timestamp | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeDateTime |
