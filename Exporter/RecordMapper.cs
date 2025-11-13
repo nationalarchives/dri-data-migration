@@ -68,6 +68,7 @@ internal static partial class RecordMapper
         var location = LocationMapper.GetLocation(graph, asset);
         var relationships = RelationMapper.GetRelations(graph, asset, assetReference, redactedVariationSequence);
         var recordId = GetRecordId(graph, variations);
+        var person = PersonMapper.GetIndividual(graph, asset);
 
         return new()
         {
@@ -144,6 +145,18 @@ internal static partial class RecordMapper
             GroundForRetentionCode = sr.GroundForRetentionCode,
             GroundForRetentionDescription = sr.GroundForRetentionDescription,
             Changes = changes,
+            Address = person?.Address,
+            BattalionName = person?.BattalionName,
+            BirthAddress = person?.BirthAddress,
+            DateOfBirth = ToDate(person?.DateOfBirth),
+            FamilyName = person?.FamilyName,
+            FullName = person?.FullName,
+            GivenName = person?.GivenName,
+            IsVeteran = person?.IsVeteran,
+            NationalRegistrationNumber = person?.NationalRegistrationNumber,
+            NextOfKinName = person?.NextOfKinName,
+            NextOfKinType = person?.NextOfKinType,
+            SeamanServiceNumber = person?.SeamanServiceNumber,
             DigitalFileCount = variations.Count,
             DigitalFiles = files,
             Relationships = relationships
