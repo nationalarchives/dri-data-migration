@@ -101,5 +101,15 @@ internal class AssetDeliverableUnitOriginDateIngest(ILogger logger)
                 GraphAssert.YearMonthDay(graph, endNode, yearRange.SecondYear, yearRange.SecondMonth, yearRange.SecondDay);
             }
         }
+        else if (yearRange.DateRangeKind == DateParser.DateRangeType.Approximate)
+        {
+            graph.Assert(id, Vocabulary.AssetHasOriginApproximateDateStart, startNode);
+            GraphAssert.YearMonthDay(graph, startNode, yearRange.FirstYear, yearRange.FirstMonth, yearRange.FirstDay);
+            if (yearRange.SecondYear.HasValue)
+            {
+                graph.Assert(id, Vocabulary.AssetHasOriginApproximateDateEnd, endNode);
+                GraphAssert.YearMonthDay(graph, endNode, yearRange.SecondYear, yearRange.SecondMonth, yearRange.SecondDay);
+            }
+        }
     }
 }

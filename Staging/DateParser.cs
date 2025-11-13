@@ -39,6 +39,11 @@ internal partial class DateParser(ILogger logger)
         {
             return new DateRange(DateRangeType.None);
         }
+        var dateType = trimmedDate.StartsWith("c ") ? DateRangeType.Approximate : DateRangeType.Date;
+        if (dateType == DateRangeType.Approximate)
+        {
+            trimmedDate = trimmedDate.Remove(0, 2);
+        }
 
         bool? isObverse = null;
         if (!string.IsNullOrWhiteSpace(obverseOrReverseText))
@@ -57,16 +62,11 @@ internal partial class DateParser(ILogger logger)
 
         var dateRangeType = isObverse == true ? DateRangeType.Obverse :
                 isObverse == false ? DateRangeType.Reverse :
-                DateRangeType.Date;
+                dateType;
 
         if (TryParseDate(trimmedDate, out var singleDate))
         {
             return new DateRange(dateRangeType, singleDate.Year, singleDate.Month, singleDate.Day);
-        }
-
-        if (int.TryParse(trimmedDate, out var singleYear))
-        {
-            return new DateRange(dateRangeType, singleYear);
         }
 
         var singleList = new List<Tuple<Regex, DateRangeType>>([
@@ -143,6 +143,7 @@ internal partial class DateParser(ILogger logger)
     {
         None,
         Date,
+        Approximate,
         IdenticalObverseAndReverse,
         Obverse,
         Reverse
