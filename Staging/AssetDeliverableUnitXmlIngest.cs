@@ -39,7 +39,6 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             [IngestVocabulary.BatchIdentifier] = Vocabulary.BatchDriId,
             [IngestVocabulary.TdrConsignmentRef] = Vocabulary.ConsignmentTdrId,
             [IngestVocabulary.Description] = Vocabulary.AssetDescription,
-            [IngestVocabulary.DctermsDescription] = Vocabulary.AssetDescription,
             [IngestVocabulary.ContentManagementSystemContainer] = Vocabulary.AssetDescription,
             [IngestVocabulary.Summary] = Vocabulary.AssetDescription,
             [IngestVocabulary.AdditionalInformation] = Vocabulary.AssetDescription,
