@@ -333,7 +333,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
                 "Public_Record(s)" or "Public_record" or "Public_Record" or "PublicRecord" =>
                     Vocabulary.PublicRecord,
                 "Welsh_Public_Record(s)" or "Welsh_Public_Record" => Vocabulary.WelshPublicRecord,
-                "Not_Public_Record(s)" => Vocabulary.NotPublicRecord,
+                "Not_Public_Record(s)" or "Not_Public_Record" => Vocabulary.NotPublicRecord,
                 _ => null
             };
             if (statusType is null)
