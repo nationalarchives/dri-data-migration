@@ -46,6 +46,10 @@ public class ChangeIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, 
         {
             GraphAssert.Text(graph, person, dri.FullName, Vocabulary.OperatorName);
         }
+        else
+        {
+            GraphAssert.Text(graph, person, existing, Vocabulary.OperatorName, Vocabulary.OperatorName);
+        }
 
         return graph;
     }
