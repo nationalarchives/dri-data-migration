@@ -1,7 +1,0 @@
-﻿@model (string, ICollection<Models.DateYmd>)
-
-@if (Model.Item2.Any() && Model.Item2.Single().Year.Any())
-{
-    <dt>@Model.Item1</dt>
-    <dd>@Model.Item2.Single().ToDate()</dd>
-}

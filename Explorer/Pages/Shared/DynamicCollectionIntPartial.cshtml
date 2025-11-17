@@ -1,7 +1,0 @@
-﻿@model (string, ICollection<long?>)
-
-@if (Model.Item2.Any())
-{
-    <dt>@Model.Item1</dt>
-    <dd>@Model.Item2.Single()</dd>
-}
