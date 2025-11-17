@@ -47,6 +47,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Staging.Tests", "Tests\Stag
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exporter", "Exporter\Exporter.csproj", "{D897555B-9EEA-4B4F-A68B-7A365C6CA471}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{30EF5BD8-79F6-46D9-9899-6D57735DAC52}"
+	ProjectSection(SolutionItems) = preProject
+		docs\etl-mapping.md = docs\etl-mapping.md
+		docs\etl.md = docs\etl.md
+		docs\export-mapping.md = docs\export-mapping.md
+		docs\export.md = docs\export.md
+		docs\reconciliation-mapping.md = docs\reconciliation-mapping.md
+		docs\reconciliation.md = docs\reconciliation.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -110,6 +120,7 @@ Global
 		{81336E91-4833-428D-BACA-E6B371E25E5E} = {31D45123-7C5B-41BC-9934-B2574F6D9792}
 		{78FB1E75-1A14-4FD4-BD33-79EFD8F42036} = {31D45123-7C5B-41BC-9934-B2574F6D9792}
 		{7A9A9356-210C-4DEA-890B-323D196C6FE9} = {31D45123-7C5B-41BC-9934-B2574F6D9792}
+		{30EF5BD8-79F6-46D9-9899-6D57735DAC52} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {27E75E5F-DA13-4B25-8732-47D7924D00D4}
