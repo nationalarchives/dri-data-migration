@@ -8,36 +8,36 @@ public class ProgramCommandLineProvider : ConfigurationProvider
 {
     private static readonly Option<string> reference = new("--reference", "-ref")
     {
-        Description = "Catalogue reference",
+        Description = "Specifies the reference identifier for the catalogue.",
         Arity = ArgumentArity.ExactlyOne,
         Required = true
     };
     private static readonly Option<string> sql = new("--sql")
     {
-        Description = "SQLite connection. Defaults to 'Data Source=dri.sqlite;Mode=ReadOnly'.",
+        Description = "Defines the SQLite connection string.",
         DefaultValueFactory = _ => "Data Source=dri.sqlite;Mode=ReadOnly",
         Arity = ArgumentArity.ExactlyOne,
         Required = true
     };
     private static readonly Option<Uri> driSparql = new("--dri-sparql", "-ds")
     {
-        Description = "DRI query SPARQL endpoint. Defaults to 'http://localhost:7200/repositories/dri'.",
+        Description = "Sets the SPARQL endpoint for querying the DRI repository.",
         DefaultValueFactory = _ => new Uri("http://localhost:7200/repositories/dri"),
         Arity = ArgumentArity.ExactlyOne,
-        Required = true,
+        Required = false,
         CustomParser = UriArgumentParser()
     };
     private static readonly Option<Uri> sparql = new("--sparql", "-sq")
     {
-        Description = "Staging query SPARQL endpoint. Defaults to 'http://localhost:7200/repositories/staging'.",
+        Description = "Sets the SPARQL endpoint for querying the staging repository.",
         DefaultValueFactory = _ => new Uri("http://localhost:7200/repositories/staging"),
         Arity = ArgumentArity.ExactlyOne,
-        Required = true,
+        Required = false,
         CustomParser = UriArgumentParser()
     };
     private static readonly Option<Uri> sparqlUpdate = new("--sparql-update", "-su")
     {
-        Description = "Staging update SPARQL endpoint. Defaults to 'http://localhost:7200/repositories/staging/statements'.",
+        Description = "Sets the SPARQL endpoint for updating the staging repository.",
         DefaultValueFactory = a => new Uri("http://localhost:7200/repositories/staging/statements"),
         Arity = ArgumentArity.ZeroOrOne,
         Required = false,
@@ -45,39 +45,39 @@ public class ProgramCommandLineProvider : ConfigurationProvider
     };
     private static readonly Option<int> pageSize = new("--page-size", "-ps")
     {
-        Description = "Allows to provide the page size for queries that needs paging. Defaults to 500.",
+        Description = "Specifies the number of records per page for paginated queries.",
         DefaultValueFactory = _ => 500,
         Arity = ArgumentArity.ZeroOrOne,
         Required = false
     };
     private static readonly Option<EtlStageType?> restartFromStage = new("--restart-from-stage", "-rfs")
     {
-        Description = "Additional option, designed to by used in the restart scenario. Allows to specify the starting migration stage.",
+        Description = "Used in restart scenarios to specify the migration stage to resume from.",
         Arity = ArgumentArity.ZeroOrOne,
         Required = false
     };
     private static readonly Option<int> restartFromOffset = new("--restart-from-offset", "-rfo")
     {
-        Description = "Additional option, designed to by used in the restart scenario. When migration command is used, it requires --restart-from-stage option. Defaults to 0.",
+        Description = "Used in restart scenarios to specify the pagination stage to resume from. Required when running migration and using the --restart-from-stage option.",
         DefaultValueFactory = _ => 0,
         Arity = ArgumentArity.ZeroOrOne,
         Required = false
     };
-    private static readonly Option<IEnumerable<string>> fileLocation = new("--exported-file", "-ef")
+    private static readonly Option<IEnumerable<string>> fileLocation = new("--reconciliation-file", "-rf")
     {
-        Description = "Location of the exported file.",
+        Description = "Defines the location of the reconciliation file.",
         Arity = ArgumentArity.ZeroOrMore,
         Required = false
     };
     private static readonly Option<ReconciliationMapType> mapType = new("--mapping", "-mp")
     {
-        Description = "Mapping used to retrieve values from the exported file or Discovery API. Acceptable values: 'Discover', 'Metadata' or 'Closure'.",
+        Description = "Defines the type of reconciliation.",
         Arity = ArgumentArity.ExactlyOne,
         Required = true
     };
     private static readonly Option<string> discoveryRecordsUri = new("--discovery-uri", "-du")
     {
-        Description = "URI of the Discovery API search records endpoint. Defaults to 'https://discovery.nationalarchives.gov.uk/API/search/v1/records'",
+        Description = "Specifies the URI for the Discovery API search records endpoint. Default: https://discovery.nationalarchives.gov.uk/API/search/v1/records.",
         DefaultValueFactory = _ => "https://discovery.nationalarchives.gov.uk/API/search/v1/records",
         Arity = ArgumentArity.ExactlyOne,
         Required = false
@@ -117,7 +117,7 @@ public class ProgramCommandLineProvider : ConfigurationProvider
         });
 
         MigrateCommand = new Command("migrate", """
-            Performs data migration from a specified source supporting SPARQL 1.1 Protocol.
+            Migrates data from two sources: a SPARQL 1.1-compliant triplestore and an SQLite database.
             """)
         {
             reference,
@@ -131,7 +131,7 @@ public class ProgramCommandLineProvider : ConfigurationProvider
         };
 
         ReconcileCommand = new Command("reconcile", """
-            Performs reconciliation on migrated data in a staging triplestore against provided file.
+            Reconciles migrated data in the staging triplestore against a metadata file, closure file, or Discovery API.
             """)
         {
             reference,
@@ -143,7 +143,7 @@ public class ProgramCommandLineProvider : ConfigurationProvider
         };
 
         ExportCommand = new Command("export", """
-            Performs data export of migrated data into JSON file(s).
+            Exports migrated data to JSON file(s).
             """)
         {
             reference,
@@ -324,13 +324,6 @@ public class ProgramCommandLineProvider : ConfigurationProvider
 
     private void PrintHelp()
     {
-        var root = new RootCommand
-        {
-            MigrateCommand,
-            ReconcileCommand,
-            ExportCommand
-        };
-        root.Parse(args.ToArray()).Invoke();
         MigrateCommand.Parse("-h").Invoke();
         ReconcileCommand.Parse("-h").Invoke();
         ExportCommand.Parse("-h").Invoke();

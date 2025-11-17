@@ -425,12 +425,12 @@ sequenceDiagram
 
 Metadata CSV file:
 ```cmd
-.\Migration.exe reconcile --reference "XYZ 123" --mapping Metadata --exported-file "c:\XYZ\metadata.csv"
+.\Migration.exe reconcile --reference "XYZ 123" --mapping Metadata --reconciliation-file "c:\XYZ\metadata.csv"
 ```
 
 Multiple closure CSV files:
 ```cmd
-.\Migration.exe reconcile --reference "XYZ 123" --mapping Closure --exported-file "c:\XYZ\1\closure.csv" --exported-file "c:\XYZ\2\closure.csv"
+.\Migration.exe reconcile --reference "XYZ 123" --mapping Closure --reconciliation-file "c:\XYZ\1\closure.csv" --reconciliation-file "c:\XYZ\2\closure.csv"
 ```
 
 Discovery API (default URI and custom page size):
