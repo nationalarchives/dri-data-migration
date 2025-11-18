@@ -324,8 +324,12 @@ public class ProgramCommandLineProvider : ConfigurationProvider
 
     private void PrintHelp()
     {
-        MigrateCommand.Parse("-h").Invoke();
-        ReconcileCommand.Parse("-h").Invoke();
-        ExportCommand.Parse("-h").Invoke();
+        var root = new RootCommand
+        {
+            MigrateCommand,
+            ReconcileCommand,
+            ExportCommand
+        };
+        root.Parse(args.ToArray()).Invoke();
     }
 }
