@@ -82,6 +82,13 @@ public class ProgramCommandLineProvider : ConfigurationProvider
         Arity = ArgumentArity.ExactlyOne,
         Required = false
     };
+    private static readonly Option<ExportScopeType?> exportScope = new("--export-scope", "-es")
+    {
+        Description = "Defines the scope of data for export.",
+        DefaultValueFactory = _ => ExportScopeType.JSON,
+        Arity = ArgumentArity.ZeroOrOne,
+        Required = false
+    };
 
     private static Func<System.CommandLine.Parsing.ArgumentResult, Uri?> UriArgumentParser()
     {
@@ -143,10 +150,11 @@ public class ProgramCommandLineProvider : ConfigurationProvider
         };
 
         ExportCommand = new Command("export", """
-            Exports migrated data to JSON file(s).
+            Exports migrated data to JSON and/or XML file(s).
             """)
         {
             reference,
+            exportScope,
             sparql,
             pageSize,
             restartFromOffset
@@ -307,6 +315,10 @@ public class ProgramCommandLineProvider : ConfigurationProvider
             if (parseResult.GetValue(reference) is string code)
             {
                 data.Add($"{ExportSettings.Prefix}:{nameof(ExportSettings.Code)}", code);
+            }
+            if (parseResult.GetValue(exportScope) is ExportScopeType scopeType)
+            {
+                data.Add($"{ExportSettings.Prefix}:{nameof(ExportSettings.ExportScope)}", scopeType.ToString());
             }
             if (parseResult.GetValue(sparql) is Uri uri)
             {

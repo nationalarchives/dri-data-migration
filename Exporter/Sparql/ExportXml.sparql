@@ -1,0 +1,38 @@
+﻿prefix ex: <http://id.example.com/schema/>
+
+construct {
+    ?asset ex:assetReference ?assetReference;
+        ex:assetDriXml ?assetDriXml;
+        ex:wo409SubsetDriXml ?wo409SubsetDriXml;
+        ex:assetHasVariation ?variation.
+    ?variation ex:redactedVariationSequence ?redactedVariationSequence;
+        ex:variationSequence ?variationSequence;
+        ex:variationDriId ?variationDriId;
+        ex:variationDriXml ?variationDriXml.
+} where {
+    ?asset ex:assetReference ?assetReference.
+    {
+        select ?asset where {
+            bind(@id as ?reference)
+            {
+                ?asset ex:assetReference ?reference.
+            }
+            union
+            {
+                ?parentSubset ex:subsetReference ?reference;
+                    ex:subsetHasNarrowerSubset*/ex:subsetHasAsset ?asset.
+            }
+        }
+        order by ?asset
+        limit @limit offset @offset
+    }
+    optional { ?asset ex:assetDriXml ?assetDriXml }
+    optional { ?asset ex:wo409SubsetDriXml ?wo409SubsetDriXml }
+    optional {
+        ?asset ex:assetHasVariation ?variation.
+        optional { ?variation ex:redactedVariationSequence ?redactedVariationSequence }
+        optional { ?variation ex:variationSequence ?variationSequence }
+        optional { ?variation ex:variationDriId ?variationDriId }
+        optional { ?variation ex:variationDriXml ?variationDriXml }
+    }
+}

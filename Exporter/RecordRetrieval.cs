@@ -10,15 +10,18 @@ public class RecordRetrieval(ILogger<RecordRetrieval> logger, IOptions<ExportSet
     IExportSparqlClient sparqlClient) : IRecordRetrieval
 {
     private readonly ExportSettings settings = options.Value;
-    private readonly string sparql = new EmbeddedResource(
+    private readonly string sparqlJson = new EmbeddedResource(
         typeof(RecordRetrieval).Assembly, $"{typeof(RecordRetrieval).Namespace}.Sparql")
-        .GetSparql("Export");
+        .GetSparql("ExportJson");
+    private readonly string sparqlXml = new EmbeddedResource(
+        typeof(RecordRetrieval).Assembly, $"{typeof(RecordRetrieval).Namespace}.Sparql")
+        .GetSparql("ExportXml");
 
-    public async Task<IEnumerable<RecordOutput>> GetAsync(int offset, CancellationToken cancellationToken)
+    public async Task<IEnumerable<RecordOutput>> GetRecordAsync(int offset, CancellationToken cancellationToken)
     {
         logger.GetRecords(offset);
 
-        var graph = await sparqlClient.GetGraphAsync(sparql, new Dictionary<string, object>
+        var graph = await sparqlClient.GetGraphAsync(sparqlJson, new Dictionary<string, object>
         {
             { "id", settings.Code },
             { "limit", settings.FetchPageSize },
@@ -30,29 +33,67 @@ public class RecordRetrieval(ILogger<RecordRetrieval> logger, IOptions<ExportSet
             .SelectMany(s => MapRecords(graph, s!));
     }
 
+    public async Task<IEnumerable<XmlWrapper>> GetXmlAsync(int offset, CancellationToken cancellationToken)
+    {
+        logger.GetXmls(offset);
+
+        var graph = await sparqlClient.GetGraphAsync(sparqlXml, new Dictionary<string, object>
+        {
+            { "id", settings.Code },
+            { "limit", settings.FetchPageSize },
+            { "offset", offset }
+        }, cancellationToken);
+
+        return graph.GetTriplesWithPredicate(Vocabulary.AssetReference)
+            .Select(t => t.Subject as IUriNode)
+            .SelectMany(s => MapXmls(graph, s!));
+    }
+
     private IEnumerable<RecordOutput> MapRecords(IGraph graph, IUriNode subject)
     {
         logger.MappingRecord(subject.Uri);
 
+        var variationSequences = GetVariationSequences(graph, subject);
+        var variationGroups = variationSequences.GroupBy(s => s.Sequence, s => s.Variation);
+
+        foreach (var variationGroup in variationGroups)
+        {
+            var variations = variationGroup.Select(v => v).ToList();
+            yield return RecordMapper.Map(graph, subject, variations, variationGroup.Key);
+        }
+    }
+
+    private List<XmlWrapper> MapXmls(IGraph graph, IUriNode subject)
+    {
+        logger.MappingRecord(subject.Uri);
+
+        var variationSequences = GetVariationSequences(graph, subject);
+        var xmls = new List<XmlWrapper>();
+
+        foreach (var variationSequence in variationSequences)
+        {
+            xmls.AddRange(XmlMapper.Map(graph, subject, variationSequence.Variation,
+                variationSequence.Sequence));
+        }
+
+        return xmls;
+    }
+
+    private List<VariationSequence> GetVariationSequences(IGraph graph, IUriNode subject)
+    {
+        logger.MappingRecord(subject.Uri);
+
         var variations = graph.GetUriNodes(subject, Vocabulary.AssetHasVariation);
-        //ValueTuple used as a workaround for a null key
-        Dictionary<ValueTuple<long?>, List<IUriNode>> variationGroups = [];
+        List<VariationSequence> variationSequences = [];
         foreach (var variation in variations)
         {
             var redactedVariationSequence = graph.GetSingleLiteral(variation, Vocabulary.RedactedVariationSequence)
                 ?.AsValuedNode().AsInteger();
-            var key = ValueTuple.Create(redactedVariationSequence);
-            if (!variationGroups.ContainsKey(key))
-            {
-                variationGroups.Add(key, []);
-            }
-            variationGroups[key].Add(variation);
+            variationSequences.Add(new(redactedVariationSequence, variation));
         }
 
-        foreach (var variationGroup in variationGroups)
-        {
-            yield return RecordMapper.Map(graph, subject, variationGroup.Value,
-                variationGroup.Key.Item1);
-        }
+        return variationSequences;
     }
+
+    private record VariationSequence(long? Sequence, IUriNode Variation);
 }

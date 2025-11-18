@@ -2,5 +2,6 @@
 
 public interface IRecordRetrieval
 {
-    Task<IEnumerable<RecordOutput>> GetAsync(int offset, CancellationToken cancellationToken);
+    Task<IEnumerable<RecordOutput>> GetRecordAsync(int offset, CancellationToken cancellationToken);
+    Task<IEnumerable<XmlWrapper>> GetXmlAsync(int offset, CancellationToken cancellationToken);
 }

@@ -1,12 +1,12 @@
 # Export mapping
 
-Data from the staging database: [query](https://github.com/nationalarchives/dri-data-migration/blob/main/Exporter/Sparql/Export.sparql)
-
 ## Namespaces
 
 ex: [http://id.example.com/schema/](https://github.com/nationalarchives/dri-data-migration/blob/main/Ontology.ttl)
 
 ## JSON
+
+Data from the staging database: [query](https://github.com/nationalarchives/dri-data-migration/blob/main/Exporter/Sparql/ExportJson.sparql)
 
 | JSON | Staging |
 | --- | --- |
@@ -134,3 +134,12 @@ ex: [http://id.example.com/schema/](https://github.com/nationalarchives/dri-data
 | DigitalFiles.ArchivistNotes.Date | ex:assetHasVariation/ex:variationHasDatedNote/(ex:archivistNoteAt or ex:datedNoteHasDate (ex:year, ex:month, ex:day)) |
 | Relationships.Relationship | Depending on existance of ex:assetRelationDescription, ex:assetRelationIdentifier, ex:assetConnectedAssetNote or ex:assetHasVariation/ex:redactedVariationSequence |
 | Relationships.Reference | ex:assetRelationDescription or ex:assetRelationIdentifier or ex:assetConnectedAssetNote or ex:assetReference and ex:assetHasVariation/ex:redactedVariationSequence|
+
+## XML
+
+Data from the staging database: [query](https://github.com/nationalarchives/dri-data-migration/blob/main/Exporter/Sparql/ExportXml.sparql)
+
+Every object associated with the following predicates is written to its own XML file:
+- ex:assetDriXml
+- ex:wo409SubsetDriXml
+- ex:variationDriXml

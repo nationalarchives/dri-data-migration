@@ -4,7 +4,7 @@ using VDS.RDF.Nodes;
 
 namespace Exporter;
 
-internal static partial class RecordMapper
+internal static class RecordMapper
 {
     public static RecordOutput Map(IGraph graph, IUriNode asset,
         List<IUriNode> variations, long? redactedVariationSequence)
@@ -166,10 +166,10 @@ internal static partial class RecordMapper
     private static string? GetRecordId(IGraph graph, List<IUriNode> variations) =>
         variations.Select(v => graph.GetSingleText(v, Vocabulary.VariationDriManifestationId)).FirstOrDefault();
 
-    private static string? BuildIaId(long? redactedSequence, string assetDriId) =>
+    private static string BuildIaId(long? redactedSequence, string assetDriId) =>
         redactedSequence is null ? Guid.Parse(assetDriId).ToString("N") : $"{Guid.Parse(assetDriId):N}_{redactedSequence}";
 
-    private static string? BuildReference(long? redactedSequence, string assetReference) =>
+    internal static string BuildReference(long? redactedSequence, string assetReference) =>
         redactedSequence is null ? assetReference : $"{assetReference}/{redactedSequence}";
 
     internal static DateOnly? ToDate(DateTimeOffset? dt) => dt is null ? null : DateOnly.FromDateTime(dt.Value.Date);
