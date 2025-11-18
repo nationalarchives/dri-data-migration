@@ -118,4 +118,7 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 38, Level = LogLevel.Warning, Message = "Unrecognized {kinship} kinship")]
     internal static partial void UnrecognizedKinship(this ILogger logger, Uri kinship);
+
+    [LoggerMessage(EventId = 31, Level = LogLevel.Warning, Message = "Unable to parse RDF")]
+    internal static partial void UnableParseRdf(this ILogger logger);
 }

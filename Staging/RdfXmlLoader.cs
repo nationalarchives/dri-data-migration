@@ -54,6 +54,7 @@ internal class RdfXmlLoader(ILogger logger)
             logger.MalformedRdf(e);
             if (requiresRepairing)
             {
+                logger.UnableParseRdf();
                 return null;
             }
             return ParseRdf(doc, rdfNode, true);
