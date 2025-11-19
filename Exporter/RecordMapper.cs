@@ -9,8 +9,8 @@ internal static class RecordMapper
     public static RecordOutput Map(IGraph graph, IUriNode asset,
         List<IUriNode> variations, long? redactedVariationSequence)
     {
-        var assetDriId = graph.GetSingleText(asset, Vocabulary.AssetDriId);
-        var assetReference = graph.GetSingleText(asset, Vocabulary.AssetReference);
+        var assetDriId = graph.GetSingleText(asset, Vocabulary.AssetDriId)!;
+        var assetReference = graph.GetSingleText(asset, Vocabulary.AssetReference)!;
         var assetName = graph.GetSingleText(asset, Vocabulary.AssetName);
         var assetAlternativeName = graph.GetSingleText(asset, Vocabulary.AssetAlternativeName);
         var assetPastReference = graph.GetSingleText(asset, Vocabulary.AssetPastReference);
@@ -67,7 +67,7 @@ internal static class RecordMapper
         var copyrightTitles = CopyrightMapper.GetCopyrights(graph, asset);
         var location = LocationMapper.GetLocation(graph, asset);
         var relationships = RelationMapper.GetRelations(graph, asset, assetReference, redactedVariationSequence);
-        var recordId = GetRecordId(graph, variations);
+        var recordId = GetRecordId(graph, variations)!;
         var person = PersonMapper.GetIndividual(graph, asset);
 
         return new()

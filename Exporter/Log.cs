@@ -46,4 +46,16 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 14, Level = LogLevel.Information, Message = "Fetching XMLs at {offset}")]
     internal static partial void GetXmls(this ILogger logger, int offset);
+
+    [LoggerMessage(EventId = 15, Level = LogLevel.Warning, Message = "Unable to map record {asset}")]
+    internal static partial void UnableRecordMap(this ILogger logger, Uri asset);
+
+    [LoggerMessage(EventId = 16, Level = LogLevel.Debug, Message = "Record mapping problem")]
+    internal static partial void RecordMappingProblem(this ILogger logger, Exception e);
+
+    [LoggerMessage(EventId = 17, Level = LogLevel.Warning, Message = "Unable to map XML {variation}")]
+    internal static partial void UnableXmlMap(this ILogger logger, Uri variation);
+
+    [LoggerMessage(EventId = 18, Level = LogLevel.Debug, Message = "XML mapping problem")]
+    internal static partial void XmlMappingProblem(this ILogger logger, Exception e);
 }

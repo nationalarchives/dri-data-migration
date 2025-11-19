@@ -59,7 +59,21 @@ public class RecordRetrieval(ILogger<RecordRetrieval> logger, IOptions<ExportSet
         foreach (var variationGroup in variationGroups)
         {
             var variations = variationGroup.Select(v => v).ToList();
-            yield return RecordMapper.Map(graph, subject, variations, variationGroup.Key);
+            RecordOutput? recordOutput = null;
+            try
+            {
+                recordOutput = RecordMapper.Map(graph, subject, variations, variationGroup.Key);
+            }
+            catch (Exception e)
+            {
+                logger.UnableRecordMap(subject.Uri);
+                logger.RecordMappingProblem(e);
+                continue;
+            }
+            if (recordOutput is not null)
+            {
+                yield return recordOutput;
+            }
         }
     }
 
@@ -72,8 +86,17 @@ public class RecordRetrieval(ILogger<RecordRetrieval> logger, IOptions<ExportSet
 
         foreach (var variationSequence in variationSequences)
         {
-            xmls.AddRange(XmlMapper.Map(graph, subject, variationSequence.Variation,
-                variationSequence.Sequence));
+            try
+            {
+                var xml = XmlMapper.Map(graph, subject, variationSequence.Variation,
+                    variationSequence.Sequence);
+                xmls.AddRange(xml);
+            }
+            catch (Exception e)
+            {
+                logger.UnableXmlMap(variationSequence.Variation.Uri);
+                logger.XmlMappingProblem(e);
+            }
         }
 
         return xmls;
@@ -95,5 +118,5 @@ public class RecordRetrieval(ILogger<RecordRetrieval> logger, IOptions<ExportSet
         return variationSequences;
     }
 
-    private record VariationSequence(long? Sequence, IUriNode Variation);
+    private sealed record VariationSequence(long? Sequence, IUriNode Variation);
 }

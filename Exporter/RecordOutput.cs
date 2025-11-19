@@ -2,9 +2,9 @@
 
 public class RecordOutput
 {
-    public string RecordId { get; set; }
-    public string IaId { get; set; }
-    public string Reference { get; set; }
+    public required string RecordId { get; set; }
+    public required string IaId { get; set; }
+    public required string Reference { get; set; }
     public string? Title { get; set; }
     public string? TranslatedTitle { get; set; }
     public string? PublishedTitle { get; set; }
@@ -119,7 +119,7 @@ public class RecordOutput
 
     public class Change
     {
-        public string DriId { get; set; }
+        public required string DriId { get; set; }
         public string? DescriptionBase64 { get; set; }
         public DateTimeOffset? Timestamp { get; set; }
         public string? OperatorName { get; set; }
@@ -128,7 +128,7 @@ public class RecordOutput
 
     public class Variation
     {
-        public string FileName { get; set; }
+        public required string FileName { get; set; }
         public long? SortOrder { get; set; }
         public long? RedactionSequence { get; set; }
         public string? Note { get; set; }
@@ -153,7 +153,7 @@ public class RecordOutput
 
     public class Legislation
     {
-        public Uri Url { get; set; }
+        public required Uri Url { get; set; }
         public string? Reference { get; set; }
     }
 

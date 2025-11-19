@@ -3,7 +3,7 @@ using VDS.RDF;
 
 namespace Exporter;
 
-internal static partial class LocationMapper
+internal static class LocationMapper
 {
     internal static LocationPath GetLocation(IGraph graph, IUriNode subject)
     {
@@ -28,7 +28,7 @@ internal static partial class LocationMapper
             } while (broader is not null);
         }
 
-        var original = locations.LastOrDefault().Original;
+        var original = locations.LastOrDefault()?.Original;
         List<string> published = [];
         var previous = string.Empty;
         foreach (var location in locations)
@@ -52,7 +52,7 @@ internal static partial class LocationMapper
 
         var sensitive = string.Join('/', published);
 
-        return new(original, sensitive);
+        return new(original!, sensitive);
     }
 
     private static LocationPath GetSubsetLocation(IGraph graph, IUriNode subset)
