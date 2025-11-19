@@ -16,6 +16,7 @@ public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClien
             ReconciliationMapType.Closure => "ReconciliationPreservicaClosure",
             ReconciliationMapType.Discovery => "ReconciliationDiscovery",
             ReconciliationMapType.Metadata => "ReconciliationPreservicaMetadata",
+            _ => throw new MigrationException($"Unrecognized reconciliation map type {mapType}")
         };
         var currentAssembly = typeof(StagingReconciliationClient).Assembly;
         var baseName = $"{typeof(StagingReconciliationClient).Namespace}.Sparql";

@@ -77,13 +77,11 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
         var diffCount = 0;
         foreach (var stagingRow in staging)
         {
-            var stagingIdentifier = stagingRow.ContainsKey(ReconciliationFieldName.Reference) ?
-                stagingRow[ReconciliationFieldName.Reference] as string :
-                stagingRow.ContainsKey(ReconciliationFieldName.Location) ?
-                stagingRow[ReconciliationFieldName.Location] as string : string.Empty;
+
+            var stagingIdentifier = GetStagingIdentifier(stagingRow);
             var expectedRow = expected.SingleOrDefault(p => SelectIdentifier(p).Equals(SelectIdentifier(stagingRow)));
-            var isFolder = stagingRow.ContainsKey(ReconciliationFieldName.FileFolder) ?
-                stagingRow[ReconciliationFieldName.FileFolder] as string == "folder" : false;
+            var isFolder = stagingRow.ContainsKey(ReconciliationFieldName.FileFolder) &&
+                stagingRow[ReconciliationFieldName.FileFolder] as string == "folder";
             if (expectedRow is null)
             {
                 if (isFolder)
@@ -141,8 +139,24 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
         return new ReconciliationSummary(0, 0, missingFilesCount, missingFolderCount, 0);
     }
 
-    private string? SelectIdentifier(Dictionary<ReconciliationFieldName, object> item) =>
+    private static string GetStagingIdentifier(Dictionary<ReconciliationFieldName, object> stagingRow)
+    {
+        if (stagingRow.TryGetValue(ReconciliationFieldName.Reference, out var reference) &&
+            reference is string r)
+        {
+            return r;
+        }
+        if (stagingRow.TryGetValue(ReconciliationFieldName.Location, out var location) &&
+            location is string l)
+        {
+            return l;
+        }
+
+        return string.Empty;
+    }
+
+    private string SelectIdentifier(Dictionary<ReconciliationFieldName, object> item) =>
         settings.MapKind == ReconciliationMapType.Discovery ?
-                item[ReconciliationFieldName.Id] as string :
-                item[ReconciliationFieldName.Location] as string; //TODO: handle null
+                (item[ReconciliationFieldName.Id] as string)! :
+                (item[ReconciliationFieldName.Location] as string)!;
 }

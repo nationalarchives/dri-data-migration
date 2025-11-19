@@ -8,7 +8,7 @@ public class ClosureSource(ILogger<ClosureSource> logger, IOptions<Reconciliatio
 {
     private readonly ReconciliationSettings settings = reconciliationSettings.Value;
 
-    public async Task<List<Dictionary<ReconciliationFieldName, object>>> GetExpectedDataAsync(CancellationToken cancellationToken)
+    public Task<List<Dictionary<ReconciliationFieldName, object>>> GetExpectedDataAsync(CancellationToken cancellationToken)
     {
         var data = new List<Dictionary<ReconciliationFieldName, object>>();
         var ids = new List<string>();
@@ -16,15 +16,24 @@ public class ClosureSource(ILogger<ClosureSource> logger, IOptions<Reconciliatio
         {
             logger.GetReconciliationFile(file);
             var preservica = PreservicaExportParser.Parse(file);
-
-            data.AddRange(preservica.Select(p => Filter(p).Where(kv => kv.Value is not null)
+            var filteredData = preservica.Select(p => Filter(p)
+                .Where(kv => kv.Value is not null)
                 .ToDictionary(kv => kv.Key, kv => kv.Value!))
-                .Where(d => !ids.Contains(d[ReconciliationFieldName.Location] as string))
-                .ToList());
-            ids.AddRange(data.Select(d => d[ReconciliationFieldName.Location] as string).ToList());
+                .Where(d =>
+                {
+                    if (!d.TryGetValue(ReconciliationFieldName.Location, out var location) ||
+                        location is not string id)
+                    {
+                        return false;
+                    }
+                    return !ids.Contains(id);
+                })
+                .ToList();
+            data.AddRange(filteredData);
+            ids.AddRange(filteredData.Select(d => (d[ReconciliationFieldName.Location] as string)!).ToList());
         }
 
-        return data;
+        return Task.FromResult(data);
     }
 
     private Dictionary<ReconciliationFieldName, object?> Filter(Dictionary<string, string> data)

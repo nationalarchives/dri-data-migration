@@ -2,19 +2,19 @@
 
 public class DiscoverySearchRecordsResponse
 {
-    public Record[] Records { get; set; }
+    public required Record[] Records { get; set; }
     public int Count { get; set; }
-    public string NextBatchMark { get; set; }
+    public required string NextBatchMark { get; set; }
 
     public class Record
     {
         public string? AltName { get; set; }
-        public string[] Places { get; set; }
-        public string[] CorpBodies { get; set; }
-        public string[] Taxonomies { get; set; }
+        public string[]? Places { get; set; }
+        public string[]? CorpBodies { get; set; }
+        public string[]? Taxonomies { get; set; }
         public string? FormerReferenceDep { get; set; }
         public string? FormerReferencePro { get; set; }
-        public string[] HeldBy { get; set; }
+        public required string[] HeldBy { get; set; }
         public string? Context { get; set; }
         public string? Content { get; set; }
         public string? URLParameters { get; set; }
