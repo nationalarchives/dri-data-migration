@@ -21,7 +21,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
     };
 
     public async Task ExtractXmlData(IGraph graph, IGraph existing,
-        IUriNode id, string xml, string assetReference, string filesJson,
+        IUriNode id, string xml, string filesJson,
         CancellationToken cancellationToken)
     {
         var doc = new XmlDocument();
@@ -80,7 +80,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         await AddVariationRelationsAsync(graph, rdf, id, doc, filesJson, cancellationToken);
         AddFilmDuration(graph, rdf, id);
         AddWebArchive(graph, rdf, id);
-        AddCourtCases(graph, rdf, id, existing, assetReference);
+        AddCourtCases(graph, rdf, id, existing);
         AddWitness(graph, rdf, id, existing);
 
         dateIngest.AddOriginDates(graph, rdf, id, existing);
@@ -149,6 +149,10 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             var namespaceManager = new XmlNamespaceManager(doc.NameTable);
             namespaceManager.AddNamespace("tna", IngestVocabulary.TnaNamespace.ToString());
             var xmlRedactedFiles = doc.SelectNodes("descendant::tna:hasRedactedFile", namespaceManager);
+            if (xmlRedactedFiles is null)
+            {
+                return;
+            }
             var files = JsonSerializer.Deserialize<List<RelationVariation>>(filesJson, jsonSerializerOptions);
             foreach (var redactedFile in redacted)
             {
@@ -167,7 +171,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
                     var foundFile = false;
                     for (int i = 0; i < xmlRedactedFiles.Count; i++)
                     {
-                        if (xmlRedactedFiles.Item(i).InnerText.Equals(redactedFile.Value))
+                        if (xmlRedactedFiles.Item(i)?.InnerText.Equals(redactedFile.Value) == true)
                         {
                             foundFile = true;
                             GraphAssert.Integer(graph, redactedVariation, i + 1, Vocabulary.RedactedVariationSequence);
@@ -255,11 +259,11 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         return null;
     }
 
-    private void AddCourtCases(IGraph graph, IGraph rdf, INode id, IGraph existing, string assetReference)
+    private void AddCourtCases(IGraph graph, IGraph rdf, INode id, IGraph existing)
     {
         var found = false;
         var caseIndex = 1;
-        var courtCase = FetchCourtCaseId(graph, rdf, id, existing, caseIndex, assetReference);
+        var courtCase = FetchCourtCaseId(graph, rdf, id, existing, caseIndex);
         while (courtCase is not null)
         {
             found = true;
@@ -277,7 +281,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             });
 
             caseIndex++;
-            courtCase = FetchCourtCaseId(graph, rdf, id, existing, caseIndex, assetReference);
+            courtCase = FetchCourtCaseId(graph, rdf, id, existing, caseIndex);
         }
         if (found)
         {
@@ -285,7 +289,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         }
     }
 
-    private IUriNode? FetchCourtCaseId(IGraph graph, IGraph rdf, INode id, IGraph existing, int caseIndex, string assetReference)
+    private IUriNode? FetchCourtCaseId(IGraph graph, IGraph rdf, INode id, IGraph existing, int caseIndex)
     {
         var foundCase = rdf.GetTriplesWithPredicate(new UriNode(new($"{IngestVocabulary.TnaNamespace}case_id_{caseIndex}"))).SingleOrDefault()?.Object;
         if (foundCase is ILiteralNode caseNode && !string.IsNullOrWhiteSpace(caseNode.Value))
@@ -384,7 +388,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
 
     private static string GetPartialPath(string path) => path.Substring(path.LastIndexOf('/') + 1);
 
-    private record RelationVariation(string Id, string Location, string Name);
+    private sealed record RelationVariation(string Id, string Location, string Name);
 
     private static bool HasPathPartialMatch(string fullPath, string partialPath)
     {

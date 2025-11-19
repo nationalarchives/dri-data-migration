@@ -9,9 +9,11 @@ namespace Staging;
 public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<SensitivityReviewIngest> logger) :
     StagingIngest<DriSensitivityReview>(sparqlClient, logger, "SensitivityReviewGraph")
 {
+#pragma warning disable CS8618
     private Dictionary<string, IUriNode> legislations;
     private Dictionary<string, IUriNode> accessConditions;
     private Dictionary<string, IUriNode> groundsForRetention;
+#pragma warning restore CS8618
 
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriSensitivityReview dri, CancellationToken cancellationToken)
     {
@@ -42,7 +44,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         }
 
         var retentionRestriction = existing.GetSingleUriNode(restriction, Vocabulary.SensitivityReviewRestrictionHasRetentionRestriction) ?? CacheClient.NewId;
-        proceed = await AddRetentionRestrictionAsync(graph, id, restriction, retentionRestriction, dri, cancellationToken);
+        proceed = AddRetentionRestriction(graph, id, restriction, retentionRestriction, dri);
         if (!proceed)
         {
             return null;
@@ -181,8 +183,8 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         return true;
     }
 
-    private async Task<bool> AddRetentionRestrictionAsync(Graph graph, IUriNode id, INode restriction, INode retentionRestriction,
-        DriSensitivityReview dri, CancellationToken cancellationToken)
+    private bool AddRetentionRestriction(Graph graph, IUriNode id, INode restriction, INode retentionRestriction,
+        DriSensitivityReview dri)
     {
         var existing = graph.Triples.Count;
 
@@ -239,6 +241,11 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         {
             var operatorId = await cacheClient.CacheFetchOrNew(CacheEntityKind.Operator,
                 dri.ChangeOperatorId, Vocabulary.OperatorIdentifier, cancellationToken);
+            if (operatorId is null)
+            {
+                logger.OperatorNotFound(dri.ChangeOperatorId);
+                return;
+            }
             graph.Assert(change, Vocabulary.ChangeHasOperator, operatorId);
             GraphAssert.Text(graph, operatorId, dri.ChangeOperatorName, Vocabulary.OperatorName);
         }

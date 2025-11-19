@@ -21,7 +21,7 @@ internal partial class DateParser(ILogger logger)
 
         if (TryParseDate(trimmedDate, out var singleDate))
         {
-            return new(dateType, singleDate.Year, singleDate.Month, singleDate.Day);
+            return new(dateType, singleDate!.Year, singleDate!.Month, singleDate!.Day);
         }
 
         logger.UnrecognizedYearMonthDayFormat(dateText);
@@ -66,7 +66,7 @@ internal partial class DateParser(ILogger logger)
 
         if (TryParseDate(trimmedDate, out var singleDate))
         {
-            return new DateRange(dateRangeType, singleDate.Year, singleDate.Month, singleDate.Day);
+            return new DateRange(dateRangeType, singleDate!.Year, singleDate!.Month, singleDate!.Day);
         }
 
         var singleList = new List<Tuple<Regex, DateRangeType>>([

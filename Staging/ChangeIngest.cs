@@ -41,14 +41,21 @@ public class ChangeIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, 
             }
         }
         var person = await cacheClient.CacheFetchOrNew(CacheEntityKind.Operator, dri.UserName, Vocabulary.OperatorIdentifier, cancellationToken);
-        graph.Assert(id, Vocabulary.ChangeHasOperator, person);
-        if (dri.FullName.Contains(' '))
+        if (person is null)
         {
-            GraphAssert.Text(graph, person, dri.FullName, Vocabulary.OperatorName);
+            logger.PersonNotFound(dri.UserName);
         }
         else
         {
-            GraphAssert.Text(graph, person, existing, Vocabulary.OperatorName, Vocabulary.OperatorName);
+            graph.Assert(id, Vocabulary.ChangeHasOperator, person);
+            if (dri.FullName.Contains(' '))
+            {
+                GraphAssert.Text(graph, person, dri.FullName, Vocabulary.OperatorName);
+            }
+            else
+            {
+                GraphAssert.Text(graph, person, existing, Vocabulary.OperatorName, Vocabulary.OperatorName);
+            }
         }
 
         return graph;

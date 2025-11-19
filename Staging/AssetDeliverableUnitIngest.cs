@@ -25,7 +25,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         if (!string.IsNullOrEmpty(dri.Xml))
         {
             GraphAssert.Base64(graph, id, dri.Xml, Vocabulary.AssetDriXml);
-            await xmlIngest.ExtractXmlData(graph, existing, id, dri.Xml, dri.Reference, dri.FilesJson, cancellationToken);
+            await xmlIngest.ExtractXmlData(graph, existing, id, dri.Xml, dri.FilesJson, cancellationToken);
         }
 
         return graph;
