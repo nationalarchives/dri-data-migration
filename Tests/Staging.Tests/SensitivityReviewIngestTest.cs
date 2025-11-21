@@ -45,12 +45,12 @@ public sealed class SensitivityReviewIngestTest
             .ReturnsAsync(new Dictionary<string, IUriNode> { [dri.Legislations.Single().ToString()] = legislation });
         cache.Setup(c => c.GroundsForRetention(CancellationToken.None))
             .ReturnsAsync(new Dictionary<string, IUriNode> { ["gfr1"] = gfr });
-        cache.Setup(c => c.CacheFetchOrNew(CacheEntityKind.SensititvityReview, dri.PreviousId,
+        cache.Setup(c => c.CacheFetchOrNew(CacheEntityKind.SensititvityReview, dri.PreviousId!,
             Vocabulary.SensitivityReviewDriId, CancellationToken.None))
             .ReturnsAsync(previousSr);
         cache.Setup(c => c.CacheFetch(CacheEntityKind.Variation, dri.TargetId, CancellationToken.None))
             .ReturnsAsync(variation);
-        cache.Setup(c => c.CacheFetchOrNew(CacheEntityKind.Operator, dri.ChangeOperatorId,
+        cache.Setup(c => c.CacheFetchOrNew(CacheEntityKind.Operator, dri.ChangeOperatorId!,
                 Vocabulary.OperatorIdentifier, CancellationToken.None))
             .ReturnsAsync(changeOperator);
     }
@@ -120,8 +120,8 @@ public sealed class SensitivityReviewIngestTest
         existing.Assert(retentionRestriction, Vocabulary.RetentionRestrictionHasGroundForRetention, gfr);
         existing.Assert(id, Vocabulary.SensitivityReviewHasChange, change);
         existing.Assert(change, Vocabulary.ChangeDriId, new LiteralNode(dri.ChangeId));
-        existing.Assert(change, Vocabulary.ChangeDescription, new LiteralNode(Convert.ToBase64String(Encoding.UTF8.GetBytes(dri.ChangeDescription)), new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
-        existing.Assert(change, Vocabulary.ChangeDateTime, new DateTimeNode(dri.ChangeTimestamp.Value));
+        existing.Assert(change, Vocabulary.ChangeDescription, new LiteralNode(Convert.ToBase64String(Encoding.UTF8.GetBytes(dri.ChangeDescription!)), new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
+        existing.Assert(change, Vocabulary.ChangeDateTime, new DateTimeNode(dri.ChangeTimestamp!.Value));
         existing.Assert(change, Vocabulary.ChangeHasOperator, changeOperator);
         existing.Assert(changeOperator, Vocabulary.OperatorName, new LiteralNode(dri.ChangeOperatorName));
 
@@ -162,8 +162,8 @@ public sealed class SensitivityReviewIngestTest
         existing.Assert(retentionRestriction, Vocabulary.RetentionRestrictionHasGroundForRetention, gfr);
         existing.Assert(id, Vocabulary.SensitivityReviewHasChange, change);
         existing.Assert(change, Vocabulary.ChangeDriId, new LiteralNode(dri.ChangeId));
-        existing.Assert(change, Vocabulary.ChangeDescription, new LiteralNode(Convert.ToBase64String(Encoding.UTF8.GetBytes(dri.ChangeDescription)), new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
-        existing.Assert(change, Vocabulary.ChangeDateTime, new DateTimeNode(dri.ChangeTimestamp.Value));
+        existing.Assert(change, Vocabulary.ChangeDescription, new LiteralNode(Convert.ToBase64String(Encoding.UTF8.GetBytes(dri.ChangeDescription!)), new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
+        existing.Assert(change, Vocabulary.ChangeDateTime, new DateTimeNode(dri.ChangeTimestamp!.Value));
         existing.Assert(change, Vocabulary.ChangeHasOperator, changeOperator);
         existing.Assert(changeOperator, Vocabulary.OperatorName, new LiteralNode(dri.ChangeOperatorName));
 

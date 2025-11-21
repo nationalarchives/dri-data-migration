@@ -86,7 +86,7 @@ public sealed class SqlExporterTest
         var metadataRef = "Metadata reference asset";
         var data = $"""
             insert into dufile(DELIVERABLEUNITREF, DMETADATAREF, CATALOGUEREFERENCE, Code, FILEREF, FILELOCATION, NAME)
-                values('{dri.Id}', '{metadataRef}', '{dri.Reference}', '{Series}', '{file.Id}', '{file.Location}','{file.Name}');
+                values('{dri.Id}', '{metadataRef}', '{dri.Reference}', '{Series}', '{file?.Id}', '{file?.Location}','{file?.Name}');
             insert into xmlmetadata(METADATAREF, XMLCLOB) values('{metadataRef}', '{dri.Xml}');
         """;
 

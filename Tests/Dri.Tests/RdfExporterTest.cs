@@ -11,8 +11,10 @@ namespace Dri.Tests;
 [TestClass]
 public sealed class RdfExporterTest
 {
+#pragma warning disable CS8618
     private Mock<IDriSparqlClient> sparqlClient;
     private RdfExporter exporter;
+#pragma warning restore CS8618
 
     [TestInitialize]
     public void TestInitialize()
