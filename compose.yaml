@@ -7,7 +7,7 @@ services:
         #https://docs.oracle.com/en/java/javase/21/gctuning/available-collectors.html
         environment:
             GDB_HEAP_SIZE: "30G"
-            GDB_JAVA_OPTS: "-Dgraphdb.page.cache.size=6G -Dgraphdb.query.memory.threshold=4G -Dgraphdb.home=/opt/graphdb/home -XX:+UseSerialGC"
+            GDB_JAVA_OPTS: "-Dgraphdb.page.cache.size=3G -Dgraphdb.query.memory.threshold=18G -Dgraphdb.home=/opt/graphdb/home -XX:+UseSerialGC"
         #Uncomment to start in server mode only
         #command:
         #    - "-s"
