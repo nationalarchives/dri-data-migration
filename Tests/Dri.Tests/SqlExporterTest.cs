@@ -21,9 +21,11 @@ public sealed class SqlExporterTest
             create table tableinvolved
                 (TABLEINVOLVEDREF TEXT, TABLENAME TEXT);
         """;
+#pragma warning disable CS8618
     private SqlExporter exporter;
     private IOptions<DriSettings> options;
     private FakeLogger<SqlExporter> logger;
+#pragma warning restore CS8618
 
     [TestInitialize]
     public void TestInitialize()
@@ -80,7 +82,7 @@ public sealed class SqlExporterTest
     {
         var file = JsonSerializer.Deserialize<List<FileJsonTest>>(
             dri.FilesJson, new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase })
-            .SingleOrDefault();
+            ?.SingleOrDefault();
         var metadataRef = "Metadata reference asset";
         var data = $"""
             insert into dufile(DELIVERABLEUNITREF, DMETADATAREF, CATALOGUEREFERENCE, Code, FILEREF, FILELOCATION, NAME)

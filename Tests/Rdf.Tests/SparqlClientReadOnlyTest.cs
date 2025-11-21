@@ -138,24 +138,24 @@ public sealed class SparqlClientReadOnlyTest
 
     public class SparqlResultResponse
     {
-        public Head head { get; set; }
-        public Results results { get; set; }
+        public required Head head { get; set; }
+        public required Results results { get; set; }
     }
 
     public class Head
     {
-        public string[] vars { get; set; }
+        public required string[] vars { get; set; }
     }
 
     public class Results
     {
-        public Dictionary<string, ResultItem>[] bindings { get; set; }
+        public required Dictionary<string, ResultItem>[] bindings { get; set; }
     }
 
     public class ResultItem
     {
-        public string type { get; set; }
-        public string value { get; set; }
+        public required string type { get; set; }
+        public required string value { get; set; }
     }
 
 }
