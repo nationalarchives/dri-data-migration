@@ -33,14 +33,14 @@ construct {
         ex:operatorName ?changeAgentLabel.
 }
 where {
-    ?closure dri:closureType ?closureType.
     ?record a ?type.
     {
-        select ?closure ?record ?reference where {
+        select ?closure ?closureType ?record ?reference where {
             bind(@id as ?code)
             bind(replace(@id,' ','_') as ?code2)
 
-            ?closure prov:specializationOf ?record.
+            ?closure dri:closureType ?closureType;
+                prov:specializationOf ?record.
             ?record rdfs:label ?reference.
             {
                 ?record ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code.
