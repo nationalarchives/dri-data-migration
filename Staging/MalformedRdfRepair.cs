@@ -70,6 +70,14 @@ internal static class MalformedRdfRepair
                         .Replace('(', '-').Replace(')', '-').Replace('\'', '-');
                     allowedAttributes.Add(typedAttr);
                 }
+                else if (attr.Name == "rdf:resource" && node.ChildNodes.OfType<XmlText>().Any())
+                {
+                    allowedAttributes.Add(attr);
+                    foreach (var textNode in node.ChildNodes.OfType<XmlText>())
+                    {
+                        node.RemoveChild(textNode);
+                    }
+                }
                 else
                 {
                     if (!attr.Name.StartsWith("xsi:"))
