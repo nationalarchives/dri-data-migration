@@ -11,7 +11,7 @@ internal static class XmlMapper
     {
         var wrappers = new List<XmlWrapper>();
         var assetReference = graph.GetSingleText(asset, Vocabulary.AssetReference);
-        var reference = RecordMapper.BuildReference(redactedVariationSequence, assetReference!);
+        var reference = ReferenceBuilder.Build(redactedVariationSequence, assetReference!);
         var assetDriXml = graph.GetSingleLiteral(asset, Vocabulary.AssetDriXml)?.Value;
         if (assetDriXml is not null)
         {

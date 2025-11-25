@@ -74,7 +74,7 @@ internal static class RecordMapper
         {
             RecordId = recordId,
             IaId = BuildIaId(redactedVariationSequence, assetDriId),
-            Reference = BuildReference(redactedVariationSequence, assetReference),
+            Reference = ReferenceBuilder.Build(redactedVariationSequence, assetReference),
             Title = assetName,
             TranslatedTitle = assetAlternativeName,
             PublishedTitle = sr.SensitiveName ?? assetName,
@@ -168,9 +168,6 @@ internal static class RecordMapper
 
     private static string BuildIaId(long? redactedSequence, string assetDriId) =>
         redactedSequence is null ? Guid.Parse(assetDriId).ToString("N") : $"{Guid.Parse(assetDriId):N}_{redactedSequence}";
-
-    internal static string BuildReference(long? redactedSequence, string assetReference) =>
-        redactedSequence is null ? assetReference : $"{assetReference}/{redactedSequence}";
 
     internal static DateOnly? ToDate(DateTimeOffset? dt) => dt is null ? null : DateOnly.FromDateTime(dt.Value.Date);
 }
