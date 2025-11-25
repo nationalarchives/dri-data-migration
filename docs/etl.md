@@ -33,6 +33,7 @@ sequenceDiagram
             IDriRdfExporter-)DRIRDF: Fetch
             IDriRdfExporter-)IEtl: IDriRecord entities
             IEtl-)IStagingIngest: Transform
+            IStagingIngest-)StagingRDF: Fetch existing
             IStagingIngest-)StagingRDF: Load
         end
     else Processing data from the DRI SQL database
@@ -41,6 +42,7 @@ sequenceDiagram
             IDriSqlExporter-)DRIRDF: Fetch
             IDriSqlExporter-)IEtl: IDriRecord entities
             IEtl-)IStagingIngest: Transform
+            IStagingIngest-)StagingRDF: Fetch existing
             IStagingIngest-)StagingRDF: Load
         end
     end
