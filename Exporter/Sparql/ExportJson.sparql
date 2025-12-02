@@ -205,13 +205,16 @@ construct {
         ex:personFamilyName ?personFamilyName;
         ex:personFullName ?personFullName;
         ex:personHasContactPoint ?personHasContactPoint;
-        ex:personDateOfBirth ?personDateOfBirth;
+        ex:personHasDateOfBirth ?dateOfBirth;
         ex:personHasBirthAddress ?personHasBirthAddress;
         ex:nationalRegistrationNumber ?nationalRegistrationNumber;
         ex:seamanServiceNumber ?seamanServiceNumber;
         ex:personHasBattalionMembership ?battalionMembership;
         ex:personHasNextOfKinRelationship ?nextOfKinRelationship.
     ?personHasContactPoint ex:geographicalPlaceName ?personHasContactPointPlaceName.
+    ?dateOfBirth ex:year ?dateOfBirthYear;
+        ex:month ?dateOfBirthMonth;
+        ex:day ?dateOfBirthDay.
     ?personHasBirthAddress ex:geographicalPlaceName ?personHasBirthAddressPlaceName.
     ?battalionMembership ex:battalionMembershipHasBattalion ?battalionMembershipHasBattalion.
     ?battalionMembershipHasBattalion ex:battalionName ?battalionName.
@@ -552,7 +555,12 @@ construct {
             ?person ex:personHasContactPoint ?personHasContactPoint.
             ?personHasContactPoint ex:geographicalPlaceName ?personHasContactPointPlaceName.
         }
-        optional { ?person ex:personDateOfBirth ?personDateOfBirth }
+        optional {
+            ?person ex:personHasDateOfBirth ?dateOfBirth.
+            optional { ?dateOfBirth ex:year ?dateOfBirthYear }
+            optional { ?dateOfBirth ex:month ?dateOfBirthMonth }
+            optional { ?dateOfBirth ex:day ?dateOfBirthDay }
+        }
         optional {
             ?person ex:personHasBirthAddress ?personHasBirthAddress.
             ?personHasBirthAddress ex:geographicalPlaceName ?personHasBirthAddressPlaceName.

@@ -372,7 +372,10 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
                 var birthDate = rdf.GetTriplesWithSubjectPredicate(birth, IngestVocabulary.TransDate).SingleOrDefault()?.Object as ILiteralNode;
                 if (birthDate is not null && DateParser.TryParseDate(birthDate.Value, out var birthDt))
                 {
-                    graph.Assert(person, Vocabulary.PersonDateOfBirth, new DateNode(new DateTimeOffset((int)birthDt!.Year!, (int)birthDt!.Month!, (int)birthDt!.Day!, 0, 0, 0, TimeSpan.Zero)));
+                    var dob = existing.GetTriplesWithSubjectPredicate(person, Vocabulary.PersonHasDateOfBirth).SingleOrDefault()?.Object as IUriNode
+                        ?? CacheClient.NewId;
+                    graph.Assert(person, Vocabulary.PersonHasDateOfBirth, dob);
+                    GraphAssert.YearMonthDay(graph, dob, birthDt!.Year, birthDt!.Month, birthDt!.Day);
                 }
             }
 

@@ -19,7 +19,7 @@ internal static class PersonMapper
         var battalionName = battalionMembership is null ?
             null : graph.GetSingleTransitiveLiteral(battalionMembership, Vocabulary.BattalionMembershipHasBattalion, Vocabulary.BattalionName)?.Value;
         var birthAddress = graph.GetSingleTransitiveLiteral(person, Vocabulary.PersonHasBirthAddress, Vocabulary.GeographicalPlaceName)?.Value;
-        var dateOfBirth = graph.GetSingleDate(person, Vocabulary.PersonDateOfBirth);
+        var dateOfBirth = YmdMapper.GetYmd(graph, person, Vocabulary.PersonHasDateOfBirth);
         var familyName = graph.GetSingleText(person, Vocabulary.PersonFamilyName);
         var fullName = graph.GetSingleText(person, Vocabulary.PersonFullName);
         var givenName = graph.GetSingleText(person, Vocabulary.PersonGivenName);

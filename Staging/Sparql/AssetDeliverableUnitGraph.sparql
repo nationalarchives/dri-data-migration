@@ -111,8 +111,11 @@ construct {
     ?person ex:personFamilyName ?personFamilyName;
         ex:personGivenName ?personGivenName;
         ex:seamanServiceNumber ?seamanServiceNumber;
-        ex:personDateOfBirth ?personDateOfBirth;
+        ex:personHasDateOfBirth ?dateOfBirth;
         ex:personHasBirthAddress ?personHasBirthAddress.
+    ?dateOfBirth ex:year ?dateOfBirthYear;
+        ex:month ?dateOfBirthMonth;
+        ex:day ?dateOfBirthDay.
 } where {
     bind(@id as ?assetDriId)
     ?asset ex:assetDriId ?assetDriId.
@@ -262,7 +265,12 @@ construct {
         optional { ?person ex:personFamilyName ?personFamilyName }
         optional { ?person ex:personGivenName ?personGivenName }
         optional { ?person ex:seamanServiceNumber ?seamanServiceNumber }
-        optional { ?person ex:personDateOfBirth ?personDateOfBirth }
+        optional {
+            ?person ex:personHasDateOfBirth ?dateOfBirth.
+            optional { ?dateOfBirth ex:year ?dateOfBirthYear }
+            optional { ?dateOfBirth ex:month ?dateOfBirthMonth }
+            optional { ?dateOfBirth ex:day ?dateOfBirthDay }
+        }
         optional { ?person ex:personHasBirthAddress ?personHasBirthAddress }
     }
 }

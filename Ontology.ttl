@@ -1057,6 +1057,12 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Person has birth address".
 
+:personHasDateOfBirth a owl:ObjectProperty;
+	rdfs:domain :Person;
+	rdfs:range :Date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Person has date of birth".
+
 :personHasNextOfKinRelationship a owl:ObjectProperty;
 	rdfs:domain :Person;
 	rdfs:range :NextOfKinRelationship;
@@ -1776,12 +1782,6 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Person family name".
-
-:personDateOfBirth a owl:DatatypeProperty;
-	rdfs:domain :Person;
-	rdfs:range xsd:date;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Person date of birth".
 
 :nationalRegistrationNumber a owl:DatatypeProperty;
 	rdfs:domain :Person;

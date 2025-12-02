@@ -207,12 +207,12 @@ public static class Vocabulary
     public static readonly IUriNode PersonFullName = new UriNode(new(Namespace, "personFullName"));
     public static readonly IUriNode PersonGivenName = new UriNode(new(Namespace, "personGivenName"));
     public static readonly IUriNode PersonFamilyName = new UriNode(new(Namespace, "personFamilyName"));
-    public static readonly IUriNode PersonDateOfBirth = new UriNode(new(Namespace, "personDateOfBirth"));
     public static readonly IUriNode NationalRegistrationNumber = new UriNode(new(Namespace, "nationalRegistrationNumber"));
     public static readonly IUriNode SeamanServiceNumber = new UriNode(new(Namespace, "seamanServiceNumber"));
     public static readonly IUriNode PersonHasBattalionMembership = new UriNode(new(Namespace, "personHasBattalionMembership"));
     public static readonly IUriNode PersonHasContactPoint = new UriNode(new(Namespace, "personHasContactPoint"));
     public static readonly IUriNode PersonHasBirthAddress = new UriNode(new(Namespace, "personHasBirthAddress"));
+    public static readonly IUriNode PersonHasDateOfBirth = new UriNode(new(Namespace, "personHasDateOfBirth"));
     public static readonly IUriNode PersonHasNextOfKinRelationship = new UriNode(new(Namespace, "personHasNextOfKinRelationship"));
     public static readonly IUriNode NextOfKinRelationshipHasNextOfKin = new UriNode(new(Namespace, "nextOfKinRelationshipHasNextOfKin"));
     public static readonly IUriNode BattalionMembershipHasBattalion = new UriNode(new(Namespace, "battalionMembershipHasBattalion"));

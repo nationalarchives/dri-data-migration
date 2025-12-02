@@ -73,7 +73,7 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
             graph.Assert(person, Vocabulary.PersonHasContactPoint, contactPoint);
         }
 
-        await AddBirthAsync(graph, rdf, subjectTriple.Object, person, cancellationToken);
+        await AddBirthAsync(graph, existing, rdf, subjectTriple.Object, person, cancellationToken);
         await AddPlaceAsync(graph, existing, rdf, person, cancellationToken);
         AddRelation(graph, existing, rdf, subjectTriple.Object, person);
     }
@@ -104,7 +104,7 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
         return person;
     }
 
-    private async Task AddBirthAsync(IGraph graph, IGraph rdf, INode subjectId,
+    private async Task AddBirthAsync(IGraph graph, IGraph existing, IGraph rdf, INode subjectId,
         IUriNode person, CancellationToken cancellationToken)
     {
         var birth = rdf.GetTriplesWithSubjectPredicate(subjectId, IngestVocabulary.Birth)
@@ -116,7 +116,10 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
             if (birthDate is not null && !string.IsNullOrWhiteSpace(birthDate.Value) &&
                 DateParser.TryParseDate(birthDate.Value, out var birthDt))
             {
-                graph.Assert(person, Vocabulary.PersonDateOfBirth, new DateNode(new DateTimeOffset((int)birthDt!.Year!, (int)birthDt!.Month!, (int)birthDt!.Day!, 0, 0, 0, TimeSpan.Zero)));
+                var dob = existing.GetTriplesWithSubjectPredicate(person, Vocabulary.PersonHasDateOfBirth).SingleOrDefault()?.Object as IUriNode
+                        ?? CacheClient.NewId;
+                graph.Assert(person, Vocabulary.PersonHasDateOfBirth, dob);
+                GraphAssert.YearMonthDay(graph, dob, birthDt!.Year, birthDt!.Month, birthDt!.Day);
             }
             var birthAddress = await GetAddressAsync(rdf, birth, cancellationToken);
             if (birthAddress is not null)

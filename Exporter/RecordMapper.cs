@@ -147,7 +147,7 @@ internal static class RecordMapper
             Address = person?.Address,
             BattalionName = person?.BattalionName,
             BirthAddress = person?.BirthAddress,
-            DateOfBirth = ToDate(person?.DateOfBirth),
+            DateOfBirth = person?.DateOfBirth,
             FamilyName = person?.FamilyName,
             FullName = person?.FullName,
             GivenName = person?.GivenName,

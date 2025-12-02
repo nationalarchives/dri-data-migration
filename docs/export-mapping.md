@@ -101,7 +101,7 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | Address | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personHasContactPoint/ex:geographicalPlaceName |
 | BattalionName | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personHasBattalionMembership/ex:battalionMembershipHasBattalion/ex:battalionName |
 | BirthAddress | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personHasBirthAddress/ex:geographicalPlaceName |
-| DateOfBirth | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personDateOfBirth |
+| DateOfBirth | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personHasDateOfBirth (ex:year, ex:month, ex:day) |
 | FamilyName | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personFamilyName |
 | FullName | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personFullName |
 | GivenName | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personGivenName |

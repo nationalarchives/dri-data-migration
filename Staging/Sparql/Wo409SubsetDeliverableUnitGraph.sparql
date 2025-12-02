@@ -8,11 +8,14 @@ construct {
         ex:personFamilyName ?personFamilyName;
         ex:personFullName ?personFullName;
         ex:personHasContactPoint ?personHasContactPoint;
-        ex:personDateOfBirth ?personDateOfBirth;
+        ex:personHasDateOfBirth ?dateOfBirth;
         ex:personHasBirthAddress ?personHasBirthAddress;
         ex:personHasBattalionMembership ?battalionMembership;
         ex:nationalRegistrationNumber ?nationalRegistrationNumber;
         ex:personHasNextOfKinRelationship ?nextOfKinRelationship.
+    ?dateOfBirth ex:year ?dateOfBirthYear;
+        ex:month ?dateOfBirthMonth;
+        ex:day ?dateOfBirthDay.
     ?battalionMembership ex:battalionMembershipHasBattalion ?battalionMembershipHasBattalion.
     ?nextOfKinRelationship ex:nextOfKinRelationshipHasNextOfKin ?nextOfKinRelationshipHasNextOfKin;
         ex:nextOfKinRelationshipHasKinship ?nextOfKinRelationshipHasKinship.
@@ -35,7 +38,12 @@ construct {
         optional { ?person ex:personFamilyName ?personFamilyName }
         optional { ?person ex:personFullName ?personFullName }
         optional { ?person ex:personHasContactPoint ?personHasContactPoint }
-        optional { ?person ex:personDateOfBirth ?personDateOfBirth }
+        optional {
+            ?person ex:personHasDateOfBirth ?dateOfBirth.
+            optional { ?dateOfBirth ex:year ?dateOfBirthYear }
+            optional { ?dateOfBirth ex:month ?dateOfBirthMonth }
+            optional { ?dateOfBirth ex:day ?dateOfBirthDay }
+        }
         optional { ?person ex:personHasBirthAddress ?personHasBirthAddress }
         optional { ?person ex:nationalRegistrationNumber ?nationalRegistrationNumber }
         optional {

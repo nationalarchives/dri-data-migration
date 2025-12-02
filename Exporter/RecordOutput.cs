@@ -78,7 +78,7 @@ public class RecordOutput
     public string? FamilyName { get; set; }
     public string? FullName { get; set; }
     public string? Address { get; set; }
-    public DateOnly? DateOfBirth { get; set; }
+    public string? DateOfBirth { get; set; }
     public string? BirthAddress { get; set; }
     public string? NationalRegistrationNumber { get; set; }
     public string? SeamanServiceNumber { get; set; }

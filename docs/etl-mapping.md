@@ -140,7 +140,7 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | trans:surname | ex:assetHasPerson/ex:personFamilyName |
 | trans:forenames | ex:assetHasPerson/ex:personGivenName |
 | trans:officialNumber | ex:assetHasPerson/ex:seamanServiceNumber |
-| trans:birthDate/trans:date | ex:assetHasPerson/ex:personDateOfBirth |
+| trans:birthDate/trans:date | ex:assetHasPerson/ex:personHasDateOfBirth |
 | trans:placeOfBirth | ex:personHasBirthAddress/ex:geographicalPlaceName |
 
 ### Sequence step 8
@@ -156,7 +156,7 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | tnap:namePart | (ex:assetHasVeteran\|ex:assetHasPerson)/ex:personFullName or (ex:assetHasVeteran\|ex:assetHasPerson)/ex:personGivenName or (ex:assetHasVeteran\|ex:assetHasPerson)/ex:personFamilyName |
 | tnap:nationalRegistrationNumber | (ex:assetHasVeteran\|ex:assetHasPerson)/ex:nationalRegistrationNumber |
 | dcterms:subject/tnas:address/tnas:addressString | (ex:assetHasVeteran\|ex:assetHasPerson)/ex:personHasContactPoint/ex:geographicalPlaceName |
-| dcterms:subject/tnap:birth/tnap:date | (ex:assetHasVeteran\|ex:assetHasPerson)/ex:personDateOfBirth |
+| dcterms:subject/tnap:birth/tnap:date | (ex:assetHasVeteran\|ex:assetHasPerson)/ex:personHasDateOfBirth |
 | dcterms:subject/tnas:birth/tnas:addressString | (ex:assetHasVeteran\|ex:assetHasPerson)/ex:personHasBirthAddress/ex:geographicalPlaceName |
 | tnas:county and dcterms:references | (ex:assetHasVeteran\|ex:assetHasPerson)/ex:personHasBattalionMembership/ex:battalionMembershipHasBattalion/ex:battalionName |
 | tnap:relation/tnap:person/tnap:name/tnap:nameString | (ex:assetHasVeteran\|ex:assetHasPerson)/ex:personHasNextOfKinRelationship/ex:nextOfKinRelationshipHasNextOfKin/ex:personFullName |
