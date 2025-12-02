@@ -6,9 +6,10 @@ namespace Exporter;
 
 internal static class SensitivityReviewMapper
 {
-    internal static SensitivityReview GetSensitivityReview(IGraph graph, IUriNode subject, List<IUriNode> variations)
+    internal static RecordOutput.SensitivityReview GetSensitivityReview(IGraph graph,
+        IUriNode subject, List<IUriNode> variations, bool hasSameLocation)
     {
-        var sr = new SensitivityReview();
+        var sr = new RecordOutput.SensitivityReview();
         //TODO: Needs rework if past sensitive reviews are to be included
         sr.SensitiveName = graph.GetSingleTransitiveLiteral(subject, Vocabulary.AssetHasSensitivityReview,
             Vocabulary.SensitivityReviewSensitiveName)?.Value;
@@ -31,21 +32,24 @@ internal static class SensitivityReviewMapper
                 Vocabulary.AccessConditionCode)?.Value;
             sr.AccessConditionName = graph.GetSingleTransitiveLiteral(srSubject, Vocabulary.SensitivityReviewHasAccessCondition,
                 Vocabulary.AccessConditionName)?.Value;
-            sr.FoiAssertedDate = graph.GetSingleDate(srSubject, Vocabulary.SensitivityReviewDate);
+            sr.FoiAssertedDate = RecordMapper.ToDate(
+                graph.GetSingleDate(srSubject, Vocabulary.SensitivityReviewDate));
             var restriction = graph.GetTriplesWithSubjectPredicate(srSubject, Vocabulary.SensitivityReviewHasSensitivityReviewRestriction)
                 .SingleOrDefault()?.Object as IUriNode;
             if (restriction is not null)
             {
-                sr.ReviewDate = graph.GetSingleDate(restriction, Vocabulary.SensitivityReviewRestrictionReviewDate);
-                sr.ClosureStartDate = graph.GetSingleDate(restriction, Vocabulary.SensitivityReviewRestrictionCalculationStartDate);
+                sr.ClosureReviewDate = RecordMapper.ToDate(
+                    graph.GetSingleDate(restriction, Vocabulary.SensitivityReviewRestrictionReviewDate));
+                sr.ClosureStartDate = RecordMapper.ToDate(
+                    graph.GetSingleDate(restriction, Vocabulary.SensitivityReviewRestrictionCalculationStartDate));
                 sr.ClosurePeriod = (int?)graph.GetSingleLiteral(restriction, Vocabulary.SensitivityReviewRestrictionDuration)
                     ?.AsValuedNode().AsTimeSpan().TotalDays / 365;
                 var year = graph.GetSingleText(restriction, Vocabulary.SensitivityReviewRestrictionEndYear);
                 if (year is not null && int.TryParse(year, out var endYear))
                 {
-                    sr.EndYear = endYear;
+                    sr.ClosureEndYear = endYear;
                 }
-                sr.Description = graph.GetSingleText(restriction, Vocabulary.SensitivityReviewRestrictionDescription);
+                sr.ClosureDescription = graph.GetSingleText(restriction, Vocabulary.SensitivityReviewRestrictionDescription);
 
                 var legislations = new List<RecordOutput.Legislation>();
                 foreach (var legislation in graph.GetUriNodes(restriction, Vocabulary.SensitivityReviewRestrictionHasLegislation))
@@ -67,8 +71,10 @@ internal static class SensitivityReviewMapper
                 if (retentionRestriction is not null)
                 {
                     sr.InstrumentNumber = graph.GetSingleNumber(retentionRestriction, Vocabulary.RetentionInstrumentNumber);
-                    sr.InstrumentSignedDate = graph.GetSingleDate(retentionRestriction, Vocabulary.RetentionInstrumentSignatureDate);
-                    sr.RetentionReconsiderDate = graph.GetSingleDate(retentionRestriction, Vocabulary.RetentionRestrictionReviewDate);
+                    sr.InstrumentSignedDate = RecordMapper.ToDate(
+                        graph.GetSingleDate(retentionRestriction, Vocabulary.RetentionInstrumentSignatureDate));
+                    sr.RetentionReconsiderDate = RecordMapper.ToDate(
+                        graph.GetSingleDate(retentionRestriction, Vocabulary.RetentionRestrictionReviewDate));
                     sr.GroundForRetentionCode = graph.GetSingleTransitiveLiteral(retentionRestriction, Vocabulary.RetentionRestrictionHasGroundForRetention,
                         Vocabulary.GroundForRetentionCode)?.Value;
                     sr.GroundForRetentionDescription = graph.GetSingleTransitiveLiteral(retentionRestriction, Vocabulary.RetentionRestrictionHasGroundForRetention,
@@ -76,6 +82,8 @@ internal static class SensitivityReviewMapper
                 }
             }
         }
+        sr.HasSensitiveMetadata = !hasSameLocation || sr.SensitiveName is not null ||
+            sr.SensitiveDescription is not null;
         return sr;
     }
 }

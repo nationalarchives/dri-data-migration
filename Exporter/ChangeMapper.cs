@@ -32,19 +32,15 @@ internal static class ChangeMapper
         var changes = new List<RecordOutput.Change>();
         foreach (var change in changeSubjects)
         {
-            var changeDriId = graph.GetSingleText(change, Vocabulary.ChangeDriId);
             var changeDescription = graph.GetSingleText(change, Vocabulary.ChangeDescription);
             var changeDateTime = graph.GetSingleDate(change, Vocabulary.ChangeDateTime);
             var operatorName = graph.GetSingleTransitiveLiteral(change, Vocabulary.ChangeHasOperator, Vocabulary.OperatorName)?.Value;
-            var operatorIdentifier = graph.GetSingleTransitiveLiteral(change, Vocabulary.ChangeHasOperator, Vocabulary.OperatorIdentifier)?.Value;
 
             changes.Add(new()
             {
-                DriId = changeDriId!,
                 DescriptionBase64 = changeDescription,
                 Timestamp = changeDateTime,
                 OperatorName = operatorName,
-                OperatorIdentifier = operatorIdentifier
             });
         }
 

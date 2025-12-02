@@ -60,20 +60,6 @@ public class RecordOutput
     public string? SealObverseEndDate { get; set; }
     public string? SealReverseStartDate { get; set; }
     public string? SealReverseEndDate { get; set; }
-    public DateOnly? FoiAssertedDate { get; set; }
-    public string? AccessConditionName { get; set; }
-    public string? AccessConditionCode { get; set; }
-    public DateOnly? ClosureReviewDate { get; set; }
-    public DateOnly? ClosureStartDate { get; set; }
-    public int? ClosurePeriod { get; set; }
-    public int? ClosureEndYear { get; set; }
-    public string? ClosureDescription { get; set; }
-    public IEnumerable<Legislation>? FoiExemptions { get; set; }
-    public long? InstrumentNumber { get; set; }
-    public DateOnly? InstrumentSignedDate { get; set; }
-    public DateOnly? RetentionReconsiderDate { get; set; }
-    public string? GroundForRetentionCode { get; set; }
-    public string? GroundForRetentionDescription { get; set; }
     public string? GivenName { get; set; }
     public string? FamilyName { get; set; }
     public string? FullName { get; set; }
@@ -86,8 +72,9 @@ public class RecordOutput
     public string? NextOfKinName { get; set; }
     public IEnumerable<string>? NextOfKinTypes { get; set; }
     public bool? IsVeteran { get; set; }
+    public SensitivityReview? Sensitivity { get; set; }
     public int DigitalFileCount { get; set; }
-    public IEnumerable<Change>? Changes { get; set; }
+    public IEnumerable<Change>? AuditTrail { get; set; }
     public IEnumerable<Variation>? DigitalFiles { get; set; }
     public IEnumerable<RecordRelationship>? Relationships { get; set; }
 
@@ -117,13 +104,32 @@ public class RecordOutput
         public bool IsFragment { get; set; } = false;
     }
 
+    public class SensitivityReview
+    {
+        public bool HasSensitiveMetadata { get; set; }
+        public DateOnly? FoiAssertedDate { get; set; }
+        public string? SensitiveName { get; set; }
+        public string? SensitiveDescription { get; set; }
+        public string? AccessConditionName { get; set; }
+        public string? AccessConditionCode { get; set; }
+        public DateOnly? ClosureReviewDate { get; set; }
+        public DateOnly? ClosureStartDate { get; set; }
+        public int? ClosurePeriod { get; set; }
+        public int? ClosureEndYear { get; set; }
+        public string? ClosureDescription { get; set; }
+        public IEnumerable<Legislation>? FoiExemptions { get; set; }
+        public long? InstrumentNumber { get; set; }
+        public DateOnly? InstrumentSignedDate { get; set; }
+        public DateOnly? RetentionReconsiderDate { get; set; }
+        public string? GroundForRetentionCode { get; set; }
+        public string? GroundForRetentionDescription { get; set; }
+    }
+
     public class Change
     {
-        public required string DriId { get; set; }
         public string? DescriptionBase64 { get; set; }
         public DateTimeOffset? Timestamp { get; set; }
         public string? OperatorName { get; set; }
-        public string? OperatorIdentifier { get; set; }
     }
 
     public class Variation
