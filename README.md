@@ -13,7 +13,7 @@
 - [Export](docs/export.md)
 - [License](https://github.com/nationalarchives/dri-data-migration/blob/main/LICENSE)
 
-This repo provides tools to extract data from the National Archives DRI data sources, transform it, and load it into the staging graph database, then generate JSON files.\
+This repo provides tools to extract data from the National Archives DRI (Digital Records Infrastructure) data sources, transform it, and load it into the staging graph database, then generate JSON files.\
 To view all available commands and options, run:
 ```cmd
 Migration.exe --help
