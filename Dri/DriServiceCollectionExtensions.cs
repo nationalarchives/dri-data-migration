@@ -8,7 +8,7 @@ public static class DriServiceCollectionExtensions
 {
     public static IServiceCollection AddDriExport(this IServiceCollection services)
     {
-        services.AddHttpClient<IDriSparqlClient, SparqlClient>(h => h.Timeout = TimeSpan.FromMinutes(3));
+        services.AddHttpClient<IDriSparqlClient, SparqlClient>(h => h.Timeout = TimeSpan.FromMinutes(10));
         services.AddSingleton<IDriRdfExporter, RdfExporter>();
         services.AddSingleton<IDriSqlExporter, SqlExporter>();
 

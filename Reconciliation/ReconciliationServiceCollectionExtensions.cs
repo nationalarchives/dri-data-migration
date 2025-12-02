@@ -7,7 +7,7 @@ public static class ReconciliationServiceCollectionExtensions
 {
     public static IServiceCollection AddReconciliation(this IServiceCollection services)
     {
-        services.AddHttpClient<IReconciliationSparqlClient, ReconciliationSparqlClient>(h => h.Timeout = TimeSpan.FromMinutes(3));
+        services.AddHttpClient<IReconciliationSparqlClient, ReconciliationSparqlClient>(h => h.Timeout = TimeSpan.FromMinutes(10));
         services.AddSingleton<IStagingReconciliationClient, StagingReconciliationClient>();
         services.AddHttpClient<IReconciliationSource, DiscoverySource>();
         services.AddSingleton<IReconciliationSource, ClosureSource>();
