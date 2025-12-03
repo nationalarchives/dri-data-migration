@@ -1,15 +1,15 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 
 namespace Exporter;
 
-public class RecordRetrieval(ILogger<RecordRetrieval> logger, IOptions<ExportSettings> options,
-    IExportSparqlClient sparqlClient) : IRecordRetrieval
+public class RecordRetrieval(ILogger<RecordRetrieval> logger, IExportSparqlClient sparqlClient) : IRecordRetrieval
 {
-    private readonly ExportSettings settings = options.Value;
+    private readonly string sparqlList = new EmbeddedResource(
+        typeof(RecordRetrieval).Assembly, $"{typeof(RecordRetrieval).Namespace}.Sparql")
+        .GetSparql("List");
     private readonly string sparqlJson = new EmbeddedResource(
         typeof(RecordRetrieval).Assembly, $"{typeof(RecordRetrieval).Namespace}.Sparql")
         .GetSparql("ExportJson");
@@ -17,43 +17,32 @@ public class RecordRetrieval(ILogger<RecordRetrieval> logger, IOptions<ExportSet
         typeof(RecordRetrieval).Assembly, $"{typeof(RecordRetrieval).Namespace}.Sparql")
         .GetSparql("ExportXml");
 
-    public async Task<IEnumerable<RecordOutput>> GetRecordAsync(int offset, CancellationToken cancellationToken)
+    public async Task<IEnumerable<IUriNode>?> GetListAsync(string code, CancellationToken cancellationToken)
     {
-        logger.GetRecords(offset);
+        logger.GetRecordList();
 
-        var graph = await sparqlClient.GetGraphAsync(sparqlJson, new Dictionary<string, object>
-        {
-            { "id", settings.Code },
-            { "limit", settings.FetchPageSize },
-            { "offset", offset }
-        }, cancellationToken);
+        var list = await sparqlClient.GetResultSetAsync(sparqlList, code, cancellationToken);
 
-        return graph.GetTriplesWithPredicate(Vocabulary.AssetDriId)
-            .Select(t => t.Subject as IUriNode)
-            .SelectMany(s => MapRecords(graph, s!));
+        return list?.Results.Select(r => r.Value("asset")).Cast<IUriNode>();
     }
 
-    public async Task<IEnumerable<XmlWrapper>> GetXmlAsync(int offset, CancellationToken cancellationToken)
+    public async Task<IEnumerable<RecordOutput>> GetRecordAsync(IUriNode id, CancellationToken cancellationToken)
     {
-        logger.GetXmls(offset);
+        var asset = await sparqlClient.GetGraphAsync(sparqlJson, id.Uri, cancellationToken);
 
-        var graph = await sparqlClient.GetGraphAsync(sparqlXml, new Dictionary<string, object>
-        {
-            { "id", settings.Code },
-            { "limit", settings.FetchPageSize },
-            { "offset", offset }
-        }, cancellationToken);
-
-        return graph.GetTriplesWithPredicate(Vocabulary.AssetReference)
-            .Select(t => t.Subject as IUriNode)
-            .SelectMany(s => MapXmls(graph, s!));
+        return MapRecords(asset, id);
     }
 
-    private IEnumerable<RecordOutput> MapRecords(IGraph graph, IUriNode subject)
+    public async Task<IEnumerable<XmlWrapper>> GetXmlAsync(IUriNode id, CancellationToken cancellationToken)
     {
-        logger.MappingRecord(subject.Uri);
+        var graph = await sparqlClient.GetGraphAsync(sparqlXml, id, cancellationToken);
 
-        var variationSequences = GetVariationSequences(graph, subject);
+        return MapXmls(graph, id);
+    }
+
+    private IEnumerable<RecordOutput> MapRecords(IGraph asset, IUriNode subject)
+    {
+        var variationSequences = GetVariationSequences(asset, subject);
         var variationGroups = variationSequences.GroupBy(s => s.Sequence, s => s.Variation);
 
         foreach (var variationGroup in variationGroups)
@@ -62,7 +51,7 @@ public class RecordRetrieval(ILogger<RecordRetrieval> logger, IOptions<ExportSet
             RecordOutput? recordOutput = null;
             try
             {
-                recordOutput = RecordMapper.Map(graph, subject, variations, variationGroup.Key);
+                recordOutput = RecordMapper.Map(asset, subject, variations, variationGroup.Key);
             }
             catch (Exception e)
             {
@@ -77,18 +66,16 @@ public class RecordRetrieval(ILogger<RecordRetrieval> logger, IOptions<ExportSet
         }
     }
 
-    private List<XmlWrapper> MapXmls(IGraph graph, IUriNode subject)
+    private List<XmlWrapper> MapXmls(IGraph asset, IUriNode subject)
     {
-        logger.MappingRecord(subject.Uri);
-
-        var variationSequences = GetVariationSequences(graph, subject);
+        var variationSequences = GetVariationSequences(asset, subject);
         var xmls = new List<XmlWrapper>();
 
         foreach (var variationSequence in variationSequences)
         {
             try
             {
-                var xml = XmlMapper.Map(graph, subject, variationSequence.Variation,
+                var xml = XmlMapper.Map(asset, subject, variationSequence.Variation,
                     variationSequence.Sequence);
                 xmls.AddRange(xml);
             }
@@ -102,10 +89,8 @@ public class RecordRetrieval(ILogger<RecordRetrieval> logger, IOptions<ExportSet
         return xmls;
     }
 
-    private List<VariationSequence> GetVariationSequences(IGraph graph, IUriNode subject)
+    private static List<VariationSequence> GetVariationSequences(IGraph graph, IUriNode subject)
     {
-        logger.MappingRecord(subject.Uri);
-
         var variations = graph.GetUriNodes(subject, Vocabulary.AssetHasVariation);
         List<VariationSequence> variationSequences = [];
         foreach (var variation in variations)

@@ -222,24 +222,10 @@ construct {
         ex:nextOfKinRelationshipHasKinship ?nextOfKinRelationshipHasKinship.
     ?nextOfKinRelationshipHasNextOfKin ex:personFullName ?nextOfKinPersonFullName.
 } where {
+    bind(@id as ?asset)
     ?asset ex:assetDriId ?assetDriId;
         ex:assetReference ?assetReference;
         ex:assetHasSubset ?subset.
-    {
-        select ?asset where {
-            bind(@id as ?reference)
-            {
-                ?asset ex:assetReference ?reference.
-            }
-            union
-            {
-                ?parentSubset ex:subsetReference ?reference;
-                    ex:subsetHasNarrowerSubset*/ex:subsetHasAsset ?asset.
-            }
-        }
-        order by ?asset
-        limit @limit offset @offset
-    }
     optional { ?asset ex:assetName ?assetName }
     optional { ?asset ex:assetAlternativeName ?assetAlternativeName }
     optional { ?asset ex:assetPastReference ?assetPastReference }

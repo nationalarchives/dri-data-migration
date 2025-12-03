@@ -1,0 +1,14 @@
+﻿prefix ex: <http://id.example.com/schema/>
+
+select ?asset where {
+    bind(@id as ?reference)
+    {
+        ?asset ex:assetReference ?reference.
+    }
+    union
+    {
+        ?parentSubset ex:subsetReference ?reference;
+            ex:subsetHasNarrowerSubset*/ex:subsetHasAsset ?asset.
+    }
+}
+order by ?asset

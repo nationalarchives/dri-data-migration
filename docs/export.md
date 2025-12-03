@@ -19,10 +19,12 @@ sequenceDiagram
     participant StagingRDF@{ "type" : "database" }
     User-)IHostedService: Execute export command
     IHostedService-)IOutputGenerator: Export started
-    loop Compare data
-        IOutputGenerator-)IRecordRetrieval: Extract
-        IRecordRetrieval-)StagingRDF: Fetch
-        IRecordRetrieval-)IOutputGenerator: Transformed entities
+    IOutputGenerator-)IRecordRetrieval: Fetch IDs
+    IRecordRetrieval-)StagingRDF: Fetch IDs
+    loop Generate files
+        IOutputGenerator-)IRecordRetrieval: Fetch record
+        IRecordRetrieval-)StagingRDF: Fetch record
+        IRecordRetrieval-)IOutputGenerator: Transformed records
         IOutputGenerator-)Export: Serialize data to disk
     end
 ```

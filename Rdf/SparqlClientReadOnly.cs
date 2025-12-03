@@ -21,13 +21,20 @@ public abstract class SparqlClientReadOnly(HttpClient httpClient, Uri sparqlConn
         var parameterizedString = new SparqlParameterizedString(sparql);
         foreach (var kv in parameters)
         {
-            var literal = kv.Value switch
+            if (kv.Value is Uri uri)
             {
-                string txt => new LiteralNode(txt),
-                int number => new LongNode(number),
-                _ => throw new MigrationException($"Unrecognized type of {kv.Key} {kv.Value} parameter")
-            };
-            parameterizedString.SetParameter(kv.Key, literal);
+                parameterizedString.SetParameter(kv.Key, new UriNode(uri));
+            }
+            else
+            {
+                var literal = kv.Value switch
+                {
+                    string txt => new LiteralNode(txt),
+                    int number => new LongNode(number),
+                    _ => throw new MigrationException($"Unrecognized type of {kv.Key} {kv.Value} parameter")
+                };
+                parameterizedString.SetParameter(kv.Key, literal);
+            }
         }
 
         return await client.QueryWithResultGraphAsync(parameterizedString.ToString(), cancellationToken);
@@ -38,6 +45,14 @@ public abstract class SparqlClientReadOnly(HttpClient httpClient, Uri sparqlConn
 
     public async Task<SparqlResultSet> GetResultSetAsync(string sparql, CancellationToken cancellationToken) =>
         await client.QueryWithResultSetAsync(sparql, cancellationToken);
+
+    public async Task<SparqlResultSet> GetResultSetAsync(string sparql, string id, CancellationToken cancellationToken)
+    {
+        var parameterizedString = new SparqlParameterizedString(sparql);
+        parameterizedString.SetParameter("id", new LiteralNode(id));
+
+        return await client.QueryWithResultSetAsync(parameterizedString.ToString(), cancellationToken);
+    }
 
     public async Task<IUriNode?> GetSubjectAsync(string sparql, Dictionary<string, string> parameters, CancellationToken cancellationToken)
     {

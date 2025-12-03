@@ -7,7 +7,7 @@ public static class ExportServiceCollectionExtensions
 {
     public static IServiceCollection AddExporter(this IServiceCollection services)
     {
-        services.AddHttpClient<IExportSparqlClient, SparqlClient>();
+        services.AddHttpClient<IExportSparqlClient, SparqlClient>(h => h.Timeout = TimeSpan.FromMinutes(10));
         services.AddSingleton<IRecordRetrieval, RecordRetrieval>();
         services.AddSingleton<IOutputGenerator, OutputGenerator>();
 

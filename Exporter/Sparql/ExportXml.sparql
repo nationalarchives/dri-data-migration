@@ -10,22 +10,8 @@ construct {
         ex:variationDriId ?variationDriId;
         ex:variationDriXml ?variationDriXml.
 } where {
+    bind(@id as ?asset)
     ?asset ex:assetReference ?assetReference.
-    {
-        select ?asset where {
-            bind(@id as ?reference)
-            {
-                ?asset ex:assetReference ?reference.
-            }
-            union
-            {
-                ?parentSubset ex:subsetReference ?reference;
-                    ex:subsetHasNarrowerSubset*/ex:subsetHasAsset ?asset.
-            }
-        }
-        order by ?asset
-        limit @limit offset @offset
-    }
     optional { ?asset ex:assetDriXml ?assetDriXml }
     optional { ?asset ex:wo409SubsetDriXml ?wo409SubsetDriXml }
     optional {

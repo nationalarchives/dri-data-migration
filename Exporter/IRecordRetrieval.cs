@@ -1,7 +1,10 @@
-﻿namespace Exporter;
+﻿using VDS.RDF;
+
+namespace Exporter;
 
 public interface IRecordRetrieval
 {
-    Task<IEnumerable<RecordOutput>> GetRecordAsync(int offset, CancellationToken cancellationToken);
-    Task<IEnumerable<XmlWrapper>> GetXmlAsync(int offset, CancellationToken cancellationToken);
+    Task<IEnumerable<IUriNode>?> GetListAsync(string code, CancellationToken cancellationToken);
+    Task<IEnumerable<RecordOutput>> GetRecordAsync(IUriNode id, CancellationToken cancellationToken);
+    Task<IEnumerable<XmlWrapper>> GetXmlAsync(IUriNode id, CancellationToken cancellationToken);
 }

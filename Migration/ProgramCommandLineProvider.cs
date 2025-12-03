@@ -156,7 +156,6 @@ public class ProgramCommandLineProvider : ConfigurationProvider
             reference,
             exportScope,
             sparql,
-            pageSize,
             restartFromOffset
         };
     }
@@ -323,10 +322,6 @@ public class ProgramCommandLineProvider : ConfigurationProvider
             if (parseResult.GetValue(sparql) is Uri uri)
             {
                 data.Add($"{ExportSettings.Prefix}:{nameof(ExportSettings.SparqlConnectionString)}", uri.ToString());
-            }
-            if (parseResult.GetValue(pageSize) is int size)
-            {
-                data.Add($"{ExportSettings.Prefix}:{nameof(ExportSettings.FetchPageSize)}", size.ToString());
             }
             data.Add($"{ExportSettings.Prefix}:{nameof(ExportSettings.RestartFromOffset)}", parseResult.GetValue(restartFromOffset).ToString());
         }

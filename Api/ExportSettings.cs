@@ -11,6 +11,5 @@ public sealed class ExportSettings
     public ExportScopeType ExportScope { get; set; }
     public Uri SparqlConnectionString { get; set; }
 #pragma warning restore CS8618
-    public int FetchPageSize { get; set; }
     public int RestartFromOffset { get; set; }
 }

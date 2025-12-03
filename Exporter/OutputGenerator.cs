@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using VDS.RDF;
 
 namespace Exporter;
 
@@ -28,84 +29,89 @@ public class OutputGenerator(ILogger<OutputGenerator> logger, IOptions<ExportSet
         var path = Directory.CreateDirectory(exportPath);
         logger.ExportPath(path.FullName);
         logger.ExportStarted(settings.ExportScope, settings.Code);
-        if (settings.ExportScope is not ExportScopeType.XML)
+        var ids = (await recordRetrieval.GetListAsync(settings.Code, cancellationToken))?.ToList();
+        if (ids is not null)
         {
-            await GenerateRecordAsync(cancellationToken);
-        }
-        if (settings.ExportScope is not ExportScopeType.JSON)
-        {
-            await GenerateXmlAsync(cancellationToken);
+            logger.RecordListFound(ids.Count);
+            await GenerateRecordAsync(ids, cancellationToken);
         }
         logger.ExportFinished();
     }
 
-    private async Task GenerateRecordAsync(CancellationToken cancellationToken)
+    private async Task GenerateRecordAsync(List<IUriNode> ids, CancellationToken cancellationToken)
     {
-        List<RecordOutput> records;
-        int offset = settings.RestartFromOffset;
-        do
+        var i= 0;
+        foreach (var id in ids.Skip(settings.RestartFromOffset))
         {
-            records = (await recordRetrieval.GetRecordAsync(offset, cancellationToken)).ToList();
-            logger.ExportingRecords(records.Count);
-            offset += settings.FetchPageSize;
-            Serialize(records);
-            logger.RecordsExported();
-        } while (records.Count > 0);
+            i++;
+            using (logger.BeginScope(("RecordId", id.Uri)))
+            {
+                logger.GeneratingRecord();
+                if (settings.ExportScope is not ExportScopeType.XML)
+                {
+                    var records = await recordRetrieval.GetRecordAsync(id, cancellationToken);
+                    if (!records.Any())
+                    {
+                        logger.UnableFindRecord(id.Uri);
+                    }
+                    Serialize(records);
+                }
+                if (settings.ExportScope is not ExportScopeType.JSON)
+                {
+                    var xmls = await recordRetrieval.GetXmlAsync(id, cancellationToken);
+                    Serialize(xmls);
+                }
+            }
+            if (i % 500 == 0)
+            {
+                logger.ExportRecordCount(i);
+            }
+        }
+        if (i % 500 != 0)
+        {
+            logger.ExportRecordCount(i);
+        }
     }
 
-    private async Task GenerateXmlAsync(CancellationToken cancellationToken)
-    {
-        List<XmlWrapper> xmls;
-        int offset = settings.RestartFromOffset;
-        do
-        {
-            xmls = (await recordRetrieval.GetXmlAsync(offset, cancellationToken)).ToList();
-            logger.ExportingXmls(xmls.Count);
-            offset += settings.FetchPageSize;
-            Serialize(xmls);
-            logger.XmlsExported();
-        } while (xmls.Count > 0);
-    }
-
-    private void Serialize(List<RecordOutput> records)
+    private void Serialize(IEnumerable<RecordOutput> records)
     {
         foreach (var record in records)
         {
-            using (logger.BeginScope(("RecordId", record.Reference)))
+            try
             {
-                logger.SerializingRecord();
-                try
+                var fileName = FileName(record.Reference, "json");
+                var json = JsonSerializer.Serialize(record, serializerOptions);
+                if (File.Exists(fileName))
                 {
-                    var fileName = FileName(record.Reference, "json");
-                    var json = JsonSerializer.Serialize(record, serializerOptions);
-                    File.WriteAllText(fileName, json);
+                    logger.ExistingFileRecord(fileName);
                 }
-                catch (Exception e)
-                {
-                    logger.UnableSerialize(record.Reference);
-                    logger.SerializationProblem(e);
-                }
+                File.WriteAllText(fileName, json);
+            }
+            catch (Exception e)
+            {
+                logger.UnableSerialize(record.Reference);
+                logger.SerializationProblem(e);
             }
         }
     }
 
-    private void Serialize(List<XmlWrapper> xmls)
+    private void Serialize(IEnumerable<XmlWrapper> xmls)
     {
         foreach (var xml in xmls)
         {
-            using (logger.BeginScope(("RecordId", xml.Reference)))
+            try
             {
-                logger.SerializingXml();
-                try
+                var fileName = FileName(xml.Reference, "xml");
+                if (File.Exists(fileName))
                 {
-                    var fileName = FileName(xml.Reference, "xml");
-                    File.WriteAllText(fileName, xml.Xml);
+                    logger.ExistingFileRecord(fileName);
                 }
-                catch (Exception e)
-                {
-                    logger.UnableSerialize(xml.Reference);
-                    logger.SerializationProblem(e);
-                }
+                File.WriteAllText(fileName, xml.Xml);
+            }
+            catch (Exception e)
+            {
+                logger.UnableSerialize(xml.Reference);
+                logger.SerializationProblem(e);
             }
         }
     }
