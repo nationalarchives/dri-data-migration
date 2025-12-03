@@ -49,4 +49,7 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 15, Level = LogLevel.Warning, Message = "Content of the file {file} will be refreshed")]
     internal static partial void ExistingFileRecord(this ILogger logger, string file);
+
+    [LoggerMessage(EventId = 16, Level = LogLevel.Warning, Message = "Unable to deserialize {file}")]
+    internal static partial void UnableDeserialize(this ILogger logger, string file);
 }

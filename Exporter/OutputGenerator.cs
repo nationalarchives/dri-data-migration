@@ -40,7 +40,7 @@ public class OutputGenerator(ILogger<OutputGenerator> logger, IOptions<ExportSet
 
     private async Task GenerateRecordAsync(List<IUriNode> ids, CancellationToken cancellationToken)
     {
-        var i= 0;
+        var i = 0;
         foreach (var id in ids.Skip(settings.RestartFromOffset))
         {
             i++;
@@ -80,11 +80,7 @@ public class OutputGenerator(ILogger<OutputGenerator> logger, IOptions<ExportSet
             try
             {
                 var fileName = FileName(record.Reference, "json");
-                var json = JsonSerializer.Serialize(record, serializerOptions);
-                if (File.Exists(fileName))
-                {
-                    logger.ExistingFileRecord(fileName);
-                }
+                var json = RecordToJson(record, fileName);
                 File.WriteAllText(fileName, json);
             }
             catch (Exception e)
@@ -118,4 +114,43 @@ public class OutputGenerator(ILogger<OutputGenerator> logger, IOptions<ExportSet
 
     private string FileName(string reference, string extension) =>
         $"{exportPath}\\{string.Join('-', reference.Split(invalidCharacters))}.{extension}";
+
+    private string RecordToJson(RecordOutput record, string fileName)
+    {
+        var medicals = new string[] {"WO/409/27/101/1071","WO/409/27/102/1059","WO/409/27/14/537",
+            "WO/409/27/30/1058","WO/409/27/4/678","WO/409/27/51/738","WO/409/27/70/1074",
+            "WO/409/27/93/662","WO/409/27/93/663","WO/409/27/93/664","WO/409/27/93/665" };
+        if (File.Exists(fileName))
+        {
+            logger.ExistingFileRecord(fileName);
+
+            if (medicals.Contains(record.Reference))
+            {
+                var json = File.ReadAllText(fileName);
+                var existing = JsonSerializer.Deserialize<RecordOutput>(json, serializerOptions);
+                if (existing is null)
+                {
+                    logger.UnableDeserialize(fileName);
+                    return JsonSerializer.Serialize(record, serializerOptions);
+                }
+                if (record.DigitalFileCount > 0)
+                {
+                    existing.DigitalFileCount += record.DigitalFileCount;
+                    var digitalFiles = (existing.DigitalFiles ?? []).ToList();
+                    digitalFiles.AddRange(record.DigitalFiles!);
+                    existing.DigitalFiles = digitalFiles;
+                }
+                if (record.AuditTrail?.Any() == true)
+                {
+                    var auditTrail = (existing.AuditTrail ?? []).ToList();
+                    auditTrail.AddRange(record.AuditTrail!);
+                    existing.AuditTrail = auditTrail;
+                }
+
+                return JsonSerializer.Serialize(existing, serializerOptions);
+            }
+        }
+
+        return JsonSerializer.Serialize(record, serializerOptions);
+    }
 }
