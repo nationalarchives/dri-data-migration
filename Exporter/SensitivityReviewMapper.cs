@@ -7,13 +7,13 @@ namespace Exporter;
 internal static class SensitivityReviewMapper
 {
     internal static RecordOutput.SensitivityReview GetSensitivityReview(IGraph graph,
-        IUriNode subject, List<IUriNode> variations, bool hasSameLocation)
+        List<IUriNode> variations, bool hasSameLocation)
     {
         var sr = new RecordOutput.SensitivityReview();
         //TODO: Needs rework if past sensitive reviews are to be included
-        sr.SensitiveName = graph.GetSingleTransitiveLiteral(subject, Vocabulary.AssetHasSensitivityReview,
+        sr.SensitiveName = graph.GetSingleTransitiveLiteral(Vocabulary.AssetHasSensitivityReview,
             Vocabulary.SensitivityReviewSensitiveName)?.Value;
-        sr.SensitiveDescription = graph.GetSingleTransitiveLiteral(subject, Vocabulary.AssetHasSensitivityReview,
+        sr.SensitiveDescription = graph.GetSingleTransitiveLiteral(Vocabulary.AssetHasSensitivityReview,
             Vocabulary.SensitivityReviewSensitiveDescription)?.Value;
         IUriNode? srSubject = null;
         foreach (var variation in variations)

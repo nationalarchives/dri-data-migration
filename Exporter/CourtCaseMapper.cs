@@ -5,9 +5,9 @@ namespace Exporter;
 
 internal static class CourtCaseMapper
 {
-    internal static List<RecordOutput.CourtCase>? GetCourtCases(IGraph graph, IUriNode subject)
+    internal static List<RecordOutput.CourtCase>? GetCourtCases(IGraph graph)
     {
-        var courtCases = graph.GetUriNodes(subject, Vocabulary.CourtAssetHasCourtCase);
+        var courtCases = graph.GetUriNodes(Vocabulary.CourtAssetHasCourtCase);
         if (!courtCases.Any())
         {
             return null;

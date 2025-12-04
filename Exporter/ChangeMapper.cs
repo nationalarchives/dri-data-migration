@@ -5,11 +5,10 @@ namespace Exporter;
 
 internal static class ChangeMapper
 {
-    internal static List<RecordOutput.Change>? GetAllChanges(IGraph graph, IUriNode subject,
-        List<IUriNode> variations)
+    internal static List<RecordOutput.Change>? GetAllChanges(IGraph graph, List<IUriNode> variations)
     {
-        var changeSubjects = graph.GetUriNodes(subject, Vocabulary.AssetHasChange).ToList();
-        foreach (var sr in graph.GetUriNodes(subject, Vocabulary.AssetHasSensitivityReview))
+        var changeSubjects = graph.GetUriNodes(Vocabulary.AssetHasChange).ToList();
+        foreach (var sr in graph.GetUriNodes(Vocabulary.AssetHasSensitivityReview))
         {
             var srChanges = graph.GetUriNodes(sr, Vocabulary.SensitivityReviewHasChange).ToList();
             changeSubjects.AddRange(srChanges);

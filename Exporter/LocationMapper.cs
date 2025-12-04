@@ -5,9 +5,9 @@ namespace Exporter;
 
 internal static class LocationMapper
 {
-    internal static LocationPath GetLocation(IGraph graph, IUriNode subject)
+    internal static LocationPath GetLocation(IGraph graph)
     {
-        var narrowestSubset = graph.GetSingleUriNode(subject, Vocabulary.AssetHasSubset);
+        var narrowestSubset = graph.GetSingleUriNode(Vocabulary.AssetHasSubset);
         if (narrowestSubset is null)
         {
             return new();

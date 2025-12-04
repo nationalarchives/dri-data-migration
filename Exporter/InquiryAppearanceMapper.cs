@@ -5,10 +5,9 @@ namespace Exporter;
 
 internal static class InquiryAppearanceMapper
 {
-    internal static List<RecordOutput.InquiryAppearance>? GetInquiryAppearances(IGraph graph,
-        IUriNode subject)
+    internal static List<RecordOutput.InquiryAppearance>? GetInquiryAppearances(IGraph graph)
     {
-        var appearance = graph.GetUriNodes(subject, Vocabulary.InquiryAssetHasInquiryAppearance);
+        var appearance = graph.GetUriNodes(Vocabulary.InquiryAssetHasInquiryAppearance);
         if (!appearance.Any())
         {
             return null;

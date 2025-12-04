@@ -5,10 +5,10 @@ namespace Exporter;
 
 internal static class PersonMapper
 {
-    internal static Person? GetIndividual(IGraph graph, IUriNode subject)
+    internal static Person? GetIndividual(IGraph graph)
     {
-        var civil = graph.GetSingleUriNode(subject, Vocabulary.AssetHasPerson);
-        var veteran = graph.GetSingleUriNode(subject, Vocabulary.AssetHasVeteran);
+        var civil = graph.GetSingleUriNode(Vocabulary.AssetHasPerson);
+        var veteran = graph.GetSingleUriNode(Vocabulary.AssetHasVeteran);
         var person = civil ?? veteran;
         if (person is null)
         {

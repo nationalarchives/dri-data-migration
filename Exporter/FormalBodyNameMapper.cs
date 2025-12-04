@@ -5,10 +5,10 @@ namespace Exporter;
 
 internal static class FormalBodyNameMapper
 {
-    internal static string? GetBodyName(IGraph graph, IUriNode subject,
-        IUriNode relationshipPredicate, IUriNode formalBodyPredicate)
+    internal static string? GetBodyName(IGraph graph, IUriNode relationshipPredicate,
+        IUriNode formalBodyPredicate)
     {
-        var relationship = graph.GetSingleUriNode(subject, relationshipPredicate);
+        var relationship = graph.GetSingleUriNode(relationshipPredicate);
         if (relationship is null)
         {
             return null;

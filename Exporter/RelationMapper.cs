@@ -5,18 +5,18 @@ namespace Exporter;
 
 internal static class RelationMapper
 {
-    internal static List<RecordOutput.RecordRelationship>? GetRelations(IGraph graph, IUriNode subject,
+    internal static List<RecordOutput.RecordRelationship>? GetRelations(IGraph graph,
         string assetReference, long? redactedVariationSequence)
     {
-        var related = graph.GetLiteralNodes(subject, Vocabulary.AssetRelationDescription).Select(l => l.Value)
-            .Union(graph.GetLiteralNodes(subject, Vocabulary.AssetRelationIdentifier).Select(l => l.Value));
-        var separated = (graph.GetLiteralNodes(subject, Vocabulary.AssetConnectedAssetNote).Select(l => l.Value)).ToList();
+        var related = graph.GetLiteralNodes(Vocabulary.AssetRelationDescription).Select(l => l.Value)
+            .Union(graph.GetLiteralNodes(Vocabulary.AssetRelationIdentifier).Select(l => l.Value));
+        var separated = (graph.GetLiteralNodes(Vocabulary.AssetConnectedAssetNote).Select(l => l.Value)).ToList();
         var wo409Separated = Wo409Separated(ReferenceBuilder.Build(null, assetReference));
         if (wo409Separated is not null)
         {
             separated.Add(wo409Separated);
         }
-        var variations = graph.GetUriNodes(subject, Vocabulary.AssetHasVariation);
+        var variations = graph.GetUriNodes(Vocabulary.AssetHasVariation);
         List<string> variationRedactions = [];
         if (redactedVariationSequence is not null)
         {

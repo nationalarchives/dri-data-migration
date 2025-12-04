@@ -5,9 +5,9 @@ namespace Exporter;
 
 internal static class CopyrightMapper
 {
-    internal static List<string>? GetCopyrights(IGraph graph, IUriNode subject)
+    internal static List<string>? GetCopyrights(IGraph graph)
     {
-        var copyrights = graph.GetUriNodes(subject, Vocabulary.AssetHasCopyright);
+        var copyrights = graph.GetUriNodes(Vocabulary.AssetHasCopyright);
         if (!copyrights.Any())
         {
             return null;

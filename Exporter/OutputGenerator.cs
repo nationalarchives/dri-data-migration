@@ -126,31 +126,36 @@ public class OutputGenerator(ILogger<OutputGenerator> logger, IOptions<ExportSet
 
             if (medicals.Contains(record.Reference))
             {
-                var json = File.ReadAllText(fileName);
-                var existing = JsonSerializer.Deserialize<RecordOutput>(json, serializerOptions);
-                if (existing is null)
-                {
-                    logger.UnableDeserialize(fileName);
-                    return JsonSerializer.Serialize(record, serializerOptions);
-                }
-                if (record.DigitalFileCount > 0)
-                {
-                    existing.DigitalFileCount += record.DigitalFileCount;
-                    var digitalFiles = (existing.DigitalFiles ?? []).ToList();
-                    digitalFiles.AddRange(record.DigitalFiles!);
-                    existing.DigitalFiles = digitalFiles;
-                }
-                if (record.AuditTrail?.Any() == true)
-                {
-                    var auditTrail = (existing.AuditTrail ?? []).ToList();
-                    auditTrail.AddRange(record.AuditTrail!);
-                    existing.AuditTrail = auditTrail;
-                }
-
-                return JsonSerializer.Serialize(existing, serializerOptions);
+                return GenerateWO409MedicalRecord(record, fileName);
             }
         }
 
         return JsonSerializer.Serialize(record, serializerOptions);
+    }
+
+    private string GenerateWO409MedicalRecord(RecordOutput record, string fileName)
+    {
+        var json = File.ReadAllText(fileName);
+        var existing = JsonSerializer.Deserialize<RecordOutput>(json, serializerOptions);
+        if (existing is null)
+        {
+            logger.UnableDeserialize(fileName);
+            return JsonSerializer.Serialize(record, serializerOptions);
+        }
+        if (record.DigitalFileCount > 0)
+        {
+            existing.DigitalFileCount += record.DigitalFileCount;
+            var digitalFiles = (existing.DigitalFiles ?? []).ToList();
+            digitalFiles.AddRange(record.DigitalFiles!);
+            existing.DigitalFiles = digitalFiles;
+        }
+        if (record.AuditTrail?.Any() == true)
+        {
+            var auditTrail = (existing.AuditTrail ?? []).ToList();
+            auditTrail.AddRange(record.AuditTrail!);
+            existing.AuditTrail = auditTrail;
+        }
+
+        return JsonSerializer.Serialize(existing, serializerOptions);
     }
 }

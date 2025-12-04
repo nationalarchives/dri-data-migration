@@ -5,9 +5,9 @@ namespace Exporter;
 
 internal static class DimensionMapper
 {
-    internal static RecordOutput.Dimension? GetDimension(IGraph graph, IUriNode subject, IUriNode relationshipPredicate)
+    internal static RecordOutput.Dimension? GetDimension(IGraph graph, IUriNode relationshipPredicate)
     {
-        var dimension = graph.GetSingleUriNode(subject, relationshipPredicate);
+        var dimension = graph.GetSingleUriNode(relationshipPredicate);
         if (dimension is null)
         {
             return null;

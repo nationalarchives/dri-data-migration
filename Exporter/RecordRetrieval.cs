@@ -51,7 +51,7 @@ public class RecordRetrieval(ILogger<RecordRetrieval> logger, IExportSparqlClien
             RecordOutput? recordOutput = null;
             try
             {
-                recordOutput = RecordMapper.Map(asset, subject, variations, variationGroup.Key);
+                recordOutput = RecordMapper.Map(asset, variations, variationGroup.Key);
             }
             catch (Exception e)
             {
@@ -75,7 +75,7 @@ public class RecordRetrieval(ILogger<RecordRetrieval> logger, IExportSparqlClien
         {
             try
             {
-                var xml = XmlMapper.Map(asset, subject, variationSequence.Variation,
+                var xml = XmlMapper.Map(asset, variationSequence.Variation,
                     variationSequence.Sequence);
                 xmls.AddRange(xml);
             }
