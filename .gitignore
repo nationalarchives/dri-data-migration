@@ -6,6 +6,9 @@
 # GraphDB license
 graphdb.license
 
+# Launch settings
+**/launchSettings.json
+
 # User-specific files
 *.rsuser
 *.suo
