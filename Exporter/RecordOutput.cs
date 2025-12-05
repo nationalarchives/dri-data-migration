@@ -130,7 +130,30 @@ public class RecordOutput
         public string? DescriptionBase64 { get; set; }
         public DateTimeOffset? Timestamp { get; set; }
         public string? OperatorName { get; set; }
+        public SensitivityReviewDiff? Sensitivity {get; set;}
     }
+
+    public class SensitivityReviewDiff
+    {
+        public Diff? FoiAssertedDate { get; set; }
+        public Diff? SensitiveName { get; set; }
+        public Diff? SensitiveDescription { get; set; }
+        public Diff? AccessConditionName { get; set; }
+        public Diff? AccessConditionCode { get; set; }
+        public Diff? ClosureReviewDate { get; set; }
+        public Diff? ClosureStartDate { get; set; }
+        public Diff? ClosurePeriod { get; set; }
+        public Diff? ClosureEndYear { get; set; }
+        public Diff? ClosureDescription { get; set; }
+        public Diff? FoiExemptions { get; set; }
+        public Diff? InstrumentNumber { get; set; }
+        public Diff? InstrumentSignedDate { get; set; }
+        public Diff? RetentionReconsiderDate { get; set; }
+        public Diff? GroundForRetentionCode { get; set; }
+        public Diff? GroundForRetentionDescription { get; set; }
+    }
+
+    public record Diff(object? Value, object? NewValue);
 
     public class Variation
     {

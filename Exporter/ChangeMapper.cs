@@ -5,44 +5,111 @@ namespace Exporter;
 
 internal static class ChangeMapper
 {
-    internal static List<RecordOutput.Change>? GetAllChanges(IGraph graph, List<IUriNode> variations)
+    internal static List<RecordOutput.Change>? GetAllChanges(IGraph asset, List<IUriNode> variations)
     {
-        var changeSubjects = graph.GetUriNodes(Vocabulary.AssetHasChange).ToList();
-        foreach (var sr in graph.GetUriNodes(Vocabulary.AssetHasSensitivityReview))
+        var changes = new List<RecordOutput.Change>();
+
+        foreach (var changeSubject in asset.GetUriNodes(Vocabulary.AssetHasChange))
         {
-            var srChanges = graph.GetUriNodes(sr, Vocabulary.SensitivityReviewHasChange).ToList();
-            changeSubjects.AddRange(srChanges);
+            changes.Add(GenerateChange(asset, changeSubject));
         }
-        foreach (var variation in variations)
+
+        foreach (var sr in asset.GetUriNodes(Vocabulary.AssetHasSensitivityReview))
         {
-            var variationChanges = graph.GetUriNodes(variation, Vocabulary.VariationHasChange).ToList();
-            changeSubjects.AddRange(variationChanges);
-            foreach (var sr in graph.GetUriNodes(variation, Vocabulary.VariationHasSensitivityReview))
+            var srChange = asset.GetSingleUriNode(sr, Vocabulary.SensitivityReviewHasChange);
+            if (srChange is not null)
             {
-                var srChanges = graph.GetUriNodes(sr, Vocabulary.SensitivityReviewHasChange).ToList();
-                changeSubjects.AddRange(srChanges);
+                changes.Add(GenerateChange(asset, srChange));
             }
         }
-        if (changeSubjects.Count == 0)
+
+        foreach (var variation in variations)
+        {
+            foreach (var changeSubject in asset.GetUriNodes(Vocabulary.VariationHasChange))
+            {
+                changes.Add(GenerateChange(asset, changeSubject));
+            }
+        }
+
+        var srSubject = SensitivityReviewMapper.FindCurrentSensitivityReview(asset, variations);
+        while (srSubject is not null)
+        {
+            var currentSr = new RecordOutput.SensitivityReview();
+            SensitivityReviewMapper.Populate(currentSr, asset, srSubject);
+            srSubject = asset.GetSingleUriNode(srSubject, Vocabulary.SensitivityReviewHasPastSensitivityReview);
+            if (srSubject is not null)
+            {
+                var pastSr = new RecordOutput.SensitivityReview();
+                SensitivityReviewMapper.Populate(pastSr, asset, srSubject);
+                var pastSubject = asset.GetSingleUriNode(srSubject, Vocabulary.SensitivityReviewHasChange);
+                RecordOutput.Change srChange;
+                if (pastSubject is not null)
+                {
+                    srChange = GenerateChange(asset, pastSubject);
+                    srChange.Sensitivity = GenerateSrDiff(currentSr, pastSr);
+                }
+                else
+                {
+                    srChange = new()
+                    {
+                        Sensitivity = GenerateSrDiff(currentSr, pastSr)
+                    };
+                }
+                changes.Add(srChange);
+            }
+        }
+
+        if (changes.Count == 0)
         {
             return null;
         }
 
-        var changes = new List<RecordOutput.Change>();
-        foreach (var change in changeSubjects)
-        {
-            var changeDescription = graph.GetSingleText(change, Vocabulary.ChangeDescription);
-            var changeDateTime = graph.GetSingleDate(change, Vocabulary.ChangeDateTime);
-            var operatorName = graph.GetSingleTransitiveLiteral(change, Vocabulary.ChangeHasOperator, Vocabulary.OperatorName)?.Value;
-
-            changes.Add(new()
-            {
-                DescriptionBase64 = changeDescription,
-                Timestamp = changeDateTime,
-                OperatorName = operatorName,
-            });
-        }
-
         return changes;
+    }
+
+    private static RecordOutput.Change GenerateChange(IGraph asset, IUriNode change)
+    {
+        var changeDescription = asset.GetSingleText(change, Vocabulary.ChangeDescription);
+        var changeDateTime = asset.GetSingleDate(change, Vocabulary.ChangeDateTime);
+        var operatorName = asset.GetSingleTransitiveLiteral(change, Vocabulary.ChangeHasOperator, Vocabulary.OperatorName)?.Value;
+
+        return new()
+        {
+            DescriptionBase64 = changeDescription,
+            Timestamp = changeDateTime,
+            OperatorName = operatorName,
+        };
+    }
+
+    private static RecordOutput.SensitivityReviewDiff GenerateSrDiff(RecordOutput.SensitivityReview current, RecordOutput.SensitivityReview past) =>
+        new()
+        {
+            AccessConditionCode = GenerateDiff(current.AccessConditionCode, past.AccessConditionCode),
+            AccessConditionName = GenerateDiff(current.AccessConditionName, past.AccessConditionName),
+            ClosureDescription = GenerateDiff(current.ClosureDescription, past.ClosureDescription),
+            ClosureEndYear = GenerateDiff(current.ClosureEndYear, past.ClosureEndYear),
+            ClosurePeriod = GenerateDiff(current.ClosurePeriod, past.ClosurePeriod),
+            ClosureReviewDate = GenerateDiff(current.ClosureReviewDate, past.ClosureReviewDate),
+            ClosureStartDate = GenerateDiff(current.ClosureStartDate, past.ClosureStartDate),
+            FoiAssertedDate = GenerateDiff(current.FoiAssertedDate, past.FoiAssertedDate),
+            FoiExemptions = GenerateDiff(current.FoiExemptions, past.FoiExemptions),
+            GroundForRetentionCode = GenerateDiff(current.GroundForRetentionCode, past.GroundForRetentionCode),
+            GroundForRetentionDescription = GenerateDiff(current.GroundForRetentionDescription, past.GroundForRetentionDescription),
+            InstrumentNumber = GenerateDiff(current.InstrumentNumber, past.InstrumentNumber),
+            InstrumentSignedDate = GenerateDiff(current.InstrumentSignedDate, past.InstrumentSignedDate),
+            RetentionReconsiderDate = GenerateDiff(current.RetentionReconsiderDate, past.RetentionReconsiderDate),
+            SensitiveDescription = GenerateDiff(current.SensitiveDescription, past.SensitiveDescription),
+            SensitiveName = GenerateDiff(current.SensitiveName, past.SensitiveName)
+        };
+
+    private static RecordOutput.Diff? GenerateDiff<T>(T? current, T? oldValue)
+    {
+        var none = current is null && oldValue is null;
+        var onlyOld = current is null && oldValue is not null;
+        var onlyCurrent = current is not null && oldValue is null;
+        
+        return none ? null :
+            onlyOld || onlyCurrent ? new(oldValue, current) :
+            current.Equals(oldValue) ? null : new(oldValue, current);
     }
 }
