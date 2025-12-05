@@ -65,7 +65,7 @@ internal static class RecordMapper
         var files = VariationMapper.GetVariations(asset, variations);
         var location = LocationMapper.GetLocation(asset);
         var hasSameLocation = location.Original.Equals(location.SensitiveName);
-        var sr = SensitivityReviewMapper.GetSensitivityReview(asset, variations, hasSameLocation);
+        var sr = SensitivityReviewMapper.Get(asset, variations, hasSameLocation);
         var copyrightTitles = CopyrightMapper.GetCopyrights(asset);
         var relationships = RelationMapper.GetRelations(asset, assetReference, redactedVariationSequence);
         var recordId = GetRecordId(asset, variations)!;
@@ -84,8 +84,8 @@ internal static class RecordMapper
             PastReference = assetPastReference,
             Summary = assetSummary,
             Tag = assetTag,
-            Arrangement = location.Original,
-            PublishedArrangement = location.SensitiveName,
+            Arrangement = string.IsNullOrWhiteSpace(location.Original) ? null : location.Original,
+            PublishedArrangement = string.IsNullOrWhiteSpace(location.SensitiveName) ? null : location.SensitiveName,
             ConsignmentId = consignmentTdrId,
             DriBatchReference = batchDriId,
             SourceInternalName = assetSourceInternalName,

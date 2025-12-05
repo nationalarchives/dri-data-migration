@@ -105,6 +105,7 @@ construct {
         ex:sensitivityReviewSensitiveDescription ?vSensitivityReviewSensitiveDescription;
         ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction;
         ex:sensitivityReviewHasChange ?vChange.
+    ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?srv.
     ?accessCondition ex:accessConditionCode ?accessConditionCode;
         ex:accessConditionName ?accessConditionName.
     ?restriction ex:sensitivityReviewRestrictionReviewDate ?sensitivityReviewRestrictionReviewDate;
@@ -450,7 +451,7 @@ construct {
         optional { ?variation ex:scannedVariationHasImageDeskew ?scannedVariationHasImageDeskew }
         optional {
             ?variation ex:variationHasSensitivityReview ?srv.
-        	filter not exists { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?srv }
+        	optional { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?srv }
             optional { 
                 ?srv ex:sensitivityReviewHasAccessCondition ?accessCondition.
                 ?accessCondition ex:accessConditionCode ?accessConditionCode;

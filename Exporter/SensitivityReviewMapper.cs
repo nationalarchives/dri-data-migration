@@ -6,84 +6,97 @@ namespace Exporter;
 
 internal static class SensitivityReviewMapper
 {
-    internal static RecordOutput.SensitivityReview GetSensitivityReview(IGraph graph,
+    internal static RecordOutput.SensitivityReview Get(IGraph asset,
         List<IUriNode> variations, bool hasSameLocation)
     {
-        var sr = new RecordOutput.SensitivityReview();
-        //TODO: Needs rework if past sensitive reviews are to be included
-        sr.SensitiveName = graph.GetSingleTransitiveLiteral(Vocabulary.AssetHasSensitivityReview,
-            Vocabulary.SensitivityReviewSensitiveName)?.Value;
-        sr.SensitiveDescription = graph.GetSingleTransitiveLiteral(Vocabulary.AssetHasSensitivityReview,
-            Vocabulary.SensitivityReviewSensitiveDescription)?.Value;
-        IUriNode? srSubject = null;
-        foreach (var variation in variations)
+        var sr = new RecordOutput.SensitivityReview
         {
-            srSubject = graph.GetSingleUriNode(variation, Vocabulary.VariationHasSensitivityReview);
-            if (srSubject is not null)
-            {
-                break;
-            }
-        }
+            SensitiveName = asset.GetSingleTransitiveLiteral(Vocabulary.AssetHasSensitivityReview,
+                Vocabulary.SensitivityReviewSensitiveName)?.Value,
+            SensitiveDescription = asset.GetSingleTransitiveLiteral(Vocabulary.AssetHasSensitivityReview,
+                Vocabulary.SensitivityReviewSensitiveDescription)?.Value
+        };
+        var srSubject = FindCurrentSensitivityReview(asset, variations);
         if (srSubject is not null)
         {
-            sr.SensitiveName ??= graph.GetSingleText(srSubject, Vocabulary.SensitivityReviewSensitiveName);
-            sr.SensitiveDescription ??= graph.GetSingleText(srSubject, Vocabulary.SensitivityReviewSensitiveDescription);
-            sr.AccessConditionCode = graph.GetSingleTransitiveLiteral(srSubject, Vocabulary.SensitivityReviewHasAccessCondition,
-                Vocabulary.AccessConditionCode)?.Value;
-            sr.AccessConditionName = graph.GetSingleTransitiveLiteral(srSubject, Vocabulary.SensitivityReviewHasAccessCondition,
-                Vocabulary.AccessConditionName)?.Value;
-            sr.FoiAssertedDate = RecordMapper.ToDate(
-                graph.GetSingleDate(srSubject, Vocabulary.SensitivityReviewDate));
-            var restriction = graph.GetTriplesWithSubjectPredicate(srSubject, Vocabulary.SensitivityReviewHasSensitivityReviewRestriction)
-                .SingleOrDefault()?.Object as IUriNode;
-            if (restriction is not null)
-            {
-                sr.ClosureReviewDate = RecordMapper.ToDate(
-                    graph.GetSingleDate(restriction, Vocabulary.SensitivityReviewRestrictionReviewDate));
-                sr.ClosureStartDate = RecordMapper.ToDate(
-                    graph.GetSingleDate(restriction, Vocabulary.SensitivityReviewRestrictionCalculationStartDate));
-                sr.ClosurePeriod = (int?)graph.GetSingleLiteral(restriction, Vocabulary.SensitivityReviewRestrictionDuration)
-                    ?.AsValuedNode().AsTimeSpan().TotalDays / 365;
-                var year = graph.GetSingleText(restriction, Vocabulary.SensitivityReviewRestrictionEndYear);
-                if (year is not null && int.TryParse(year, out var endYear))
-                {
-                    sr.ClosureEndYear = endYear;
-                }
-                sr.ClosureDescription = graph.GetSingleText(restriction, Vocabulary.SensitivityReviewRestrictionDescription);
-
-                var legislations = new List<RecordOutput.Legislation>();
-                foreach (var legislation in graph.GetUriNodes(restriction, Vocabulary.SensitivityReviewRestrictionHasLegislation))
-                {
-                    var legislationHasUkLegislation = graph.GetSingleUriNode(legislation, Vocabulary.LegislationHasUkLegislation)?.Uri;
-                    var legislationSectionReference = graph.GetSingleText(legislation, Vocabulary.LegislationSectionReference);
-                    legislations.Add(new()
-                    {
-                        Url = legislationHasUkLegislation!,
-                        Reference = legislationSectionReference
-                    });
-                }
-                if (legislations.Count > 0)
-                {
-                    sr.FoiExemptions = legislations;
-                }
-
-                var retentionRestriction = graph.GetSingleUriNode(restriction, Vocabulary.SensitivityReviewRestrictionHasRetentionRestriction);
-                if (retentionRestriction is not null)
-                {
-                    sr.InstrumentNumber = graph.GetSingleNumber(retentionRestriction, Vocabulary.RetentionInstrumentNumber);
-                    sr.InstrumentSignedDate = RecordMapper.ToDate(
-                        graph.GetSingleDate(retentionRestriction, Vocabulary.RetentionInstrumentSignatureDate));
-                    sr.RetentionReconsiderDate = RecordMapper.ToDate(
-                        graph.GetSingleDate(retentionRestriction, Vocabulary.RetentionRestrictionReviewDate));
-                    sr.GroundForRetentionCode = graph.GetSingleTransitiveLiteral(retentionRestriction, Vocabulary.RetentionRestrictionHasGroundForRetention,
-                        Vocabulary.GroundForRetentionCode)?.Value;
-                    sr.GroundForRetentionDescription = graph.GetSingleTransitiveLiteral(retentionRestriction, Vocabulary.RetentionRestrictionHasGroundForRetention,
-                        Vocabulary.GroundForRetentionDescription)?.Value;
-                }
-            }
+            Populate(sr, asset, srSubject);
         }
         sr.HasSensitiveMetadata = !hasSameLocation || sr.SensitiveName is not null ||
             sr.SensitiveDescription is not null;
         return sr;
+    }
+
+    internal static void Populate(RecordOutput.SensitivityReview sr, IGraph asset, IUriNode srSubject)
+    {
+        sr.SensitiveName ??= asset.GetSingleText(srSubject, Vocabulary.SensitivityReviewSensitiveName);
+        sr.SensitiveDescription ??= asset.GetSingleText(srSubject, Vocabulary.SensitivityReviewSensitiveDescription);
+        sr.AccessConditionCode = asset.GetSingleTransitiveLiteral(srSubject, Vocabulary.SensitivityReviewHasAccessCondition,
+            Vocabulary.AccessConditionCode)?.Value;
+        sr.AccessConditionName = asset.GetSingleTransitiveLiteral(srSubject, Vocabulary.SensitivityReviewHasAccessCondition,
+            Vocabulary.AccessConditionName)?.Value;
+        sr.FoiAssertedDate = RecordMapper.ToDate(
+            asset.GetSingleDate(srSubject, Vocabulary.SensitivityReviewDate));
+        var restriction = asset.GetTriplesWithSubjectPredicate(srSubject, Vocabulary.SensitivityReviewHasSensitivityReviewRestriction)
+            .SingleOrDefault()?.Object as IUriNode;
+        if (restriction is not null)
+        {
+            sr.ClosureReviewDate = RecordMapper.ToDate(
+                asset.GetSingleDate(restriction, Vocabulary.SensitivityReviewRestrictionReviewDate));
+            sr.ClosureStartDate = RecordMapper.ToDate(
+                asset.GetSingleDate(restriction, Vocabulary.SensitivityReviewRestrictionCalculationStartDate));
+            sr.ClosurePeriod = (int?)asset.GetSingleLiteral(restriction, Vocabulary.SensitivityReviewRestrictionDuration)
+                ?.AsValuedNode().AsTimeSpan().TotalDays / 365;
+            var year = asset.GetSingleText(restriction, Vocabulary.SensitivityReviewRestrictionEndYear);
+            if (year is not null && int.TryParse(year, out var endYear))
+            {
+                sr.ClosureEndYear = endYear;
+            }
+            sr.ClosureDescription = asset.GetSingleText(restriction, Vocabulary.SensitivityReviewRestrictionDescription);
+
+            var legislations = new List<RecordOutput.Legislation>();
+            foreach (var legislation in asset.GetUriNodes(restriction, Vocabulary.SensitivityReviewRestrictionHasLegislation))
+            {
+                var legislationHasUkLegislation = asset.GetSingleUriNode(legislation, Vocabulary.LegislationHasUkLegislation)?.Uri;
+                var legislationSectionReference = asset.GetSingleText(legislation, Vocabulary.LegislationSectionReference);
+                legislations.Add(new()
+                {
+                    Url = legislationHasUkLegislation!,
+                    Reference = legislationSectionReference
+                });
+            }
+            if (legislations.Count > 0)
+            {
+                sr.FoiExemptions = legislations;
+            }
+
+            var retentionRestriction = asset.GetSingleUriNode(restriction, Vocabulary.SensitivityReviewRestrictionHasRetentionRestriction);
+            if (retentionRestriction is not null)
+            {
+                sr.InstrumentNumber = asset.GetSingleNumber(retentionRestriction, Vocabulary.RetentionInstrumentNumber);
+                sr.InstrumentSignedDate = RecordMapper.ToDate(
+                    asset.GetSingleDate(retentionRestriction, Vocabulary.RetentionInstrumentSignatureDate));
+                sr.RetentionReconsiderDate = RecordMapper.ToDate(
+                    asset.GetSingleDate(retentionRestriction, Vocabulary.RetentionRestrictionReviewDate));
+                sr.GroundForRetentionCode = asset.GetSingleTransitiveLiteral(retentionRestriction, Vocabulary.RetentionRestrictionHasGroundForRetention,
+                    Vocabulary.GroundForRetentionCode)?.Value;
+                sr.GroundForRetentionDescription = asset.GetSingleTransitiveLiteral(retentionRestriction, Vocabulary.RetentionRestrictionHasGroundForRetention,
+                    Vocabulary.GroundForRetentionDescription)?.Value;
+            }
+        }
+    }
+
+    internal static IUriNode? FindCurrentSensitivityReview(IGraph asset, List<IUriNode> variations)
+    {
+        foreach (var variation in variations)
+        {
+            var srSubject = asset.GetUriNodes(variation, Vocabulary.VariationHasSensitivityReview)
+                ?.SingleOrDefault(s => !asset.GetTriplesWithPredicateObject(Vocabulary.SensitivityReviewHasPastSensitivityReview, s).Any());
+            if (srSubject is not null)
+            {
+                return srSubject;
+            }
+        }
+
+        return null;
     }
 }
