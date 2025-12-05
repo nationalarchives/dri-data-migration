@@ -35,7 +35,7 @@ public class RecordRetrieval(ILogger<RecordRetrieval> logger, IExportSparqlClien
 
     public async Task<IEnumerable<XmlWrapper>> GetXmlAsync(IUriNode id, CancellationToken cancellationToken)
     {
-        var graph = await sparqlClient.GetGraphAsync(sparqlXml, id, cancellationToken);
+        var graph = await sparqlClient.GetGraphAsync(sparqlXml, id.Uri, cancellationToken);
 
         return MapXmls(graph, id);
     }
