@@ -15,6 +15,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
     private readonly RdfXmlLoader rdfXmlLoader = new(logger);
     private readonly AssetDeliverableUnitOriginDateIngest dateIngest = new(logger);
     private readonly AssetDeliverableUnitSealIngest sealIngest = new(logger, cacheClient);
+    private readonly DateParser dateParser = new(logger);
     private readonly JsonSerializerOptions jsonSerializerOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
@@ -65,7 +66,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             [IngestVocabulary.SeparatedMaterial] = Vocabulary.AssetConnectedAssetNote,
             [IngestVocabulary.AttachmentFormerReference] = Vocabulary.EmailAttachmentReference
         });
-        GraphAssert.Date(logger, graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
+        GraphAssert.Date(dateParser, graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
         {
             [IngestVocabulary.Session_date] = Vocabulary.CourtSessionDate,
             [IngestVocabulary.Hearing_date] = Vocabulary.InquiryHearingDate
@@ -274,7 +275,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
                 [new UriNode(new($"{IngestVocabulary.TnaNamespace}case_summary_{caseIndex}_judgment"))] = Vocabulary.CourtCaseSummaryJudgment,
                 [new UriNode(new($"{IngestVocabulary.TnaNamespace}case_summary_{caseIndex}_reasons_for_judgment"))] = Vocabulary.CourtCaseSummaryReasonsForJudgment
             });
-            GraphAssert.Date(logger, graph, courtCase, rdf, new Dictionary<IUriNode, IUriNode>()
+            GraphAssert.Date(dateParser, graph, courtCase, rdf, new Dictionary<IUriNode, IUriNode>()
             {
                 [new UriNode(new($"{IngestVocabulary.TnaNamespace}hearing_start_date_{caseIndex}"))] = Vocabulary.CourtCaseHearingStartDate,
                 [new UriNode(new($"{IngestVocabulary.TnaNamespace}hearing_end_date_{caseIndex}"))] = Vocabulary.CourtCaseHearingEndDate
@@ -370,7 +371,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             if (birth is not null)
             {
                 var birthDate = rdf.GetTriplesWithSubjectPredicate(birth, IngestVocabulary.TransDate).SingleOrDefault()?.Object as ILiteralNode;
-                if (birthDate is not null && DateParser.TryParseDate(birthDate.Value, out var birthDt))
+                if (birthDate is not null && dateParser.TryParseDate(birthDate.Value, out var birthDt))
                 {
                     var dob = existing.GetTriplesWithSubjectPredicate(person, Vocabulary.PersonHasDateOfBirth).SingleOrDefault()?.Object as IUriNode
                         ?? CacheClient.NewId;

@@ -149,7 +149,7 @@ internal partial class DateParser(ILogger logger)
         Reverse
     }
 
-    internal static bool TryParseDate(string date, out Ymd? dt)
+    internal bool TryParseDate(string date, out Ymd? dt)
     {
         if (string.IsNullOrWhiteSpace(date))
         {
@@ -189,6 +189,7 @@ internal partial class DateParser(ILogger logger)
             return true;
         }
 
+        logger.UnrecognizedDateFormat(date);
         dt = null;
         return false;
     }

@@ -12,6 +12,7 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
     StagingIngest<DriWo409SubsetDeliverableUnit>(sparqlClient, logger, "Wo409SubsetDeliverableUnitGraph")
 {
     private readonly RdfXmlLoader rdfXmlLoader = new(logger);
+    private readonly DateParser dateParser = new(logger);
     private readonly IUriNode wo409 = new UriNode(new Uri("http://example.com/subject"));
     private readonly Uri givenName = new("http://example.com/given");
     private readonly Uri familyName = new("http://example.com/familyName");
@@ -114,7 +115,7 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
             var birthDate = rdf.GetTriplesWithSubjectPredicate(birth, IngestVocabulary.Date)
                 .SingleOrDefault()?.Object as ILiteralNode;
             if (birthDate is not null && !string.IsNullOrWhiteSpace(birthDate.Value) &&
-                DateParser.TryParseDate(birthDate.Value, out var birthDt))
+                dateParser.TryParseDate(birthDate.Value, out var birthDt))
             {
                 var dob = existing.GetTriplesWithSubjectPredicate(person, Vocabulary.PersonHasDateOfBirth).SingleOrDefault()?.Object as IUriNode
                         ?? CacheClient.NewId;

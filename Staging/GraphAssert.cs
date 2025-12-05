@@ -103,29 +103,23 @@ internal static class GraphAssert
         }
     }
 
-    internal static void Date(ILogger logger, IGraph graph, INode id, IGraph rdf,
+    internal static void Date(DateParser dateParser, IGraph graph, INode id, IGraph rdf,
         Dictionary<IUriNode, IUriNode> predicates)
     {
         foreach (var predicate in predicates)
         {
-            Date(logger, graph, id, rdf, predicate.Key, predicate.Value);
+            Date(dateParser, graph, id, rdf, predicate.Key, predicate.Value);
         }
     }
 
-    internal static void Date(ILogger logger, IGraph graph, INode id, IGraph rdf,
-        IUriNode findPredicate, IUriNode immediatePredicate)
+    internal static void Date(DateParser dateParser, IGraph graph,
+        INode id, IGraph rdf, IUriNode findPredicate, IUriNode immediatePredicate)
     {
         var found = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
-        if (found is ILiteralNode foundNode && !string.IsNullOrWhiteSpace(foundNode.Value))
+        if (found is ILiteralNode foundNode && !string.IsNullOrWhiteSpace(foundNode.Value) &&
+            dateParser.TryParseDate(foundNode.Value, out var dt))
         {
-            if (DateParser.TryParseDate(foundNode.Value, out var dt))
-            {
-                graph.Assert(id, immediatePredicate, new DateNode(new DateTimeOffset((int)dt!.Year!, (int)dt!.Month!, (int)dt!.Day!, 0, 0, 0, TimeSpan.Zero)));
-            }
-            else
-            {
-                logger.UnrecognizedDateFormat(foundNode.Value);
-            }
+            graph.Assert(id, immediatePredicate, new DateNode(new DateTimeOffset((int)dt!.Year!, (int)dt!.Month!, (int)dt!.Day!, 0, 0, 0, TimeSpan.Zero)));
         }
     }
 
