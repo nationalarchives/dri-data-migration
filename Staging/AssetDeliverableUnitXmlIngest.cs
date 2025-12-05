@@ -64,7 +64,8 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             [IngestVocabulary.SealOwner] = Vocabulary.SealOwnerName, //TODO: check if can be turned into entities
             [IngestVocabulary.ColourOfOriginalSeal] = Vocabulary.SealColour,
             [IngestVocabulary.SeparatedMaterial] = Vocabulary.AssetConnectedAssetNote,
-            [IngestVocabulary.AttachmentFormerReference] = Vocabulary.EmailAttachmentReference
+            [IngestVocabulary.AttachmentFormerReference] = Vocabulary.EmailAttachmentReference,
+            [IngestVocabulary.CuratedDateNote] = Vocabulary.AssetAlternativeModifiedAtNote
         });
         GraphAssert.Date(dateParser, graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
         {
@@ -77,9 +78,31 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             [IngestVocabulary.EndImageNumber] = Vocabulary.ImageSequenceEnd
         });
 
-        var modified = rdf.GetSingleDate(IngestVocabulary.Modified);
-        GraphAssert.DateTime(graph, id, modified, Vocabulary.AssetModifiedAt);
-
+        var modified = rdf.GetSingleText(IngestVocabulary.Modified);
+        if (!string.IsNullOrEmpty(modified))
+        {
+            if (DateTimeOffset.TryParse(modified, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var modifiedDT))
+            {
+                GraphAssert.DateTime(graph, id, modifiedDT, Vocabulary.AssetModifiedAt);
+            }
+            else
+            {
+                logger.UnrecognizedDateFormat(modified);
+            }
+        }
+        var curatedDate = rdf.GetSingleText(IngestVocabulary.CuratedDate);
+        if (!string.IsNullOrEmpty(curatedDate))
+        {
+            if (DateTimeOffset.TryParse(curatedDate, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var curatedDT))
+            {
+                GraphAssert.DateTime(graph, id, curatedDT, Vocabulary.AssetAlternativeModifiedAt);
+            }
+            else
+            {
+                logger.UnrecognizedDateFormat(curatedDate);
+            }
+        }
+        
         AddNames(graph, doc, id);
         await AddVariationRelationsAsync(graph, rdf, id, doc, filesJson, cancellationToken);
         AddFilmDuration(graph, rdf, id);

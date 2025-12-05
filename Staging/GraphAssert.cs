@@ -116,8 +116,7 @@ internal static class GraphAssert
         INode id, IGraph rdf, IUriNode findPredicate, IUriNode immediatePredicate)
     {
         var found = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
-        if (found is ILiteralNode foundNode && !string.IsNullOrWhiteSpace(foundNode.Value) &&
-            dateParser.TryParseDate(foundNode.Value, out var dt))
+        if (found is ILiteralNode foundNode && dateParser.TryParseDate(foundNode.Value, out var dt))
         {
             graph.Assert(id, immediatePredicate, new DateNode(new DateTimeOffset((int)dt!.Year!, (int)dt!.Month!, (int)dt!.Day!, 0, 0, 0, TimeSpan.Zero)));
         }

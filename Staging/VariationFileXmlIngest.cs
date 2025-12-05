@@ -1,6 +1,5 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
-using System.Globalization;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 
@@ -130,19 +129,6 @@ public class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
                     }
                 }
             }
-        }
-        var curatedDateNote = rdf.GetTriplesWithPredicate(IngestVocabulary.CuratedDateNote).SingleOrDefault()?.Object as ILiteralNode;
-        var curatedDate = rdf.GetTriplesWithPredicate(IngestVocabulary.CuratedDate).SingleOrDefault()?.Object as ILiteralNode;
-        if (curatedDateNote is not null && curatedDate is not null &&
-            !string.IsNullOrWhiteSpace(curatedDateNote.Value) &&
-            !string.IsNullOrWhiteSpace(curatedDate.Value) &&
-            DateTimeOffset.TryParseExact(curatedDate.Value, "yyyy-MM-ddTHH:mm:ssK", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var curatedDt))
-        {
-            var datedNote = datedNoteNodes.SingleOrDefault(dn => existing.GetSingleLiteral(dn, Vocabulary.ArchivistNoteAt) is not null) ?? CacheClient.NewId;
-
-            graph.Assert(id, Vocabulary.VariationHasDatedNote, datedNote);
-            GraphAssert.Text(graph, datedNote, curatedDateNote!.Value, Vocabulary.ArchivistNote);
-            graph.Assert(datedNote, Vocabulary.ArchivistNoteAt, new DateTimeNode(curatedDt));
         }
     }
 
