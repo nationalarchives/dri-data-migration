@@ -71,6 +71,7 @@ public static class IngestVocabulary
     public static readonly IUriNode Coverage = new UriNode(new(DctermsNamespace, "coverage"));
     public static readonly IUriNode Subject = new UriNode(new(DctermsNamespace, "subject"));
     public static readonly IUriNode References = new UriNode(new(DctermsNamespace, "references"));
+    public static readonly IUriNode Modified = new UriNode(new(DctermsNamespace, "modified"));
 
     //Local names of predicates are constructed by concatenation with the last path segment due to the lack of end forward slash in the XML namespace declaration.
     public static readonly IUriNode PaperNumber = new UriNode(new($"{TransNamespace}paperNumber"));

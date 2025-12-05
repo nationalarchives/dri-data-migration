@@ -17,6 +17,7 @@ construct {
         ex:assetTag ?assetTag;
         ex:assetSourceInternalName ?assetSourceInternalName;
         ex:assetConnectedAssetNote ?assetConnectedAssetNote;
+        ex:assetModifiedAt ?assetModifiedAt;
         ex:filmProductionCompanyName ?filmProductionCompanyName;
         ex:filmTitle ?filmTitle;
         ex:filmDuration ?filmDuration;
@@ -134,6 +135,7 @@ construct {
     optional { ?asset ex:assetTag ?assetTag }
     optional { ?asset ex:assetSourceInternalName ?assetSourceInternalName }
     optional { ?asset ex:assetConnectedAssetNote ?assetConnectedAssetNote }
+    optional { ?asset ex:assetModifiedAt ?assetModifiedAt }
     optional { ?asset ex:filmProductionCompanyName ?filmProductionCompanyName }
     optional { ?asset ex:filmTitle ?filmTitle }
     optional { ?asset ex:filmDuration ?filmDuration }

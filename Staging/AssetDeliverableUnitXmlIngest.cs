@@ -77,6 +77,9 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
             [IngestVocabulary.EndImageNumber] = Vocabulary.ImageSequenceEnd
         });
 
+        var modified = rdf.GetSingleDate(IngestVocabulary.Modified);
+        GraphAssert.DateTime(graph, id, modified, Vocabulary.AssetModifiedAt);
+
         AddNames(graph, doc, id);
         await AddVariationRelationsAsync(graph, rdf, id, doc, filesJson, cancellationToken);
         AddFilmDuration(graph, rdf, id);

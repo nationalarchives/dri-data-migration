@@ -105,6 +105,7 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | trans:sealOwner | ex:sealOwnerName |
 | trans:colourOfOriginalSeal | ex:sealColour |
 | trans:separatedMaterial | ex:assetConnectedAssetNote |
+| dcterms:modified | ex:assetModifiedAt |
 | tna:attachmentFormerReference | ex:emailAttachmentReference |
 | tna:session_date | ex:courtSessionDate |
 | tna:hearing_date | ex:inquiryHearingDate |

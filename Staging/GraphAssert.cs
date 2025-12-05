@@ -123,6 +123,14 @@ internal static class GraphAssert
         }
     }
 
+    internal static void DateTime(IGraph graph, INode id, DateTimeOffset? value, IUriNode immediatePredicate)
+    {
+        if (value.HasValue)
+        {
+            graph.Assert(id, immediatePredicate, new DateTimeNode(value.Value));
+        }
+    }
+
     internal static void YearMonthDay(IGraph graph, INode id, int? year, int? month, int? day)
     {
         if (year is not null)

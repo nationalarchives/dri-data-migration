@@ -1246,6 +1246,13 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset connected asset note".
 
+:assetModifiedAt a owl:DatatypeProperty;
+	rdfs:seeAlso rico:wasLastUpdatedAtDate;
+	rdfs:domain :Asset;
+	rdfs:range xsd:datetime;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset modified at".
+
 :evidenceProviderName a owl:DatatypeProperty;
 	rdfs:domain :InquiryAsset;
 	rdfs:range xsd:string;

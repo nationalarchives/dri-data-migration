@@ -1,7 +1,6 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using VDS.RDF;
-using VDS.RDF.Nodes;
 
 namespace Staging;
 
@@ -15,7 +14,7 @@ public class ChangeIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, 
         var graph = new Graph();
         graph.Assert(id, Vocabulary.ChangeDriId, driId);
         GraphAssert.Base64(graph, id, dri.Diff, Vocabulary.ChangeDescription);
-        graph.Assert(id, Vocabulary.ChangeDateTime, new DateTimeNode(dri.Timestamp));
+        GraphAssert.DateTime(graph, id, dri.Timestamp, Vocabulary.ChangeDateTime);
         if (dri.Table == "DeliverableUnit")
         {
             var asset = await cacheClient.CacheFetch(CacheEntityKind.Asset, dri.Reference, cancellationToken);

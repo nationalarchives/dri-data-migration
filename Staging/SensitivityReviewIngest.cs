@@ -235,7 +235,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         GraphAssert.Base64(graph, change, dri.ChangeDescription, Vocabulary.ChangeDescription);
         if (dri.ChangeTimestamp is not null)
         {
-            graph.Assert(change, Vocabulary.ChangeDateTime, new DateTimeNode(dri.ChangeTimestamp.Value));
+            GraphAssert.DateTime(graph, change, dri.ChangeTimestamp, Vocabulary.ChangeDateTime);
         }
         if (dri.ChangeOperatorId is not null)
         {
