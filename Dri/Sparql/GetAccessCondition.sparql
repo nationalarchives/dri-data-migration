@@ -2,6 +2,7 @@
 prefix dri: <http://nationalarchives.gov.uk/terms/dri#>
 
 select ?s ?label where {
+    bind(@id as ?s)
     ?s a dri:ClosureType;
     	rdfs:label ?label.
 }

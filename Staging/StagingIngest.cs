@@ -26,34 +26,26 @@ public abstract class StagingIngest<T> : IStagingIngest<T> where T : IDriRecord
         throw new NotImplementedException();
     }
 
-    public async Task<int> SetAsync(IEnumerable<T> records, CancellationToken cancellationToken)
+    public async Task<bool> SetAsync(T record, CancellationToken cancellationToken)
     {
-        var total = 0;
-        foreach (var dri in records)
+        var existing = await sparqlClient.GetGraphAsync(graphSparql, record.Id, cancellationToken);
+        logger.BuildingRecord();
+        var proposed = await BuildAsync(existing, record, cancellationToken);
+        logger.RecordBuilt();
+        if (proposed is null)
         {
-            using (logger.BeginScope(("RecordId", dri.Id)))
-            {
-                var existing = await sparqlClient.GetGraphAsync(graphSparql, new Dictionary<string, object> { { "id", dri.Id } }, cancellationToken);
-                logger.BuildingRecord();
-                var proposed = await BuildAsync(existing, dri, cancellationToken);
-                logger.RecordBuilt();
-                if (proposed is null)
-                {
-                    logger.RecordNotIngestedNoGraph();
-                    continue;
-                }
-                var diff = existing.Difference(proposed);
-                if (!diff.AddedTriples.Any() && !diff.RemovedTriples.Any())
-                {
-                    continue;
-                }
-
-                await sparqlClient.ApplyDiffAsync(diff, cancellationToken);
-                total++;
-                logger.RecordUpdated();
-            }
+            logger.RecordNotIngestedNoGraph();
+            return false;
         }
-        return total;
+        var diff = existing.Difference(proposed);
+        if (!diff.AddedTriples.Any() && !diff.RemovedTriples.Any())
+        {
+            return false;
+        }
+
+        await sparqlClient.ApplyDiffAsync(diff, cancellationToken);
+        logger.RecordUpdated();
+        return true;
     }
 
     internal static string? GetUriFragment(Uri? uri) => uri?.Fragment.Length > 1 ? uri.Fragment.TrimStart('#') : null;

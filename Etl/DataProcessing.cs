@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace Etl;
 
-public class DataProcessing(ILogger<DataProcessing> logger, IOptions<DriSettings> driSettings, IEnumerable<IEtl> etls) : IDataProcessing
+public class DataProcessing(ILogger<DataProcessing> logger, IOptions<DriSettings> driSettings,
+    IEnumerable<IEtl> etls) : IDataProcessing
 {
     private readonly DriSettings settings = driSettings.Value;
 
@@ -23,12 +24,13 @@ public class DataProcessing(ILogger<DataProcessing> logger, IOptions<DriSettings
                 logger.EtlStageSkipped(etl.StageType);
                 continue;
             }
+
             int offset = 0;
             if (settings.RestartFromStage == etl.StageType)
             {
                 offset = settings.RestartFromOffset;
             }
-
+            logger.StartEtl(etl.StageType);
             await etl.RunAsync(offset, cancellationToken);
         }
         logger.MigrationFinished();

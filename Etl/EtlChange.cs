@@ -1,30 +1,19 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System.Collections.Generic;
-using System.Linq;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Etl;
 
-public class EtlChange(ILogger<EtlChange> logger, IOptions<DriSettings> driSettings,
-    IDriSqlExporter driExport, IStagingIngest<DriChange> ingest) : IEtl
+public class EtlChange(ILogger<EtlChange> logger, IDriSqlExporter sqlExport, IStagingIngest<DriChange> ingest) : Etl<DriChange>(logger, ingest), IEtl
 {
-    private readonly DriSettings settings = driSettings.Value;
+    public Task RunAsync(int offset, CancellationToken cancellationToken) =>
+        EtlSqlSourceAsync(sqlExport, offset, cancellationToken);
 
-    public EtlStageType StageType => EtlStageType.Change;
+    internal override DriChange Get(string id, CancellationToken cancellationToken) =>
+        sqlExport.GetChange(id, cancellationToken);
 
-    public async Task RunAsync(int offset, CancellationToken cancellationToken)
-    {
-        List<DriChange> dri;
-        do
-        {
-            dri = driExport.GetChanges(offset, cancellationToken).ToList();
-            offset += settings.FetchPageSize;
-            logger.IngestingChanges(dri.Count);
-            var ingestSize = await ingest.SetAsync(dri, cancellationToken);
-            logger.IngestedChanges(ingestSize);
-        } while (dri.Any() && dri.Count == settings.FetchPageSize);
-    }
+    internal override Task<DriChange> GetAsync(Uri id, CancellationToken cancellationToken) =>
+        throw new NotImplementedException();
 }

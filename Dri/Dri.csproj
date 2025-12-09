@@ -7,17 +7,28 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Sparql\GetAccessConditionsAsync.sparql" />
-    <EmbeddedResource Include="Sparql\GetAssetsByCodeAsync.sparql" />
-    <EmbeddedResource Include="Sparql\GetGroundsForRetentionAsync.sparql" />
-    <EmbeddedResource Include="Sparql\GetLegislationsAsync.sparql" />
-    <EmbeddedResource Include="Sparql\GetSensitivityReviewsByCodeAsync.sparql" />
-    <EmbeddedResource Include="Sparql\GetSubsetsByCodeAsync.sparql" />
-    <EmbeddedResource Include="Sparql\GetVariationsByCodeAsync.sparql" />
-    <EmbeddedResource Include="Sql\GetChanges.sql" />
-    <EmbeddedResource Include="Sql\GetVariationFiles.sql" />
-    <EmbeddedResource Include="Sql\GetWo409SubsetDeliverableUnits.sql" />
-    <EmbeddedResource Include="Sql\GetAssetDeliverableUnits.sql" />
+    <EmbeddedResource Include="Sparql\ListVariation.sparql" />
+    <EmbeddedResource Include="Sparql\ListSubset.sparql" />
+    <EmbeddedResource Include="Sparql\ListSensitivityReview.sparql" />
+    <EmbeddedResource Include="Sparql\ListLegislation.sparql" />
+    <EmbeddedResource Include="Sparql\ListGroundForRetention.sparql" />
+    <EmbeddedResource Include="Sparql\ListAsset.sparql" />
+    <EmbeddedResource Include="Sparql\ListAccessCondition.sparql" />
+    <EmbeddedResource Include="Sparql\GetAccessCondition.sparql" />
+    <EmbeddedResource Include="Sparql\GetAsset.sparql" />
+    <EmbeddedResource Include="Sparql\GetGroundForRetention.sparql" />
+    <EmbeddedResource Include="Sparql\GetLegislation.sparql" />
+    <EmbeddedResource Include="Sparql\GetSensitivityReview.sparql" />
+    <EmbeddedResource Include="Sparql\GetSubset.sparql" />
+    <EmbeddedResource Include="Sparql\GetVariation.sparql" />
+    <EmbeddedResource Include="Sql\ListWo409SubsetDeliverableUnit.sql" />
+    <EmbeddedResource Include="Sql\ListVariationFile.sql" />
+    <EmbeddedResource Include="Sql\ListChange.sql" />
+    <EmbeddedResource Include="Sql\ListAssetDeliverableUnit.sql" />
+    <EmbeddedResource Include="Sql\GetChange.sql" />
+    <EmbeddedResource Include="Sql\GetVariationFile.sql" />
+    <EmbeddedResource Include="Sql\GetWo409SubsetDeliverableUnit.sql" />
+    <EmbeddedResource Include="Sql\GetAssetDeliverableUnit.sql" />
   </ItemGroup>
 
   <ItemGroup>

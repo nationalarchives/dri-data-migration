@@ -1,0 +1,37 @@
+﻿prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix dri: <http://nationalarchives.gov.uk/terms/dri#>
+prefix dcterms: <http://purl.org/dc/terms/>
+prefix ex: <http://id.example.com/schema/>
+
+select ?s where {
+    bind(@id as ?code)
+    bind(replace(@id,' ','_') as ?code2)
+    {
+        {
+            ?s a dri:DeliverableUnit;
+                dri:isPartOfSeries/rdfs:label ?code.
+        }
+        union
+        {
+            ?s a dri:DeliverableUnit;
+                dri:isPartOfSeries/rdfs:label ?code2.
+        }
+    }
+    {
+        {
+            ?asset a dri:DeliverableUnit;
+                dri:parent+ ?s.
+            ?m dri:file ?f;
+                dri:parent ?asset.
+        }
+        union
+        {
+            filter not exists {
+                ?m dri:file ?f;
+                    dri:parent ?s.
+            }
+        }
+    }
+}
+group by ?s
+order by ?s

@@ -2,6 +2,6 @@
 prefix dri: <http://nationalarchives.gov.uk/terms/dri#> 
 
 select ?legislation ?label where {
-    ?closure dri:exemptionCode ?legislation.
+    bind(@id as ?legislation)
     optional { ?legislation rdfs:label ?label }
-} group by ?legislation ?label
+}

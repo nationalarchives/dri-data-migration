@@ -1,30 +1,19 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System.Collections.Generic;
-using System.Linq;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Etl;
 
-public class EtlVariationFile(ILogger<EtlVariationFile> logger, IOptions<DriSettings> driSettings,
-    IDriSqlExporter driExport, IStagingIngest<DriVariationFile> ingest) : IEtl
+public class EtlVariationFile(ILogger<EtlVariationFile> logger, IDriSqlExporter sqlExport, IStagingIngest<DriVariationFile> ingest) : Etl<DriVariationFile>(logger, ingest), IEtl
 {
-    private readonly DriSettings settings = driSettings.Value;
+    public Task RunAsync(int offset, CancellationToken cancellationToken) =>
+        EtlSqlSourceAsync(sqlExport, offset, cancellationToken);
 
-    public EtlStageType StageType => EtlStageType.VariationFile;
+    internal override DriVariationFile Get(string id, CancellationToken cancellationToken) =>
+        sqlExport.GetVariationFile(id, cancellationToken);
 
-    public async Task RunAsync(int offset, CancellationToken cancellationToken)
-    {
-        List<DriVariationFile> dri;
-        do
-        {
-            dri = driExport.GetVariationFiles(offset, cancellationToken).ToList();
-            offset += settings.FetchPageSize;
-            logger.IngestingFiles(dri.Count);
-            var ingestSize = await ingest.SetAsync(dri, cancellationToken);
-            logger.IngestedFiles(ingestSize);
-        } while (dri.Any() && dri.Count == settings.FetchPageSize);
-    }
+    internal override Task<DriVariationFile> GetAsync(Uri id, CancellationToken cancellationToken) =>
+        throw new NotImplementedException();
 }

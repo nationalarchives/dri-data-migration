@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,11 +7,12 @@ namespace Api;
 
 public interface IDriRdfExporter
 {
-    Task<IEnumerable<DriAccessCondition>> GetAccessConditionsAsync(CancellationToken cancellationToken);
-    Task<IEnumerable<DriAsset>> GetAssetsByCodeAsync(int offset, CancellationToken cancellationToken);
-    Task<IEnumerable<DriGroundForRetention>> GetGroundsForRetentionAsync(CancellationToken cancellationToken);
-    Task<IEnumerable<DriLegislation>> GetLegislationsAsync(CancellationToken cancellationToken);
-    Task<IEnumerable<DriSensitivityReview>> GetSensitivityReviewsByCodeAsync(int offset, CancellationToken cancellationToken);
-    Task<IEnumerable<DriSubset>> GetSubsetsByCodeAsync(int offset, CancellationToken cancellationToken);
-    Task<IEnumerable<DriVariation>> GetVariationsByCodeAsync(int offset, CancellationToken cancellationToken);
+    Task<IEnumerable<Uri>> GetListAsync(EtlStageType etlStageType, CancellationToken cancellationToken);
+    Task<DriAccessCondition> GetAccessConditionAsync(Uri id, CancellationToken cancellationToken);
+    Task<DriLegislation> GetLegislationAsync(Uri id, CancellationToken cancellationToken);
+    Task<DriGroundForRetention> GetGroundForRetentionAsync(Uri id, CancellationToken cancellationToken);
+    Task<DriSubset> GetSubsetAsync(Uri id, CancellationToken cancellationToken);
+    Task<DriAsset> GetAssetAsync(Uri id, CancellationToken cancellationToken);
+    Task<DriVariation> GetVariationAsync(Uri id, CancellationToken cancellationToken);
+    Task<DriSensitivityReview> GetSensitivityReviewAsync(Uri id, CancellationToken cancellationToken);
 }

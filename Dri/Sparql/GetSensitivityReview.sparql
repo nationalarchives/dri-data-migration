@@ -33,47 +33,11 @@ construct {
         ex:operatorName ?changeAgentLabel.
 }
 where {
-    ?record a ?type.
-    {
-        select ?closure ?closureType ?record ?reference where {
-            bind(@id as ?code)
-            bind(replace(@id,' ','_') as ?code2)
-
-            ?closure dri:closureType ?closureType;
-                prov:specializationOf ?record.
-            ?record rdfs:label ?reference.
-            {
-                ?record ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code.
-            }
-            union
-            {
-                ?record ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code2.
-            }
-            union
-            {
-                ?record dri:isPartOfSeries/rdfs:label ?code.
-            }
-            union
-            {
-                ?record dri:isPartOfSeries/rdfs:label ?code2.
-            }
-            filter exists {
-                {
-                    ?closure dri:titleAlternative ?titleAlternative
-                }
-                union
-                {
-                    ?closure dcterms:alternative ?descriptionAlternative
-                }
-                union
-                {
-                    ?record a dri:File.
-                }
-            }
-        }
-        order by ?reference
-        limit @limit offset @offset
-    }
+    bind(@id as ?closure)
+    ?closure dri:closureType ?closureType;
+        prov:specializationOf ?record.
+    ?record a ?type;
+        rdfs:label ?reference.
     optional { ?closure dri:closurePeriod ?closurePeriod }
     optional { ?closure dri:startDate ?startDate }
     optional { ?closure dri:exemptionAsserted ?exemptionAsserted }

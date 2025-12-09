@@ -1,0 +1,24 @@
+﻿prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix dri: <http://nationalarchives.gov.uk/terms/dri#> 
+prefix dcterms: <http://purl.org/dc/terms/>
+prefix ex: <http://id.example.com/schema/>
+
+select ?s where {
+    bind(@id as ?code)
+    bind(replace(@id,' ','_') as ?code2)
+    ?s a dri:File;
+        ^dri:file/dri:parent/rdfs:label ?assetReference.
+    {
+        ?s dri:directory*/rdfs:label ?code.
+    }
+    union
+    {
+        ?s ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code.
+    }
+    union
+    {
+        ?s ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code2.
+    }
+}
+group by ?s
+order by ?s

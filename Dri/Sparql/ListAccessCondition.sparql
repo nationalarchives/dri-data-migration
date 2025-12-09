@@ -1,0 +1,7 @@
+﻿prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix dri: <http://nationalarchives.gov.uk/terms/dri#>
+
+select ?s where {
+    ?s a dri:ClosureType;
+        rdfs:label ?label.
+} order by ?s

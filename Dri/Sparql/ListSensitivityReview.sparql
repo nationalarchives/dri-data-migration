@@ -1,0 +1,44 @@
+﻿prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix prov:  <http://www.w3.org/ns/prov#>
+prefix dri: <http://nationalarchives.gov.uk/terms/dri#> 
+prefix dcterms: <http://purl.org/dc/terms/>
+prefix ex: <http://id.example.com/schema/>
+
+select ?s where {
+    bind(@id as ?code)
+    bind(replace(@id,' ','_') as ?code2)
+    ?s a dri:Closure;
+        prov:specializationOf ?record.
+    {
+        {
+            ?record ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code.
+        }
+        union
+        {
+            ?record ^dri:file/dri:parent/dri:isPartOfSeries/rdfs:label ?code2.
+        }
+        union
+        {
+            ?record dri:isPartOfSeries/rdfs:label ?code.
+        }
+        union
+        {
+            ?record dri:isPartOfSeries/rdfs:label ?code2.
+        }
+    }
+    {
+        {
+            ?s dri:titleAlternative ?titleAlternative
+        }
+        union
+        {
+            ?s dcterms:alternative ?descriptionAlternative
+        }
+        union
+        {
+            ?record a dri:File.
+        }
+    }
+}
+group by ?s
+order by ?s

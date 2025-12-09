@@ -1,0 +1,23 @@
+﻿prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix dri: <http://nationalarchives.gov.uk/terms/dri#> 
+prefix dcterms: <http://purl.org/dc/terms/>
+prefix ex: <http://id.example.com/schema/>
+
+construct {
+    ?a ex:assetDriId ?a;
+        ex:assetReference ?reference;
+        ex:assetHasSubset [
+            ex:subsetReference ?subset
+    	];
+    	ex:assetHasRetention [
+            ex:importLocation ?directory
+    	].
+} where {
+    bind(@id as ?a)
+    ?a rdfs:label ?reference.
+    optional { ?a dri:hasDirectory/rdfs:label ?directDirectory }
+    optional { ?a dri:parent/dri:hasDirectory/rdfs:label ?parentDirectory }
+    optional { ?a dri:parent/rdfs:label ?parentLabel }
+    bind(coalesce(?directDirectory, ?parentDirectory) as ?directory)
+    bind(coalesce(?parentLabel, ?code) as ?subset)
+}

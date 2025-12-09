@@ -1,30 +1,19 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System.Collections.Generic;
-using System.Linq;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Etl;
 
-public class EtlWo409SubsetDeliverableUnit(ILogger<EtlWo409SubsetDeliverableUnit> logger, IOptions<DriSettings> driSettings,
-    IDriSqlExporter driExport, IStagingIngest<DriWo409SubsetDeliverableUnit> ingest) : IEtl
+public class EtlWo409SubsetDeliverableUnit(ILogger<EtlWo409SubsetDeliverableUnit> logger, IDriSqlExporter sqlExport, IStagingIngest<DriWo409SubsetDeliverableUnit> ingest) : Etl<DriWo409SubsetDeliverableUnit>(logger, ingest), IEtl
 {
-    private readonly DriSettings settings = driSettings.Value;
+    public Task RunAsync(int offset, CancellationToken cancellationToken) =>
+        EtlSqlSourceAsync(sqlExport, offset, cancellationToken);
 
-    public EtlStageType StageType => EtlStageType.Wo409SubsetDeliverableUnit;
+    internal override DriWo409SubsetDeliverableUnit Get(string id, CancellationToken cancellationToken) =>
+        sqlExport.GetWo409SubsetDeliverableUnit(id, cancellationToken);
 
-    public async Task RunAsync(int offset, CancellationToken cancellationToken)
-    {
-        List<DriWo409SubsetDeliverableUnit> dri;
-        do
-        {
-            dri = driExport.GetWo409SubsetDeliverableUnits(offset, cancellationToken).ToList();
-            offset += settings.FetchPageSize;
-            logger.IngestingWo409SubsetDeliverableUnits(dri.Count);
-            var ingestSize = await ingest.SetAsync(dri, cancellationToken);
-            logger.IngestedWo409SubsetDeliverableUnits(ingestSize);
-        } while (dri.Any() && dri.Count == settings.FetchPageSize);
-    }
+    internal override Task<DriWo409SubsetDeliverableUnit> GetAsync(Uri id, CancellationToken cancellationToken) =>
+        throw new NotImplementedException();
 }

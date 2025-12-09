@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 namespace Api;
 
 public interface IStagingIngest<T> where T : IDriRecord
 {
-    Task<int> SetAsync(IEnumerable<T> records, CancellationToken cancellationToken);
+    Task<bool> SetAsync(T record, CancellationToken cancellationToken);
 }

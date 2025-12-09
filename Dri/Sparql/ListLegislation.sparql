@@ -1,0 +1,8 @@
+﻿prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix dri: <http://nationalarchives.gov.uk/terms/dri#> 
+
+select ?s where {
+    ?closure dri:exemptionCode ?s.
+}
+group by ?s
+order by ?s
