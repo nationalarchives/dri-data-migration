@@ -1,4 +1,4 @@
-﻿with files as (
+﻿with vfiles as (
 	select d.DELIVERABLEUNITREF, d.FILEREF, d.FILELOCATION, d.NAME from dufile d
 	where d.DELIVERABLEUNITREF = $id
 )
@@ -8,7 +8,5 @@ select d.DELIVERABLEUNITREF, d.CATALOGUEREFERENCE, x.XMLCLOB,
 	']') as files
 from dufile d
 join xmlmetadata x on x.METADATAREF = d.DMETADATAREF
-join files f on f.DELIVERABLEUNITREF = d.DELIVERABLEUNITREF
+join vfiles f on f.DELIVERABLEUNITREF = d.DELIVERABLEUNITREF
 where d.DELIVERABLEUNITREF = $id
-group by d.DELIVERABLEUNITREF
-

@@ -105,11 +105,12 @@ internal static class ChangeMapper
     private static RecordOutput.Diff? GenerateDiff<T>(T? current, T? oldValue)
     {
         var none = current is null && oldValue is null;
-        var onlyOld = current is null && oldValue is not null;
-        var onlyCurrent = current is not null && oldValue is null;
-        
+        var onlyOne = current is not null || oldValue is not null;
+        var all = current is not null && oldValue is not null;
+        var diff = new RecordOutput.Diff(oldValue, current);
+
         return none ? null :
-            onlyOld || onlyCurrent ? new(oldValue, current) :
-            current.Equals(oldValue) ? null : new(oldValue, current);
+            onlyOne ? diff :
+            all ? current!.Equals(oldValue!) ? null : diff : null;
     }
 }

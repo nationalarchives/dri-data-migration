@@ -39,3 +39,6 @@ where f.DELETED = 'F' and f.EXTANT = 'T' and f.DIRECTORY = 'F' and
 
 create index dufile_ix on dufile (Code);
 create index dufile_ix2 on dufile (DELIVERABLEUNITREF);
+create index dufile_ix3 on dufile (FILEREF);
+create index auditchange_ix on auditchange (CHANGEREF);
+create index deliverableunit_ix2 on deliverableunit (DELIVERABLEUNITREF);
