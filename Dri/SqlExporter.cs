@@ -13,10 +13,7 @@ public class SqlExporter : IDriSqlExporter
 {
     private readonly ILogger<SqlExporter> logger;
     private readonly DriSettings settings;
-    private readonly string duXmlSql;
-    private readonly string fileXmlSql;
-    private readonly string auditSql;
-    private readonly string duWo409XmlSql;
+    private readonly EmbeddedResource embedded;
 
     public SqlExporter(ILogger<SqlExporter> logger, IOptions<DriSettings> options)
     {
@@ -25,64 +22,45 @@ public class SqlExporter : IDriSqlExporter
 
         var currentAssembly = typeof(SqlExporter).Assembly;
         var baseName = $"{typeof(SqlExporter).Namespace}.Sql";
-        var embedded = new EmbeddedResource(currentAssembly, baseName);
-
-        duXmlSql = embedded.GetSql(nameof(GetAssetDeliverableUnits));
-        fileXmlSql = embedded.GetSql(nameof(GetVariationFiles));
-        auditSql = embedded.GetSql(nameof(GetChanges));
-        duWo409XmlSql = embedded.GetSql(nameof(GetWo409SubsetDeliverableUnits));
+        embedded = new(currentAssembly, baseName);
     }
 
-    public IEnumerable<DriAssetDeliverableUnit> GetAssetDeliverableUnits(int offset, CancellationToken cancellationToken)
-    {
-        logger.GetDeliverableUnits(offset);
+    public IEnumerable<DriAssetDeliverableUnit> GetAssetDeliverableUnits(int offset, CancellationToken cancellationToken) =>
+        Get(EtlStageType.AssetDeliverableUnit, offset, MapAssetDeliverableUnit, cancellationToken);
 
-        static DriAssetDeliverableUnit mapping(SqliteDataReader reader) =>
-            new(reader.GetString("DELIVERABLEUNITREF"), reader.GetString("CATALOGUEREFERENCE"),
-                reader.GetString("XMLCLOB"), reader.GetString("files"));
+    public IEnumerable<DriWo409SubsetDeliverableUnit> GetWo409SubsetDeliverableUnits(int offset, CancellationToken cancellationToken) =>
+        Get(EtlStageType.Wo409SubsetDeliverableUnit, offset, MapWo409SubsetDeliverableUnit, cancellationToken);
 
-        return Get(duXmlSql, offset, mapping, cancellationToken);
-    }
+    public IEnumerable<DriVariationFile> GetVariationFiles(int offset, CancellationToken cancellationToken) =>
+        Get(EtlStageType.VariationFile, offset, MapVariationFile, cancellationToken);
 
-    public IEnumerable<DriWo409SubsetDeliverableUnit> GetWo409SubsetDeliverableUnits(int offset, CancellationToken cancellationToken)
-    {
-        logger.GetWo409SubsetDeliverableUnits(offset);
+    public IEnumerable<DriChange> GetChanges(int offset, CancellationToken cancellationToken) =>
+        Get(EtlStageType.Change, offset, MapChange, cancellationToken);
 
-        static DriWo409SubsetDeliverableUnit mapping(SqliteDataReader reader) =>
+    private static DriAssetDeliverableUnit MapAssetDeliverableUnit(SqliteDataReader reader) =>
+        new(reader.GetString("DELIVERABLEUNITREF"), reader.GetString("CATALOGUEREFERENCE"),
+            reader.GetString("XMLCLOB"), reader.GetString("files"));
+
+    private static DriWo409SubsetDeliverableUnit MapWo409SubsetDeliverableUnit(SqliteDataReader reader) =>
             new(reader.GetString("DELIVERABLEUNITREF"), reader.GetString("XMLCLOB"));
 
-        return Get(duWo409XmlSql, offset, mapping, cancellationToken);
-    }
-
-    public IEnumerable<DriVariationFile> GetVariationFiles(int offset, CancellationToken cancellationToken)
-    {
-        logger.GetFiles(offset);
-
-        static DriVariationFile mapping(SqliteDataReader reader) =>
+    private static DriVariationFile MapVariationFile(SqliteDataReader reader) =>
             new(reader.GetString("FILEREF"), reader.GetString("FILELOCATION"),
                 reader.GetString("NAME"), reader.GetString("MANIFESTATIONREF"), reader.GetString("XMLCLOB"));
 
-        return Get(fileXmlSql, offset, mapping, cancellationToken);
-    }
-
-    public IEnumerable<DriChange> GetChanges(int offset, CancellationToken cancellationToken)
-    {
-        logger.GetChanges(offset);
-
-        static DriChange mapping(SqliteDataReader reader) =>
+    private static DriChange MapChange(SqliteDataReader reader) =>
             new(reader.GetValue("CHANGEREF").ToString(), reader.GetString("TABLENAME"),
                 reader.GetString("PRIMARYKEYVALUE"), reader.GetDateTimeOffset(reader.GetOrdinal("DATETIME")),
                 reader.GetString("USERNAME"), reader.GetString("FULLNAME"), reader.GetString("XMLDIFF"));
 
-        return Get(auditSql, offset, mapping, cancellationToken);
-    }
-
-    private IEnumerable<T> Get<T>(string sql, int offset,
+    private IEnumerable<T> Get<T>(EtlStageType stageType, int offset,
         Func<SqliteDataReader, T> mappingFunc, CancellationToken cancellationToken)
     {
+        logger.FetchingRecordsOffset(stageType, offset);
         var codeParam = new SqliteParameter("$code", settings.Code);
         var limitParam = new SqliteParameter("$limit", settings.FetchPageSize);
         var offsetParam = new SqliteParameter("$offset", offset);
+        var sql = embedded.GetSql($"Get{stageType}");
 
         using var connection = new SqliteConnection(settings.SqlConnectionString);
         connection.Open();

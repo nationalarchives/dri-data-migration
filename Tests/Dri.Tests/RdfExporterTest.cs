@@ -105,7 +105,7 @@ public sealed class RdfExporterTest
         sparqlClient.Setup(s => s.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(graph);
 
-        var dris = await exporter.GetSubsetsByCodeAsync(0, CancellationToken.None);
+        var dris = await exporter.GetSubsetsAsync(0, CancellationToken.None);
 
         dris.Should().ContainSingle().And.BeEquivalentTo([expected]);
     }
@@ -132,7 +132,7 @@ public sealed class RdfExporterTest
         sparqlClient.Setup(s => s.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(graph);
 
-        var dris = await exporter.GetAssetsByCodeAsync(0, CancellationToken.None);
+        var dris = await exporter.GetAssetsAsync(0, CancellationToken.None);
 
         dris.Should().ContainSingle().And.BeEquivalentTo([expected]);
     }
@@ -155,7 +155,7 @@ public sealed class RdfExporterTest
         sparqlClient.Setup(s => s.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(graph);
 
-        var dris = await exporter.GetVariationsByCodeAsync(0, CancellationToken.None);
+        var dris = await exporter.GetVariationsAsync(0, CancellationToken.None);
 
         dris.Should().ContainSingle().And.BeEquivalentTo([expected]);
     }
@@ -225,7 +225,7 @@ public sealed class RdfExporterTest
         sparqlClient.Setup(s => s.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(graph);
 
-        var dris = await exporter.GetSensitivityReviewsByCodeAsync(0, CancellationToken.None);
+        var dris = await exporter.GetSensitivityReviewsAsync(0, CancellationToken.None);
 
         dris.Should().ContainSingle().And.BeEquivalentTo([expected]);
     }

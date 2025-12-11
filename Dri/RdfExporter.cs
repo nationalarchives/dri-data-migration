@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query;
 
 namespace Dri;
 
@@ -30,43 +31,42 @@ public class RdfExporter : IDriRdfExporter
         embedded = new(currentAssembly, baseName);
     }
 
-    public async Task<IEnumerable<DriAccessCondition>> GetAccessConditionsAsync(CancellationToken cancellationToken)
+    public Task<IEnumerable<DriAccessCondition>> GetAccessConditionsAsync(CancellationToken cancellationToken) =>
+        GetAsync(EtlStageType.AccessCondition, MapAccessCondition, cancellationToken);
+
+    public Task<IEnumerable<DriLegislation>> GetLegislationsAsync(CancellationToken cancellationToken) =>
+        GetAsync(EtlStageType.Legislation, MapLegislation, cancellationToken);
+
+    public Task<IEnumerable<DriGroundForRetention>> GetGroundsForRetentionAsync(CancellationToken cancellationToken) =>
+        GetAsync(EtlStageType.GroundForRetention, MapGroundForRetention, cancellationToken);
+
+    public Task<IEnumerable<DriSubset>> GetSubsetsAsync(int offset, CancellationToken cancellationToken) =>
+        GetAsync(EtlStageType.Subset, offset, Vocabulary.SubsetHasBroaderSubset, MapSubset, cancellationToken);
+
+    public Task<IEnumerable<DriAsset>> GetAssetsAsync(int offset, CancellationToken cancellationToken) =>
+        GetAsync(EtlStageType.Asset, offset, Vocabulary.AssetReference, MapAsset, cancellationToken);
+
+    public Task<IEnumerable<DriVariation>> GetVariationsAsync(int offset, CancellationToken cancellationToken) =>
+        GetAsync(EtlStageType.Variation, offset, Vocabulary.VariationName, MapVariation, cancellationToken);
+
+    public Task<IEnumerable<DriSensitivityReview>> GetSensitivityReviewsAsync(int offset, CancellationToken cancellationToken) =>
+        GetAsync(EtlStageType.SensitivityReview, offset, Vocabulary.SensitivityReviewDriId, MapSensitivityReview, cancellationToken);
+
+    private async Task<IEnumerable<T>> GetAsync<T>(EtlStageType stageType, Func<ISparqlResult, T> mapping,
+        CancellationToken cancellationToken)
     {
-        logger.GetAccessConditions();
-        var sparql = embedded.GetSparql(nameof(GetAccessConditionsAsync));
+        logger.FetchingRecords(stageType);
+        var sparql = embedded.GetSparql($"Get{stageType}");
+        var resultSet = await sparqlClient.GetResultSetAsync(sparql, cancellationToken);
 
-        var result = await sparqlClient.GetResultSetAsync(sparql, cancellationToken);
-
-        return result.Results.Select(s => new DriAccessCondition(
-            (s.Value("s") as IUriNode)!.Uri, s.Value("label").AsValuedNode().AsString()));
+        return resultSet.Results.Select(mapping);
     }
 
-    public async Task<IEnumerable<DriLegislation>> GetLegislationsAsync(CancellationToken cancellationToken)
+    private async Task<IEnumerable<T>> GetAsync<T>(EtlStageType stageType, int offset, IUriNode predicate,
+        Func<IGraph, IUriNode, T> mapping, CancellationToken cancellationToken)
     {
-        logger.GetLegislations();
-        var sparql = embedded.GetSparql(nameof(GetLegislationsAsync));
-
-        var result = await sparqlClient.GetResultSetAsync(sparql, cancellationToken);
-
-        return result.Results.Select(s => new DriLegislation(
-            (s.Value("legislation") as IUriNode)!.Uri, s.HasValue("label") ? s.Value("label")?.AsValuedNode().AsString() : null));
-    }
-
-    public async Task<IEnumerable<DriGroundForRetention>> GetGroundsForRetentionAsync(CancellationToken cancellationToken)
-    {
-        logger.GetGroundsForRetention();
-        var sparql = embedded.GetSparql(nameof(GetGroundsForRetentionAsync));
-
-        var result = await sparqlClient.GetResultSetAsync(sparql, cancellationToken);
-
-        return result.Results.Select(s => new DriGroundForRetention(
-            s.Value("label").AsValuedNode().AsString(), s.Value("comment").AsValuedNode().AsString()));
-    }
-
-    public async Task<IEnumerable<DriSubset>> GetSubsetsByCodeAsync(int offset, CancellationToken cancellationToken)
-    {
-        logger.GetSubsetsByCode(offset);
-        var sparql = embedded.GetSparql(nameof(GetSubsetsByCodeAsync));
+        logger.FetchingRecordsOffset(stageType, offset);
+        var sparql = embedded.GetSparql($"Get{stageType}");
         var graph = await sparqlClient.GetGraphAsync(sparql, new Dictionary<string, object>
         {
             { "id", settings.Code },
@@ -74,61 +74,62 @@ public class RdfExporter : IDriRdfExporter
             { "offset", offset}
         }, cancellationToken);
 
-        return graph.Triples.SubjectNodes.Where(s => s is not BlankNode)
+        return graph.GetTriplesWithPredicate(predicate)
+            .Select(t => t.Subject)
             .Cast<IUriNode>()
-            .Select(s => SusbsetBySubject(graph, s));
+            .Select(s => mapping(graph, s));
     }
 
-    public async Task<IEnumerable<DriAsset>> GetAssetsByCodeAsync(int offset, CancellationToken cancellationToken)
+    private static Func<ISparqlResult, DriAccessCondition> MapAccessCondition =>
+        result => new DriAccessCondition((result.Value("s") as IUriNode)!.Uri,
+            result.Value("label").AsValuedNode().AsString());
+
+    private static Func<ISparqlResult, DriLegislation> MapLegislation =>
+        result => new DriLegislation((result.Value("legislation") as IUriNode)!.Uri,
+            result.HasValue("label") ? result.Value("label")?.AsValuedNode().AsString() : null);
+
+    private static Func<ISparqlResult, DriGroundForRetention> MapGroundForRetention =>
+        result => new DriGroundForRetention(result.Value("label").AsValuedNode().AsString(),
+            result.Value("comment").AsValuedNode().AsString());
+
+    private static Func<IGraph, IUriNode, DriSubset> MapSubset => (graph, subject) =>
     {
-        logger.GetAssetsByCode(offset);
-        var sparql = embedded.GetSparql(nameof(GetAssetsByCodeAsync));
-        var graph = await sparqlClient.GetGraphAsync(sparql, new Dictionary<string, object>
+        var reference = graph.GetSingleText(subject, Vocabulary.SubsetReference);
+        var retention = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SubsetHasRetention).SingleOrDefault().Object as IBlankNode;
+        var directory = graph.GetSingleText(retention!, Vocabulary.ImportLocation);
+        var broader = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SubsetHasBroaderSubset).SingleOrDefault()?.Object as IBlankNode;
+        string? parent = null;
+        if (broader is not null)
         {
-            { "id", settings.Code },
-            { "limit", settings.FetchPageSize },
-            { "offset", offset}
-        }, cancellationToken);
+            parent = graph.GetSingleText(broader, Vocabulary.SubsetReference);
+        }
 
-        return graph.GetTriplesWithPredicate(Vocabulary.AssetReference)
-            .Select(t => t.Subject as IUriNode)
-            .Select(s => AssetBySubject(graph, s!));
-    }
+        return new DriSubset(reference!, directory, parent);
+    };
 
-    public async Task<IEnumerable<DriVariation>> GetVariationsByCodeAsync(int offset, CancellationToken cancellationToken)
+    private static Func<IGraph, IUriNode, DriAsset> MapAsset => (graph, subject) =>
     {
-        logger.GetVariationsByCode(offset);
-        var sparql = embedded.GetSparql(nameof(GetVariationsByCodeAsync));
-        var graph = await sparqlClient.GetGraphAsync(sparql, new Dictionary<string, object>
-        {
-            { "id", settings.Code },
-            { "limit", settings.FetchPageSize },
-            { "offset", offset}
-        }, cancellationToken);
+        var id = graph.GetSingleUriNode(subject, Vocabulary.AssetDriId);
+        var reference = graph.GetSingleText(subject, Vocabulary.AssetReference);
+        var subset = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AssetHasSubset).SingleOrDefault().Object as IBlankNode;
+        var subsetReference = graph.GetSingleText(subset!, Vocabulary.SubsetReference);
+        var retention = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AssetHasRetention).SingleOrDefault().Object as IBlankNode;
+        var location = graph.GetSingleText(retention!, Vocabulary.ImportLocation);
 
-        return graph.GetTriplesWithPredicate(Vocabulary.VariationName)
-            .Select(t => t.Subject as IUriNode)
-            .Select(s => VariationBySubject(graph, s!));
-    }
+        return new DriAsset(id!.Uri, reference!, location, subsetReference!);
+    };
 
-    public async Task<IEnumerable<DriSensitivityReview>> GetSensitivityReviewsByCodeAsync(
-        int offset, CancellationToken cancellationToken)
+    private static Func<IGraph, IUriNode, DriVariation> MapVariation => (graph, subject) =>
     {
-        logger.GetSensitivityReviewsByCode(offset);
-        var sparql = embedded.GetSparql(nameof(GetSensitivityReviewsByCodeAsync));
-        var graph = await sparqlClient.GetGraphAsync(sparql, new Dictionary<string, object>
-        {
-            { "id", settings.Code },
-            { "limit", settings.FetchPageSize },
-            { "offset", offset}
-        }, cancellationToken);
+        var id = graph.GetSingleUriNode(subject, Vocabulary.VariationDriId);
+        var asset = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.VariationHasAsset).SingleOrDefault().Object as IBlankNode;
+        var assetReference = graph.GetSingleText(asset!, Vocabulary.AssetReference);
+        var name = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.VariationName).SingleOrDefault().Object as ILiteralNode;
 
-        return graph.GetTriplesWithPredicate(Vocabulary.SensitivityReviewDriId)
-            .Select(t => t.Subject as IUriNode)
-            .Select(s => SensitivityReviewBySubject(graph, s!));
-    }
+        return new DriVariation(id!.Uri, name.AsValuedNode().AsString(), assetReference!);
+    };
 
-    private static DriSensitivityReview SensitivityReviewBySubject(IGraph graph, IUriNode subject)
+    private static Func<IGraph, IUriNode, DriSensitivityReview> MapSensitivityReview => (graph, subject) =>
     {
         var tempReferencePredicate = new UriNode(new Uri(Vocabulary.Namespace, "x-reference"));
         var tempIdPredicate = new UriNode(new Uri(Vocabulary.Namespace, "x-id"));
@@ -181,42 +182,5 @@ public class RdfExporter : IDriRdfExporter
             restrictionReviewDate?.AsValuedNode().AsDateTimeOffset(), groundCode?.Uri,
             changeDriId?.Uri, changeDescription, changeDateTime?.AsValuedNode().AsDateTimeOffset(),
             operatorIdentifier?.Uri, operatorName);
-    }
-
-    private static DriVariation VariationBySubject(IGraph graph, IUriNode subject)
-    {
-        var id = graph.GetSingleUriNode(subject, Vocabulary.VariationDriId);
-        var asset = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.VariationHasAsset).SingleOrDefault().Object as IBlankNode;
-        var assetReference = graph.GetSingleText(asset!, Vocabulary.AssetReference);
-        var name = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.VariationName).SingleOrDefault().Object as ILiteralNode;
-
-        return new DriVariation(id!.Uri, name.AsValuedNode().AsString(), assetReference!);
-    }
-
-    private static DriAsset AssetBySubject(IGraph graph, IUriNode subject)
-    {
-        var id = graph.GetSingleUriNode(subject, Vocabulary.AssetDriId);
-        var reference = graph.GetSingleText(subject, Vocabulary.AssetReference);
-        var subset = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AssetHasSubset).SingleOrDefault().Object as IBlankNode;
-        var subsetReference = graph.GetSingleText(subset!, Vocabulary.SubsetReference);
-        var retention = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AssetHasRetention).SingleOrDefault().Object as IBlankNode;
-        var location = graph.GetSingleText(retention!, Vocabulary.ImportLocation);
-
-        return new DriAsset(id!.Uri, reference!, location, subsetReference!);
-    }
-
-    private static DriSubset SusbsetBySubject(IGraph graph, IUriNode subject)
-    {
-        var reference = graph.GetSingleText(subject, Vocabulary.SubsetReference);
-        var retention = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SubsetHasRetention).SingleOrDefault().Object as IBlankNode;
-        var directory = graph.GetSingleText(retention!, Vocabulary.ImportLocation);
-        var broader = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SubsetHasBroaderSubset).SingleOrDefault()?.Object as IBlankNode;
-        string? parent = null;
-        if (broader is not null)
-        {
-            parent = graph.GetSingleText(broader, Vocabulary.SubsetReference);
-        }
-
-        return new DriSubset(reference!, directory, parent);
-    }
+    };
 }

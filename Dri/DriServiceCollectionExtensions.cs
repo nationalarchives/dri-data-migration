@@ -1,8 +1,8 @@
 ﻿using Api;
-using Dri;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Dri;
 
 public static class DriServiceCollectionExtensions
 {

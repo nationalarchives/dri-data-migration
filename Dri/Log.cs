@@ -1,39 +1,13 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Api;
+using Microsoft.Extensions.Logging;
 
 namespace Dri;
 
 internal static partial class Log
 {
-    [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "Fetching access conditions")]
-    internal static partial void GetAccessConditions(this ILogger logger);
+    [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "Fetching {stage} records")]
+    internal static partial void FetchingRecords(this ILogger logger, EtlStageType stage);
 
-    [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "Fetching legislations")]
-    internal static partial void GetLegislations(this ILogger logger);
-
-    [LoggerMessage(EventId = 3, Level = LogLevel.Information, Message = "Fetching grounds for retention")]
-    internal static partial void GetGroundsForRetention(this ILogger logger);
-
-    [LoggerMessage(EventId = 4, Level = LogLevel.Information, Message = "Fetching subsets starting at {offset}")]
-    internal static partial void GetSubsetsByCode(this ILogger logger, int offset);
-
-    [LoggerMessage(EventId = 5, Level = LogLevel.Information, Message = "Fetching assets starting at {offset}")]
-    internal static partial void GetAssetsByCode(this ILogger logger, int offset);
-
-    [LoggerMessage(EventId = 6, Level = LogLevel.Information, Message = "Fetching variations starting at {offset}")]
-    internal static partial void GetVariationsByCode(this ILogger logger, int offset);
-
-    [LoggerMessage(EventId = 7, Level = LogLevel.Information, Message = "Fetching sensitivity reviews at {offset}")]
-    internal static partial void GetSensitivityReviewsByCode(this ILogger logger, int offset);
-
-    [LoggerMessage(EventId = 8, Level = LogLevel.Information, Message = "Fetching deliverable units at {offset}")]
-    internal static partial void GetDeliverableUnits(this ILogger logger, int offset);
-
-    [LoggerMessage(EventId = 9, Level = LogLevel.Information, Message = "Fetching files at {offset}")]
-    internal static partial void GetFiles(this ILogger logger, int offset);
-
-    [LoggerMessage(EventId = 10, Level = LogLevel.Information, Message = "Fetching changes at {offset}")]
-    internal static partial void GetChanges(this ILogger logger, int offset);
-
-    [LoggerMessage(EventId = 11, Level = LogLevel.Information, Message = "Fetching WO 409 subset deliverable units at {offset}")]
-    internal static partial void GetWo409SubsetDeliverableUnits(this ILogger logger, int offset);
+    [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "Fetching {stage} records at {offset}")]
+    internal static partial void FetchingRecordsOffset(this ILogger logger, EtlStageType stage, int offset);
 }
