@@ -1,22 +1,21 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
-using System.Linq;
+using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Etl;
 
-public class EtlAccessCondition(ILogger<EtlAccessCondition> logger,
-    IDriRdfExporter driExport, IStagingIngest<DriAccessCondition> ingest) : IEtl
+public class EtlAccessCondition(ILogger<EtlAccessCondition> logger, IDriRdfExporter driExport,
+    IStagingIngest<DriAccessCondition> ingest) : Etl<DriAccessCondition>(logger, ingest), IEtl
 {
-    public EtlStageType StageType => EtlStageType.AccessCondition;
+    public Task RunAsync(int offset, CancellationToken cancellationToken) =>
+        EtlAsync(cancellationToken);
 
-    public async Task RunAsync(int _, CancellationToken cancellationToken)
-    {
-        var dri = (await driExport.GetAccessConditionsAsync(cancellationToken)).ToList();
+    internal override Task<IEnumerable<DriAccessCondition>> GetAsync(CancellationToken cancellationToken) =>
+        driExport.GetAccessConditionsAsync(cancellationToken);
 
-        logger.IngestingAccessConditions(dri.Count);
-        var ingestSize = await ingest.SetAsync(dri, cancellationToken);
-        logger.IngestedAccessConditions(ingestSize);
-    }
+    internal override Task<IEnumerable<DriAccessCondition>> GetAsync(int offset, CancellationToken cancellationToken) =>
+        throw new NotImplementedException();
 }

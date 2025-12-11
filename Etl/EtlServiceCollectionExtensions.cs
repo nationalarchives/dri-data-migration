@@ -1,7 +1,7 @@
 ﻿using Api;
-using Etl;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Etl;
 
 public static class EtlServiceCollectionExtensions
 {

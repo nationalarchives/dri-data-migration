@@ -1,30 +1,22 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Etl;
 
 public class EtlSensitivityReview(ILogger<EtlSensitivityReview> logger, IOptions<DriSettings> driSettings,
-    IDriRdfExporter driExport, IStagingIngest<DriSensitivityReview> ingest) : IEtl
+    IDriRdfExporter driExport, IStagingIngest<DriSensitivityReview> ingest) : Etl<DriSensitivityReview>(logger, ingest), IEtl
 {
-    private readonly DriSettings settings = driSettings.Value;
+    public Task RunAsync(int offset, CancellationToken cancellationToken) =>
+        EtlAsync(offset, driSettings.Value.FetchPageSize, cancellationToken);
 
-    public EtlStageType StageType => EtlStageType.SensitivityReview;
+    internal override Task<IEnumerable<DriSensitivityReview>> GetAsync(CancellationToken cancellationToken) =>
+        throw new NotImplementedException();
 
-    public async Task RunAsync(int offset, CancellationToken cancellationToken)
-    {
-        List<DriSensitivityReview> dri;
-        do
-        {
-            dri = (await driExport.GetSensitivityReviewsByCodeAsync(offset, cancellationToken)).ToList();
-            offset += settings.FetchPageSize;
-            logger.IngestingSensitivityReviews(dri.Count);
-            var ingestSize = await ingest.SetAsync(dri, cancellationToken);
-            logger.IngestedSensitivityReviews(ingestSize);
-        } while (dri.Any() && dri.Count == settings.FetchPageSize);
-    }
+    internal override Task<IEnumerable<DriSensitivityReview>> GetAsync(int offset, CancellationToken cancellationToken) =>
+        driExport.GetSensitivityReviewsAsync(offset, cancellationToken);
 }

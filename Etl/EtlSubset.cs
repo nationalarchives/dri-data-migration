@@ -1,30 +1,22 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Etl;
 
 public class EtlSubset(ILogger<EtlSubset> logger, IOptions<DriSettings> driSettings,
-    IDriRdfExporter driExport, IStagingIngest<DriSubset> ingest) : IEtl
+    IDriRdfExporter driExport, IStagingIngest<DriSubset> ingest) : Etl<DriSubset>(logger, ingest), IEtl
 {
-    private readonly DriSettings settings = driSettings.Value;
+    public Task RunAsync(int offset, CancellationToken cancellationToken) =>
+        EtlAsync(offset, driSettings.Value.FetchPageSize, cancellationToken);
 
-    public EtlStageType StageType => EtlStageType.Subset;
+    internal override Task<IEnumerable<DriSubset>> GetAsync(CancellationToken cancellationToken) =>
+        throw new NotImplementedException();
 
-    public async Task RunAsync(int offset, CancellationToken cancellationToken)
-    {
-        List<DriSubset> dri;
-        do
-        {
-            dri = (await driExport.GetSubsetsByCodeAsync(offset, cancellationToken)).ToList();
-            offset += settings.FetchPageSize;
-            logger.IngestingSubsets(dri.Count);
-            var ingestSize = await ingest.SetAsync(dri, cancellationToken);
-            logger.IngestedSubsets(ingestSize);
-        } while (dri.Any() && dri.Count == settings.FetchPageSize);
-    }
+    internal override Task<IEnumerable<DriSubset>> GetAsync(int offset, CancellationToken cancellationToken) =>
+        driExport.GetSubsetsAsync(offset, cancellationToken);
 }

@@ -29,6 +29,7 @@ public class DataProcessing(ILogger<DataProcessing> logger, IOptions<DriSettings
                 offset = settings.RestartFromOffset;
             }
 
+            logger.EtlStarted(etl.StageType);
             await etl.RunAsync(offset, cancellationToken);
         }
         logger.MigrationFinished();

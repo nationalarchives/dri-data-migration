@@ -1,31 +1,22 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Etl;
 
 public class EtlAsset(ILogger<EtlAsset> logger, IOptions<DriSettings> driSettings,
-    IDriRdfExporter driExport, IStagingIngest<DriAsset> ingest) : IEtl
+    IDriRdfExporter driExport, IStagingIngest<DriAsset> ingest) : Etl<DriAsset>(logger, ingest), IEtl
 {
-    private readonly DriSettings settings = driSettings.Value;
+    public Task RunAsync(int offset, CancellationToken cancellationToken) =>
+        EtlAsync(offset, driSettings.Value.FetchPageSize, cancellationToken);
 
-    public EtlStageType StageType => EtlStageType.Asset;
+    internal override Task<IEnumerable<DriAsset>> GetAsync(CancellationToken cancellationToken) =>
+        throw new NotImplementedException();
 
-    public async Task RunAsync(int offset, CancellationToken cancellationToken)
-    {
-        List<DriAsset> dri;
-        do
-        {
-            dri = (await driExport.GetAssetsByCodeAsync(offset, cancellationToken)).ToList();
-            offset += settings.FetchPageSize;
-            logger.IngestingAssets(dri.Count);
-            var ingestSize = await ingest.SetAsync(dri, cancellationToken);
-            logger.IngestedAssets(ingestSize);
-        } while (dri.Any() && dri.Count == settings.FetchPageSize);
-    }
+    internal override Task<IEnumerable<DriAsset>> GetAsync(int offset, CancellationToken cancellationToken) =>
+        driExport.GetAssetsAsync(offset, cancellationToken);
 }
