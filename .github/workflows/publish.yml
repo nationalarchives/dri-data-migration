@@ -19,7 +19,7 @@ jobs:
         run: dotnet restore
 
       - name: Publish
-        run: dotnet publish Migration --runtime win-x64 --framework net8.0 --configuration Release --self-contained true --output "publish/win-x64/" /p:DebugType=embedded /p:DebugSymbols=false /p:PublishSingleFile=true
+        run: dotnet publish Migration --runtime win-x64 --framework net10.0 --configuration Release --self-contained true --output "publish/win-x64/" /p:DebugType=embedded /p:DebugSymbols=false /p:PublishSingleFile=true
 
       - name: Upload
         uses: actions/upload-artifacts@v4
