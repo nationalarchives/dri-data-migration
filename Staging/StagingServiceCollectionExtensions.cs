@@ -10,17 +10,17 @@ public static class StagingServiceCollectionExtensions
         services.AddMemoryCache();
         services.AddHttpClient<ISparqlClient, StagingSparqlClient>();
         services.AddSingleton<ICacheClient, CacheClient>();
-        services.AddSingleton<IStagingIngest<DriAccessCondition>, AccessConditionIngest>();
-        services.AddSingleton<IStagingIngest<DriLegislation>, LegislationIngest>();
-        services.AddSingleton<IStagingIngest<DriGroundForRetention>, GroundForRetentionIngest>();
-        services.AddSingleton<IStagingIngest<DriSubset>, SubsetIngest>();
-        services.AddSingleton<IStagingIngest<DriAsset>, AssetIngest>();
-        services.AddSingleton<IStagingIngest<DriAssetDeliverableUnit>, AssetDeliverableUnitIngest>();
-        services.AddSingleton<IStagingIngest<DriWo409SubsetDeliverableUnit>, Wo409SubsetDeliverableUnitIngest>();
-        services.AddSingleton<IStagingIngest<DriVariation>, VariationIngest>();
-        services.AddSingleton<IStagingIngest<DriVariationFile>, VariationFileIngest>();
-        services.AddSingleton<IStagingIngest<DriSensitivityReview>, SensitivityReviewIngest>();
-        services.AddSingleton<IStagingIngest<DriChange>, ChangeIngest>();
+        services.AddTransient<IStagingIngest<DriAccessCondition>, AccessConditionIngest>();
+        services.AddTransient<IStagingIngest<DriLegislation>, LegislationIngest>();
+        services.AddTransient<IStagingIngest<DriGroundForRetention>, GroundForRetentionIngest>();
+        services.AddTransient<IStagingIngest<DriSubset>, SubsetIngest>();
+        services.AddTransient<IStagingIngest<DriAsset>, AssetIngest>();
+        services.AddTransient<IStagingIngest<DriAssetDeliverableUnit>, AssetDeliverableUnitIngest>();
+        services.AddTransient<IStagingIngest<DriWo409SubsetDeliverableUnit>, Wo409SubsetDeliverableUnitIngest>();
+        services.AddTransient<IStagingIngest<DriVariation>, VariationIngest>();
+        services.AddTransient<IStagingIngest<DriVariationFile>, VariationFileIngest>();
+        services.AddTransient<IStagingIngest<DriSensitivityReview>, SensitivityReviewIngest>();
+        services.AddTransient<IStagingIngest<DriChange>, ChangeIngest>();
 
         return services;
     }

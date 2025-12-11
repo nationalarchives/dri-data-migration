@@ -8,18 +8,18 @@ public static class EtlServiceCollectionExtensions
     public static IServiceCollection AddMigration(this IServiceCollection services)
     {
         //Order of execution is dictated by EtlStageType
-        services.AddSingleton<IEtl, EtlAccessCondition>();
-        services.AddSingleton<IEtl, EtlLegislation>();
-        services.AddSingleton<IEtl, EtlGroundForRetention>();
-        services.AddSingleton<IEtl, EtlSubset>();
-        services.AddSingleton<IEtl, EtlAsset>();
-        services.AddSingleton<IEtl, EtlVariation>();
-        services.AddSingleton<IEtl, EtlAssetDeliverableUnit>();
-        services.AddSingleton<IEtl, EtlWo409SubsetDeliverableUnit>();
-        services.AddSingleton<IEtl, EtlVariationFile>();
-        services.AddSingleton<IEtl, EtlSensitivityReview>();
-        services.AddSingleton<IEtl, EtlChange>();
-        services.AddSingleton<IDataProcessing, DataProcessing>();
+        services.AddTransient<IEtl, EtlAccessCondition>();
+        services.AddTransient<IEtl, EtlLegislation>();
+        services.AddTransient<IEtl, EtlGroundForRetention>();
+        services.AddTransient<IEtl, EtlSubset>();
+        services.AddTransient<IEtl, EtlAsset>();
+        services.AddTransient<IEtl, EtlVariation>();
+        services.AddTransient<IEtl, EtlAssetDeliverableUnit>();
+        services.AddTransient<IEtl, EtlWo409SubsetDeliverableUnit>();
+        services.AddTransient<IEtl, EtlVariationFile>();
+        services.AddTransient<IEtl, EtlSensitivityReview>();
+        services.AddTransient<IEtl, EtlChange>();
+        services.AddTransient<IDataProcessing, DataProcessing>();
 
         return services;
     }
