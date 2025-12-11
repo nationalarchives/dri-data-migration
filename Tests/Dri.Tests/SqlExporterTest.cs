@@ -12,15 +12,17 @@ public sealed class SqlExporterTest
 {
     private const string Series = "Series 1";
     private const string SqlSchema = $"""
-            create table dufile
-                (DELIVERABLEUNITREF TEXT, CATALOGUEREFERENCE TEXT, DMETADATAREF TEXT, MANIFESTATIONREF TEXT, FILEREF TEXT, FMETADATAREF TEXT, FILELOCATION TEXT, NAME TEXT, Code TEXT);
-            create table xmlmetadata
-                (METADATAREF TEXT, XMLCLOB TEXT);
-            create table auditchange
-                (CHANGEREF TEXT, PRIMARYKEYVALUE TEXT, TABLEINVOLVEDREF TEXT, DATETIME TEXT, USERNAME TEXT, FULLNAME TEXT, XMLDIFF TEXT);
-            create table tableinvolved
-                (TABLEINVOLVEDREF TEXT, TABLENAME TEXT);
-        """;
+        create table dufile
+            (DELIVERABLEUNITREF TEXT, CATALOGUEREFERENCE TEXT, DMETADATAREF TEXT, MANIFESTATIONREF TEXT, FILEREF TEXT, FMETADATAREF TEXT, FILELOCATION TEXT, NAME TEXT, Code TEXT);
+        create table deliverableunit
+            (DELIVERABLEUNITREF TEXT, PARENTREF TEXT, METADATAREF TEXT);
+        create table xmlmetadata
+            (METADATAREF TEXT, XMLCLOB TEXT);
+        create table auditchange
+            (CHANGEREF TEXT, PRIMARYKEYVALUE TEXT, TABLEINVOLVEDREF TEXT, DATETIME TEXT, USERNAME TEXT, FULLNAME TEXT, XMLDIFF TEXT);
+        create table tableinvolved
+            (TABLEINVOLVEDREF TEXT, TABLENAME TEXT);
+    """;
 #pragma warning disable CS8618
     private SqlExporter exporter;
     private IOptions<DriSettings> options;
@@ -48,6 +50,26 @@ public sealed class SqlExporterTest
         PopulateAsset(expected, sqliteInMemory);
 
         var dris = exporter.GetAssetDeliverableUnits(0, CancellationToken.None);
+
+        dris.Should().ContainSingle().And.BeEquivalentTo([expected]);
+    }
+
+    [TestMethod(DisplayName = "Reads WO 409 subset deliverable units")]
+    public void FetchesWo409SubsetDeliverableUnits()
+    {
+        var wo409Options = Options.Create<DriSettings>(new()
+        {
+            Code = "WO 409",
+            FetchPageSize = 1
+        });
+        var wo409Exporter = new SqlExporter(logger, wo409Options);
+
+        var sqliteInMemory = "Data Source=file:memdb-wo-409?mode=memory&cache=shared";
+        wo409Options.Value.SqlConnectionString = sqliteInMemory;
+        var expected = new DriWo409SubsetDeliverableUnit("Wo409Subset1", "<xml/>");
+        PopulateWo409Subset(expected, sqliteInMemory);
+
+        var dris = wo409Exporter.GetWo409SubsetDeliverableUnits(0, CancellationToken.None);
 
         dris.Should().ContainSingle().And.BeEquivalentTo([expected]);
     }
@@ -87,6 +109,28 @@ public sealed class SqlExporterTest
         var data = $"""
             insert into dufile(DELIVERABLEUNITREF, DMETADATAREF, CATALOGUEREFERENCE, Code, FILEREF, FILELOCATION, NAME)
                 values('{dri.Id}', '{metadataRef}', '{dri.Reference}', '{Series}', '{file?.Id}', '{file?.Location}','{file?.Name}');
+            insert into xmlmetadata(METADATAREF, XMLCLOB) values('{metadataRef}', '{dri.Xml}');
+        """;
+
+        using var connection = new SqliteConnection(sqliteConnectionString);
+        connection.Open();
+        using var commandSchema = new SqliteCommand(SqlSchema, connection);
+        commandSchema.ExecuteNonQuery();
+        using var commandData = new SqliteCommand(data, connection);
+        commandData.ExecuteNonQuery();
+    }
+
+    private static void PopulateWo409Subset(DriWo409SubsetDeliverableUnit dri, string sqliteConnectionString)
+    {
+        var metadataRef = "Metadata reference WO 409";
+        var parentRef = "Parent WO 409";
+        var data = $"""
+            insert into dufile(DELIVERABLEUNITREF, Code)
+                values('{dri.Id}', 'WO 409');
+            insert into deliverableunit(DELIVERABLEUNITREF, PARENTREF)
+                values('{dri.Id}', '{parentRef}');
+            insert into deliverableunit(DELIVERABLEUNITREF, METADATAREF)
+                values('{parentRef}', '{metadataRef}');
             insert into xmlmetadata(METADATAREF, XMLCLOB) values('{metadataRef}', '{dri.Xml}');
         """;
 

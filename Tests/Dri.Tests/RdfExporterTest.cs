@@ -160,6 +160,52 @@ public sealed class RdfExporterTest
         dris.Should().ContainSingle().And.BeEquivalentTo([expected]);
     }
 
+    [TestMethod(DisplayName = "Reads sensitivity reviews (no files)")]
+    public async Task FetchesSensitivityReviewsNoFile()
+    {
+        var link = new Uri("http://example.com/sr");
+        var targetReference = "Variation";
+        var targetLink = new Uri("http://example.com/variation");
+        var targetType = new Uri("http://example.com/#DeliverableUnit");
+        var previousSrLink = new Uri("http://example.com/previous-sr");
+        var sensitiveName = "Sensitive name";
+        var sensitiveDescription = "Sensitive description";
+        var date = DateTimeOffset.UtcNow;
+        var changeDriId = new Uri("http://example.com/change");
+        var changeDescription = "Change description";
+        var changeDateTime = DateTimeOffset.UtcNow.AddDays(-5);
+        var changeOperatorLink = new Uri("http://example.com/operator");
+        var changeOperatorName = "Operator name";
+        var expected = new DriSensitivityReview(link, targetReference, targetLink,
+            targetType, null, [], null, previousSrLink, sensitiveName,
+            sensitiveDescription, date, null, null, null, null, null, null, null,
+            changeDriId, changeDescription, changeDateTime, changeOperatorLink, changeOperatorName);
+        var graph = new Graph();
+        var subject = graph.CreateUriNode(link);
+        graph.Assert(subject, Vocabulary.SensitivityReviewDriId, subject);
+        graph.Assert(subject, new UriNode(new Uri(Vocabulary.Namespace, "x-reference")), graph.CreateLiteralNode(targetReference));
+        graph.Assert(subject, new UriNode(new Uri(Vocabulary.Namespace, "x-id")), graph.CreateUriNode(targetLink));
+        graph.Assert(subject, new UriNode(new Uri(Vocabulary.Namespace, "x-type")), graph.CreateUriNode(targetType));
+        graph.Assert(subject, Vocabulary.SensitivityReviewDate, new DateTimeNode(date));
+        graph.Assert(subject, Vocabulary.SensitivityReviewSensitiveName, graph.CreateLiteralNode(sensitiveName));
+        graph.Assert(subject, Vocabulary.SensitivityReviewSensitiveDescription, graph.CreateLiteralNode(sensitiveDescription));
+        graph.Assert(subject, Vocabulary.SensitivityReviewHasPastSensitivityReview, graph.CreateUriNode(previousSrLink));
+        graph.Assert(subject, Vocabulary.ChangeDriId, new UriNode(changeDriId));
+        graph.Assert(subject, Vocabulary.ChangeDescription, new LiteralNode(changeDescription));
+        graph.Assert(subject, Vocabulary.ChangeDateTime, new DateTimeNode(changeDateTime));
+        var operatorId = graph.CreateUriNode(changeOperatorLink);
+        graph.Assert(subject, Vocabulary.ChangeHasOperator, operatorId);
+        graph.Assert(operatorId, Vocabulary.OperatorIdentifier, new UriNode(changeOperatorLink));
+        graph.Assert(operatorId, Vocabulary.OperatorName, new LiteralNode(changeOperatorName));
+
+        sparqlClient.Setup(s => s.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
+            .ReturnsAsync(graph);
+
+        var dris = await exporter.GetSensitivityReviewsAsync(0, CancellationToken.None);
+
+        dris.Should().ContainSingle().And.BeEquivalentTo([expected]);
+    }
+
     [TestMethod(DisplayName = "Reads sensitivity reviews")]
     public async Task FetchesSensitivityReviews()
     {
