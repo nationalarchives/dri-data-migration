@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11222.15 d18.0
+VisualStudioVersion = 18.0.11222.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{84BF4D8C-CDEA-4B4F-B559-B57ECD82ADA1}"
 EndProject
@@ -57,6 +57,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{30EF5BD8-7
 		docs\reconciliation.md = docs\reconciliation.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Etl.Tests", "Tests\Etl.Tests\Etl.Tests.csproj", "{2F6DDB78-06B6-4854-B208-08C097508F60}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{D897555B-9EEA-4B4F-A68B-7A365C6CA471}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D897555B-9EEA-4B4F-A68B-7A365C6CA471}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D897555B-9EEA-4B4F-A68B-7A365C6CA471}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F6DDB78-06B6-4854-B208-08C097508F60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F6DDB78-06B6-4854-B208-08C097508F60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F6DDB78-06B6-4854-B208-08C097508F60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F6DDB78-06B6-4854-B208-08C097508F60}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -121,6 +127,7 @@ Global
 		{78FB1E75-1A14-4FD4-BD33-79EFD8F42036} = {31D45123-7C5B-41BC-9934-B2574F6D9792}
 		{7A9A9356-210C-4DEA-890B-323D196C6FE9} = {31D45123-7C5B-41BC-9934-B2574F6D9792}
 		{30EF5BD8-79F6-46D9-9899-6D57735DAC52} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{2F6DDB78-06B6-4854-B208-08C097508F60} = {31D45123-7C5B-41BC-9934-B2574F6D9792}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {27E75E5F-DA13-4B25-8732-47D7924D00D4}

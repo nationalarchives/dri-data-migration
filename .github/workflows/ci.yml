@@ -34,6 +34,11 @@ jobs:
             cd Tests
             dotnet run --no-restore --project "Dri.Tests" --configuration Release
 
+      - name: Test Etl
+        run: |
+            cd Tests
+            dotnet run --no-restore --project "Etl.Tests" --configuration Release
+
       - name: Test Rdf
         run: |
             cd Tests
