@@ -764,6 +764,18 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has origin approximate date end".
 
+:assetHasAlternativeModifiedDateStart a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:domain :Asset;
+	rdfs:range :Date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has alternative modified date start".
+
+:assetHasAlternativeModifiedDateEnd a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:domain :Asset;
+	rdfs:range :Date;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has alternative modified date end".
+
 :assetHasVariation a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	rdfs:seeAlso rico:hasOrHadInstantiation;
 	rdfs:domain :Asset;

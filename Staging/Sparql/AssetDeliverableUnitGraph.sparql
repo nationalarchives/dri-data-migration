@@ -51,6 +51,8 @@ construct {
         ex:assetHasOriginDateEnd ?originDateEnd;
         ex:assetHasOriginApproximateDateStart ?originApproximateDateStart;
         ex:assetHasOriginApproximateDateEnd ?originApproximateDateEnd;
+        ex:assetHasAlternativeModifiedDateStart ?modifiedDateStart;
+        ex:assetHasAlternativeModifiedDateEnd ?modifiedDateEnd;
         ex:sealAssetHasStartDate ?sealDateStart;
         ex:sealAssetHasEndDate ?sealDateEnd;
         ex:sealAssetHasObverseStartDate ?sealObverseStartDate;
@@ -75,6 +77,12 @@ construct {
     ?originApproximateDateEnd ex:year ?approximateEndYear;
         ex:month ?approximateEndMonth;
         ex:day ?approximateEndDay.
+    ?modifiedDateStart ex:year ?modifiedStartYear;
+        ex:month ?modifiedStartMonth;
+        ex:day ?modifiedStartDay.
+    ?modifiedDateEnd ex:year ?modifiedEndYear;
+        ex:month ?modifiedEndMonth;
+        ex:day ?modifiedEndDay.
     ?sealDateStart ex:year ?sealStartYear;
         ex:month ?sealStartMonth;
         ex:day ?sealStartDay.
@@ -208,6 +216,24 @@ construct {
         optional { ?originApproximateDateEnd ex:year ?approximateEndYear }
         optional { ?originApproximateDateEnd ex:month ?approximateEndMonth }
         optional { ?originApproximateDateEnd ex:day ?approximateEndDay }
+    }
+    optional {
+        ?asset ex:assetHasAlternativeModifiedDateStart ?modifiedDateStart.
+        optional { ?modifiedDateStart ex:year ?modifiedStartYear }
+        optional { ?modifiedDateStart ex:month ?modifiedStartMonth }
+        optional { ?modifiedDateStart ex:day ?modifiedStartDay }
+    }
+    optional {
+        ?asset ex:assetHasAlternativeModifiedDateEnd ?modifiedDateEnd.
+        optional { ?modifiedDateEnd ex:year ?modifiedEndYear }
+        optional { ?modifiedDateEnd ex:month ?modifiedEndMonth }
+        optional { ?modifiedDateEnd ex:day ?modifiedEndDay }
+    }
+    optional {
+        ?asset ex:assetHasOriginDateEnd ?originDateEnd.
+        optional { ?originDateEnd ex:year ?endYear }
+        optional { ?originDateEnd ex:month ?endMonth }
+        optional { ?originDateEnd ex:day ?endDay }
     }
     optional {
         ?asset ex:sealAssetHasStartDate ?sealDateStart.

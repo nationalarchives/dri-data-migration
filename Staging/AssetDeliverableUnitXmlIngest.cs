@@ -90,18 +90,6 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
                 logger.UnrecognizedDateFormat(modified);
             }
         }
-        var curatedDate = rdf.GetSingleText(IngestVocabulary.CuratedDate);
-        if (!string.IsNullOrEmpty(curatedDate))
-        {
-            if (DateTimeOffset.TryParse(curatedDate, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var curatedDT))
-            {
-                GraphAssert.DateTime(graph, id, curatedDT, Vocabulary.AssetAlternativeModifiedAt);
-            }
-            else
-            {
-                logger.UnrecognizedDateFormat(curatedDate);
-            }
-        }
         
         AddNames(graph, doc, id);
         await AddVariationRelationsAsync(graph, rdf, id, doc, filesJson, cancellationToken);
@@ -109,6 +97,7 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
         AddWebArchive(graph, rdf, id);
         AddCourtCases(graph, rdf, id, existing);
         AddWitness(graph, rdf, id, existing);
+        AddModifiedDate(graph, rdf, id, existing);
 
         dateIngest.AddOriginDates(graph, rdf, id, existing);
 
@@ -412,6 +401,38 @@ public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheCli
                 var birthAddress = await cacheClient.CacheFetchOrNew(CacheEntityKind.GeographicalPlace,
                     placeOfBirth.Value, Vocabulary.GeographicalPlaceName, cancellationToken);
                 graph.Assert(person, Vocabulary.PersonHasBirthAddress, birthAddress);
+            }
+        }
+    }
+
+    private void AddModifiedDate(IGraph graph, IGraph rdf, INode id, IGraph existing)
+    {
+        var curatedDate = rdf.GetSingleText(IngestVocabulary.CuratedDate);
+        if (!string.IsNullOrEmpty(curatedDate))
+        {
+            if (DateTimeOffset.TryParse(curatedDate, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var curatedDT))
+            {
+                GraphAssert.DateTime(graph, id, curatedDT, Vocabulary.AssetAlternativeModifiedAt);
+            }
+            else
+            {
+                var range = dateParser.ParseDateRange(null, curatedDate);
+                if (range.DateRangeKind == DateParser.DateRangeType.Date)
+                {
+                    var startNode = existing.GetSingleUriNode(Vocabulary.AssetHasAlternativeModifiedDateStart) ?? CacheClient.NewId;
+                    graph.Assert(id, Vocabulary.AssetHasAlternativeModifiedDateStart, startNode);
+                    GraphAssert.YearMonthDay(graph, startNode, range.FirstYear, range.FirstMonth, range.FirstDay);
+                    if (range.SecondYear.HasValue)
+                    {
+                        var endNode = existing.GetSingleUriNode(Vocabulary.AssetHasAlternativeModifiedDateEnd) ?? CacheClient.NewId;
+                        graph.Assert(id, Vocabulary.AssetHasAlternativeModifiedDateEnd, endNode);
+                        GraphAssert.YearMonthDay(graph, endNode, range.SecondYear, range.SecondMonth, range.SecondDay);
+                    }
+                }
+                else
+                {
+                    logger.UnrecognizedDateFormat(curatedDate);
+                }
             }
         }
     }
