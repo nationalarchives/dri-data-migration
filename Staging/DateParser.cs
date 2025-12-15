@@ -19,7 +19,7 @@ internal partial class DateParser(ILogger logger)
             trimmedDate = trimmedDate.Remove(0, 2);
         }
 
-        if (TryParseDate(trimmedDate, out var singleDate))
+        if (TryParseDate(trimmedDate, out var singleDate, true))
         {
             return new(dateType, singleDate!.Year, singleDate!.Month, singleDate!.Day);
         }
@@ -64,7 +64,7 @@ internal partial class DateParser(ILogger logger)
                 isObverse == false ? DateRangeType.Reverse :
                 dateType;
 
-        if (TryParseDate(trimmedDate, out var singleDate))
+        if (TryParseDate(trimmedDate, out var singleDate, true))
         {
             return new DateRange(dateRangeType, singleDate!.Year, singleDate!.Month, singleDate!.Day);
         }
@@ -149,7 +149,7 @@ internal partial class DateParser(ILogger logger)
         Reverse
     }
 
-    internal bool TryParseDate(string? date, out Ymd? dt)
+    internal bool TryParseDate(string? date, out Ymd? dt, bool suppressWarning = false)
     {
         if (string.IsNullOrWhiteSpace(date))
         {
@@ -189,7 +189,10 @@ internal partial class DateParser(ILogger logger)
             return true;
         }
 
-        logger.UnrecognizedDateFormat(date);
+        if (!suppressWarning)
+        {
+            logger.UnrecognizedDateFormat(date);
+        }
         dt = null;
         return false;
     }
