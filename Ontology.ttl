@@ -1249,14 +1249,14 @@ this:schema a owl:Ontology;
 :assetModifiedAt a owl:DatatypeProperty;
 	rdfs:seeAlso rico:wasLastUpdatedAtDate;
 	rdfs:domain :Asset;
-	rdfs:range xsd:datetime;
+	rdfs:range xsd:dateTime;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset modified at".
 
 :assetAlternativeModifiedAt a owl:DatatypeProperty;
 	rdfs:seeAlso rico:wasLastUpdatedAtDate;
 	rdfs:domain :Asset;
-	rdfs:range xsd:datetime;
+	rdfs:range xsd:dateTime;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset alternative modified at".
 
