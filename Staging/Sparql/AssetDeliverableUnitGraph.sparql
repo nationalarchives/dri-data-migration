@@ -230,12 +230,6 @@ construct {
         optional { ?modifiedDateEnd ex:day ?modifiedEndDay }
     }
     optional {
-        ?asset ex:assetHasOriginDateEnd ?originDateEnd.
-        optional { ?originDateEnd ex:year ?endYear }
-        optional { ?originDateEnd ex:month ?endMonth }
-        optional { ?originDateEnd ex:day ?endDay }
-    }
-    optional {
         ?asset ex:sealAssetHasStartDate ?sealDateStart.
         optional { ?sealDateStart ex:year ?sealStartYear }
         optional { ?sealDateStart ex:month ?sealStartMonth }

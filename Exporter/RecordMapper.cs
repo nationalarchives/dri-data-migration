@@ -21,6 +21,11 @@ internal static class RecordMapper
         var batchDriId = asset.GetSingleText(Vocabulary.BatchDriId);
         var assetSourceInternalName = asset.GetSingleText(Vocabulary.AssetSourceInternalName);
         var assetConnectedAssetNote = asset.GetSingleText(Vocabulary.AssetConnectedAssetNote);
+        var assetModifiedAt = asset.GetSingleDate(Vocabulary.AssetModifiedAt);
+        var assetAlternativeModifiedAt = asset.GetSingleDate(Vocabulary.AssetAlternativeModifiedAt);
+        var assetHasAlternativeModifiedDateStart = YmdMapper.GetYmd(asset, Vocabulary.AssetHasAlternativeModifiedDateStart);
+        var assetHasAlternativeModifiedDateEnd = YmdMapper.GetYmd(asset, Vocabulary.AssetHasAlternativeModifiedDateEnd);
+        var assetAlternativeModifiedAtNote = asset.GetSingleText(Vocabulary.AssetAlternativeModifiedAtNote);
         var assetRelationDescription = asset.GetSingleText(Vocabulary.AssetRelationDescription);
         var assetPhysicalDescription = asset.GetSingleText(Vocabulary.AssetPhysicalDescription);
         var paperNumber = asset.GetSingleText(Vocabulary.PaperNumber);
@@ -100,6 +105,11 @@ internal static class RecordMapper
             CopyrightHolders = copyrightTitles,
             HeldBy = retentionFormalBodyName,
             CreatedBy = creationFormalBodyName,
+            ModifiedAt = assetModifiedAt,
+            CuratedModifiedAt = assetAlternativeModifiedAt,
+            CuratedDateStart = assetHasAlternativeModifiedDateStart,
+            CuratedDateEnd = assetHasAlternativeModifiedDateEnd,
+            CuratedModifiedAtNote = assetAlternativeModifiedAtNote,
             GeographicalPlace = geographicalPlaceName,
             CoveringDateStart = assetHasOriginDateStart,
             CoveringDateEnd = assetHasOriginDateEnd,
