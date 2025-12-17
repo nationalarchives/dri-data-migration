@@ -37,6 +37,11 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | CopyrightHolders | ex:assetHasCopyright/ex:copyrightTitle |
 | HeldBy | ex:assetHasRetention/ex:retentionHasFormalBody/ex:formalBodyName |
 | CreatedBy | ex:assetHasCreation/ex:creationHasFormalBody/ex:formalBodyName |
+| ModifiedAt | ex:assetModifiedAt |
+| CuratedModifiedAt | ex:assetAlternativeModifiedAt |
+| CuratedDateStart | ex:assetHasAlternativeModifiedDateStart (ex:year, ex:month, ex:day) |
+| CuratedDateEnd | ex:assetHasAlternativeModifiedDateEnd (ex:year, ex:month, ex:day) |
+| CuratedModifiedAtNote | ex:assetAlternativeModifiedAtNote |
 | GeographicalPlace | ex:assetHasAssociatedGeographicalPlace/ex:geographicalPlaceName |
 | CoveringDateStart | ex:assetHasOriginDateStart |
 | CoveringDateEnd | ex:assetHasOriginDateEnd |
@@ -110,11 +115,25 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | NextOfKinName | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personHasNextOfKinRelationship/ex:nextOfKinRelationshipHasNextOfKin/ex:personFullName |
 | NextOfKinTypes | Last URI segments of (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personHasNextOfKinRelationship/ex:nextOfKinRelationshipHasKinship |
 | SeamanServiceNumber | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:seamanServiceNumber |
-| Changes.DriId | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeDriId |
 | Changes.DescriptionBase64 | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeDescription |
 | Changes.Timestamp | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeDateTime |
 | Changes.OperatorName | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeHasOperator/ex:operatorName |
-| Changes.OperatorIdentifier | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeHasOperator/ex:operatorIdentifier |
+| Changes.Sensitivity.FoiAssertedDate.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewDate |
+| Changes.Sensitivity.SensitiveName.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveName |
+| Changes.Sensitivity.SensitiveDescription.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveDescription |
+| Changes.Sensitivity.AccessConditionName.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasAccessCondition/ex:accessConditionName |
+| Changes.Sensitivity.AccessConditionCode.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasAccessCondition/ex:accessConditionCode |
+| Changes.Sensitivity.ClosureReviewDate.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionReviewDate |
+| Changes.Sensitivity.ClosureStartDate.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionCalculationStartDate |
+| Changes.Sensitivity.ClosurePeriod.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionDuration |
+| Changes.Sensitivity.ClosureEndYear.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionEndYear |
+| Changes.Sensitivity.ClosureDescription.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionDescription |
+| Changes.Sensitivity.FoiExemptions.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionHasLegislation |
+| Changes.Sensitivity.InstrumentNumber.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionInstrumentNumber |
+| Changes.Sensitivity.InstrumentSignedDate.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionInstrumentSignatureDate |
+| Changes.Sensitivity.RetentionReconsiderDate.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionRestrictionReviewDate |
+| Changes.Sensitivity.GroundForRetentionCode.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:groundForRetentionCode |
+| Changes.Sensitivity.GroundForRetentionDescription.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:groundForRetentionDescription |
 | DigitalFileCount | Count of grouped variations |
 | DigitalFiles.FileName | ex:assetHasVariation/(ex:variationAlternativeName or ex:variationName) |
 | DigitalFiles.SortOrder | ex:assetHasVariation/ex:variationSequence |
