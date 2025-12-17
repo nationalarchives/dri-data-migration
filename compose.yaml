@@ -1,13 +1,14 @@
 services:
     graphdb:
-        image: ontotext/graphdb:11.0.2 #https://hub.docker.com/r/ontotext/graphdb/
+        image: ontotext/graphdb:11.2.0 #https://hub.docker.com/r/ontotext/graphdb/
         container_name: graphdb
         #https://graphdb.ontotext.com/documentation/11.0/configuring-graphdb-memory.html#configuring-graphdb-memory
+        #https://graphdb.ontotext.com/documentation/11.2/graphdb-standalone-server.html#java-virtual-machine-settings
         #https://learn.microsoft.com/en-us/windows/wsl/wsl-config#wslconfig
         #https://docs.oracle.com/en/java/javase/21/gctuning/available-collectors.html
         environment:
             GDB_HEAP_SIZE: "30G"
-            GDB_JAVA_OPTS: "-Dgraphdb.query.memory.threshold=2G -Dgraphdb.home=/opt/graphdb/home -XX:+UseParallelGC"
+            GDB_JAVA_OPTS: "-Dgraphdb.home=/opt/graphdb/home -XX:+UseSerialGC"
         #Uncomment to start in server mode only
         #command:
         #    - "-s"
@@ -24,19 +25,19 @@ services:
               read_only: true
               source: ./graphdb.license
               target: /opt/graphdb/home/conf/graphdb.license
-            - type: bind
-              read_only: true
-              source: ./backup.nq
-              target: /root/graphdb-import/backup.nq
-    otl-dashboard:
-        image: mcr.microsoft.com/dotnet/aspire-dashboard:latest
-        container_name: otl-dashboard
-        ports:
-            - '18888:18888'
-            - '4317:18889'
-        #https://learn.microsoft.com/en-us/dotnet/aspire/fundamentals/dashboard/configuration?tabs=powershell#resources
-        environment:
-            DASHBOARD__FRONTEND__AUTHMODE: "Unsecured"
+            #- type: bind
+            #  read_only: true
+            #  source: ./backup.nq
+            #  target: /root/graphdb-import/backup.nq
+    #otl-dashboard:
+    #    image: mcr.microsoft.com/dotnet/aspire-dashboard:latest
+    #    container_name: otl-dashboard
+    #    ports:
+    #        - '18888:18888'
+    #        - '4317:18889'
+    #    #https://learn.microsoft.com/en-us/dotnet/aspire/fundamentals/dashboard/configuration?tabs=powershell#resources
+    #    environment:
+    #        DASHBOARD__FRONTEND__AUTHMODE: "Unsecured"
 
 volumes:
     data:
