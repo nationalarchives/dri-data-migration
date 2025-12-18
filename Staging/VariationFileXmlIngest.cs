@@ -5,7 +5,7 @@ using VDS.RDF.Nodes;
 
 namespace Staging;
 
-public class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
+internal class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
 {
     private readonly DateParser dateParser = new(logger);
     private readonly RdfXmlLoader rdfXmlLoader = new(logger);
