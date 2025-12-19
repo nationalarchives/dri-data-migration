@@ -10,7 +10,7 @@ using VDS.RDF.Parsing;
 
 namespace Staging;
 
-public class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheClient)
+internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheClient)
 {
     private readonly RdfXmlLoader rdfXmlLoader = new(logger);
     private readonly AssetDeliverableUnitOriginDateIngest dateIngest = new(logger);
