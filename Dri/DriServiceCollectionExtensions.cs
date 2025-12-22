@@ -6,12 +6,15 @@ namespace Dri;
 
 public static class DriServiceCollectionExtensions
 {
-    public static IServiceCollection AddDriExport(this IServiceCollection services)
+    extension(IServiceCollection services)
     {
-        services.AddHttpClient<IDriSparqlClient, SparqlClient>(h => h.Timeout = TimeSpan.FromMinutes(10));
-        services.AddTransient<IDriRdfExporter, RdfExporter>();
-        services.AddTransient<IDriSqlExporter, SqlExporter>();
+        public IServiceCollection AddDriExport()
+        {
+            services.AddHttpClient<IDriSparqlClient, SparqlClient>(h => h.Timeout = TimeSpan.FromMinutes(10));
+            services.AddTransient<IDriRdfExporter, RdfExporter>();
+            services.AddTransient<IDriSqlExporter, SqlExporter>();
 
-        return services;
+            return services;
+        }
     }
 }

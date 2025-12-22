@@ -1,16 +1,20 @@
 ﻿using Api;
 using Exporter;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Exporter;
 
 public static class ExportServiceCollectionExtensions
 {
-    public static IServiceCollection AddExporter(this IServiceCollection services)
+    extension(IServiceCollection services)
     {
-        services.AddHttpClient<IExportSparqlClient, SparqlClient>(h => h.Timeout = TimeSpan.FromMinutes(10));
-        services.AddTransient<IRecordRetrieval, RecordRetrieval>();
-        services.AddTransient<IOutputGenerator, OutputGenerator>();
+        public IServiceCollection AddExporter()
+        {
+            services.AddHttpClient<IExportSparqlClient, SparqlClient>(h => h.Timeout = TimeSpan.FromMinutes(10));
+            services.AddTransient<IRecordRetrieval, RecordRetrieval>();
+            services.AddTransient<IOutputGenerator, OutputGenerator>();
 
-        return services;
+            return services;
+        }
     }
 }

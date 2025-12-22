@@ -1,5 +1,6 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
+using Rdf;
 using System.Xml;
 using VDS.RDF;
 using VDS.RDF.Nodes;

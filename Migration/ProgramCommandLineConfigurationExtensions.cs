@@ -1,11 +1,16 @@
-﻿namespace Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+
+namespace Migration;
 
 public static class ProgramCommandLineConfigurationExtensions
 {
-    public static IConfigurationBuilder AddProgramCommandLine(this IConfigurationBuilder configurationBuilder, string[] args)
+    extension(IConfigurationBuilder configurationBuilder)
     {
-        configurationBuilder.Add(new ProgramCommandLineConfigurationSource(args));
+        public IConfigurationBuilder AddProgramCommandLine(string[] args)
+        {
+            configurationBuilder.Add(new ProgramCommandLineConfigurationSource(args));
 
-        return configurationBuilder;
+            return configurationBuilder;
+        }
     }
 }
