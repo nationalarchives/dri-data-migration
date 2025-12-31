@@ -3,7 +3,7 @@
 select ?assetDriId ?reference ?redactedVariationSequence
     ?variationName
 	?retentionBodyName ?isPublicDescription
-    ?startOriginDate ?endOriginDate ?accessConditionCode ?closureStatus
+    ?startCoveringDate ?endCoveringDate ?accessConditionCode ?closureStatus
     ?sensitivityReviewRestrictionCalculationStartDate
     ?sensitivityReviewRestrictionDuration
 	?sensitivityReviewRestrictionEndYear
@@ -49,6 +49,24 @@ where {
         optional { ?assetHasOriginDateEnd ex:day ?endDay }
         bind(concat(str(?endYear), coalesce(str(?endMonth), ''), coalesce(str(?endDay), '')) as ?endOriginDate)
     }
+    optional { ?asset ex:assetModifiedAt ?assetModifiedAt }
+    optional { ?asset ex:assetAlternativeModifiedAt ?assetAlternativeModifiedAt }
+    optional {
+        ?asset ex:assetHasAlternativeModifiedDateStart ?modifiedDateStart.
+        ?modifiedDateStart ex:year ?modifiedStartYear.
+        optional { ?modifiedDateStart ex:month ?modifiedStartMonth }
+        optional { ?modifiedDateStart ex:day ?modifiedStartDay }
+        bind(concat(str(?modifiedStartYear), coalesce(str(?modifiedStartMonth), ''), coalesce(str(?modifiedStartDay), '')) as ?startModifiedDate)
+    }
+    optional {
+        ?asset ex:assetHasAlternativeModifiedDateEnd ?modifiedDateEnd.
+        ?modifiedDateEnd ex:year ?modifiedEndYear.
+        optional { ?modifiedDateEnd ex:month ?modifiedEndMonth }
+        optional { ?modifiedDateEnd ex:day ?modifiedEndDay }
+        bind(concat(str(?modifiedEndYear), coalesce(str(?modifiedEndMonth), ''), coalesce(str(?modifiedEndDay), '')) as ?endModifiedDate)
+    }
+    bind(coalesce(?startOriginDate, str(?assetAlternativeModifiedAt), ?startModifiedDate, str(?assetModifiedAt)) as ?startCoveringDate)
+    bind(coalesce(?endOriginDate, str(?assetAlternativeModifiedAt), ?endModifiedDate, str(?assetModifiedAt)) as ?endCoveringDate)
     optional { ?variation ex:redactedVariationSequence ?redactedVariationSequence }
     optional {
         ?variation ex:variationHasSensitivityReview ?sr.

@@ -81,7 +81,7 @@ internal static class StagingReconciliationParser
         {
             return null;
         }
-        var dt = date.Split('-', StringSplitOptions.RemoveEmptyEntries);
+        var dt = date.Split(['-', 'T'], StringSplitOptions.RemoveEmptyEntries);
         if (dt.Length == 0)
         {
             return null;
@@ -90,7 +90,7 @@ internal static class StagingReconciliationParser
         sb.Append(dt[0]);
         if (dt.Length > 1)
         {
-            for (var i = 1; i < dt.Length; i++)
+            for (var i = 1; i < Math.Min(dt.Length, 3); i++)
             {
                 sb.Append(dt[i]);
             }
@@ -123,7 +123,7 @@ internal static class StagingReconciliationParser
             return null;
         }
         var isPublicDescription = (bool)row.GetValueOrDefault(ReconciliationFieldName.IsPublicDescription, true);
-        
+
         return accessConditionCode switch
         {
             "A" or "I" => "O",
