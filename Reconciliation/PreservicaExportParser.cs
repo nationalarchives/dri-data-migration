@@ -35,7 +35,7 @@ internal static class PreservicaExportParser
         return data;
     }
 
-    internal static readonly Func<Dictionary<string, string>, string, string?> ToText = (dictionary, key) => dictionary.TryGetValue(key, out var value) ? string.IsNullOrWhiteSpace(value) ? null : value : null;
+    internal static readonly Func<Dictionary<string, string>, string, string?> ToText = (dictionary, key) => (string?)To(dictionary, key, v => v);
     internal static string? ToLocation(string? txt, string code)
     {
         if (string.IsNullOrWhiteSpace(txt))
@@ -48,25 +48,10 @@ internal static class PreservicaExportParser
 
         return location;
     }
-    internal static string? ToName(string? folderOrFile, string? fileName)
-    {
-        if (folderOrFile is not "folder")
-        {
-            return fileName;
-        }
-
-        return null;
-    }
-    internal static DateTimeOffset? ToDate(string? folderOrFile, string? date)
-    {
-        if (folderOrFile is not "folder")
-        {
-            return DateTimeOffset.TryParse(date, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var v) ? v : null;
-        }
-
-        return null;
-    }
-    internal static readonly Func<string?, object?> ToTextList = txt => string.IsNullOrWhiteSpace(txt) ? null : txt.Split(',', StringSplitOptions.RemoveEmptyEntries);
-    internal static readonly Func<string?, object?> ToInt = txt => int.TryParse(txt, out int v) ? v : null;
-    internal static readonly Func<Dictionary<string, string>, string, object?> ToBool = (dictionary, key) => dictionary.TryGetValue(key, out var value) ? value == "TRUE" : true;
+    internal static readonly Func<Dictionary<string, string>, string, object?> ToDate = (dictionary, key) => To(dictionary, key, v => DateTimeOffset.TryParse(v, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt) ? dt : null);
+    internal static readonly Func<Dictionary<string, string>, string, object?> ToIntDate = (dictionary, key) => To(dictionary, key, v => DateTimeOffset.TryParse(v, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt) ? int.TryParse(dt.ToString("yyyyMMdd"), out int i) ? i : null : null);
+    internal static readonly Func<Dictionary<string, string>, string, object?> ToTextList = (dictionary, key) => To(dictionary, key, v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+    internal static readonly Func<Dictionary<string, string>, string, object?> ToInt = (dictionary, key) => To(dictionary, key, v => int.TryParse(v, out int i) ? i : null);
+    internal static readonly Func<Dictionary<string, string>, string, object?> ToBool = (dictionary, key) => To(dictionary, key, v => v == "TRUE") ?? true;
+    private static readonly Func<Dictionary<string, string>, string, Func<string, object?>, object?> To = (dictionary, key, f) => dictionary.TryGetValue(key, out var value) ? f(value) : null;
 }
