@@ -4,39 +4,14 @@ using Microsoft.Extensions.Options;
 
 namespace Reconciliation;
 
-public class MetadataSource(ILogger<MetadataSource> logger, IOptions<ReconciliationSettings> reconciliationSettings) : IReconciliationSource
+public class MetadataSource(ILogger<MetadataSource> logger, IOptions<ReconciliationSettings> reconciliationSettings) : ExcelSource(logger), IReconciliationSource
 {
     private readonly ReconciliationSettings settings = reconciliationSettings.Value;
 
-    public Task<List<Dictionary<ReconciliationFieldName, object>>> GetExpectedDataAsync(CancellationToken cancellationToken)
-    {
-        var data = new List<Dictionary<ReconciliationFieldName, object>>();
-        var ids = new List<string>();
-        foreach (var file in settings.FileLocation)
-        {
-            logger.GetReconciliationFile(file);
-            var preservica = PreservicaExportParser.Parse(file);
-            var filteredData = preservica.Select(p => Filter(p)
-                .Where(kv => kv.Value is not null)
-                .ToDictionary(kv => kv.Key, kv => kv.Value!))
-                .Where(d =>
-                {
-                    if (!d.TryGetValue(ReconciliationFieldName.Location, out var location) ||
-                        location is not string id)
-                    {
-                        return false;
-                    }
-                    return !ids.Contains(id);
-                })
-                .ToList();
-            data.AddRange(filteredData);
-            ids.AddRange(filteredData.Select(d => (d[ReconciliationFieldName.Location] as string)!).ToList());
-        }
+    public Task<List<Dictionary<ReconciliationFieldName, object>>> GetExpectedDataAsync(CancellationToken cancellationToken) =>
+        GetDataAsync(settings.FileLocation, "metadata");
 
-        return Task.FromResult(data);
-    }
-
-    private Dictionary<ReconciliationFieldName, object?> Filter(Dictionary<string, string> data)
+    internal override Dictionary<ReconciliationFieldName, object?> Filter(Dictionary<string, string> data)
     {
         var isFolder = data["folder"] == "folder";
         return new()
@@ -47,5 +22,5 @@ public class MetadataSource(ILogger<MetadataSource> logger, IOptions<Reconciliat
             [ReconciliationFieldName.ModifiedAt] = isFolder ? null : PreservicaExportParser.ToDate(data, "date_last_modified"),
             [ReconciliationFieldName.CoveringDateEnd] = isFolder ? null : PreservicaExportParser.ToIntDate(data, "end_date")
         };
-}
+    }
 }
