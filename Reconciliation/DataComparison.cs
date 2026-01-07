@@ -8,7 +8,6 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
     IStagingReconciliationClient client, IEnumerable<IReconciliationSource> sources) : IDataComparison
 {
     private readonly ReconciliationSettings settings = reconciliationSettings.Value;
-    private const string missing = "MISSING IMPORT LOCATION";
 
     public async Task ReconcileAsync(CancellationToken cancellationToken)
     {
@@ -77,38 +76,39 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
         var diffCount = 0;
         foreach (var stagingRow in staging)
         {
-
             var stagingIdentifier = GetStagingIdentifier(stagingRow);
-            var expectedRow = expected.SingleOrDefault(p => SelectIdentifier(p).Equals(SelectIdentifier(stagingRow)));
-            var isFolder = stagingRow.ContainsKey(ReconciliationFieldName.FileFolder) &&
-                stagingRow[ReconciliationFieldName.FileFolder] as string == "folder";
-            if (expectedRow is null)
+            using (logger.BeginScope(("RecordId", stagingIdentifier)))
             {
-                if (isFolder)
+                var expectedRow = expected.SingleOrDefault(p => SelectIdentifier(p).Equals(SelectIdentifier(stagingRow)));
+                var isFolder = stagingRow.ContainsKey(ReconciliationFieldName.FileFolder) &&
+                    stagingRow[ReconciliationFieldName.FileFolder] as string == "folder";
+                if (expectedRow is null)
                 {
-                    logger.ReconciliationFolderAdditional(stagingIdentifier);
-                    additionalFolderCount++;
+                    if (isFolder)
+                    {
+                        logger.ReconciliationFolderAdditional();
+                        additionalFolderCount++;
+                    }
+                    else
+                    {
+                        logger.ReconciliationFileAdditional();
+                        additionalFilesCount++;
+                    }
+                    continue;
                 }
-                else
-                {
-                    logger.ReconciliationFileAdditional(stagingIdentifier);
-                    additionalFilesCount++;
-                }
-                continue;
-            }
 
-            var diffs = ReconciliationEqualityComparer.Check(expectedRow!, stagingRow!);
-            if (diffs.Any())
-            {
-                logger.ReconciliationDiff(stagingIdentifier, diffs);
-                foreach (var diff in diffs)
+                var diffs = ReconciliationEqualityComparer.Check(expectedRow!, stagingRow!);
+                if (diffs.Any())
                 {
-                    var actualValue = stagingRow.TryGetValue(diff, out var value) ? value : "NOT FOUND";
-                    logger.ReconciliationDiffDetails(diff, expectedRow[diff], actualValue);
+                    foreach (var diff in diffs)
+                    {
+                        var actualValue = stagingRow.TryGetValue(diff, out var value) ? value : "NOT FOUND";
+                        logger.ReconciliationDiffDetails(diff, expectedRow[diff], actualValue);
+                    }
+                    diffCount++;
                 }
-                diffCount++;
+                expected.Remove(expectedRow);
             }
-            expected.Remove(expectedRow);
         }
 
         return new ReconciliationSummary(additionalFilesCount, additionalFolderCount, 0, 0, diffCount);
@@ -123,16 +123,18 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
         foreach (var item in expected)
         {
             var identifier = SelectIdentifier(item);
-
-            if (identifier?.EndsWith('/') == true)
+            using (logger.BeginScope(("RecordId", identifier)))
             {
-                logger.ReconciliationFolderNotFound(identifier);
-                missingFolderCount++;
-            }
-            else
-            {
-                logger.ReconciliationFileNotFound(identifier ?? missing);
-                missingFilesCount++;
+                if (identifier?.EndsWith('/') == true)
+                {
+                    logger.ReconciliationFolderNotFound();
+                    missingFolderCount++;
+                }
+                else
+                {
+                    logger.ReconciliationFileNotFound();
+                    missingFilesCount++;
+                }
             }
         }
 

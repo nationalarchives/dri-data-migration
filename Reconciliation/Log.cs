@@ -11,22 +11,22 @@ internal static partial class Log
     [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "Finished reconciliation")]
     internal static partial void ReconciliationFinished(this ILogger logger);
 
-    [LoggerMessage(EventId = 3, Level = LogLevel.Warning, Message = "Missing folder {id}")]
-    internal static partial void ReconciliationFolderNotFound(this ILogger logger, string id);
+    [LoggerMessage(EventId = 3, Level = LogLevel.Debug, Message = "Missing folder")]
+    internal static partial void ReconciliationFolderNotFound(this ILogger logger);
 
-    [LoggerMessage(EventId = 4, Level = LogLevel.Warning, Message = "Missing file {id}")]
-    internal static partial void ReconciliationFileNotFound(this ILogger logger, string id);
+    [LoggerMessage(EventId = 4, Level = LogLevel.Debug, Message = "Missing file")]
+    internal static partial void ReconciliationFileNotFound(this ILogger logger);
 
-    [LoggerMessage(EventId = 5, Level = LogLevel.Warning, Message = "Additional folder {id}")]
-    internal static partial void ReconciliationFolderAdditional(this ILogger logger, string id);
+    [LoggerMessage(EventId = 5, Level = LogLevel.Debug, Message = "Additional folder")]
+    internal static partial void ReconciliationFolderAdditional(this ILogger logger);
 
-    [LoggerMessage(EventId = 6, Level = LogLevel.Warning, Message = "Additional file {id}")]
-    internal static partial void ReconciliationFileAdditional(this ILogger logger, string id);
+    [LoggerMessage(EventId = 6, Level = LogLevel.Debug, Message = "Additional file")]
+    internal static partial void ReconciliationFileAdditional(this ILogger logger);
 
-    [LoggerMessage(EventId = 7, Level = LogLevel.Warning, Message = "Identified discrepancy on {id} (fields: {diffs})")]
-    internal static partial void ReconciliationDiff(this ILogger logger, string id, IEnumerable<ReconciliationFieldName> diffs);
+    [LoggerMessage(EventId = 7, Level = LogLevel.Debug, Message = "Expected value of {field} is {expected} but actual is {actual}")]
+    internal static partial void ReconciliationDiffDetails(this ILogger logger, ReconciliationFieldName field, object expected, object actual);
 
-    [LoggerMessage(EventId = 8, Level = LogLevel.Warning, Message = "Reconciliation summary: {additionalFilesCount} additional files, {additionalFolderCount} additional folders, {missingFilesCount} missing files, {missingFolderCount} missing folders, {diffCount} items with different values")]
+    [LoggerMessage(EventId = 8, Level = LogLevel.Information, Message = "Reconciliation summary: {additionalFilesCount} additional files, {additionalFolderCount} additional folders, {missingFilesCount} missing files, {missingFolderCount} missing folders, {diffCount} items with different values")]
     internal static partial void ReconciliationTotalDiff(this ILogger logger,
         int additionalFilesCount, int additionalFolderCount, int missingFilesCount,
         int missingFolderCount, int diffCount);
@@ -52,13 +52,9 @@ internal static partial class Log
     [LoggerMessage(EventId = 15, Level = LogLevel.Error, Message = "Unable to find matching source data retrieval")]
     internal static partial void UnableFindSource(this ILogger logger);
 
-    //TODO: Verbose???
-    [LoggerMessage(EventId = 16, Level = LogLevel.Information, Message = "Expected value of {field} is {expected} but found {actual}")]
-    internal static partial void ReconciliationDiffDetails(this ILogger logger, ReconciliationFieldName field, object expected, object actual);
-
-    [LoggerMessage(EventId = 17, Level = LogLevel.Information, Message = "Retrieved {count} records")]
+    [LoggerMessage(EventId = 16, Level = LogLevel.Information, Message = "Retrieved {count} records")]
     internal static partial void ReconciliationRecordCount(this ILogger logger, int count);
 
-    [LoggerMessage(EventId = 18, Level = LogLevel.Information, Message = "No difference found")]
+    [LoggerMessage(EventId = 17, Level = LogLevel.Information, Message = "No difference found")]
     internal static partial void ReconciliationNoDiff(this ILogger logger);
 }
