@@ -50,15 +50,23 @@ internal static class PreservicaExportParser
     }
     internal static string? ToName(string? folderOrFile, string? fileName)
     {
-        if (folderOrFile != "folder")
+        if (folderOrFile is not "folder")
         {
             return fileName;
         }
 
-        return fileName == "content" ? null : fileName;
+        return null;
+    }
+    internal static DateTimeOffset? ToDate(string? folderOrFile, string? date)
+    {
+        if (folderOrFile is not "folder")
+        {
+            return DateTimeOffset.TryParse(date, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var v) ? v : null;
+        }
+
+        return null;
     }
     internal static readonly Func<string?, object?> ToTextList = txt => string.IsNullOrWhiteSpace(txt) ? null : txt.Split(',', StringSplitOptions.RemoveEmptyEntries);
-    internal static readonly Func<string?, object?> ToDate = txt => DateTimeOffset.TryParse(txt, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var v) ? v : null; //TODO: Test offset
     internal static readonly Func<string?, object?> ToInt = txt => int.TryParse(txt, out int v) ? v : null;
     internal static readonly Func<Dictionary<string, string>, string, object?> ToBool = (dictionary, key) => dictionary.TryGetValue(key, out var value) ? value == "TRUE" : true;
 }

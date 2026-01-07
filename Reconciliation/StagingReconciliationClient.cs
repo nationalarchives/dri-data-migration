@@ -48,6 +48,7 @@ public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClien
         { Vocabulary.AssetDriId.Uri.Segments.Last(), new(ReconciliationFieldName.Id, ToText) },
         { "startCoveringDate", new(ReconciliationFieldName.CoveringDateStart, ToText) },
         { "endCoveringDate", new(ReconciliationFieldName.CoveringDateEnd, ToText) },
+        { Vocabulary.AssetModifiedAt.Uri.Segments.Last(), new(ReconciliationFieldName.ModifiedAt, ToDateTime) },
         { Vocabulary.AccessConditionCode.Uri.Segments.Last(), new(ReconciliationFieldName.AccessConditionCode, ToText) },
         { "closureStatus", new(ReconciliationFieldName.ClosureStatus, ToText) },
         { Vocabulary.AccessConditionName.Uri.Segments.Last(), new(ReconciliationFieldName.AccessConditionName, ToText) },

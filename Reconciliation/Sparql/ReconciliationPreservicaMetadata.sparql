@@ -1,6 +1,6 @@
 ﻿prefix ex: <http://id.example.com/schema/>
 
-select ?t ?importLocation ?variationName where {
+select ?t ?importLocation ?variationName ?assetModifiedAt where {
     bind(@id as ?id)
     ?subset ex:subsetHasBroaderSubset*/ex:subsetReference ?id.
     {
@@ -16,11 +16,14 @@ select ?t ?importLocation ?variationName where {
         ?variation ex:variationName ?varName.
         optional { ?variation ex:variationAlternativeName ?variationAlternativeName }
         optional { ?asset ex:assetHasRetention/ex:importLocation ?importFolder }
+        optional { ?asset ex:assetModifiedAt ?modifiedAt }
+        optional { ?asset ex:assetAlternativeModifiedAt ?assetAlternativeModifiedAt }
         bind(ex:Variation as ?t)
         bind(coalesce(?variationAlternativeName, ?varName) as ?variationName)
         bind(concat(coalesce(?importFolder, ?id), '/', ?variationName) as ?importLocation)
+        bind(coalesce(?assetAlternativeModifiedAt, ?modifiedAt) as ?assetModifiedAt)
     }
 }
-group by ?t ?importLocation ?variationName
+group by ?t ?importLocation ?variationName ?assetModifiedAt
 order by ?importLocation
 limit @limit offset @offset

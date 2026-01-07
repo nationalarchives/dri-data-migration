@@ -41,6 +41,7 @@ public class MetadataSource(ILogger<MetadataSource> logger, IOptions<Reconciliat
         {
             [ReconciliationFieldName.Location] = PreservicaExportParser.ToLocation(data["identifier"], settings.Code),
             [ReconciliationFieldName.Name] = PreservicaExportParser.ToName(data["folder"], data["file_name"]),
-            [ReconciliationFieldName.FileFolder] = PreservicaExportParser.ToText(data, "folder")
+            [ReconciliationFieldName.FileFolder] = PreservicaExportParser.ToText(data, "folder"),
+            [ReconciliationFieldName.ModifiedAt] = PreservicaExportParser.ToDate(data["folder"], data["date_last_modified"])
         };
 }

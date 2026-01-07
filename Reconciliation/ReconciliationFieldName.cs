@@ -7,6 +7,7 @@ public enum ReconciliationFieldName
     Reference,
     CoveringDateStart,
     CoveringDateEnd,
+    ModifiedAt,
     RedactedVariationSequence,
     Name,
     FileFolder,
