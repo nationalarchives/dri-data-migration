@@ -1,9 +1,10 @@
 ﻿prefix ex: <http://id.example.com/schema/>
 
-select ?t ?importLocation ?variationName ?assetModifiedAt where {
+select ?t ?importLocation ?variationName ?assetModifiedAt ?endCoveringDate where {
     bind(@id as ?id)
     ?subset ex:subsetHasBroaderSubset*/ex:subsetReference ?id.
     {
+        minus { ?subset ex:subsetReference ?id }
     	?subset ex:subsetReference ?reference.
         optional { ?subset ex:subsetHasRetention/ex:importLocation ?importFolder }
         bind(ex:Subset as ?t)
@@ -18,12 +19,26 @@ select ?t ?importLocation ?variationName ?assetModifiedAt where {
         optional { ?asset ex:assetHasRetention/ex:importLocation ?importFolder }
         optional { ?asset ex:assetModifiedAt ?modifiedAt }
         optional { ?asset ex:assetAlternativeModifiedAt ?assetAlternativeModifiedAt }
+        optional { 
+            ?asset ex:assetHasOriginDateEnd ?originDateEnd.
+            ?originDateEnd ex:year ?endYear.
+            optional { ?originDateEnd ex:month ?endMonth }
+            optional { ?originDateEnd ex:day ?endDay }
+            bind(concat(str(?endYear), coalesce(str(?endMonth), ''), coalesce(str(?endDay), '')) as ?assetHasOriginDateEnd)
+        }
+        optional {
+            ?asset ex:assetHasAlternativeModifiedDateEnd ?modifiedDateEnd.
+            ?modifiedDateEnd ex:year ?modifiedEndYear.
+            optional { ?modifiedDateEnd ex:month ?modifiedEndMonth }
+            optional { ?modifiedDateEnd ex:day ?modifiedEndDay }
+            bind(concat(str(?modifiedEndYear), coalesce(str(?modifiedEndMonth), ''), coalesce(str(?modifiedEndDay), '')) as ?assetHasAlternativeModifiedDateEnd)
+        }
+        bind(coalesce(?assetHasOriginDateEnd, str(?assetAlternativeModifiedAt), ?assetHasAlternativeModifiedDateEnd, str(?assetModifiedAt)) as ?endCoveringDate)
         bind(ex:Variation as ?t)
         bind(coalesce(?variationAlternativeName, ?varName) as ?variationName)
         bind(concat(coalesce(?importFolder, ?id), '/', ?variationName) as ?importLocation)
         bind(coalesce(?assetAlternativeModifiedAt, ?modifiedAt) as ?assetModifiedAt)
     }
 }
-group by ?t ?importLocation ?variationName ?assetModifiedAt
 order by ?importLocation
 limit @limit offset @offset

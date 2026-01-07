@@ -45,6 +45,7 @@ public class MetadataSource(ILogger<MetadataSource> logger, IOptions<Reconciliat
             [ReconciliationFieldName.Name] = isFolder ? null : data["file_name"],
             [ReconciliationFieldName.FileFolder] = PreservicaExportParser.ToText(data, "folder"),
             [ReconciliationFieldName.ModifiedAt] = isFolder ? null : PreservicaExportParser.ToDate(data, "date_last_modified"),
+            [ReconciliationFieldName.CoveringDateEnd] = isFolder ? null : PreservicaExportParser.ToIntDate(data, "end_date")
         };
 }
 }
