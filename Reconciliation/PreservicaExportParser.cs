@@ -35,7 +35,9 @@ internal static class PreservicaExportParser
         return data;
     }
 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
     internal static readonly Func<Dictionary<string, string>, string, string?> ToText = (dictionary, key) => (string?)To(dictionary, key, v => v);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
     internal static string? ToLocation(string? txt, string code)
     {
         if (string.IsNullOrWhiteSpace(txt))
@@ -48,10 +50,12 @@ internal static class PreservicaExportParser
 
         return location;
     }
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
     internal static readonly Func<Dictionary<string, string>, string, object?> ToDate = (dictionary, key) => To(dictionary, key, v => DateTimeOffset.TryParse(v, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt) ? dt : null);
     internal static readonly Func<Dictionary<string, string>, string, object?> ToIntDate = (dictionary, key) => To(dictionary, key, v => DateTimeOffset.TryParse(v, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt) ? int.TryParse(dt.ToString("yyyyMMdd"), out int i) ? i : null : null);
     internal static readonly Func<Dictionary<string, string>, string, object?> ToTextList = (dictionary, key) => To(dictionary, key, v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
     internal static readonly Func<Dictionary<string, string>, string, object?> ToInt = (dictionary, key) => To(dictionary, key, v => int.TryParse(v, out int i) ? i : null);
     internal static readonly Func<Dictionary<string, string>, string, object?> ToBool = (dictionary, key) => To(dictionary, key, v => v == "TRUE") ?? true;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
     private static readonly Func<Dictionary<string, string>, string, Func<string, object?>, object?> To = (dictionary, key, f) => dictionary.TryGetValue(key, out var value) ? f(value) : null;
 }
