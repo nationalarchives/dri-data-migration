@@ -27,7 +27,7 @@ Data from the staging triplestore: [query](https://github.com/nationalarchives/d
 | --- | --- | --- |
 | Location | identifier | (ex:subsetHasRetention/ex:importLocation or series code) or (ex:assetHasRetention/ex:importLocation or series code and (ex:variationAlternativeName or ex:variationName)) |
 | FileFolder | folder | ex:Subset or ex:Variation |
-| AccessConditionName | (only if `file`) closure_type | ex:variationHasSensitivityReview/ex:sensitivityReviewHasAccessCondition/ex:accessConditionName |
+| AccessConditionName | closure_type | (only if `file`) ex:variationHasSensitivityReview/ex:sensitivityReviewHasAccessCondition/ex:accessConditionName |
 | RetentionType | retention_type | (only if `file`) ex:variationHasSensitivityReview/ex:sensitivityReviewHasAccessCondition/ex:accessConditionName |
 | ClosurePeriod | closure_period | (only if `file`) ex:variationHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionDuration |
 | ClosureStartDate | closure_start_date | (only if `file`) ex:variationHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionCalculationStartDate |
