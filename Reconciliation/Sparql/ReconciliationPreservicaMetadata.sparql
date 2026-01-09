@@ -33,7 +33,7 @@ select ?t ?importLocation ?variationName ?assetModifiedAt ?endCoveringDate where
             optional { ?modifiedDateEnd ex:day ?modifiedEndDay }
             bind(concat(str(?modifiedEndYear), coalesce(str(?modifiedEndMonth), ''), coalesce(str(?modifiedEndDay), '')) as ?assetHasAlternativeModifiedDateEnd)
         }
-        bind(coalesce(?assetHasOriginDateEnd, str(?assetAlternativeModifiedAt), ?assetHasAlternativeModifiedDateEnd, str(?assetModifiedAt)) as ?endCoveringDate)
+        bind(coalesce(?assetHasOriginDateEnd, str(?assetAlternativeModifiedAt), ?assetHasAlternativeModifiedDateEnd, str(?modifiedAt)) as ?endCoveringDate)
         bind(ex:Variation as ?t)
         bind(coalesce(?variationAlternativeName, ?varName) as ?variationName)
         bind(concat(coalesce(?importFolder, ?id), '/', ?variationName) as ?importLocation)
