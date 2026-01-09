@@ -1,6 +1,7 @@
 ﻿using Api;
 using Rdf;
 using VDS.RDF;
+using VDS.RDF.Nodes;
 
 namespace Exporter;
 
@@ -21,16 +22,17 @@ internal static class RelationMapper
         List<string> variationRedactions = [];
         if (redactedVariationSequence is not null)
         {
-            variationRedactions.Add(assetReference);
+            variationRedactions.Add(ReferenceBuilder.Build(null, assetReference));
         }
         else
         {
             foreach (var variation in variations)
             {
-                var sequence = graph.GetSingleLiteral(variation, Vocabulary.RedactedVariationSequence);
+                var sequence = graph.GetSingleLiteral(variation, Vocabulary.RedactedVariationSequence)
+                    ?.AsValuedNode().AsInteger();
                 if (sequence is not null)
                 {
-                    variationRedactions.Add($"{assetReference}/{sequence.Value}");
+                    variationRedactions.Add(ReferenceBuilder.Build(sequence.Value, assetReference));
                 }
             }
         }
@@ -61,29 +63,29 @@ internal static class RelationMapper
 
     private static string? Wo409Separated(string assetReference) => assetReference switch
     {
-        "WO/409/27/101/668" => "WO/409/27/101/1071",
-        "WO/409/27/102/20" => "WO/409/27/102/1059",
-        "WO/409/27/14/345" => "WO/409/27/14/537",
-        "WO/409/27/30/300" => "WO/409/27/30/1058",
-        "WO/409/27/4/46" => "WO/409/27/4/678",
-        "WO/409/27/51/301" => "WO/409/27/51/738",
-        "WO/409/27/70/26" => "WO/409/27/70/1074",
-        "WO/409/27/93/12" => "WO/409/27/93/662",
-        "WO/409/27/93/169" => "WO/409/27/93/663",
-        "WO/409/27/93/278" => "WO/409/27/93/664",
-        "WO/409/27/93/319" => "WO/409/27/93/665",
+        "WO 409/27/101/668" => "WO 409/27/101/1071",
+        "WO 409/27/102/20" => "WO 409/27/102/1059",
+        "WO 409/27/14/345" => "WO 409/27/14/537",
+        "WO 409/27/30/300" => "WO 409/27/30/1058",
+        "WO 409/27/4/46" => "WO 409/27/4/678",
+        "WO 409/27/51/301" => "WO 409/27/51/738",
+        "WO 409/27/70/26" => "WO 409/27/70/1074",
+        "WO 409/27/93/12" => "WO 409/27/93/662",
+        "WO 409/27/93/169" => "WO 409/27/93/663",
+        "WO 409/27/93/278" => "WO 409/27/93/664",
+        "WO 409/27/93/319" => "WO 409/27/93/665",
 
-        "WO/409/27/101/1071" => "WO/409/27/101/668",
-        "WO/409/27/102/1059" => "WO/409/27/102/20",
-        "WO/409/27/14/537" => "WO/409/27/14/345",
-        "WO/409/27/30/1058" => "WO/409/27/30/300",
-        "WO/409/27/4/678" => "WO/409/27/4/46",
-        "WO/409/27/51/738" => "WO/409/27/51/301",
-        "WO/409/27/70/1074" => "WO/409/27/70/26",
-        "WO/409/27/93/662" => "WO/409/27/93/12",
-        "WO/409/27/93/663" => "WO/409/27/93/169",
-        "WO/409/27/93/664" => "WO/409/27/93/278",
-        "WO/409/27/93/665" => "WO/409/27/93/319",
+        "WO 409/27/101/1071" => "WO 409/27/101/668",
+        "WO 409/27/102/1059" => "WO 409/27/102/20",
+        "WO 409/27/14/537" => "WO 409/27/14/345",
+        "WO 409/27/30/1058" => "WO 409/27/30/300",
+        "WO 409/27/4/678" => "WO 409/27/4/46",
+        "WO 409/27/51/738" => "WO 409/27/51/301",
+        "WO 409/27/70/1074" => "WO 409/27/70/26",
+        "WO 409/27/93/662" => "WO 409/27/93/12",
+        "WO 409/27/93/663" => "WO 409/27/93/169",
+        "WO 409/27/93/664" => "WO 409/27/93/278",
+        "WO 409/27/93/665" => "WO 409/27/93/319",
         _ => null
     };
 }
