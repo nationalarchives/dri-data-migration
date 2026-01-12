@@ -75,6 +75,7 @@ public static class IngestVocabulary
 
     //Local names of predicates are constructed by concatenation with the last path segment due to the lack of end forward slash in the XML namespace declaration.
     public static readonly IUriNode PaperNumber = new UriNode(new($"{TransNamespace}paperNumber"));
+    public static readonly IUriNode PoorLawUnionNumber = new UriNode(new($"{TransNamespace}poorLawUnionNumber"));
     public static readonly IUriNode Counties = new UriNode(new($"{TransNamespace}counties"));
     public static readonly IUriNode StartImageNumber = new UriNode(new($"{TransNamespace}startImageNumber"));
     public static readonly IUriNode EndImageNumber = new UriNode(new($"{TransNamespace}endImageNumber"));

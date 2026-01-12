@@ -33,6 +33,7 @@ construct {
         ex:imageSequenceStart ?imageSequenceStart;
         ex:imageSequenceEnd ?imageSequenceEnd;
         ex:paperNumber ?paperNumber;
+        ex:poorLawUnionNumber ?poorLawUnionNumber;
         ex:assetHasDimension ?dimension;
         ex:sealAssetHasObverseDimension ?obverseDimension;
         ex:sealAssetHasReverseDimension ?reverseDimension;
@@ -161,6 +162,7 @@ construct {
     optional { ?asset ex:imageSequenceStart ?imageSequenceStart }
     optional { ?asset ex:imageSequenceEnd ?imageSequenceEnd }
     optional { ?asset ex:paperNumber ?paperNumber }
+    optional { ?asset ex:poorLawUnionNumber ?poorLawUnionNumber }
     optional { ?asset ex:sealOwnerName ?sealOwnerName }
     optional { ?asset ex:sealColour ?sealColour }
     optional { ?asset ex:emailAttachmentReference ?emailAttachmentReference }

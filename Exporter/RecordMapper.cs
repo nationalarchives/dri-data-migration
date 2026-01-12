@@ -30,6 +30,7 @@ internal static class RecordMapper
         var assetRelationDescription = asset.GetSingleText(Vocabulary.AssetRelationDescription);
         var assetPhysicalDescription = asset.GetSingleText(Vocabulary.AssetPhysicalDescription);
         var paperNumber = asset.GetSingleText(Vocabulary.PaperNumber);
+        var poorLawUnionNumber = asset.GetSingleText(Vocabulary.PoorLawUnionNumber);
         var assetUsageRestrictionDescription = asset.GetSingleText(Vocabulary.AssetUsageRestrictionDescription);
         var assetHasUkGovernmentWebArchive = asset.GetSingleUriNode(Vocabulary.AssetHasUkGovernmentWebArchive)?.Uri;
         var legalStatus = asset.GetSingleUriNode(Vocabulary.AssetHasLegalStatus)?.Uri;
@@ -99,6 +100,7 @@ internal static class RecordMapper
             RelationDescription = assetRelationDescription,
             PhysicalDescription = assetPhysicalDescription,
             PaperNumber = paperNumber,
+            PoorLawUnionNumber = poorLawUnionNumber,
             UsageRestrictionDescription = assetUsageRestrictionDescription,
             UkGovernmentWebArchive = assetHasUkGovernmentWebArchive,
             LegalStatus = legalStatus?.Segments.LastOrDefault(),

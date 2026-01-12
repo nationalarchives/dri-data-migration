@@ -22,6 +22,7 @@ public class RecordOutput
     public string? RelationDescription { get; set; }
     public string? PhysicalDescription { get; set; }
     public string? PaperNumber { get; set; }
+    public string? PoorLawUnionNumber { get; set; }
     public string? UsageRestrictionDescription { get; set; }
     public Uri? UkGovernmentWebArchive { get; set; }
     public string? LegalStatus { get; set; }

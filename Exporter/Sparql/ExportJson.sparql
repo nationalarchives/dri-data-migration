@@ -20,6 +20,7 @@ construct {
         ex:assetPhysicalDescription ?assetPhysicalDescription;
         ex:assetRelationIdentifier ?assetRelationIdentifier;
         ex:paperNumber ?paperNumber;
+        ex:poorLawUnionNumber ?poorLawUnionNumber;
         ex:assetUsageRestrictionDescription ?assetUsageRestrictionDescription;
         ex:assetHasUkGovernmentWebArchive ?assetHasUkGovernmentWebArchive;
         ex:assetHasLegalStatus ?legalStatus;
@@ -255,6 +256,7 @@ construct {
     optional { ?asset ex:assetRelationIdentifier ?assetRelationIdentifier }
     optional { ?asset ex:assetPhysicalDescription ?assetPhysicalDescription }
     optional { ?asset ex:paperNumber ?paperNumber }
+    optional { ?asset ex:poorLawUnionNumber ?poorLawUnionNumber }
     optional { ?asset ex:assetUsageRestrictionDescription ?assetUsageRestrictionDescription }
     optional { ?asset ex:assetHasUkGovernmentWebArchive ?assetHasUkGovernmentWebArchive }
     optional { ?asset ex:assetHasLegalStatus ?legalStatus }

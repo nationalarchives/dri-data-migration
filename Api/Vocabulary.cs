@@ -51,6 +51,7 @@ public static class Vocabulary
     public static readonly IUriNode ImageSequenceStart = new UriNode(new(Namespace, "imageSequenceStart"));
     public static readonly IUriNode ImageSequenceEnd = new UriNode(new(Namespace, "imageSequenceEnd"));
     public static readonly IUriNode PaperNumber = new UriNode(new(Namespace, "paperNumber"));
+    public static readonly IUriNode PoorLawUnionNumber = new UriNode(new(Namespace, "poorLawUnionNumber"));
     public static readonly IUriNode SealOwnerName = new UriNode(new(Namespace, "sealOwnerName"));
     public static readonly IUriNode SealColour = new UriNode(new(Namespace, "sealColour"));
     public static readonly IUriNode EmailAttachmentReference = new UriNode(new(Namespace, "emailAttachmentReference"));

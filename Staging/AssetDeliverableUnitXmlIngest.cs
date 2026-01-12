@@ -62,6 +62,7 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
             [IngestVocabulary.FilmName] = Vocabulary.FilmTitle,
             [IngestVocabulary.Photographer] = Vocabulary.PhotographerDescription,
             [IngestVocabulary.PaperNumber] = Vocabulary.PaperNumber,
+            [IngestVocabulary.PoorLawUnionNumber] = Vocabulary.PoorLawUnionNumber,
             [IngestVocabulary.SealOwner] = Vocabulary.SealOwnerName, //TODO: check if can be turned into entities
             [IngestVocabulary.ColourOfOriginalSeal] = Vocabulary.SealColour,
             [IngestVocabulary.SeparatedMaterial] = Vocabulary.AssetConnectedAssetNote,

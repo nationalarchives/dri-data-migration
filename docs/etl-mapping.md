@@ -102,6 +102,7 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | tna:filmName | ex:filmTitle |
 | tna:photographer | ex:photographerDescription |
 | trans:paperNumber | ex:paperNumber |
+| trans:poorLawUnionNumber | ex:poorLawUnionNumber |
 | trans:sealOwner | ex:sealOwnerName |
 | trans:colourOfOriginalSeal | ex:sealColour |
 | trans:separatedMaterial | ex:assetConnectedAssetNote |

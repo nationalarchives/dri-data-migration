@@ -30,6 +30,7 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | RelationDescription | ex:assetRelationDescription |
 | PhysicalDescription | ex:assetPhysicalDescription |
 | PaperNumber | ex:paperNumber |
+| PoorLawUnionNumber | ex:poorLawUnionNumber |
 | UsageRestrictionDescription | ex:assetUsageRestrictionDescription |
 | UkGovernmentWebArchive | ex:assetHasUkGovernmentWebArchive |
 | LegalStatus | Last URI segemnt of ex:assetHasLegalStatus |
