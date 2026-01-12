@@ -13,9 +13,9 @@ Data from the staging triplestore: [query](https://github.com/nationalarchives/d
 
 | Name | Source | Staging |
 | --- | --- | --- |
-| Location | identifier | (ex:subsetHasRetention/ex:importLocation or series code) or (ex:assetHasRetention/ex:importLocation and (ex:variationAlternativeName or ex:variationName) or series code) |
-| Name | file_name | (only if `file`) ex:variationAlternativeName or ex:variationName |
-| FileFolder | folder | rdf:type (ex:Subset or ex:Variation) |
+| Location | identifier (`required`) | (ex:subsetHasRetention/ex:importLocation or series code) or (ex:assetHasRetention/ex:importLocation and (ex:variationAlternativeName or ex:variationName) or series code) |
+| Name | file_name (`required`) | (only if `file`) ex:variationAlternativeName or ex:variationName |
+| FileFolder | folder (`required`) | rdf:type (ex:Subset or ex:Variation) |
 | ModifiedAt | date_last_modified | (only if `file`) ex:assetAlternativeModifiedAt\|ex:assetModifiedAt |
 | CoveringDateEnd | end_date | (only if `file`) ex:assetHasOriginDateEnd\|ex:assetAlternativeModifiedAt\|ex:assetHasAlternativeModifiedDateEnd\|ex:assetModifiedAt |
 
@@ -25,8 +25,8 @@ Data from the staging triplestore: [query](https://github.com/nationalarchives/d
 
 | Name | Source | Staging |
 | --- | --- | --- |
-| Location | identifier | (ex:subsetHasRetention/ex:importLocation or series code) or (ex:assetHasRetention/ex:importLocation or series code and (ex:variationAlternativeName or ex:variationName)) |
-| FileFolder | folder | ex:Subset or ex:Variation |
+| Location | identifier (`required`) | (ex:subsetHasRetention/ex:importLocation or series code) or (ex:assetHasRetention/ex:importLocation or series code and (ex:variationAlternativeName or ex:variationName)) |
+| FileFolder | folder (`required`) | ex:Subset or ex:Variation |
 | AccessConditionName | closure_type | (only if `file`) ex:variationHasSensitivityReview/ex:sensitivityReviewHasAccessCondition/ex:accessConditionName |
 | RetentionType | retention_type | (only if `file`) ex:variationHasSensitivityReview/ex:sensitivityReviewHasAccessCondition/ex:accessConditionName |
 | ClosurePeriod | closure_period | (only if `file`) ex:variationHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionDuration |

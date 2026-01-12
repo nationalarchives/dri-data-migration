@@ -27,7 +27,7 @@ internal static class StagingReconciliationParser
                 ReconciliationFieldName.Name => new(cell.Key, ToVariationName(row, cell.Value as string)),
                 ReconciliationFieldName.CoveringDateStart => new(cell.Key, ToOriginDate(cell.Value as string)),
                 ReconciliationFieldName.CoveringDateEnd => new(cell.Key, ToOriginDate(cell.Value as string)),
-                ReconciliationFieldName.AccessConditionName => new(cell.Key, ToAccessConditon(cell.Value as string)),
+                ReconciliationFieldName.AccessConditionName => new(cell.Key, ToAccessCondition(cell.Value as string)),
                 ReconciliationFieldName.ClosurePeriod => new(cell.Key, ToYearDuration(row, cell.Value as TimeSpan?)),
                 ReconciliationFieldName.FoiExemptionReference => new(cell.Key, ToLegislationReferences(cell.Value as string)),
                 ReconciliationFieldName.ClosureEndYear => new(cell.Key, cell.Value as int?),
@@ -99,7 +99,7 @@ internal static class StagingReconciliationParser
         return int.TryParse(sb.ToString(), out var origin) ? origin : null;
     }
 
-    private static string? ToAccessConditon(string? accessConditionName) => accessConditionName?.Replace(' ', '_');
+    private static string? ToAccessCondition(string? accessConditionName) => accessConditionName?.Replace(' ', '_');
 
     private static int ToYearDuration(Dictionary<ReconciliationFieldName, object> row, TimeSpan? duration) =>
         row.TryGetValue(ReconciliationFieldName.ClosureEndYear, out var endYear) && endYear is not null ? (int)endYear :
