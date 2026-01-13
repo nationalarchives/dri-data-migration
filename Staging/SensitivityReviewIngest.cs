@@ -103,7 +103,7 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
         }
         if (dri.PreviousId is not null)
         {
-            var past = await cacheClient.CacheFetchOrNew(CacheEntityKind.SensititvityReview, dri.PreviousId, Vocabulary.SensitivityReviewDriId, cancellationToken);
+            var past = await cacheClient.CacheFetchOrNew(CacheEntityKind.SensitivityReview, dri.PreviousId, Vocabulary.SensitivityReviewDriId, cancellationToken);
             graph.Assert(id, Vocabulary.SensitivityReviewHasPastSensitivityReview, past);
         }
 

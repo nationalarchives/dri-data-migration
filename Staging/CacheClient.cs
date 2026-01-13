@@ -143,7 +143,7 @@ public class CacheClient : ICacheClient
     private CacheFetchInfo? ToCacheFetchInfo(CacheEntityKind kind, string key) => kind switch
     {
         CacheEntityKind.Asset => new(assetSparql, $"asset-{key}"),
-        CacheEntityKind.SensititvityReview => new(srSparql, $"sensititvity-review-{key}"),
+        CacheEntityKind.SensitivityReview => new(srSparql, $"sensitivity-review-{key}"),
         CacheEntityKind.Subset => new(subsetSparql, $"subset-{key}"),
         CacheEntityKind.Variation => new(variationSparql, $"variation-{key}"),
         CacheEntityKind.Language => new(languageSparql, $"language-{key}"),

@@ -45,7 +45,7 @@ public sealed class SensitivityReviewIngestTest
             .ReturnsAsync(new Dictionary<string, IUriNode> { [dri.Legislations.Single().ToString()] = legislation });
         cache.Setup(c => c.GroundsForRetention(CancellationToken.None))
             .ReturnsAsync(new Dictionary<string, IUriNode> { ["gfr1"] = gfr });
-        cache.Setup(c => c.CacheFetchOrNew(CacheEntityKind.SensititvityReview, dri.PreviousId!,
+        cache.Setup(c => c.CacheFetchOrNew(CacheEntityKind.SensitivityReview, dri.PreviousId!,
             Vocabulary.SensitivityReviewDriId, CancellationToken.None))
             .ReturnsAsync(previousSr);
         cache.Setup(c => c.CacheFetch(CacheEntityKind.Variation, dri.TargetId, CancellationToken.None))
