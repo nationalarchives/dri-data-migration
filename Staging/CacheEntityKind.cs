@@ -3,7 +3,7 @@
 public enum CacheEntityKind
 {
     Asset,
-    SensititvityReview,
+    SensitivityReview,
     Subset,
     Variation,
     Language,
@@ -12,5 +12,6 @@ public enum CacheEntityKind
     GeographicalPlace,
     SealCategory,
     Operator,
-    Battalion
+    Battalion,
+    AssetRelation
 }

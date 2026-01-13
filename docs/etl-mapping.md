@@ -90,7 +90,7 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | dcterms:description or tna:contentManagementSystemContainer or tna:summary or tna:additionalInformation or tna:itemDescription | ex:assetDescription |
 | tna:administrativeBackground | ex:assetSummary |
 | tna:relatedMaterial or trans:relatedMaterial | ex:assetRelationDescription |
-| tna:relatedIaid | ex:assetRelationIdentifier |
+| tna:relatedIaid | ex:assetRelationIdentifier and ex:assetRelationReference |
 | tna:physicalDescription or trans:physicalFormat | ex:assetPhysicalDescription |
 | tna:evidenceProvidedBy | ex:evidenceProviderName |
 | tna:investigation | ex:investigationName |

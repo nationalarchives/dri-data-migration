@@ -127,4 +127,13 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 41, Level = LogLevel.Warning, Message = "Unable to find operator {operatorId}")]
     internal static partial void OperatorNotFound(this ILogger logger, string operatorId);
+
+    [LoggerMessage(EventId = 42, Level = LogLevel.Warning, Message = "Unable to resolve related Id {relatedId}")]
+    internal static partial void RelatedIdNotResolved(this ILogger logger, string relatedId);
+
+    [LoggerMessage(EventId = 43, Level = LogLevel.Debug, Message = "Related Id resolution failed")]
+    internal static partial void RelatedIdResolutionFailed(this ILogger logger, Exception e);
+
+    [LoggerMessage(EventId = 44, Level = LogLevel.Warning, Message = "Unable to find related Id {relatedId}")]
+    internal static partial void RelatedIdNotFound(this ILogger logger, string relatedId);
 }

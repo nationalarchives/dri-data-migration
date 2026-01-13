@@ -11,7 +11,7 @@ using VDS.RDF.Parsing;
 
 namespace Staging;
 
-internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheClient)
+internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheClient, IAssetDeliverableUnitRelation assetDeliverableUnitRelation)
 {
     private readonly RdfXmlLoader rdfXmlLoader = new(logger);
     private readonly AssetDeliverableUnitOriginDateIngest dateIngest = new(logger);
@@ -48,7 +48,6 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
             [IngestVocabulary.AdministrativeBackground] = Vocabulary.AssetSummary,
             [IngestVocabulary.RelatedMaterial] = Vocabulary.AssetRelationDescription,
             [IngestVocabulary.TransRelatedMaterial] = Vocabulary.AssetRelationDescription,
-            [IngestVocabulary.RelatedIaid] = Vocabulary.AssetRelationIdentifier,
             [IngestVocabulary.PhysicalDescription] = Vocabulary.AssetPhysicalDescription,
             [IngestVocabulary.PhysicalFormat] = Vocabulary.AssetPhysicalDescription,
             [IngestVocabulary.EvidenceProvidedBy] = Vocabulary.EvidenceProviderName, //TODO: check if can be split and turned into entities
@@ -94,6 +93,7 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
         }
         
         AddNames(graph, doc, id);
+        await assetDeliverableUnitRelation.AddAssetRelationAsync(graph, rdf, id, cacheClient, cancellationToken);
         await AddVariationRelationsAsync(graph, rdf, id, doc, filesJson, cancellationToken);
         AddFilmDuration(graph, rdf, id);
         AddWebArchive(graph, rdf, id);
@@ -451,9 +451,9 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
 
     private static bool HasPathPartialMatch(string fullPath, string partialPath)
     {
-        var fullPathSegemnts = fullPath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        var fullPathSegments = fullPath.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
         return partialPath.Split('/', StringSplitOptions.RemoveEmptyEntries).All(p =>
-            fullPathSegemnts.Contains(p) || fullPathSegemnts.Contains(p.Replace(' ', '_')));
+            fullPathSegments.Contains(p) || fullPathSegments.Contains(p.Replace(' ', '_')));
     }
 }

@@ -1218,8 +1218,17 @@ this:schema a owl:Ontology;
 :assetRelationIdentifier a owl:DatatypeProperty;
 	rdfs:domain :Asset;
 	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset relation identifier".
+
+:assetRelationReference a owl:DatatypeProperty;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset relation reference";
+	rdfs:comment "Translated :assetRelationIdentifier (if possible) into catalogue reference.".
 
 :assetRelationDescription a owl:DatatypeProperty;
 	rdfs:domain :Asset;

@@ -6,10 +6,10 @@ using VDS.RDF;
 namespace Staging;
 
 public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient sparqlClient,
-    ILogger<AssetDeliverableUnitIngest> logger) :
+    ILogger<AssetDeliverableUnitIngest> logger, IAssetDeliverableUnitRelation assetDeliverableUnitRelation) :
     StagingIngest<DriAssetDeliverableUnit>(sparqlClient, logger, "AssetDeliverableUnitGraph")
 {
-    private readonly AssetDeliverableUnitXmlIngest xmlIngest = new(logger, cacheClient);
+    private readonly AssetDeliverableUnitXmlIngest xmlIngest = new(logger, cacheClient, assetDeliverableUnitRelation);
 
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriAssetDeliverableUnit dri, CancellationToken cancellationToken)
     {

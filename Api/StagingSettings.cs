@@ -10,6 +10,7 @@ public sealed class StagingSettings
     public string Code { get; set; }
     public Uri SparqlConnectionString { get; set; }
     public Uri SparqlUpdateConnectionString { get; set; }
+    public Uri DetailRecordUri { get; set; }
 #pragma warning restore CS8618
     public int FetchPageSize { get; set; }
 }

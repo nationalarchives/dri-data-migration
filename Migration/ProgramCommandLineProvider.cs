@@ -43,6 +43,13 @@ public class ProgramCommandLineProvider : ConfigurationProvider
         Required = false,
         CustomParser = UriArgumentParser()
     };
+    private static readonly Option<string> discoveryRecordDetailUri = new("--discovery-detail-uri", "-ddu")
+    {
+        Description = "Specifies the URI for the Discovery API detail record endpoint.",
+        DefaultValueFactory = _ => "https://discovery.nationalarchives.gov.uk/API/records/v1/details/",
+        Arity = ArgumentArity.ExactlyOne,
+        Required = false
+    };
     private static readonly Option<int> pageSize = new("--page-size", "-ps")
     {
         Description = "Specifies the number of records per page for paginated queries.",
@@ -77,7 +84,7 @@ public class ProgramCommandLineProvider : ConfigurationProvider
     };
     private static readonly Option<string> discoveryRecordsUri = new("--discovery-uri", "-du")
     {
-        Description = "Specifies the URI for the Discovery API search records endpoint. Default: https://discovery.nationalarchives.gov.uk/API/search/v1/records.",
+        Description = "Specifies the URI for the Discovery API search records endpoint.",
         DefaultValueFactory = _ => "https://discovery.nationalarchives.gov.uk/API/search/v1/records",
         Arity = ArgumentArity.ExactlyOne,
         Required = false
@@ -132,6 +139,7 @@ public class ProgramCommandLineProvider : ConfigurationProvider
             driSparql,
             sparql,
             sparqlUpdate,
+            discoveryRecordDetailUri,
             pageSize,
             restartFromStage,
             restartFromOffset
@@ -227,6 +235,11 @@ public class ProgramCommandLineProvider : ConfigurationProvider
                 {
                     data.Add($"{StagingSettings.Prefix}:{nameof(StagingSettings.SparqlUpdateConnectionString)}", uri.ToString());
                 }
+            }
+            if (parseResult.GetValue(discoveryRecordDetailUri) is string txtDiscovery &&
+                Uri.TryCreate(txtDiscovery, UriKind.Absolute, out var discoveryUri))
+            {
+                data.Add($"{StagingSettings.Prefix}:{nameof(StagingSettings.DetailRecordUri)}", discoveryUri.ToString());
             }
             if (parseResult.GetValue(pageSize) is int size)
             {

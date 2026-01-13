@@ -32,6 +32,7 @@ public sealed class DateParserTest
     private readonly FakeLogger<AssetDeliverableUnitIngest> assetLogger = new();
     private readonly Mock<ISparqlClient> client = new();
     private readonly Mock<ICacheClient> cache = new();
+    private readonly Mock<IAssetDeliverableUnitRelation> assetDeliverableUnitRelation = new();
 
     public DateParserTest()
     {
@@ -102,7 +103,7 @@ public sealed class DateParserTest
     [TestMethod(DisplayName = "Rejects invalid date range")]
     public async Task InvalidDateRange()
     {
-        var ingest = new AssetDeliverableUnitIngest(cache.Object, client.Object, assetLogger);
+        var ingest = new AssetDeliverableUnitIngest(cache.Object, client.Object, assetLogger, assetDeliverableUnitRelation.Object);
 
         await ingest.SetAsync([assetDri], CancellationToken.None);
 
@@ -128,7 +129,7 @@ public sealed class DateParserTest
     public async Task ParsesDateRange(string dateText, int startYear, int? startMonth, int? startDay,
         int? endYear, int? endMonth, int? endDay, int assertedTriples)
     {
-        var ingest = new AssetDeliverableUnitIngest(cache.Object, client.Object, assetLogger);
+        var ingest = new AssetDeliverableUnitIngest(cache.Object, client.Object, assetLogger, assetDeliverableUnitRelation.Object);
         var replacedDri = assetDri with { Xml = xml.Replace("DATERANGEPLACEHOLDER", dateText) };
 
         await ingest.SetAsync([replacedDri], CancellationToken.None);

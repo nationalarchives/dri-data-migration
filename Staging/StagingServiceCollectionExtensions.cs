@@ -12,6 +12,7 @@ public static class StagingServiceCollectionExtensions
         {
             services.AddMemoryCache();
             services.AddHttpClient<ISparqlClient, StagingSparqlClient>();
+            services.AddHttpClient<IAssetDeliverableUnitRelation, AssetDeliverableUnitRelation>();
             services.AddSingleton<ICacheClient, CacheClient>();
             services.AddTransient<IStagingIngest<DriAccessCondition>, AccessConditionIngest>();
             services.AddTransient<IStagingIngest<DriLegislation>, LegislationIngest>();

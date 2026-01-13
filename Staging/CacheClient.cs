@@ -59,6 +59,35 @@ public class CacheClient : ICacheClient
         groundsForRetentionSparql = embedded.GetSparql("GetGroundsForRetention");
     }
 
+    public void CacheCreate(CacheEntityKind kind, string key, object value)
+    {
+        var info = ToCacheFetchInfo(kind, key);
+        if (info is null)
+        {
+            logger.InvalidCacheEntityKind();
+        }
+        else
+        {
+            cache.GetOrCreate(info.Key, entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromHours(1);
+                return value;
+            });
+        }
+    }
+    
+    public object? CacheFetch(CacheEntityKind kind, string key)
+    {
+        var info = ToCacheFetchInfo(kind, key);
+        if (info is null)
+        {
+            logger.InvalidCacheEntityKind();
+            return null;
+        }
+
+        return cache.Get(info.Key);
+    }
+
     public async Task<IUriNode?> CacheFetch(CacheEntityKind kind, string key, CancellationToken cancellationToken)
     {
         var info = ToCacheFetchInfo(kind, key);
@@ -153,6 +182,7 @@ public class CacheClient : ICacheClient
         CacheEntityKind.SealCategory => new(sealCategorySparql, $"seal-category-{key}"),
         CacheEntityKind.Operator => new(operatorSparql, $"operator-{key}"),
         CacheEntityKind.Battalion => new(battalionSparql, $"battalion-{key}"),
+        CacheEntityKind.AssetRelation => new(string.Empty, $"asset-relation-{key}"),
         _ => null
     };
 

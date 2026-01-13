@@ -13,6 +13,7 @@ construct {
         ex:assetRelationDescription ?assetRelationDescription;
         ex:assetPhysicalDescription ?assetPhysicalDescription;
         ex:assetRelationIdentifier ?assetRelationIdentifier;
+        ex:assetRelationReference ?assetRelationReference;
         ex:assetUsageRestrictionDescription ?assetUsageRestrictionDescription;
         ex:assetTag ?assetTag;
         ex:assetSourceInternalName ?assetSourceInternalName;
@@ -142,6 +143,7 @@ construct {
     optional { ?asset ex:assetRelationDescription ?assetRelationDescription }
     optional { ?asset ex:assetPhysicalDescription ?assetPhysicalDescription }
     optional { ?asset ex:assetRelationIdentifier ?assetRelationIdentifier }
+    optional { ?asset ex:assetRelationReference ?assetRelationReference }
     optional { ?asset ex:assetUsageRestrictionDescription ?assetUsageRestrictionDescription }
     optional { ?asset ex:assetTag ?assetTag }
     optional { ?asset ex:assetSourceInternalName ?assetSourceInternalName }
