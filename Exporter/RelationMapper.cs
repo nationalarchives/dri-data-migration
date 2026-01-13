@@ -10,8 +10,16 @@ internal static class RelationMapper
     internal static List<RecordOutput.RecordRelationship>? GetRelations(IGraph graph,
         string assetReference, long? redactedVariationSequence)
     {
-        var related = graph.GetLiteralNodes(Vocabulary.AssetRelationDescription).Select(l => l.Value)
-            .Union(graph.GetLiteralNodes(Vocabulary.AssetRelationIdentifier).Select(l => l.Value));
+        var relationships = new List<RecordOutput.RecordRelationship>();
+        var descriptions = graph.GetTriplesWithPredicate(Vocabulary.AssetRelationDescription);
+        var related = graph.GetTriplesWithPredicate(Vocabulary.AssetRelationIdentifier).Select(t =>
+            new KeyValuePair<INode, string?>(t.Subject, graph.GetSingleText(t.Subject, Vocabulary.AssetRelationReference) ?? (t.Object as ILiteralNode)?.Value));
+        foreach (var relation in related)
+        {
+            var description = descriptions.WithSubject(relation.Key).SingleOrDefault()?.Object as ILiteralNode;
+            relationships.Add(new RecordOutput.RecordRelationship(RecordOutput.RelationshipType.RelatedMaterial, relation.Value!, description?.Value));
+        }
+
         var separated = (graph.GetLiteralNodes(Vocabulary.AssetConnectedAssetNote).Select(l => l.Value)).ToList();
         var wo409Separated = Wo409Separated(ReferenceBuilder.Build(null, assetReference));
         if (wo409Separated is not null)
@@ -37,13 +45,11 @@ internal static class RelationMapper
             }
         }
 
-        if (!related.Any() && !separated.Any() && !variationRedactions.Any())
+        if (!relationships.Any() && !separated.Any() && !variationRedactions.Any())
         {
             return null;
         }
 
-        var relationships = new List<RecordOutput.RecordRelationship>();
-        relationships.AddRange(AssignRelationship(related, RecordOutput.RelationshipType.RelatedMaterial));
         relationships.AddRange(AssignRelationship(separated, RecordOutput.RelationshipType.SeparatedMaterial));
         if (redactedVariationSequence is null)
         {

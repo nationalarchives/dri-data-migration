@@ -27,7 +27,6 @@ internal static class RecordMapper
         var assetHasAlternativeModifiedDateStart = YmdMapper.GetYmd(asset, Vocabulary.AssetHasAlternativeModifiedDateStart);
         var assetHasAlternativeModifiedDateEnd = YmdMapper.GetYmd(asset, Vocabulary.AssetHasAlternativeModifiedDateEnd);
         var assetAlternativeModifiedAtNote = asset.GetSingleText(Vocabulary.AssetAlternativeModifiedAtNote);
-        var assetRelationDescription = asset.GetSingleText(Vocabulary.AssetRelationDescription);
         var assetPhysicalDescription = asset.GetSingleText(Vocabulary.AssetPhysicalDescription);
         var paperNumber = asset.GetSingleText(Vocabulary.PaperNumber);
         var poorLawUnionNumber = asset.GetSingleText(Vocabulary.PoorLawUnionNumber);
@@ -97,7 +96,6 @@ internal static class RecordMapper
             DriBatchReference = batchDriId,
             SourceInternalName = assetSourceInternalName,
             ConnectedAssetNote = assetConnectedAssetNote,
-            RelationDescription = assetRelationDescription,
             PhysicalDescription = assetPhysicalDescription,
             PaperNumber = paperNumber,
             PoorLawUnionNumber = poorLawUnionNumber,

@@ -19,7 +19,6 @@ public class RecordOutput
     public string? DriBatchReference { get; set; }
     public string? SourceInternalName { get; set; }
     public string? ConnectedAssetNote { get; set; }
-    public string? RelationDescription { get; set; }
     public string? PhysicalDescription { get; set; }
     public string? PaperNumber { get; set; }
     public string? PoorLawUnionNumber { get; set; }
@@ -136,7 +135,7 @@ public class RecordOutput
         public string? DescriptionBase64 { get; set; }
         public DateTimeOffset? Timestamp { get; set; }
         public string? OperatorName { get; set; }
-        public SensitivityReviewDiff? Sensitivity {get; set;}
+        public SensitivityReviewDiff? Sensitivity { get; set; }
     }
 
     public class SensitivityReviewDiff
@@ -192,7 +191,7 @@ public class RecordOutput
         public string? Reference { get; set; }
     }
 
-    public record RecordRelationship(RelationshipType Relationship, string Reference);
+    public record RecordRelationship(RelationshipType Relationship, string Reference, string? Description = null);
 
     public enum RelationshipType
     {

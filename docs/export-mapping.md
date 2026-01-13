@@ -27,7 +27,6 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | DriBatchReference | ex:batchDriId |
 | SourceInternalName | ex:assetSourceInternalName |
 | ConnectedAssetNote | ex:assetConnectedAssetNote |
-| RelationDescription | ex:assetRelationDescription |
 | PhysicalDescription | ex:assetPhysicalDescription |
 | PaperNumber | ex:paperNumber |
 | PoorLawUnionNumber | ex:poorLawUnionNumber |
@@ -152,8 +151,9 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | DigitalFiles.ScannedImageSplit | Last URI segment of ex:assetHasVariation/ex:scannedVariationHasImageSplit |
 | DigitalFiles.ArchivistNotes.Note | ex:assetHasVariation/ex:variationHasDatedNote/ex:archivistNote |
 | DigitalFiles.ArchivistNotes.Date | ex:assetHasVariation/ex:variationHasDatedNote/(ex:archivistNoteAt or ex:datedNoteHasDate (ex:year, ex:month, ex:day)) |
-| Relationships.Relationship | Depending on existance of ex:assetRelationDescription, ex:assetRelationIdentifier, ex:assetConnectedAssetNote or ex:assetHasVariation/ex:redactedVariationSequence |
-| Relationships.Reference | ex:assetRelationDescription or ex:assetRelationIdentifier or ex:assetConnectedAssetNote or ex:assetReference and ex:assetHasVariation/ex:redactedVariationSequence|
+| Relationships.Relationship | Depending on existence of ex:assetRelationReference|ex:assetRelationIdentifier, ex:assetConnectedAssetNote or ex:assetHasVariation/ex:redactedVariationSequence |
+| Relationships.Reference | ex:assetRelationReference|ex:assetRelationIdentifier or ex:assetConnectedAssetNote or ex:assetReference and ex:assetHasVariation/ex:redactedVariationSequence|
+| Relationships.RelationDescription | ex:assetRelationDescription |
 
 ## XML
 
