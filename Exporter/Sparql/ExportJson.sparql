@@ -81,7 +81,8 @@ construct {
         ex:subsetHasSensitivityReview ?srsb.
     ?broaderRetention ex:importLocation ?sbImportLocation.
     ?srsb ex:sensitivityReviewSensitiveName ?sbSensitivityReviewSensitiveName.
-    ?variation ex:variationName ?variationName;
+    ?variation ex:variationDriId ?variationDriId;
+        ex:variationName ?variationName;
         ex:variationDriManifestationId ?variationDriManifestationId;
         ex:redactedVariationSequence ?redactedVariationSequence;
         ex:variationSequence ?variationSequence;
@@ -448,6 +449,7 @@ construct {
     }
     optional {
         ?asset ex:assetHasVariation ?variation.
+        ?variation ex:variationDriId ?variationDriId.
         optional { ?variation ex:variationAlternativeName ?variationAlternativeName }
         optional { ?variation ex:variationName ?varName }
         bind(coalesce(?variationAlternativeName, ?varName) as ?variationName)

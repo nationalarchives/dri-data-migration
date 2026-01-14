@@ -162,6 +162,7 @@ public class RecordOutput
 
     public class Variation
     {
+        public required string FileId { get; set; }
         public required string FileName { get; set; }
         public long? SortOrder { get; set; }
         public long? RedactionSequence { get; set; }

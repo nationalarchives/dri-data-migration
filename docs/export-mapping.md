@@ -135,6 +135,7 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | Changes.Sensitivity.GroundForRetentionCode.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:groundForRetentionCode |
 | Changes.Sensitivity.GroundForRetentionDescription.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:groundForRetentionDescription |
 | DigitalFileCount | Count of grouped variations |
+| DigitalFiles.FileId | ex:variationDriId |
 | DigitalFiles.FileName | ex:assetHasVariation/(ex:variationAlternativeName or ex:variationName) |
 | DigitalFiles.SortOrder | ex:assetHasVariation/ex:variationSequence |
 | DigitalFiles.RedactionSequence | ex:assetHasVariation/ex:redactedVariationSequence |

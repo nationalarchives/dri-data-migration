@@ -13,6 +13,7 @@ internal static class VariationMapper
         var variations = new List<RecordOutput.Variation>();
         foreach (var variation in variationSubjects)
         {
+            var variationDriId = graph.GetSingleText(variation, Vocabulary.VariationDriId)!;
             var variationName = graph.GetSingleText(variation, Vocabulary.VariationName)!;
             var variationSequence = graph.GetSingleNumber(variation, Vocabulary.VariationSequence);
             var redactedVariationSequence = graph.GetSingleNumber(variation, Vocabulary.RedactedVariationSequence);
@@ -53,6 +54,7 @@ internal static class VariationMapper
 
             variations.Add(new()
             {
+                FileId = variationDriId,
                 FileName = variationName,
                 SortOrder = variationSequence,
                 RedactionSequence = redactedVariationSequence,
