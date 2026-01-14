@@ -32,21 +32,23 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | PoorLawUnionNumber | ex:poorLawUnionNumber |
 | UsageRestrictionDescription | ex:assetUsageRestrictionDescription |
 | UkGovernmentWebArchive | ex:assetHasUkGovernmentWebArchive |
-| LegalStatus | Last URI segemnt of ex:assetHasLegalStatus |
+| LegalStatus | Last URI segment of ex:assetHasLegalStatus |
 | Language | ex:assetHasLanguage/ex:languageName |
 | CopyrightHolders | ex:assetHasCopyright/ex:copyrightTitle |
 | HeldBy | ex:assetHasRetention/ex:retentionHasFormalBody/ex:formalBodyName |
 | CreatedBy | ex:assetHasCreation/ex:creationHasFormalBody/ex:formalBodyName |
-| ModifiedAt | ex:assetModifiedAt |
+| DateLastModified  | ex:assetModifiedAt |
 | CuratedModifiedAt | ex:assetAlternativeModifiedAt |
 | CuratedDateStart | ex:assetHasAlternativeModifiedDateStart (ex:year, ex:month, ex:day) |
 | CuratedDateEnd | ex:assetHasAlternativeModifiedDateEnd (ex:year, ex:month, ex:day) |
 | CuratedModifiedAtNote | ex:assetAlternativeModifiedAtNote |
 | GeographicalPlace | ex:assetHasAssociatedGeographicalPlace/ex:geographicalPlaceName |
-| CoveringDateStart | ex:assetHasOriginDateStart |
-| CoveringDateEnd | ex:assetHasOriginDateEnd |
+| CoveringDateStart | ex:assetHasOriginDateStart (ex:year, ex:month, ex:day)\|ex:assetModifiedAt |
+| CoveringDateEnd | ex:assetHasOriginDateEnd (ex:year, ex:month, ex:day)\|ex:assetModifiedAt |
 | CoveringApproximateDateStart | ex:assetHasOriginApproximateDateStart |
 | CoveringApproximateDateEnd | ex:assetHasOriginApproximateDateEnd |
+| ProvidedCoveringDateStart | ex:assetHasOriginDateStart (ex:year, ex:month, ex:day) |
+| ProvidedCoveringDateEnd | ex:assetHasOriginDateEnd (ex:year, ex:month, ex:day) |
 | FilmProductionCompanyName | ex:filmProductionCompanyName |
 | FilmTitle | ex:filmTitle |
 | FilmDuration | ex:filmDuration |
@@ -70,7 +72,7 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | SealOwnerName | ex:sealOwnerName |
 | SealColour | ex:sealColour |
 | EmailAttachmentReference | ex:emailAttachmentReference |
-| SealCatagory | ex:sealAssetHasSealCategory/ex:sealCategoryName |
+| SealCategory | ex:sealAssetHasSealCategory/ex:sealCategoryName |
 | ImageSequenceEnd | ex:imageSequenceStart |
 | ImageSequenceStart | ex:imageSequenceEnd |
 | DimensionMm.First | ex:assetHasDimension/ex:firstDimensionMillimetre |

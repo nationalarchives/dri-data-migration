@@ -29,7 +29,7 @@ public class RecordOutput
     public IEnumerable<string>? CopyrightHolders { get; set; }
     public string? HeldBy { get; set; }
     public string? CreatedBy { get; set; }
-    public DateTimeOffset? ModifiedAt { get; set; }
+    public DateTimeOffset? DateLastModified { get; set; }
     public DateTimeOffset? CuratedModifiedAt { get; set; }
     public string? CuratedDateStart { get; set; }
     public string? CuratedDateEnd { get; set; }
@@ -37,6 +37,8 @@ public class RecordOutput
     public string? GeographicalPlace { get; set; }
     public string? CoveringDateStart { get; set; }
     public string? CoveringDateEnd { get; set; }
+    public string? ProvidedCoveringDateStart { get; set; }
+    public string? ProvidedCoveringDateEnd { get; set; }
     public string? CoveringApproximateDateStart { get; set; }
     public string? CoveringApproximateDateEnd { get; set; }
     public string? FilmProductionCompanyName { get; set; }
@@ -53,7 +55,7 @@ public class RecordOutput
     public string? SealOwnerName { get; set; }
     public string? SealColour { get; set; }
     public string? EmailAttachmentReference { get; set; }
-    public string? SealCatagory { get; set; }
+    public string? SealCategory { get; set; }
     public long? ImageSequenceEnd { get; set; }
     public long? ImageSequenceStart { get; set; }
     public Dimension? DimensionMm { get; set; }
