@@ -526,6 +526,11 @@ construct {
                     optional { ?vChangeOperator ex:operatorIdentifier ?vOperatorIdentifier }
                     optional { ?vChangeOperator ex:operatorName ?vOperatorName }
                 }
+                filter not exists {
+                    ?srv ex:sensitivityReviewHasChange ?vChange.
+                    ?vChange ex:changeHasOperator ?vChangeOperator.
+                    ?vChangeOperator ex:operatorName "Preservica Ingester"
+                }
             }
         }
         optional {
