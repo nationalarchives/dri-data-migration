@@ -7,8 +7,7 @@ namespace Exporter;
 
 internal static class VariationMapper
 {
-    internal static List<RecordOutput.Variation> GetVariations(IGraph graph,
-        List<IUriNode> variationSubjects)
+    internal static List<RecordOutput.Variation> GetVariations(IGraph graph, List<IUriNode> variationSubjects)
     {
         var variations = new List<RecordOutput.Variation>();
         foreach (var variation in variationSubjects)
@@ -28,27 +27,20 @@ internal static class VariationMapper
             var scannedVariationHasImageSplit = graph.GetSingleUriNode(variation, Vocabulary.ScannedVariationHasImageSplit);
             var scannedVariationHasImageCrop = graph.GetSingleUriNode(variation, Vocabulary.ScannedVariationHasImageCrop);
             var scannedVariationHasImageDeskew = graph.GetSingleUriNode(variation, Vocabulary.ScannedVariationHasImageDeskew);
-
-            var archivistNotes = new List<RecordOutput.ArchivistNote>();
-            foreach (var datedNote in graph.GetUriNodes(variation, Vocabulary.VariationHasDatedNote))
+            var datedNote = graph.GetSingleUriNode(variation, Vocabulary.VariationHasDatedNote);
+            string? archivistNote = null;
+            string? archivistNoteDate = null;
+            if (datedNote is not null)
             {
-                var archivistNote = graph.GetSingleText(datedNote, Vocabulary.ArchivistNote);
+                archivistNote = graph.GetSingleText(datedNote, Vocabulary.ArchivistNote);
                 var noteDate = graph.GetSingleLiteral(datedNote, Vocabulary.ArchivistNoteAt);
                 if (noteDate is not null)
                 {
-                    archivistNotes.Add(new RecordOutput.ArchivistNote()
-                    {
-                        Note = archivistNote,
-                        Date = noteDate.AsValuedNode().AsDateTimeOffset().ToString("yyyy-MM-dd HH:mm:ssK")
-                    });
+                    archivistNoteDate = noteDate.AsValuedNode().AsDateTimeOffset().ToString("O");
                 }
                 else
                 {
-                    archivistNotes.Add(new RecordOutput.ArchivistNote()
-                    {
-                        Note = archivistNote,
-                        Date = YmdMapper.GetYmd(graph, datedNote, Vocabulary.DatedNoteHasDate)
-                    });
+                    archivistNoteDate = YmdMapper.GetYmd(graph, datedNote, Vocabulary.DatedNoteHasDate);
                 }
             }
 
@@ -65,7 +57,8 @@ internal static class VariationMapper
                 ReferenceParentGoogleId = variationReferenceParentGoogleId,
                 ScannerOperatorIdentifier = scannerOperatorIdentifier,
                 ScannerIdentifier = scannerIdentifier,
-                ArchivistNotes = archivistNotes.Count == 0 ? null : archivistNotes,
+                ArchivistNote = archivistNote,
+                ArchivistNoteDate = archivistNoteDate,
                 ScannerGeographicalPlace = scannerGeographicalPlace,
                 ScannedImageSplit = scannedVariationHasImageSplit?.Uri.Segments.LastOrDefault(),
                 ScannedImageCrop = scannedVariationHasImageCrop?.Uri.Segments.LastOrDefault(),

@@ -152,8 +152,8 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | DigitalFiles.ScannedImageCrop | Last URI segment of ex:assetHasVariation/ex:scannedVariationHasImageCrop |
 | DigitalFiles.ScannedImageDeskew | Last URI segment of ex:assetHasVariation/ex:scannedVariationHasImageDeskew |
 | DigitalFiles.ScannedImageSplit | Last URI segment of ex:assetHasVariation/ex:scannedVariationHasImageSplit |
-| DigitalFiles.ArchivistNotes.Note | ex:assetHasVariation/ex:variationHasDatedNote/ex:archivistNote |
-| DigitalFiles.ArchivistNotes.Date | ex:assetHasVariation/ex:variationHasDatedNote/(ex:archivistNoteAt or ex:datedNoteHasDate (ex:year, ex:month, ex:day)) |
+| DigitalFiles.ArchivistNote | ex:assetHasVariation/ex:variationHasDatedNote/ex:archivistNote |
+| DigitalFiles.ArchivistNoteDate | ex:assetHasVariation/ex:variationHasDatedNote/(ex:archivistNoteAt or ex:datedNoteHasDate (ex:year, ex:month, ex:day)) |
 | Relationships.Relationship | Depending on existence of ex:assetRelationReference|ex:assetRelationIdentifier, ex:assetConnectedAssetNote or ex:assetHasVariation/ex:redactedVariationSequence |
 | Relationships.Reference | ex:assetRelationReference|ex:assetRelationIdentifier or ex:assetConnectedAssetNote or ex:assetReference and ex:assetHasVariation/ex:redactedVariationSequence|
 | Relationships.RelationDescription | ex:assetRelationDescription |

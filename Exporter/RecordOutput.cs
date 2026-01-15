@@ -179,13 +179,8 @@ public class RecordOutput
         public string? ScannedImageCrop { get; set; }
         public string? ScannedImageDeskew { get; set; }
         public string? ScannedImageSplit { get; set; }
-        public IEnumerable<ArchivistNote>? ArchivistNotes { get; set; }
-    }
-
-    public class ArchivistNote
-    {
-        public string? Note { get; set; }
-        public string? Date { get; set; }
+        public string? ArchivistNote { get; set; }
+        public string? ArchivistNoteDate { get; set; }
     }
 
     public class Legislation
