@@ -99,7 +99,12 @@ internal static class StagingReconciliationParser
         return int.TryParse(sb.ToString(), out var origin) ? origin : null;
     }
 
-    private static string? ToAccessCondition(string? accessConditionName) => accessConditionName?.Replace(' ', '_');
+    private static string? ToAccessCondition(string? accessConditionName) =>
+        accessConditionName switch
+        {
+            "normal closure" => "normal_closure_before_foi",
+            _ => accessConditionName?.Replace(' ', '_')
+        };
 
     private static int ToYearDuration(Dictionary<ReconciliationFieldName, object> row, TimeSpan? duration) =>
         row.TryGetValue(ReconciliationFieldName.ClosureEndYear, out var endYear) && endYear is not null ? (int)endYear :
