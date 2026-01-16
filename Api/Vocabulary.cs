@@ -268,4 +268,9 @@ public static class Vocabulary
     public static readonly IUriNode UndefinedKinship = new UriNode(new(Namespace, "UndefinedKinship"));
 
     public static readonly IUriNode BattalionName = new UriNode(new(Namespace, "battalionName"));
+
+    public static readonly IUriNode AssetHasAssetTagType = new UriNode(new(Namespace, "assetHasAssetTagType"));
+    public static readonly IUriNode BornDigitalAsset = new UriNode(new(Namespace, "BornDigitalAsset"));
+    public static readonly IUriNode DigitisedAsset = new UriNode(new(Namespace, "DigitisedAsset"));
+    public static readonly IUriNode SurrogateAsset = new UriNode(new(Namespace, "SurrogateAsset"));
 }

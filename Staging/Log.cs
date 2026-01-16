@@ -136,4 +136,7 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 44, Level = LogLevel.Warning, Message = "Unable to find related Id {relatedId}")]
     internal static partial void RelatedIdNotFound(this ILogger logger, string relatedId);
+
+    [LoggerMessage(EventId = 45, Level = LogLevel.Warning, Message = "Asset tag {assetTag} not matched")]
+    internal static partial void AssetTagTypeNotResolved(this ILogger logger, string assetTag);
 }

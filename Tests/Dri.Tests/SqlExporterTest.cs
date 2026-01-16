@@ -13,7 +13,7 @@ public sealed class SqlExporterTest
     private const string Series = "Series 1";
     private const string SqlSchema = $"""
         create table dufile
-            (DELIVERABLEUNITREF TEXT, CATALOGUEREFERENCE TEXT, DMETADATAREF TEXT, MANIFESTATIONREF TEXT, FILEREF TEXT, FMETADATAREF TEXT, FILELOCATION TEXT, NAME TEXT, Code TEXT);
+            (DELIVERABLEUNITREF TEXT, CATALOGUEREFERENCE TEXT, SECURITYTAG TEXT, DMETADATAREF TEXT, MANIFESTATIONREF TEXT, FILEREF TEXT, FMETADATAREF TEXT, FILELOCATION TEXT, NAME TEXT, Code TEXT);
         create table deliverableunit
             (DELIVERABLEUNITREF TEXT, PARENTREF TEXT, METADATAREF TEXT);
         create table xmlmetadata
@@ -46,7 +46,7 @@ public sealed class SqlExporterTest
     {
         var sqliteInMemory = "Data Source=file:memdb-asset?mode=memory&cache=shared";
         options.Value.SqlConnectionString = sqliteInMemory;
-        var expected = new DriAssetDeliverableUnit("Asset1", "Asset", "<xml/>", "[{\"id\":\"Variation1\",\"location\":\"Location\",\"name\":\"Variation name\"}]");
+        var expected = new DriAssetDeliverableUnit("Asset1", "Asset", "<xml/>", "BornDigital", "[{\"id\":\"Variation1\",\"location\":\"Location\",\"name\":\"Variation name\"}]");
         PopulateAsset(expected, sqliteInMemory);
 
         var dris = exporter.GetAssetDeliverableUnits(0, CancellationToken.None);
@@ -107,8 +107,8 @@ public sealed class SqlExporterTest
             ?.SingleOrDefault();
         var metadataRef = "Metadata reference asset";
         var data = $"""
-            insert into dufile(DELIVERABLEUNITREF, DMETADATAREF, CATALOGUEREFERENCE, Code, FILEREF, FILELOCATION, NAME)
-                values('{dri.Id}', '{metadataRef}', '{dri.Reference}', '{Series}', '{file?.Id}', '{file?.Location}','{file?.Name}');
+            insert into dufile(DELIVERABLEUNITREF, DMETADATAREF, CATALOGUEREFERENCE, SECURITYTAG,  Code, FILEREF, FILELOCATION, NAME)
+                values('{dri.Id}', '{metadataRef}', '{dri.Reference}', 'BornDigital','{Series}', '{file?.Id}', '{file?.Location}','{file?.Name}');
             insert into xmlmetadata(METADATAREF, XMLCLOB) values('{metadataRef}', '{dri.Xml}');
         """;
 

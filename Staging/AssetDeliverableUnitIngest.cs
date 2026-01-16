@@ -23,6 +23,7 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
 
         var graph = new Graph();
         graph.Assert(id, Vocabulary.AssetDriId, driId);
+        AddAssetType(graph, id, dri.AssetType);
         if (!string.IsNullOrEmpty(dri.Xml))
         {
             GraphAssert.Base64(graph, id, dri.Xml, Vocabulary.AssetDriXml);
@@ -30,5 +31,25 @@ public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient 
         }
 
         return graph;
+    }
+
+    private void AddAssetType(IGraph graph, IUriNode id, string securityTag)
+    {
+        var assetType = securityTag switch
+        {
+            "BornDigital" or "open" => Vocabulary.BornDigitalAsset,
+            "DigitisedRecords" => Vocabulary.DigitisedAsset,
+            "Surrogate" => Vocabulary.SurrogateAsset,
+            _ => null
+        };
+
+        if (assetType is null)
+        {
+            logger.AssetTagTypeNotResolved(securityTag);
+        }
+        else
+        {
+            graph.Assert(id, Vocabulary.AssetHasAssetTagType, assetType);
+        }
     }
 }

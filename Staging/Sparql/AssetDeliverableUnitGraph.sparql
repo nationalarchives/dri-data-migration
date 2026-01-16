@@ -44,6 +44,7 @@ construct {
         ex:assetHasUkGovernmentWebArchive ?assetHasUkGovernmentWebArchive;
         ex:assetHasLanguage ?language;
         ex:assetHasLegalStatus ?legalStatus;
+        ex:assetHasAssetTagType ?assetHasAssetTagType;
         ex:sealAssetHasSealCategory ?sealAssetHasSealCategory;
         ex:assetHasCopyright ?copyright;
         ex:assetHasAssociatedGeographicalPlace ?associatedGeographicalPlace;
@@ -173,6 +174,7 @@ construct {
     optional { ?asset ex:assetHasCopyright ?copyright }
     optional { ?asset ex:assetHasAssociatedGeographicalPlace ?associatedGeographicalPlace }
     optional { ?asset ex:assetHasLegalStatus ?legalStatus }
+    optional { ?asset ex:assetHasAssetTagType ?assetHasAssetTagType }
     optional { ?asset ex:sealAssetHasSealCategory ?sealAssetHasSealCategory }
     optional {
         ?asset ex:assetHasDimension ?dimension.

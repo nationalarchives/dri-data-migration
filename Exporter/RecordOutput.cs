@@ -25,6 +25,7 @@ public class RecordOutput
     public string? UsageRestrictionDescription { get; set; }
     public Uri? UkGovernmentWebArchive { get; set; }
     public string? LegalStatus { get; set; }
+    public string? RecordType { get; set; }
     public string? Language { get; set; }
     public IEnumerable<string>? CopyrightHolders { get; set; }
     public string? HeldBy { get; set; }

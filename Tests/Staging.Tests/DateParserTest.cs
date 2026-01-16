@@ -27,7 +27,7 @@ public sealed class DateParserTest
         </RdfNode>
         """;
     private readonly DriVariationFile variationDri = new("Variation1", "/subset1", "Variation name", "Manifestation1", xml);
-    private readonly DriAssetDeliverableUnit assetDri = new("Asset1", "Asset reference", xml, "[]");
+    private readonly DriAssetDeliverableUnit assetDri = new("Asset1", "Asset reference", xml, "BornDigital", "[]");
     private readonly FakeLogger<VariationFileIngest> variationLogger = new();
     private readonly FakeLogger<AssetDeliverableUnitIngest> assetLogger = new();
     private readonly Mock<ISparqlClient> client = new();
@@ -109,23 +109,23 @@ public sealed class DateParserTest
 
         using (new AssertionScope())
         {
-            client.Verify(c => c.ApplyDiffAsync(It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 1 && !r.RemovedTriples.Any()),
+            client.Verify(c => c.ApplyDiffAsync(It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 2 && !r.RemovedTriples.Any()),
                 CancellationToken.None), Times.Once);
             assetLogger.Collector.LatestRecord.Should().Match<FakeLogRecord>(l => l.Id.Id == 26);
         }
     }
 
     [TestMethod(DisplayName = "Parses date range")]
-    [DataRow("[2001-12-31]", 2001, 12, 31, null, null, null, 5)]
-    [DataRow("2001 Sep", 2001, 9, null, null, null, null, 4)]
-    [DataRow("2001 Sept", 2001, 9, null, null, null, null, 4)]
-    [DataRow("31/12/2001", 2001, 12, 31, null, null, null, 5)]
-    [DataRow("2001 Feb 28", 2001, 2, 28, null, null, null, 5)]
-    [DataRow("2001 Nov 1", 2001, 11, 1, null, null, null, 5)]
-    [DataRow("2001-12-31", 2001, 12, 31, null, null, null, 5)]
-    [DataRow("2001-12-31 10:59:45.123", 2001, 12, 31, null, null, null, 5)]
-    [DataRow("2001", 2001, null, null, null, null, null, 3)]
-    [DataRow("2001-2002", 2001, null, null, 2002, null, null, 5)]
+    [DataRow("[2001-12-31]", 2001, 12, 31, null, null, null, 6)]
+    [DataRow("2001 Sep", 2001, 9, null, null, null, null, 5)]
+    [DataRow("2001 Sept", 2001, 9, null, null, null, null, 5)]
+    [DataRow("31/12/2001", 2001, 12, 31, null, null, null, 6)]
+    [DataRow("2001 Feb 28", 2001, 2, 28, null, null, null, 6)]
+    [DataRow("2001 Nov 1", 2001, 11, 1, null, null, null, 6)]
+    [DataRow("2001-12-31", 2001, 12, 31, null, null, null, 6)]
+    [DataRow("2001-12-31 10:59:45.123", 2001, 12, 31, null, null, null, 6)]
+    [DataRow("2001", 2001, null, null, null, null, null, 4)]
+    [DataRow("2001-2002", 2001, null, null, 2002, null, null, 6)]
     public async Task ParsesDateRange(string dateText, int startYear, int? startMonth, int? startDay,
         int? endYear, int? endMonth, int? endDay, int assertedTriples)
     {

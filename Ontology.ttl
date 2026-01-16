@@ -547,6 +547,27 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Battalion".
 
+:AssetTagType a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset tag type".
+
+:BornDigitalAsset a owl:Class;
+	rdfs:subClassOf :AssetTagType;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Born digital asset";
+	rdfs:comment "More details at https://www.nationalarchives.gov.uk/information-management/manage-information/digital-records-transfer/what-are-born-digital-records/.".
+
+:DigitisedAsset a owl:Class;
+	rdfs:subClassOf :AssetTagType;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Digitised asset";
+	rdfs:comment "More details at https://www.nationalarchives.gov.uk/help-with-your-research/discovery-help/understanding-digital-records/.".
+
+:SurrogateAsset a owl:Class;
+	rdfs:subClassOf :AssetTagType;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Surrogate asset".
+
 
 # Object properties
 
@@ -652,6 +673,12 @@ this:schema a owl:Ontology;
 	rdfs:range :Dimension;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has dimension".
+
+:assetHasAssetTagType a owl:ObjectProperty;
+	rdfs:domain :Asset;
+	rdfs:range :AssetTagType;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has asset tag type".
 
 :sealAssetHasSealCategory a owl:ObjectProperty;
 	rdfs:domain :SealAsset;

@@ -33,6 +33,7 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | UsageRestrictionDescription | ex:assetUsageRestrictionDescription |
 | UkGovernmentWebArchive | ex:assetHasUkGovernmentWebArchive |
 | LegalStatus | Last URI segment of ex:assetHasLegalStatus |
+| RecordType | Last URI segment of ex:assetHasAssetTagType |
 | Language | ex:assetHasLanguage/ex:languageName |
 | CopyrightHolders | ex:assetHasCopyright/ex:copyrightTitle |
 | HeldBy | ex:assetHasRetention/ex:retentionHasFormalBody/ex:formalBodyName |

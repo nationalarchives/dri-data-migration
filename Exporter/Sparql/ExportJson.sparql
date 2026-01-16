@@ -25,6 +25,7 @@ construct {
         ex:assetUsageRestrictionDescription ?assetUsageRestrictionDescription;
         ex:assetHasUkGovernmentWebArchive ?assetHasUkGovernmentWebArchive;
         ex:assetHasLegalStatus ?legalStatus;
+        ex:assetHasAssetTagType ?assetHasAssetTagType;
         ex:assetHasLanguage ?language;
         ex:assetHasCopyright ?copyright;
         ex:assetHasRetention ?retention;
@@ -263,6 +264,7 @@ construct {
     optional { ?asset ex:assetUsageRestrictionDescription ?assetUsageRestrictionDescription }
     optional { ?asset ex:assetHasUkGovernmentWebArchive ?assetHasUkGovernmentWebArchive }
     optional { ?asset ex:assetHasLegalStatus ?legalStatus }
+    optional { ?asset ex:assetHasAssetTagType ?assetHasAssetTagType }
     optional {
         ?asset ex:assetHasLanguage ?language.
         ?language ex:languageName ?languageName.

@@ -83,6 +83,7 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | Source | Target |
 | --- | --- |
 | _SQLite_ | |
+| deliverableunit.SECURITYTAG | ex:assetHasAssetTagType |
 | xmlmetadata.XMLCLOB | ex:assetDriXml |
 | _XMLCLOB_ | |
 | tna:batchIdentifier | ex:batchDriId |

@@ -39,7 +39,7 @@ public class SqlExporter : IDriSqlExporter
 
     private static DriAssetDeliverableUnit MapAssetDeliverableUnit(SqliteDataReader reader) =>
         new(reader.GetString("DELIVERABLEUNITREF"), reader.GetString("CATALOGUEREFERENCE"),
-            reader.GetString("XMLCLOB"), reader.GetString("files"));
+            reader.GetString("XMLCLOB"), reader.GetString("SECURITYTAG"), reader.GetString("files"));
 
     private static DriWo409SubsetDeliverableUnit MapWo409SubsetDeliverableUnit(SqliteDataReader reader) =>
             new(reader.GetString("DELIVERABLEUNITREF"), reader.GetString("XMLCLOB"));

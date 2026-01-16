@@ -33,6 +33,7 @@ internal static class RecordMapper
         var assetUsageRestrictionDescription = asset.GetSingleText(Vocabulary.AssetUsageRestrictionDescription);
         var assetHasUkGovernmentWebArchive = asset.GetSingleUriNode(Vocabulary.AssetHasUkGovernmentWebArchive)?.Uri;
         var legalStatus = asset.GetSingleUriNode(Vocabulary.AssetHasLegalStatus)?.Uri;
+        var assetTagType = asset.GetSingleUriNode(Vocabulary.AssetHasAssetTagType)?.Uri;
         var filmProductionCompanyName = asset.GetSingleText(Vocabulary.FilmProductionCompanyName);
         var filmTitle = asset.GetSingleText(Vocabulary.FilmTitle);
         var filmDuration = asset.GetSingleLiteral(Vocabulary.FilmDuration)?.AsValuedNode().AsTimeSpan();
@@ -102,6 +103,7 @@ internal static class RecordMapper
             UsageRestrictionDescription = assetUsageRestrictionDescription,
             UkGovernmentWebArchive = assetHasUkGovernmentWebArchive,
             LegalStatus = legalStatus?.Segments.LastOrDefault(),
+            RecordType = assetTagType?.Segments.LastOrDefault(),
             Language = languageName,
             CopyrightHolders = copyrightTitles,
             HeldBy = retentionFormalBodyName,
