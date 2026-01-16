@@ -11,15 +11,14 @@ public class OutputGenerator(ILogger<OutputGenerator> logger, IOptions<ExportSet
     IRecordRetrieval recordRetrieval) : IOutputGenerator
 {
     private readonly ExportSettings settings = settings.Value;
+
     private readonly JsonSerializerOptions serializerOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = true,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        Converters =
-        {
-            new JsonStringEnumConverter()
-        }
+        Converters = { new JsonStringEnumConverter() },
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
     };
     private const string exportPath = "export";
     private readonly char[] invalidCharacters = Path.GetInvalidFileNameChars();
