@@ -15,23 +15,6 @@ internal static class ChangeMapper
             changes.Add(GenerateChange(asset, changeSubject));
         }
 
-        foreach (var sr in asset.GetUriNodes(Vocabulary.AssetHasSensitivityReview))
-        {
-            var srChange = asset.GetSingleUriNode(sr, Vocabulary.SensitivityReviewHasChange);
-            if (srChange is not null)
-            {
-                changes.Add(GenerateChange(asset, srChange));
-            }
-        }
-
-        foreach (var variation in variations)
-        {
-            foreach (var changeSubject in asset.GetUriNodes(Vocabulary.VariationHasChange))
-            {
-                changes.Add(GenerateChange(asset, changeSubject));
-            }
-        }
-
         var srSubject = SensitivityReviewMapper.FindCurrentSensitivityReview(asset, variations);
         while (srSubject is not null)
         {
@@ -106,7 +89,8 @@ internal static class ChangeMapper
     private static RecordOutput.Diff? GenerateDiff<T>(T? current, T? oldValue)
     {
         var none = current is null && oldValue is null;
-        var onlyOne = current is not null || oldValue is not null;
+        var onlyOne = (current is not null && oldValue is null) ||
+            (oldValue is not null && current is null);
         var all = current is not null && oldValue is not null;
         var diff = new RecordOutput.Diff(oldValue, current);
 
