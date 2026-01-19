@@ -59,7 +59,8 @@ internal class MissingRdfOldNamespace(ILogger logger)
             description.AppendChild(clonedChild);
         }
         missingRdf.AppendChild(description);
-        foreach (var child in metadataChild.ChildNodes.OfType<XmlElement>())
+        var redundantChildren = metadataChild.ChildNodes.OfType<XmlNode>().ToList();
+        foreach (var child in redundantChildren)
         {
             metadataChild.RemoveChild(child);
         }

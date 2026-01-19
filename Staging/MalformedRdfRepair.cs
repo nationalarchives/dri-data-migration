@@ -21,20 +21,20 @@ internal static class MalformedRdfRepair
         }
         var blankNode = doc.CreateAttribute("rdf:parseType", NamespaceMapper.RDF);
         blankNode.Value = "Resource";
-        var rapairedChildren = new List<XmlElement>();
+        var repairedChildren = new List<XmlElement>();
         var oldChildren = new List<XmlElement>();
         foreach (var child in description.ChildNodes.OfType<XmlElement>())
         {
             oldChildren.Add(child);
             var clonedChild = (XmlElement)child.CloneNode(true);
             Repair(doc, clonedChild, blankNode, false);
-            rapairedChildren.Add(clonedChild);
+            repairedChildren.Add(clonedChild);
         }
         foreach (var child in oldChildren)
         {
             description.RemoveChild(child);
         }
-        foreach (var child in rapairedChildren)
+        foreach (var child in repairedChildren)
         {
             description.AppendChild(child);
         }
