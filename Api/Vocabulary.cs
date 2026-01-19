@@ -39,8 +39,8 @@ public static class Vocabulary
     public static readonly IUriNode AssetModifiedAt = new UriNode(new(Namespace, "assetModifiedAt"));
     public static readonly IUriNode AssetAlternativeModifiedAt = new UriNode(new(Namespace, "assetAlternativeModifiedAt"));
     public static readonly IUriNode AssetAlternativeModifiedAtNote = new UriNode(new(Namespace, "assetAlternativeModifiedAtNote"));
-    public static readonly IUriNode EvidenceProviderName = new UriNode(new(Namespace, "evidenceProviderName"));
-    public static readonly IUriNode InvestigationName = new UriNode(new(Namespace, "investigationName"));
+    public static readonly IUriNode InquiryEvidenceProviderName = new UriNode(new(Namespace, "inquiryEvidenceProviderName"));
+    public static readonly IUriNode InquiryInvestigationName = new UriNode(new(Namespace, "inquiryInvestigationName"));
     public static readonly IUriNode CourtSessionDescription = new UriNode(new(Namespace, "courtSessionDescription"));
     public static readonly IUriNode CourtSessionDate = new UriNode(new(Namespace, "courtSessionDate"));
     public static readonly IUriNode InquirySessionDescription = new UriNode(new(Namespace, "inquirySessionDescription"));
@@ -87,6 +87,8 @@ public static class Vocabulary
     public static readonly IUriNode SealAssetHasReverseDimension = new UriNode(new(Namespace, "sealAssetHasReverseDimension"));
     public static readonly IUriNode AssetHasUkGovernmentWebArchive = new UriNode(new(Namespace, "assetHasUkGovernmentWebArchive"));
     public static readonly IUriNode InquiryAssetHasInquiryAppearance = new UriNode(new(Namespace, "inquiryAssetHasInquiryAppearance"));
+    public static readonly IUriNode InquiryAssetHasEvidenceProvider = new UriNode(new(Namespace, "inquiryAssetHasEvidenceProvider"));
+    public static readonly IUriNode InquiryAssetHasInquiryInvestigation = new UriNode(new(Namespace, "inquiryAssetHasInquiryInvestigation"));
 
     public static readonly IUriNode Variation = new UriNode(new(Namespace, "Variation"));
     public static readonly IUriNode VariationHasAsset = new UriNode(new(Namespace, "variationHasAsset"));
@@ -176,6 +178,7 @@ public static class Vocabulary
     public static readonly IUriNode InquiryWitnessName = new UriNode(new(Namespace, "inquiryWitnessName"));
     public static readonly IUriNode InquiryWitnessAppearanceDescription = new UriNode(new(Namespace, "inquiryWitnessAppearanceDescription"));
     public static readonly IUriNode InquiryAppearanceSequence = new UriNode(new(Namespace, "inquiryAppearanceSequence"));
+    public static readonly IUriNode InquiryAppearanceHasInquiryWitness = new UriNode(new(Namespace, "inquiryAppearanceHasInquiryWitness"));
 
     public static readonly IUriNode DatedNoteHasDate = new UriNode(new(Namespace, "datedNoteHasDate"));
     public static readonly IUriNode ArchivistNote = new UriNode(new(Namespace, "archivistNote"));

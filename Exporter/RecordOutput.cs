@@ -46,7 +46,7 @@ public class RecordOutput
     public string? FilmTitle { get; set; }
     public TimeSpan? FilmDuration { get; set; }
     public string? EvidenceProvider { get; set; }
-    public string? Investigation { get; set; }
+    public IEnumerable<string>? Investigations { get; set; }
     public DateOnly? InquiryHearingDate { get; set; }
     public string? InquirySessionDescription { get; set; }
     public IEnumerable<InquiryAppearance>? InquiryAppearances { get; set; }
@@ -89,7 +89,7 @@ public class RecordOutput
     public class InquiryAppearance
     {
         public long? Sequence { get; set; }
-        public string? WitnessName { get; set; }
+        public IEnumerable<string>? WitnessNames { get; set; }
         public string? AppearanceDescription { get; set; }
     }
 

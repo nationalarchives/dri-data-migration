@@ -1,0 +1,8 @@
+﻿prefix ex: <http://id.example.com/schema/>
+
+construct {
+    ?s ex:inquiryWitnessName ?inquiryWitnessName.
+} where {
+    bind(@id as ?inquiryWitnessName)
+    ?s ex:inquiryWitnessName ?inquiryWitnessName.
+}

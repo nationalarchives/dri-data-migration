@@ -13,5 +13,8 @@ public enum CacheEntityKind
     SealCategory,
     Operator,
     Battalion,
-    AssetRelation
+    AssetRelation,
+    EvidenceProvider,
+    Investigation,
+    Witness
 }

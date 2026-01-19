@@ -93,8 +93,8 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | tna:relatedMaterial or trans:relatedMaterial | ex:assetRelationDescription |
 | tna:relatedIaid | ex:assetRelationIdentifier and ex:assetRelationReference |
 | tna:physicalDescription or trans:physicalFormat | ex:assetPhysicalDescription |
-| tna:evidenceProvidedBy | ex:evidenceProviderName |
-| tna:investigation | ex:investigationName |
+| tna:evidenceProvidedBy | ex:inquiryAssetHasEvidenceProvider/ex:inquiryEvidenceProviderName |
+| tna:investigation | ex:inquiryAssetHasInquiryInvestigation/ex:inquiryInvestigationName |
 | tna:restrictionOnUse | ex:assetUsageRestrictionDescription |
 | tna:formerReferenceTNA or tna:formerReferenceDepartment | ex:assetPastReference |
 | tna:classification | ex:assetTag |
@@ -128,7 +128,7 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | tna:hearing_start_date_{Sequence} | ex:courtAssetHasCourtCase/ex:courtCaseHearingStartDate |
 | tna:hearing_end_date_{Sequence} | ex:courtAssetHasCourtCase/ex:courtCaseHearingEndDate |
 | {Sequence} of the inquiry appearance | ex:inquiryAssetHasInquiryAppearance/ex:inquiryAppearanceSequence |
-| tna:witness_list_{Sequence} | ex:inquiryAssetHasInquiryAppearance/ex:inquiryWitnessName |
+| tna:witness_list_{Sequence} | ex:inquiryAssetHasInquiryAppearance/ex:inquiryAppearanceHasInquiryWitness/ex:inquiryWitnessName |
 | tna:subject_role_{Sequence} | ex:inquiryAssetHasInquiryAppearance/ex:inquiryWitnessAppearanceDescription |
 | tna:session | ex:inquirySessionDescription |
 | dcterms:coverage/tna:startDate or dcterms:coverage/tna:fullDate or dcterms:coverage/tna:dateRange | ex:assetHasOriginDateStart or ex:assetHasOriginApproximateDateStart |

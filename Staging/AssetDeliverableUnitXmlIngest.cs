@@ -50,8 +50,6 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
             [IngestVocabulary.TransRelatedMaterial] = Vocabulary.AssetRelationDescription,
             [IngestVocabulary.PhysicalDescription] = Vocabulary.AssetPhysicalDescription,
             [IngestVocabulary.PhysicalFormat] = Vocabulary.AssetPhysicalDescription,
-            [IngestVocabulary.EvidenceProvidedBy] = Vocabulary.EvidenceProviderName, //TODO: check if can be split and turned into entities
-            [IngestVocabulary.Investigation] = Vocabulary.InvestigationName,//TODO: check if can be turned into entities
             [IngestVocabulary.RestrictionOnUse] = Vocabulary.AssetUsageRestrictionDescription,
             [IngestVocabulary.FormerReferenceTna] = Vocabulary.AssetPastReference,
             [IngestVocabulary.FormerReferenceDepartment] = Vocabulary.AssetPastReference,
@@ -91,18 +89,24 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
                 logger.UnrecognizedDateFormat(modified);
             }
         }
-        
+
         AddNames(graph, doc, id);
         await assetDeliverableUnitRelation.AddAssetRelationAsync(graph, rdf, id, cacheClient, cancellationToken);
         await AddVariationRelationsAsync(graph, rdf, id, doc, filesJson, cancellationToken);
         AddFilmDuration(graph, rdf, id);
         AddWebArchive(graph, rdf, id);
         AddCourtCases(graph, rdf, id, existing);
-        AddWitness(graph, rdf, id, existing);
+        await AddWitnessAsync(graph, rdf, id, existing, cancellationToken);
         AddModifiedDate(graph, rdf, id, existing);
 
         dateIngest.AddOriginDates(graph, rdf, id, existing);
 
+        await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, id, rdf,
+            IngestVocabulary.EvidenceProvidedBy, CacheEntityKind.EvidenceProvider, Vocabulary.InquiryAssetHasEvidenceProvider,
+            Vocabulary.InquiryEvidenceProviderName, cancellationToken);
+        await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, id, rdf,
+            IngestVocabulary.Investigation, CacheEntityKind.Investigation, Vocabulary.InquiryAssetHasInquiryInvestigation,
+            Vocabulary.InquiryInvestigationName, [";"], cancellationToken);
         await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, id, rdf,
             IngestVocabulary.Language, CacheEntityKind.Language, Vocabulary.AssetHasLanguage,
             Vocabulary.LanguageName, cancellationToken);
@@ -243,16 +247,16 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
         }
     }
 
-    private void AddWitness(IGraph graph, IGraph rdf, INode id, IGraph existing)
+    private async Task AddWitnessAsync(IGraph graph, IGraph rdf, INode id, IGraph existing, CancellationToken cancellationToken)
     {
         var found = false;
         var witnessIndex = 1;
-        var foundWitness = FetchWitnessId(graph, rdf, id, existing, witnessIndex); //TODO: check if names could be split on ',' and 'and' and turned into entities
+        var foundWitness = await FetchWitnessIdAsync(graph, rdf, id, existing, witnessIndex, cancellationToken);
         while (foundWitness is not null)
         {
             found = true;
             witnessIndex++;
-            foundWitness = FetchWitnessId(graph, rdf, id, existing, witnessIndex);
+            foundWitness = await FetchWitnessIdAsync(graph, rdf, id, existing, witnessIndex, cancellationToken);
         }
         if (found)
         {
@@ -260,23 +264,25 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
         }
     }
 
-    private static IUriNode? FetchWitnessId(IGraph graph, IGraph rdf, INode id, IGraph existing, int witnessIndex)
+    private async Task<IUriNode?> FetchWitnessIdAsync(IGraph graph, IGraph rdf, INode id, IGraph existing, int witnessIndex, CancellationToken cancellationToken)
     {
-        var foundWitness = rdf.GetTriplesWithPredicate(new UriNode(new($"{IngestVocabulary.TnaNamespace}witness_list_{witnessIndex}"))).SingleOrDefault()?.Object;
+        var witnessNamePredicate = new UriNode(new($"{IngestVocabulary.TnaNamespace}witness_list_{witnessIndex}"));
+        var foundWitness = rdf.GetTriplesWithPredicate(witnessNamePredicate).SingleOrDefault()?.Object;
         if (foundWitness is ILiteralNode witnessNode && !string.IsNullOrWhiteSpace(witnessNode.Value))
         {
             var foundDescription = rdf.GetTriplesWithPredicate(new UriNode(new($"{IngestVocabulary.TnaNamespace}subject_role_{witnessIndex}"))).SingleOrDefault()?.Object as ILiteralNode;
             if (foundDescription is not null)
             {
-                var witnessId = existing.GetTriplesWithPredicateObject(Vocabulary.InquiryWitnessName, new LiteralNode(witnessNode.Value))
-                    .SingleOrDefault(t => existing.ContainsTriple(new Triple(t.Subject, Vocabulary.InquiryWitnessAppearanceDescription, new LiteralNode(foundDescription.Value))))?.Subject as IUriNode
+                var witnessAppearanceId = existing.GetTriplesWithPredicateObject(Vocabulary.InquiryAppearanceSequence, new LongNode(witnessIndex)).SingleOrDefault()?.Subject as IUriNode
                     ?? CacheClient.NewId;
-                GraphAssert.Integer(graph, witnessId, witnessIndex, Vocabulary.InquiryAppearanceSequence);
-                GraphAssert.Text(graph, witnessId, witnessNode.Value, Vocabulary.InquiryWitnessName); //TODO: check if can be split
-                GraphAssert.Text(graph, witnessId, foundDescription.Value, Vocabulary.InquiryWitnessAppearanceDescription);
-                graph.Assert(id, Vocabulary.InquiryAssetHasInquiryAppearance, witnessId);
+                GraphAssert.Integer(graph, witnessAppearanceId, witnessIndex, Vocabulary.InquiryAppearanceSequence);
+                await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, witnessAppearanceId, rdf,
+                    witnessNamePredicate, CacheEntityKind.Witness, Vocabulary.InquiryAppearanceHasInquiryWitness,
+                    Vocabulary.InquiryWitnessName, [",", " and "], cancellationToken);
+                GraphAssert.Text(graph, witnessAppearanceId, foundDescription.Value, Vocabulary.InquiryWitnessAppearanceDescription);
+                graph.Assert(id, Vocabulary.InquiryAssetHasInquiryAppearance, witnessAppearanceId);
 
-                return witnessId;
+                return witnessAppearanceId;
             }
         }
 

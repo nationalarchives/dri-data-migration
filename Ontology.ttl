@@ -568,6 +568,20 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Surrogate asset".
 
+:InquiryEvidenceProvider a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Inquiry evidence provider";
+	rdfs:comment "An entity that provides evidence to inquiry.".
+
+:InquiryInvestigation a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Inquiry investigation".
+
+:InquiryWitness a owl:Class;
+	rdfs:subClassOf :Person;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Inquiry witness".
+
 
 # Object properties
 
@@ -759,6 +773,24 @@ this:schema a owl:Ontology;
 	rdfs:range :InquiryAsset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Inquiry appearance has inquiry asset".
+
+:inquiryAppearanceHasInquiryWitness a owl:ObjectProperty;
+	rdfs:domain :InquiryAppearance;
+	rdfs:range :InquiryWitness;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Inquiry appearance has inquiry witness".
+
+:inquiryAssetHasInquiryEvidenceProvider a owl:ObjectProperty;
+	rdfs:domain :InquiryAsset;
+	rdfs:range :InquiryEvidenceProvider;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Inquiry asset has inquiry evidence provider".
+
+:inquiryAssetHasInquiryInvestigation a owl:ObjectProperty;
+	rdfs:domain :InquiryAsset;
+	rdfs:range :InquiryInvestigation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Inquiry asset has inquiry investigation".
 
 :assetHasUkGovernmentWebArchive a owl:ObjectProperty;
 	rdfs:domain :Asset;
@@ -1321,21 +1353,19 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Poor Law union number".
 
-:evidenceProviderName a owl:DatatypeProperty;
-	rdfs:domain :InquiryAsset;
+:inquiryEvidenceProviderName a owl:DatatypeProperty;
+	rdfs:domain :EvidenceProvider;
 	rdfs:range xsd:string;
 	rdfs:subPropertyOf :name;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Evidence provider name";
-	rdfs:comment "This may need to be remodelled into the entity relationship after looking at the ingested data.".
+	rdfs:label "Inquiry evidence provider name".
 
-:investigationName a owl:DatatypeProperty;
-	rdfs:domain :InquiryAsset;
+:inquiryInvestigationName a owl:DatatypeProperty;
+	rdfs:domain :InquiryInvestigation;
 	rdfs:range xsd:string;
 	rdfs:subPropertyOf :name;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Investigation name";
-	rdfs:comment "This may need to be remodelled into the entity relationship after looking at the ingested data.".
+	rdfs:label "Inquiry investigation name".
 
 :inquirySessionDescription a owl:DatatypeProperty;
 	rdfs:domain :InquiryAsset;
@@ -1725,11 +1755,12 @@ this:schema a owl:Ontology;
 	rdfs:label "Court case sequence".
 
 :inquiryWitnessName a owl:DatatypeProperty;
-	rdfs:domain :InquiryAppearance;
+	rdfs:domain :InquiryWitness;
 	rdfs:subPropertyOf :name;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Inquiry witness name".
+	rdfs:label "Inquiry witness name";
+	rdfs:comment "It has additional prefix therefore may not be use verbatim as :personFullName.".
 
 :inquiryWitnessAppearanceDescription a owl:DatatypeProperty;
 	rdfs:domain :InquiryAppearance;

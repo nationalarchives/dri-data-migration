@@ -18,12 +18,13 @@ internal static class InquiryAppearanceMapper
         foreach (var inquiry in appearance)
         {
             var inquiryAppearanceSequence = graph.GetSingleNumber(inquiry, Vocabulary.InquiryAppearanceSequence);
-            var inquiryWitnessName = graph.GetSingleText(inquiry, Vocabulary.InquiryWitnessName);
+            var inquiryWitnessNames = graph.GetUriNodes(inquiry, Vocabulary.InquiryAppearanceHasInquiryWitness)
+                .Select(w => graph.GetSingleText(w, Vocabulary.InquiryWitnessName)!);
             var inquiryWitnessAppearanceDescription = graph.GetSingleText(inquiry, Vocabulary.InquiryWitnessAppearanceDescription);
             inquiries.Add(new()
             {
                 Sequence = inquiryAppearanceSequence,
-                WitnessName = inquiryWitnessName,
+                WitnessNames = inquiryWitnessNames,
                 AppearanceDescription = inquiryWitnessAppearanceDescription
             });
         }

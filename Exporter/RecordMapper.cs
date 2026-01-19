@@ -37,8 +37,8 @@ internal static class RecordMapper
         var filmProductionCompanyName = asset.GetSingleText(Vocabulary.FilmProductionCompanyName);
         var filmTitle = asset.GetSingleText(Vocabulary.FilmTitle);
         var filmDuration = asset.GetSingleLiteral(Vocabulary.FilmDuration)?.AsValuedNode().AsTimeSpan();
-        var evidenceProviderName = asset.GetSingleText(Vocabulary.EvidenceProviderName);
-        var investigationName = asset.GetSingleText(Vocabulary.InvestigationName);
+        var evidenceProviderName = asset.GetSingleTransitiveLiteral(Vocabulary.InquiryAssetHasEvidenceProvider, Vocabulary.InquiryEvidenceProviderName)?.Value;
+        var investigationNames = asset.GetLiteralNodes(Vocabulary.InquiryInvestigationName).Select(t => t.Value);
         var inquiryHearingDate = asset.GetSingleDate(Vocabulary.InquiryHearingDate);
         var inquirySessionDescription = asset.GetSingleText(Vocabulary.InquirySessionDescription);
         var courtSessionDescription = asset.GetSingleText(Vocabulary.CourtSessionDescription);
@@ -124,7 +124,7 @@ internal static class RecordMapper
             FilmTitle = filmTitle,
             FilmDuration = filmDuration,
             EvidenceProvider = evidenceProviderName,
-            Investigation = investigationName,
+            Investigations = investigationNames,
             InquiryHearingDate = ToDate(inquiryHearingDate),
             InquirySessionDescription = inquirySessionDescription,
             InquiryAppearances = inquiryAppearances,

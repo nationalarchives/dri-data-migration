@@ -172,4 +172,33 @@ internal static class GraphAssert
 
         return nodeId;
     }
+
+    internal static async Task ExistingOrNewWithRelationshipAsync(ICacheClient cacheClient,
+        IGraph graph, INode id, IGraph rdf,
+        IUriNode findPredicate, CacheEntityKind cacheEntityKind,
+        IUriNode immediatePredicate, IUriNode foundPredicate,
+        string[] splitOn,
+        CancellationToken cancellationToken)
+    {
+        var node = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
+        if (node is null)
+        {
+            return;
+        }
+        var name = node switch
+        {
+            ILiteralNode literalNode => literalNode.Value,
+            IUriNode uriNode => uriNode.Uri.Segments.Last().Replace('_', ' '),
+            _ => null
+        };
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return;
+        }
+        foreach (var item in name.Split(splitOn, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        {
+            var nodeId = await cacheClient.CacheFetchOrNew(cacheEntityKind, item, foundPredicate, cancellationToken);
+            graph.Assert(id, immediatePredicate, nodeId);
+        }
+    }
 }

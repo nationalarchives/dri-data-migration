@@ -21,6 +21,9 @@ public class CacheClient : ICacheClient
     private readonly string sealCategorySparql;
     private readonly string operatorSparql;
     private readonly string battalionSparql;
+    private readonly string evidenceProviderSparql;
+    private readonly string investigationSparql;
+    private readonly string witnessSparql;
 
     private readonly string accessConditionsSparql;
     private readonly string legislationsSparql;
@@ -53,6 +56,9 @@ public class CacheClient : ICacheClient
         sealCategorySparql = embedded.GetSparql("GetSealCategory");
         operatorSparql = embedded.GetSparql("GetOperator");
         battalionSparql = embedded.GetSparql("GetBattalion");
+        evidenceProviderSparql = embedded.GetSparql("GetEvidenceProvider");
+        investigationSparql = embedded.GetSparql("GetInvestigation");
+        witnessSparql = embedded.GetSparql("GetWitness");
 
         accessConditionsSparql = embedded.GetSparql("GetAccessConditions");
         legislationsSparql = embedded.GetSparql("GetLegislations");
@@ -183,6 +189,9 @@ public class CacheClient : ICacheClient
         CacheEntityKind.Operator => new(operatorSparql, $"operator-{key}"),
         CacheEntityKind.Battalion => new(battalionSparql, $"battalion-{key}"),
         CacheEntityKind.AssetRelation => new(string.Empty, $"asset-relation-{key}"),
+        CacheEntityKind.EvidenceProvider => new(evidenceProviderSparql, $"evidence-provider-{key}"),
+        CacheEntityKind.Investigation => new(investigationSparql, $"investigation-{key}"),
+        CacheEntityKind.Witness => new(witnessSparql, $"witness-{key}"),
         _ => null
     };
 

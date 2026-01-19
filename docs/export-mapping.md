@@ -53,12 +53,12 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | FilmProductionCompanyName | ex:filmProductionCompanyName |
 | FilmTitle | ex:filmTitle |
 | FilmDuration | ex:filmDuration |
-| EvidenceProvider | ex:evidenceProviderName |
-| Investigation | ex:investigationName |
+| EvidenceProvider | ex:inquiryAssetHasEvidenceProvider/ex:evidenceProviderName |
+| Investigations | ex:inquiryAssetHasInquiryInvestigation/ex:inquiryInvestigationName |
 | InquiryHearingDate | ex:inquiryHearingDate |
 | InquirySessionDescription | ex:inquirySessionDescription |
 | InquiryAppearances.Sequence | ex:inquiryAssetHasInquiryAppearance/ex:inquiryAppearanceSequence |
-| InquiryAppearances.WitnessName | ex:inquiryAssetHasInquiryAppearance/ex:inquiryWitnessName |
+| InquiryAppearances.WitnessNames | ex:inquiryAssetHasInquiryAppearance/ex:inquiryAppearanceHasInquiryWitness/ex:inquiryWitnessName |
 | InquiryAppearances.AppearanceDescription | ex:inquiryAssetHasInquiryAppearance/ex:inquiryWitnessAppearanceDescription |
 | CourtSession | ex:courtSessionDescription |
 | CourtSessionDate | ex:courtSessionDate |

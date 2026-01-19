@@ -8,6 +8,9 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Sparql\AccessConditionGraph.sparql" />
+    <EmbeddedResource Include="Sparql\GetWitness.sparql" />
+    <EmbeddedResource Include="Sparql\GetInvestigation.sparql" />
+    <EmbeddedResource Include="Sparql\GetEvidenceProvider.sparql" />
     <EmbeddedResource Include="Sparql\Wo409SubsetDeliverableUnitGraph.sparql" />
     <EmbeddedResource Include="Sparql\AssetDeliverableUnitGraph.sparql" />
     <EmbeddedResource Include="Sparql\AssetGraph.sparql" />
