@@ -78,6 +78,28 @@ internal static class RecordMapper
         var recordId = GetRecordId(asset, variations)!;
         var person = PersonMapper.GetIndividual(asset);
 
+        var variation = variations.FirstOrDefault()!;
+        var variationNote = asset.GetSingleText(variation, Vocabulary.VariationNote);
+        var variationPhysicalConditionDescription = asset.GetSingleText(variation, Vocabulary.VariationPhysicalConditionDescription);
+        var variationReferenceGoogleId = asset.GetSingleText(variation, Vocabulary.VariationReferenceGoogleId);
+        var variationReferenceParentGoogleId = asset.GetSingleText(variation, Vocabulary.VariationReferenceParentGoogleId);
+        var datedNote = asset.GetSingleUriNode(variation, Vocabulary.VariationHasDatedNote);
+        string? archivistNote = null;
+        string? archivistNoteDate = null;
+        if (datedNote is not null)
+        {
+            archivistNote = asset.GetSingleText(datedNote, Vocabulary.ArchivistNote);
+            var noteDate = asset.GetSingleLiteral(datedNote, Vocabulary.ArchivistNoteAt);
+            if (noteDate is not null)
+            {
+                archivistNoteDate = noteDate.AsValuedNode().AsDateTimeOffset().ToString("O");
+            }
+            else
+            {
+                archivistNoteDate = YmdMapper.GetYmd(asset, datedNote, Vocabulary.DatedNoteHasDate);
+            }
+        }
+
         return new()
         {
             RecordId = recordId,
@@ -158,6 +180,12 @@ internal static class RecordMapper
             NextOfKinName = person?.NextOfKinName,
             NextOfKinTypes = person?.NextOfKinTypes,
             SeamanServiceNumber = person?.SeamanServiceNumber,
+            Note = variationNote,
+            PhysicalConditionDescription = variationPhysicalConditionDescription,
+            ReferenceGoogleId = variationReferenceGoogleId,
+            ReferenceParentGoogleId = variationReferenceParentGoogleId,
+            ArchivistNote = archivistNote,
+            ArchivistNoteDate = archivistNoteDate,
             Sensitivity = sr,
             AuditTrail = changes,
             DigitalFileCount = variations.Count,

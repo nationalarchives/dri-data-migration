@@ -114,10 +114,16 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | FullName | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personFullName |
 | GivenName | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personGivenName |
 | IsVeteran | ex:assetHasVeteran exists |
-| NationalRegistrationNumber | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:nationalRegistrationNumber |
 | NextOfKinName | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personHasNextOfKinRelationship/ex:nextOfKinRelationshipHasNextOfKin/ex:personFullName |
 | NextOfKinTypes | Last URI segments of (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personHasNextOfKinRelationship/ex:nextOfKinRelationshipHasKinship |
 | SeamanServiceNumber | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:seamanServiceNumber |
+| Note | first ex:assetHasVariation/ex:variationNote |
+| PhysicalConditionDescription | first ex:assetHasVariation/ex:variationPhysicalConditionDescription |
+| ReferenceGoogleId | first ex:assetHasVariation/ex:variationReferenceGoogleId |
+| ReferenceParentGoogleId | first ex:assetHasVariation/ex:variationReferenceParentGoogleId |
+| ArchivistNote | first ex:assetHasVariation/ex:variationHasDatedNote/ex:archivistNote |
+| ArchivistNoteDate | first ex:assetHasVariation/ex:variationHasDatedNote/(ex:archivistNoteAt or ex:datedNoteHasDate (ex:year, ex:month, ex:day)) |
+| NationalRegistrationNumber | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:nationalRegistrationNumber |
 | Changes.DescriptionBase64 | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeDescription |
 | Changes.Timestamp | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeDateTime |
 | Changes.OperatorName | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeHasOperator/ex:operatorName |
@@ -142,19 +148,13 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | DigitalFiles.FileName | ex:assetHasVariation/(ex:variationAlternativeName or ex:variationName) |
 | DigitalFiles.SortOrder | ex:assetHasVariation/ex:variationSequence |
 | DigitalFiles.Sequence | ex:assetHasVariation/(ex:redactedVariationSequence\|ex:presentationVariationSequence) |
-| DigitalFiles.Note | ex:assetHasVariation/ex:variationNote |
 | DigitalFiles.Location | ex:assetHasVariation/ex:variationRelativeLocation |
-| DigitalFiles.PhysicalConditionDescription | ex:assetHasVariation/ex:variationPhysicalConditionDescription |
-| DigitalFiles.ReferenceGoogleId | ex:assetHasVariation/ex:variationReferenceGoogleId |
-| DigitalFiles.ReferenceParentGoogleId | ex:assetHasVariation/ex:variationReferenceParentGoogleId |
 | DigitalFiles.ScannerOperatorIdentifier | ex:assetHasVariation/ex:scannerOperatorIdentifier |
 | DigitalFiles.ScannerIdentifier | ex:assetHasVariation/ex:scannerIdentifier |
 | DigitalFiles.ScannerGeographicalPlace | ex:assetHasVariation/ex:scannedVariationHasScannerGeographicalPlace/ex:geographicalPlaceName |
 | DigitalFiles.ScannedImageCrop | Last URI segment of ex:assetHasVariation/ex:scannedVariationHasImageCrop |
 | DigitalFiles.ScannedImageDeskew | Last URI segment of ex:assetHasVariation/ex:scannedVariationHasImageDeskew |
 | DigitalFiles.ScannedImageSplit | Last URI segment of ex:assetHasVariation/ex:scannedVariationHasImageSplit |
-| DigitalFiles.ArchivistNote | ex:assetHasVariation/ex:variationHasDatedNote/ex:archivistNote |
-| DigitalFiles.ArchivistNoteDate | ex:assetHasVariation/ex:variationHasDatedNote/(ex:archivistNoteAt or ex:datedNoteHasDate (ex:year, ex:month, ex:day)) |
 | Relationships.Relationship | Depending on existence of ex:assetRelationReference|ex:assetRelationIdentifier, ex:assetConnectedAssetNote or ex:assetHasVariation/ex:redactedVariationSequence or ex:assetHasVariation/ex:presentationVariationSequence |
 | Relationships.Reference | ex:assetRelationReference|ex:assetRelationIdentifier or ex:assetConnectedAssetNote or ex:assetReference and ex:assetHasVariation/ex:redactedVariationSequence or ex:assetHasVariation/ex:presentationVariationSequence|
 | Relationships.RelationDescription | ex:assetRelationDescription |

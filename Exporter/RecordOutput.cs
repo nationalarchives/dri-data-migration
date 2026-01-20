@@ -80,9 +80,15 @@ public class RecordOutput
     public string? NextOfKinName { get; set; }
     public IEnumerable<string>? NextOfKinTypes { get; set; }
     public bool? IsVeteran { get; set; }
+    public string? Note { get; set; }
+    public string? PhysicalConditionDescription { get; set; }
+    public string? ReferenceGoogleId { get; set; }
+    public string? ReferenceParentGoogleId { get; set; }
+    public string? ArchivistNote { get; set; }
+    public string? ArchivistNoteDate { get; set; }
     public SensitivityReview? Sensitivity { get; set; }
-    public int DigitalFileCount { get; set; }
     public IEnumerable<Change>? AuditTrail { get; set; }
+    public int DigitalFileCount { get; set; }
     public IEnumerable<Variation>? DigitalFiles { get; set; }
     public IEnumerable<RecordRelationship>? Relationships { get; set; }
 
@@ -169,19 +175,13 @@ public class RecordOutput
         public required string FileName { get; set; }
         public long? SortOrder { get; set; }
         public long? Sequence { get; set; }
-        public string? Note { get; set; }
         public string? Location { get; set; }
-        public string? PhysicalConditionDescription { get; set; }
-        public string? ReferenceGoogleId { get; set; }
-        public string? ReferenceParentGoogleId { get; set; }
         public string? ScannerOperatorIdentifier { get; set; }
         public string? ScannerIdentifier { get; set; }
         public string? ScannerGeographicalPlace { get; set; }
         public string? ScannedImageCrop { get; set; }
         public string? ScannedImageDeskew { get; set; }
         public string? ScannedImageSplit { get; set; }
-        public string? ArchivistNote { get; set; }
-        public string? ArchivistNoteDate { get; set; }
     }
 
     public class Legislation
