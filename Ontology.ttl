@@ -92,6 +92,12 @@ this:schema a owl:Ontology;
 	rdfs:label "Redacted variation";
 	rdfs:comment "A version of a :Variant with sensitive information hidden. More details at https://cdn.nationalarchives.gov.uk/documents/information-management/redaction-considerations.pdf and https://cdn.nationalarchives.gov.uk/documents/information-management/redaction_toolkit.pdf.".
 
+:PresentationVariation a owl:Class;
+	rdfs:subClassOf :Variation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Presentation variation";
+	rdfs:comment "An alternative version of a :Variant.".
+
 :AlternativeVariation a owl:Class;
 	rdfs:subClassOf :Variation;
 	rdfs:isDefinedBy this:schema;
@@ -1563,6 +1569,12 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:integer;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Redacted variation sequence".
+
+:presentationVariationSequence a owl:DatatypeProperty;
+	rdfs:domain :PresentationVariation;
+	rdfs:range xsd:integer;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Presentation variation sequence".
 
 :scannerOperatorIdentifier a owl:DatatypeProperty;
 	rdfs:domain :ScannedVariation;

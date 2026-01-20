@@ -168,7 +168,7 @@ public class RecordOutput
         public required string FileId { get; set; }
         public required string FileName { get; set; }
         public long? SortOrder { get; set; }
-        public long? RedactionSequence { get; set; }
+        public long? Sequence { get; set; }
         public string? Note { get; set; }
         public string? Location { get; set; }
         public string? PhysicalConditionDescription { get; set; }
@@ -197,6 +197,8 @@ public class RecordOutput
         RedactionOf,
         HasRedaction,
         SeparatedMaterial,
-        RelatedMaterial
+        RelatedMaterial,
+        ReplacementOf,
+        HasReplacement
     }
 }

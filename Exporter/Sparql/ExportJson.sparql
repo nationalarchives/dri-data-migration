@@ -86,6 +86,7 @@ construct {
         ex:variationName ?variationName;
         ex:variationDriManifestationId ?variationDriManifestationId;
         ex:redactedVariationSequence ?redactedVariationSequence;
+        ex:presentationVariationSequence ?presentationVariationSequence;
         ex:variationSequence ?variationSequence;
         ex:variationNote ?variationNote;
         ex:variationRelativeLocation ?variationRelativeLocation;
@@ -476,6 +477,7 @@ construct {
         optional { ?variation ex:scannerOperatorIdentifier ?scannerOperatorIdentifier }
         optional { ?variation ex:scannerIdentifier ?scannerIdentifier }
         optional { ?variation ex:redactedVariationSequence ?redactedVariationSequence }
+        optional { ?variation ex:presentationVariationSequence ?presentationVariationSequence }
         optional { ?variation ex:variationSequence ?variationSequence }
         optional {
             ?variation ex:variationHasDatedNote ?datedNote.

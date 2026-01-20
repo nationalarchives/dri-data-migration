@@ -44,15 +44,16 @@ public class RecordRetrieval(ILogger<RecordRetrieval> logger, IExportSparqlClien
     private IEnumerable<RecordOutput> MapRecords(IGraph asset, IUriNode subject)
     {
         var variationSequences = GetVariationSequences(asset, subject);
-        var variationGroups = variationSequences.GroupBy(s => s.Sequence, s => s.Variation);
+        var variationGroups = variationSequences.GroupBy(s => s.Sequence, s => s);
 
         foreach (var variationGroup in variationGroups)
         {
-            var variations = variationGroup.Select(v => v).ToList();
+            var variations = variationGroup.Select(v => v.Variation).ToList();
+            var isRedacted = variationGroup.FirstOrDefault()?.IsRedacted;
             RecordOutput? recordOutput = null;
             try
             {
-                recordOutput = RecordMapper.Map(asset, variations, variationGroup.Key);
+                recordOutput = RecordMapper.Map(asset, variations, variationGroup.Key, isRedacted);
             }
             catch (Exception e)
             {
@@ -76,8 +77,7 @@ public class RecordRetrieval(ILogger<RecordRetrieval> logger, IExportSparqlClien
         {
             try
             {
-                var xml = XmlMapper.Map(asset, variationSequence.Variation,
-                    variationSequence.Sequence);
+                var xml = XmlMapper.Map(asset, variationSequence.Variation, variationSequence.Sequence);
                 xmls.AddRange(xml);
             }
             catch (Exception e)
@@ -98,11 +98,16 @@ public class RecordRetrieval(ILogger<RecordRetrieval> logger, IExportSparqlClien
         {
             var redactedVariationSequence = graph.GetSingleLiteral(variation, Vocabulary.RedactedVariationSequence)
                 ?.AsValuedNode().AsInteger();
-            variationSequences.Add(new(redactedVariationSequence, variation));
+            var presentationVariationSequence = graph.GetSingleLiteral(variation, Vocabulary.PresentationVariationSequence)
+                ?.AsValuedNode().AsInteger();
+            var isRedacted = redactedVariationSequence is not null;
+            var isPresentation = presentationVariationSequence is not null;
+            variationSequences.Add(new(redactedVariationSequence ?? presentationVariationSequence,
+                isRedacted ? true : isPresentation ? false : null, variation));
         }
 
         return variationSequences;
     }
 
-    private sealed record VariationSequence(long? Sequence, IUriNode Variation);
+    private sealed record VariationSequence(long? Sequence, bool? IsRedacted, IUriNode Variation);
 }

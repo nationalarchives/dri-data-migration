@@ -54,7 +54,7 @@ internal static partial class Log
     internal static partial void InvalidCacheEntityKind(this ILogger logger);
 
     [LoggerMessage(EventId = 17, Level = LogLevel.Debug, Message = "Asset {asset} missing RDF in the XML")]
-    internal static partial void AssetXmlMissingRdf(this ILogger logger, string asset);
+    internal static partial void AssetXmlMissingRdf(this ILogger logger, Uri asset);
 
     [LoggerMessage(EventId = 18, Level = LogLevel.Debug, Message = "Variation {variation} missing RDF in the XML")]
     internal static partial void VariationXmlMissingRdf(this ILogger logger, string variation);
@@ -62,8 +62,8 @@ internal static partial class Log
     [LoggerMessage(EventId = 19, Level = LogLevel.Warning, Message = "Legislation {code} not found")]
     internal static partial void LegislationNotFound(this ILogger logger, string code);
 
-    [LoggerMessage(EventId = 20, Level = LogLevel.Warning, Message = "Redacted variation {variation} not found")]
-    internal static partial void RedactedVariationMissing(this ILogger logger, string variation);
+    [LoggerMessage(EventId = 20, Level = LogLevel.Warning, Message = "Related variation {variation} not found")]
+    internal static partial void RelatedVariationMissing(this ILogger logger, string variation);
 
     [LoggerMessage(EventId = 21, Level = LogLevel.Warning, Message = "Alternative variation {variation} on {path} not found")]
     internal static partial void AlternativeVariationMissing(this ILogger logger, string variation, string path);
@@ -107,8 +107,8 @@ internal static partial class Log
     [LoggerMessage(EventId = 34, Level = LogLevel.Warning, Message = "Unable to parse {dimension} dimension")]
     internal static partial void UnableParseDimension(this ILogger logger, string dimension);
 
-    [LoggerMessage(EventId = 35, Level = LogLevel.Warning, Message = "Unable to establish sequence of redacted variation {variationPartialName}")]
-    internal static partial void UnableEstablishRedactedVariationSequence(this ILogger logger, string variationPartialName);
+    [LoggerMessage(EventId = 35, Level = LogLevel.Warning, Message = "Unable to establish sequence of related variation {variationPartialName}")]
+    internal static partial void UnableEstablishRelatedVariationSequence(this ILogger logger, string variationPartialName);
 
     [LoggerMessage(EventId = 36, Level = LogLevel.Debug, Message = "Unable to reformat XML")]
     internal static partial void UnableAddRdfToXml(this ILogger logger, Exception e);

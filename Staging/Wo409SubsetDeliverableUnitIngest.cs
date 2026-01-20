@@ -41,7 +41,7 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
         return graph;
     }
 
-    private async Task ExtractXmlData(IGraph graph, IGraph existing, INode id,
+    private async Task ExtractXmlData(IGraph graph, IGraph existing, IUriNode id,
         string xml, CancellationToken cancellationToken)
     {
         var doc = new XmlDocument();
@@ -50,7 +50,7 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
         var rdf = rdfXmlLoader.GetRdf(doc);
         if (rdf is null)
         {
-            logger.AssetXmlMissingRdf(id.AsValuedNode().AsString());
+            logger.AssetXmlMissingRdf(id.Uri);
             return;
         }
 

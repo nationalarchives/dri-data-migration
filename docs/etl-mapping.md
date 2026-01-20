@@ -117,6 +117,7 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | trans:endImageNumber | ex:imageSequenceEnd |
 | dcterms:title | ex:assetName or ex:assetAlternativeName |
 | tna:hasRedactedFile | ex:assetHasVariation and ex:redactedVariationSequence |
+| tna:hasPresentationManifestationFile | ex:assetHasVariation and ex:presentationVariationSequence |
 | tna:durationMins | ex:filmDuration |
 | tna:webArchiveUrl | ex:assetHasUkGovernmentWebArchive |
 | {Sequence} of the case | ex:courtAssetHasCourtCase/ex:courtCaseSequence |

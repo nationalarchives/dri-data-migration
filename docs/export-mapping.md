@@ -11,8 +11,8 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | JSON | Staging |
 | --- | --- |
 | RecordId | ex:variationDriManifestationId |
-| IaId | ex:assetDriId and ex:redactedVariationSequence |
-| Reference | ex:assetReference and ex:redactedVariationSequence |
+| IaId | ex:assetDriId and ex:redactedVariationSequence\|ex:presentationVariationSequence |
+| Reference | ex:assetReference and ex:redactedVariationSequence\|ex:presentationVariationSequence |
 | Title | ex:assetName |
 | TranslatedTitle | ex:assetAlternativeName |
 | PublishedTitle | ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveName or ex:variationHasSensitivityReview/ex:sensitivityReviewSensitiveName or ex:assetName |
@@ -141,7 +141,7 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | DigitalFiles.FileId | ex:variationDriId |
 | DigitalFiles.FileName | ex:assetHasVariation/(ex:variationAlternativeName or ex:variationName) |
 | DigitalFiles.SortOrder | ex:assetHasVariation/ex:variationSequence |
-| DigitalFiles.RedactionSequence | ex:assetHasVariation/ex:redactedVariationSequence |
+| DigitalFiles.Sequence | ex:assetHasVariation/(ex:redactedVariationSequence\|ex:presentationVariationSequence) |
 | DigitalFiles.Note | ex:assetHasVariation/ex:variationNote |
 | DigitalFiles.Location | ex:assetHasVariation/ex:variationRelativeLocation |
 | DigitalFiles.PhysicalConditionDescription | ex:assetHasVariation/ex:variationPhysicalConditionDescription |
@@ -155,8 +155,8 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | DigitalFiles.ScannedImageSplit | Last URI segment of ex:assetHasVariation/ex:scannedVariationHasImageSplit |
 | DigitalFiles.ArchivistNote | ex:assetHasVariation/ex:variationHasDatedNote/ex:archivistNote |
 | DigitalFiles.ArchivistNoteDate | ex:assetHasVariation/ex:variationHasDatedNote/(ex:archivistNoteAt or ex:datedNoteHasDate (ex:year, ex:month, ex:day)) |
-| Relationships.Relationship | Depending on existence of ex:assetRelationReference|ex:assetRelationIdentifier, ex:assetConnectedAssetNote or ex:assetHasVariation/ex:redactedVariationSequence |
-| Relationships.Reference | ex:assetRelationReference|ex:assetRelationIdentifier or ex:assetConnectedAssetNote or ex:assetReference and ex:assetHasVariation/ex:redactedVariationSequence|
+| Relationships.Relationship | Depending on existence of ex:assetRelationReference|ex:assetRelationIdentifier, ex:assetConnectedAssetNote or ex:assetHasVariation/ex:redactedVariationSequence or ex:assetHasVariation/ex:presentationVariationSequence |
+| Relationships.Reference | ex:assetRelationReference|ex:assetRelationIdentifier or ex:assetConnectedAssetNote or ex:assetReference and ex:assetHasVariation/ex:redactedVariationSequence or ex:assetHasVariation/ex:presentationVariationSequence|
 | Relationships.RelationDescription | ex:assetRelationDescription |
 
 ## XML

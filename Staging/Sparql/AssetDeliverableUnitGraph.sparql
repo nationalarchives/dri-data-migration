@@ -64,7 +64,7 @@ construct {
         ex:sealAssetHasReverseEndDate ?sealReverseEndDate;
         ex:courtAssetHasCourtCase ?courtCase;
         ex:inquiryAssetHasInquiryAppearance ?inquiryAppearance;
-        ex:assetHasVariation ?redactedVariation;
+        ex:assetHasVariation ?redactedVariation, ?presentationVariation;
         ex:assetHasPerson ?person.
     ?retention ex:retentionHasFormalBody ?retentionHasFormalBody.
     ?creation ex:creationHasFormalBody ?creationHasFormalBody.
@@ -122,6 +122,7 @@ construct {
         ex:inquiryAppearanceHasInquiryWitness ?inquiryAppearanceHasInquiryWitness;
         ex:inquiryWitnessAppearanceDescription ?inquiryWitnessAppearanceDescription.
     ?redactedVariation ex:redactedVariationSequence ?redactedVariationSequence.
+    ?presentationVariation ex:presentationVariationSequence ?presentationVariationSequence.
     ?person ex:personFamilyName ?personFamilyName;
         ex:personGivenName ?personGivenName;
         ex:seamanServiceNumber ?seamanServiceNumber;
@@ -291,6 +292,10 @@ construct {
     optional {
         ?asset ex:assetHasVariation ?redactedVariation.
         ?redactedVariation ex:redactedVariationSequence ?redactedVariationSequence.
+    }
+    optional {
+        ?asset ex:assetHasVariation ?presentationVariation.
+        ?presentationVariation ex:presentationVariationSequence ?presentationVariationSequence.
     }
     optional {
         ?asset ex:assetHasPerson ?person.

@@ -2,8 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Rdf;
 using System.Globalization;
-using System.Text.Json;
-using System.Web;
 using System.Xml;
 using VDS.RDF;
 using VDS.RDF.Nodes;
@@ -16,11 +14,9 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
     private readonly RdfXmlLoader rdfXmlLoader = new(logger);
     private readonly AssetDeliverableUnitOriginDateIngest dateIngest = new(logger);
     private readonly AssetDeliverableUnitSealIngest sealIngest = new(logger, cacheClient);
+    private readonly AssetDeliverableUnitVariationRelationIngest variationRelationIngest = new(logger, cacheClient);
     private readonly DateParser dateParser = new(logger);
-    private readonly JsonSerializerOptions jsonSerializerOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
+
 
     public async Task ExtractXmlData(IGraph graph, IGraph existing,
         IUriNode id, string xml, string filesJson,
@@ -32,7 +28,7 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
         var rdf = rdfXmlLoader.GetRdf(doc);
         if (rdf is null)
         {
-            logger.AssetXmlMissingRdf(id.AsValuedNode().AsString());
+            logger.AssetXmlMissingRdf(id.Uri);
             return;
         }
 
@@ -92,7 +88,7 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
 
         AddNames(graph, doc, id);
         await assetDeliverableUnitRelation.AddAssetRelationAsync(graph, rdf, id, cacheClient, cancellationToken);
-        await AddVariationRelationsAsync(graph, rdf, id, doc, filesJson, cancellationToken);
+        await variationRelationIngest.AddVariationRelationsAsync(graph, rdf, id, doc, filesJson, cancellationToken);
         AddFilmDuration(graph, rdf, id);
         AddWebArchive(graph, rdf, id);
         AddCourtCases(graph, rdf, id, existing);
@@ -164,57 +160,6 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
             else
             {
                 GraphAssert.Text(graph, id, title, Vocabulary.AssetAlternativeName);
-            }
-        }
-    }
-
-    private async Task AddVariationRelationsAsync(IGraph graph, IGraph rdf, IUriNode id,
-        XmlDocument doc, string filesJson, CancellationToken cancellationToken)
-    {
-        var redacted = rdf.GetTriplesWithPredicate(IngestVocabulary.HasRedactedFile).Select(t => t.Object).Cast<ILiteralNode>();
-        if (redacted.Any())
-        {
-            var namespaceManager = new XmlNamespaceManager(doc.NameTable);
-            namespaceManager.AddNamespace("tna", IngestVocabulary.TnaNamespace.ToString());
-            var xmlRedactedFiles = doc.SelectNodes("descendant::tna:hasRedactedFile", namespaceManager);
-            if (xmlRedactedFiles is null)
-            {
-                return;
-            }
-            var files = JsonSerializer.Deserialize<List<RelationVariation>>(filesJson, jsonSerializerOptions);
-            foreach (var redactedFile in redacted)
-            {
-                var decodedPath = HttpUtility.UrlDecode(redactedFile.Value);
-                var variationName = GetPartialPath(decodedPath);
-                var variationId = files?.SingleOrDefault(f =>
-                    f.Name == variationName && HasPathPartialMatch(decodedPath, f.Location))?.Id;
-                IUriNode? redactedVariation = null;
-                if (variationId is not null)
-                {
-                    redactedVariation = await cacheClient.CacheFetch(CacheEntityKind.Variation, variationId, cancellationToken);
-                }
-                if (redactedVariation is not null)
-                {
-                    graph.Assert(id, Vocabulary.AssetHasVariation, redactedVariation);
-                    var foundFile = false;
-                    for (int i = 0; i < xmlRedactedFiles.Count; i++)
-                    {
-                        if (xmlRedactedFiles.Item(i)?.InnerText.Equals(redactedFile.Value) == true)
-                        {
-                            foundFile = true;
-                            GraphAssert.Integer(graph, redactedVariation, i + 1, Vocabulary.RedactedVariationSequence);
-                            break;
-                        }
-                    }
-                    if (!foundFile)
-                    {
-                        logger.UnableEstablishRedactedVariationSequence(variationName);
-                    }
-                }
-                else
-                {
-                    logger.RedactedVariationMissing(variationName);
-                }
             }
         }
     }
@@ -319,7 +264,7 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
         }
     }
 
-    private IUriNode? FetchCourtCaseId(IGraph graph, IGraph rdf, INode id, IGraph existing, int caseIndex)
+    private static IUriNode? FetchCourtCaseId(IGraph graph, IGraph rdf, INode id, IGraph existing, int caseIndex)
     {
         var foundCase = rdf.GetTriplesWithPredicate(new UriNode(new($"{IngestVocabulary.TnaNamespace}case_id_{caseIndex}"))).SingleOrDefault()?.Object;
         if (foundCase is ILiteralNode caseNode && !string.IsNullOrWhiteSpace(caseNode.Value))
@@ -449,17 +394,5 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
                 }
             }
         }
-    }
-
-    private static string GetPartialPath(string path) => path.Substring(path.LastIndexOf('/') + 1);
-
-    private sealed record RelationVariation(string Id, string Location, string Name);
-
-    private static bool HasPathPartialMatch(string fullPath, string partialPath)
-    {
-        var fullPathSegments = fullPath.Split('/', StringSplitOptions.RemoveEmptyEntries);
-
-        return partialPath.Split('/', StringSplitOptions.RemoveEmptyEntries).All(p =>
-            fullPathSegments.Contains(p) || fullPathSegments.Contains(p.Replace(' ', '_')));
     }
 }

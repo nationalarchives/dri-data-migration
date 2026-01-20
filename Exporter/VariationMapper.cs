@@ -49,7 +49,7 @@ internal static class VariationMapper
                 FileId = variationDriId,
                 FileName = variationName,
                 SortOrder = variationSequence,
-                RedactionSequence = redactedVariationSequence,
+                Sequence = redactedVariationSequence,
                 Note = variationNote,
                 Location = variationRelativeLocation,
                 PhysicalConditionDescription = variationPhysicalConditionDescription,

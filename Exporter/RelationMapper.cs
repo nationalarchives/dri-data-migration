@@ -8,7 +8,7 @@ namespace Exporter;
 internal static class RelationMapper
 {
     internal static List<RecordOutput.RecordRelationship>? GetRelations(IGraph graph,
-        string assetReference, long? redactedVariationSequence)
+        string assetReference, long? redactedPresentationSequence, bool? isRedacted)
     {
         var relationships = new List<RecordOutput.RecordRelationship>();
         var descriptions = graph.GetTriplesWithPredicate(Vocabulary.AssetRelationDescription);
@@ -28,36 +28,51 @@ internal static class RelationMapper
         }
         var variations = graph.GetUriNodes(Vocabulary.AssetHasVariation);
         List<string> variationRedactions = [];
-        if (redactedVariationSequence is not null)
+        List<string> variationPresentation = [];
+        if (redactedPresentationSequence is not null)
         {
-            variationRedactions.Add(ReferenceBuilder.Build(null, assetReference));
+            if (isRedacted == true)
+            {
+                variationRedactions.Add(ReferenceBuilder.Build(null, assetReference));
+            }
+            else
+            {
+                variationPresentation.Add(ReferenceBuilder.Build(null, assetReference));
+            }
         }
         else
         {
             foreach (var variation in variations)
             {
-                var sequence = graph.GetSingleLiteral(variation, Vocabulary.RedactedVariationSequence)
-                    ?.AsValuedNode().AsInteger();
-                if (sequence is not null)
+                var redactedVariationSequence = graph.GetSingleLiteral(variation, Vocabulary.RedactedVariationSequence)?.AsValuedNode().AsInteger();
+                var presentationVariationSequence = graph.GetSingleLiteral(variation, Vocabulary.PresentationVariationSequence)?.AsValuedNode().AsInteger();
+                if (redactedVariationSequence is not null)
                 {
-                    variationRedactions.Add(ReferenceBuilder.Build(sequence.Value, assetReference));
+                    variationRedactions.Add(ReferenceBuilder.Build(redactedVariationSequence.Value, assetReference));
+                }
+                if (presentationVariationSequence is not null)
+                {
+                    variationPresentation.Add(ReferenceBuilder.Build(presentationVariationSequence.Value, assetReference));
                 }
             }
         }
 
-        if (!relationships.Any() && !separated.Any() && !variationRedactions.Any())
+        if (relationships.Count == 0 && separated.Count == 0 &&
+            variationRedactions.Count == 0 && variationPresentation.Count == 0)
         {
             return null;
         }
 
         relationships.AddRange(AssignRelationship(separated, RecordOutput.RelationshipType.SeparatedMaterial));
-        if (redactedVariationSequence is null)
+        if (redactedPresentationSequence is null)
         {
             relationships.AddRange(AssignRelationship(variationRedactions, RecordOutput.RelationshipType.HasRedaction));
+            relationships.AddRange(AssignRelationship(variationPresentation, RecordOutput.RelationshipType.HasReplacement));
         }
         else
         {
             relationships.AddRange(AssignRelationship(variationRedactions, RecordOutput.RelationshipType.RedactionOf));
+            relationships.AddRange(AssignRelationship(variationPresentation, RecordOutput.RelationshipType.ReplacementOf));
         }
 
         return relationships;

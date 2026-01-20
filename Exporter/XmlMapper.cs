@@ -7,12 +7,11 @@ namespace Exporter;
 
 internal static class XmlMapper
 {
-    public static List<XmlWrapper> Map(IGraph asset, IUriNode variation,
-        long? redactedVariationSequence)
+    public static List<XmlWrapper> Map(IGraph asset, IUriNode variation, long? redactedPresentationVariationSequence)
     {
         var wrappers = new List<XmlWrapper>();
         var assetReference = asset.GetSingleText(Vocabulary.AssetReference);
-        var reference = ReferenceBuilder.Build(redactedVariationSequence, assetReference!);
+        var reference = ReferenceBuilder.Build(redactedPresentationVariationSequence, assetReference!);
         var assetDriXml = asset.GetSingleLiteral(Vocabulary.AssetDriXml)?.Value;
         if (assetDriXml is not null)
         {

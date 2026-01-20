@@ -8,7 +8,7 @@ namespace Exporter;
 internal static class RecordMapper
 {
     public static RecordOutput Map(IGraph asset, List<IUriNode> variations,
-        long? redactedVariationSequence)
+        long? redactedPresentationSequence, bool? isRedacted)
     {
         var assetDriId = asset.GetSingleText(Vocabulary.AssetDriId)!;
         var assetReference = asset.GetSingleText(Vocabulary.AssetReference)!;
@@ -74,15 +74,15 @@ internal static class RecordMapper
         var hasSameLocation = location.Original.Equals(location.SensitiveName);
         var sr = SensitivityReviewMapper.Get(asset, variations, hasSameLocation);
         var copyrightTitles = CopyrightMapper.GetCopyrights(asset);
-        var relationships = RelationMapper.GetRelations(asset, assetReference, redactedVariationSequence);
+        var relationships = RelationMapper.GetRelations(asset, assetReference, redactedPresentationSequence, isRedacted);
         var recordId = GetRecordId(asset, variations)!;
         var person = PersonMapper.GetIndividual(asset);
 
         return new()
         {
             RecordId = recordId,
-            IaId = BuildIaId(redactedVariationSequence, assetDriId),
-            Reference = ReferenceBuilder.Build(redactedVariationSequence, assetReference),
+            IaId = BuildIaId(redactedPresentationSequence, assetDriId),
+            Reference = ReferenceBuilder.Build(redactedPresentationSequence, assetReference),
             Title = assetName,
             TranslatedTitle = assetAlternativeName,
             PublishedTitle = sr.SensitiveName ?? assetName,
