@@ -1354,7 +1354,7 @@ this:schema a owl:Ontology;
 	rdfs:label "Poor Law union number".
 
 :inquiryEvidenceProviderName a owl:DatatypeProperty;
-	rdfs:domain :EvidenceProvider;
+	rdfs:domain :InquiryEvidenceProvider;
 	rdfs:range xsd:string;
 	rdfs:subPropertyOf :name;
 	rdfs:isDefinedBy this:schema;
