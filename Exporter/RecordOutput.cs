@@ -8,6 +8,7 @@ public class RecordOutput
     public string? Title { get; set; }
     public string? TranslatedTitle { get; set; }
     public string? PublishedTitle { get; set; }
+    public string? CuratedTitle { get; set; }
     public string? Description { get; set; }
     public string? PublishedDescription { get; set; }
     public string? PastReference { get; set; }

@@ -79,6 +79,7 @@ internal static class RecordMapper
         var person = PersonMapper.GetIndividual(asset);
 
         var variation = variations.FirstOrDefault()!;
+        var variationAlternativeName = asset.GetSingleText(variation, Vocabulary.VariationAlternativeName);
         var variationNote = asset.GetSingleText(variation, Vocabulary.VariationNote);
         var variationPhysicalConditionDescription = asset.GetSingleText(variation, Vocabulary.VariationPhysicalConditionDescription);
         var variationReferenceGoogleId = asset.GetSingleText(variation, Vocabulary.VariationReferenceGoogleId);
@@ -108,6 +109,7 @@ internal static class RecordMapper
             Title = assetName,
             TranslatedTitle = assetAlternativeName,
             PublishedTitle = sr.SensitiveName ?? assetName,
+            CuratedTitle = variationAlternativeName,
             Description = assetDescription,
             PublishedDescription = sr.SensitiveDescription ?? assetDescription,
             PastReference = assetPastReference,
