@@ -124,25 +124,42 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | ArchivistNote | first ex:assetHasVariation/ex:variationHasDatedNote/ex:archivistNote |
 | ArchivistNoteDate | first ex:assetHasVariation/ex:variationHasDatedNote/(ex:archivistNoteAt or ex:datedNoteHasDate (ex:year, ex:month, ex:day)) |
 | NationalRegistrationNumber | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:nationalRegistrationNumber |
-| Changes.DescriptionBase64 | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeDescription |
-| Changes.Timestamp | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeDateTime |
-| Changes.OperatorName | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeHasOperator/ex:operatorName |
-| Changes.Sensitivity.FoiAssertedDate.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewDate |
-| Changes.Sensitivity.SensitiveName.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveName |
-| Changes.Sensitivity.SensitiveDescription.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveDescription |
-| Changes.Sensitivity.AccessConditionName.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasAccessCondition/ex:accessConditionName |
-| Changes.Sensitivity.AccessConditionCode.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasAccessCondition/ex:accessConditionCode |
-| Changes.Sensitivity.ClosureReviewDate.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionReviewDate |
-| Changes.Sensitivity.ClosureStartDate.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionCalculationStartDate |
-| Changes.Sensitivity.ClosurePeriod.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionDuration |
-| Changes.Sensitivity.ClosureEndYear.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionEndYear |
-| Changes.Sensitivity.ClosureDescription.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionDescription |
-| Changes.Sensitivity.FoiExemptions.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionHasLegislation |
-| Changes.Sensitivity.InstrumentNumber.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionInstrumentNumber |
-| Changes.Sensitivity.InstrumentSignedDate.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionInstrumentSignatureDate |
-| Changes.Sensitivity.RetentionReconsiderDate.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionRestrictionReviewDate |
-| Changes.Sensitivity.GroundForRetentionCode.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:groundForRetentionCode |
-| Changes.Sensitivity.GroundForRetentionDescription.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:groundForRetentionDescription |
+| Sensitivity.HasSensitiveMetadata | `true` when ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveName (at any level in the tree) or ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveDescription |
+| Sensitivity.FoiAssertedDate | ex:assetHasSensitivityReview/ex:sensitivityReviewDate |
+| Sensitivity.SensitiveName | ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveName |
+| Sensitivity.SensitiveDescription | ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveDescription |
+| Sensitivity.AccessConditionName | ex:assetHasSensitivityReview/ex:sensitivityReviewHasAccessCondition/ex:accessConditionName |
+| Sensitivity.AccessConditionCode | ex:assetHasSensitivityReview/ex:sensitivityReviewHasAccessCondition/ex:accessConditionCode |
+| Sensitivity.ClosureReviewDate | ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionReviewDate |
+| Sensitivity.ClosureStartDate | ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionCalculationStartDate |
+| Sensitivity.ClosurePeriod | ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionDuration |
+| Sensitivity.ClosureEndYear | ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionEndYear |
+| Sensitivity.ClosureDescription | ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionDescription |
+| Sensitivity.FoiExemptions | ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionHasLegislation |
+| Sensitivity.InstrumentNumber | ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionInstrumentNumber |
+| Sensitivity.InstrumentSignedDate | ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionInstrumentSignatureDate |
+| Sensitivity.RetentionReconsiderDate | ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionRestrictionReviewDate |
+| Sensitivity.GroundForRetentionCode | ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:groundForRetentionCode |
+| Sensitivity.GroundForRetentionDescription | ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:groundForRetentionDescription |
+| AuditTrail.DescriptionBase64 | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeDescription |
+| AuditTrail.Timestamp | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeDateTime |
+| AuditTrail.OperatorName | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeHasOperator/ex:operatorName |
+| AuditTrail.Sensitivity.FoiAssertedDate.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewDate |
+| AuditTrail.Sensitivity.SensitiveName.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveName |
+| AuditTrail.Sensitivity.SensitiveDescription.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveDescription |
+| AuditTrail.Sensitivity.AccessConditionName.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasAccessCondition/ex:accessConditionName |
+| AuditTrail.Sensitivity.AccessConditionCode.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasAccessCondition/ex:accessConditionCode |
+| AuditTrail.Sensitivity.ClosureReviewDate.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionReviewDate |
+| AuditTrail.Sensitivity.ClosureStartDate.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionCalculationStartDate |
+| AuditTrail.Sensitivity.ClosurePeriod.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionDuration |
+| AuditTrail.Sensitivity.ClosureEndYear.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionEndYear |
+| AuditTrail.Sensitivity.ClosureDescription.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionDescription |
+| AuditTrail.Sensitivity.FoiExemptions.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionHasLegislation |
+| AuditTrail.Sensitivity.InstrumentNumber.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionInstrumentNumber |
+| AuditTrail.Sensitivity.InstrumentSignedDate.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionInstrumentSignatureDate |
+| AuditTrail.Sensitivity.RetentionReconsiderDate.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionRestrictionReviewDate |
+| AuditTrail.Sensitivity.GroundForRetentionCode.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:groundForRetentionCode |
+| AuditTrail.Sensitivity.GroundForRetentionDescription.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:groundForRetentionDescription |
 | DigitalFileCount | Count of grouped variations |
 | DigitalFiles.FileId | ex:variationDriId |
 | DigitalFiles.FileName | ex:assetHasVariation/(ex:variationAlternativeName or ex:variationName) |
