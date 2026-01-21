@@ -39,6 +39,7 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | CopyrightHolders | ex:assetHasCopyright/ex:copyrightTitle |
 | HeldBy | ex:assetHasRetention/ex:retentionHasFormalBody/ex:formalBodyName |
 | CreatedBy | ex:assetHasCreation/ex:creationHasFormalBody/ex:formalBodyName |
+| TransferredBy | ex:assetHasTransfer/ex:transferHasFormalBody/ex:formalBodyName |
 | DateLastModified  | ex:assetModifiedAt |
 | CuratedModifiedAt | ex:assetAlternativeModifiedAt |
 | CuratedDateStart | ex:assetHasAlternativeModifiedDateStart (ex:year, ex:month, ex:day) |

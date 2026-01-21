@@ -178,6 +178,13 @@ this:schema a owl:Ontology;
 	rdfs:label "Creation";
 	rdfs:comment "A relation describing creation of a thing by a :FormalBody.".
 
+:Transfer a owl:Class;
+	rdfs:subClassOf :Custodianship;
+	rdfs:isDefinedBy this:schema;
+	rdfs:seeAlso rico:OrganicProvenanceRelation;
+	rdfs:label "Transfer";
+	rdfs:comment "A relation describing transfer of a thing by a :FormalBody.".
+
 :Retention a owl:Class;
 	rdfs:subClassOf :Custodianship;
 	rdfs:isDefinedBy this:schema;
@@ -941,19 +948,30 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has creation".
 
-:creationHasSubset a owl:ObjectProperty, owl:FunctionalProperty;
-	rdfs:seeAlso rico:relationHasSource;
-	rdfs:domain :Creation;
-	rdfs:range :Subset;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Creation has subset".
-
 :creationHasFormalBody a owl:ObjectProperty, owl:FunctionalProperty;
 	rdfs:seeAlso rico:relationHasTarget;
 	rdfs:domain :Creation;
 	rdfs:range :FormalBody;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Creation has formal body".
+
+:assetHasTransfer a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:domain :Asset;
+	rdfs:range :Transfer;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has transfer".
+
+:subsetHasTransfer a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:domain :Subset;
+	rdfs:range :Transfer;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Subset has transfer".
+
+:transferHasFormalBody a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:domain :Transfer;
+	rdfs:range :FormalBody;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Transfer has formal body".
 
 :retentionHasSubset a owl:ObjectProperty, owl:FunctionalProperty;
 	rdfs:seeAlso rico:relationHasTarget;

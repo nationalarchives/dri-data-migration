@@ -104,8 +104,9 @@ public class RdfExporter : IDriRdfExporter
         {
             parent = graph.GetSingleText(broader, Vocabulary.SubsetReference);
         }
+        var transfer = graph.GetSingleUriNode(subject, Vocabulary.SubsetHasTransfer)?.Uri;
 
-        return new DriSubset(reference!, directory, parent);
+        return new DriSubset(reference!, directory, parent, transfer);
     };
 
     private static Func<IGraph, IUriNode, DriAsset> MapAsset => (graph, subject) =>
@@ -116,8 +117,9 @@ public class RdfExporter : IDriRdfExporter
         var subsetReference = graph.GetSingleText(subset!, Vocabulary.SubsetReference);
         var retention = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AssetHasRetention).SingleOrDefault().Object as IBlankNode;
         var location = graph.GetSingleText(retention!, Vocabulary.ImportLocation);
+        var transfer = graph.GetSingleUriNode(subject, Vocabulary.AssetHasTransfer)?.Uri;
 
-        return new DriAsset(id!.Uri, reference!, location, subsetReference!);
+        return new DriAsset(id!.Uri, reference!, location, subsetReference!, transfer);
     };
 
     private static Func<IGraph, IUriNode, DriVariation> MapVariation => (graph, subject) =>

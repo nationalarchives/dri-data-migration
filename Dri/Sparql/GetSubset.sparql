@@ -10,21 +10,31 @@ construct {
         ];
         ex:subsetHasRetention [
             ex:importLocation ?directory
-    	].
+    	];
+        ex:subsetHasTransfer ?transferringBody.
 } where {
     {
-        select distinct ?subset ?reference ?parentReference ?directory where {
+        select distinct ?subset ?reference ?parentReference ?directory ?transferringBody where {
             bind(@id as ?code)
             bind(replace(@id,' ','_') as ?code2)
             ?subset rdfs:label ?reference.
             {
                 ?subset a dri:DeliverableUnit;
-                    dri:isPartOfSeries/rdfs:label ?code.
+                    dri:isPartOfUnit ?unit;
+                    dri:isPartOfSeries ?series.
+                ?series rdfs:label ?code.
             }
             union
             {
                 ?subset a dri:DeliverableUnit;
-                    dri:isPartOfSeries/rdfs:label ?code2.
+                    dri:isPartOfUnit ?unit;
+                    dri:isPartOfSeries ?series.
+                ?series rdfs:label ?code2.
+            }
+            optional {
+                ?batch dri:transferringBody ?transferringBody;
+    			    rdfs:label ?batchLabel.
+    		    filter(strends(str(?unit), concat('/',?batchLabel)))
             }
             optional { ?subset dri:parent/rdfs:label ?parent }
             optional { ?subset dri:hasDirectory/rdfs:label ?directory }

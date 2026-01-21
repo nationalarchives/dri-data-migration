@@ -31,6 +31,7 @@ public class RecordOutput
     public IEnumerable<string>? CopyrightHolders { get; set; }
     public string? HeldBy { get; set; }
     public string? CreatedBy { get; set; }
+    public string? TransferredBy { get; set; }
     public DateTimeOffset? DateLastModified { get; set; }
     public DateTimeOffset? CuratedModifiedAt { get; set; }
     public string? CuratedDateStart { get; set; }

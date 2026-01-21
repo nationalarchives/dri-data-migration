@@ -14,6 +14,7 @@ public static class Vocabulary
     public static readonly IUriNode SubsetHasNarrowerSubset = new UriNode(new(Namespace, "subsetHasNarrowerSubset"));
     public static readonly IUriNode SubsetHasAsset = new UriNode(new(Namespace, "subsetHasAsset"));
     public static readonly IUriNode SubsetHasSensitivityReview = new UriNode(new(Namespace, "subsetHasSensitivityReview"));
+    public static readonly IUriNode SubsetHasTransfer = new UriNode(new(Namespace, "subsetHasTransfer"));
     public static readonly IUriNode SubsetHasRetention = new UriNode(new(Namespace, "subsetHasRetention"));
 
     public static readonly IUriNode Asset = new UriNode(new(Namespace, "Asset"));
@@ -65,6 +66,7 @@ public static class Vocabulary
     public static readonly IUriNode AssetHasCopyright = new UriNode(new(Namespace, "assetHasCopyright"));
     public static readonly IUriNode AssetHasAssociatedGeographicalPlace = new UriNode(new(Namespace, "assetHasAssociatedGeographicalPlace"));
     public static readonly IUriNode AssetHasCreation = new UriNode(new(Namespace, "assetHasCreation"));
+    public static readonly IUriNode AssetHasTransfer = new UriNode(new(Namespace, "assetHasTransfer"));
     public static readonly IUriNode AssetHasOriginDateStart = new UriNode(new(Namespace, "assetHasOriginDateStart"));
     public static readonly IUriNode AssetHasOriginDateEnd = new UriNode(new(Namespace, "assetHasOriginDateEnd"));
     public static readonly IUriNode AssetHasOriginApproximateDateStart = new UriNode(new(Namespace, "assetHasOriginApproximateDateStart"));
@@ -159,6 +161,7 @@ public static class Vocabulary
 
     public static readonly IUriNode RetentionHasFormalBody = new UriNode(new(Namespace, "retentionHasFormalBody"));
     public static readonly IUriNode CreationHasFormalBody = new UriNode(new(Namespace, "creationHasFormalBody"));
+    public static readonly IUriNode TransferHasFormalBody = new UriNode(new(Namespace, "transferHasFormalBody"));
 
     public static readonly IUriNode FormalBodyName = new UriNode(new(Namespace, "formalBodyName"));
 

@@ -3,8 +3,10 @@
 construct {
     ?subset ex:subsetReference ?subsetReference;
         ex:subsetHasBroaderSubset ?broaderSubset;
-        ex:subsetHasRetention ?retention.
+        ex:subsetHasRetention ?retention;
+        ex:subsetHasTransfer ?subsetHasTransfer.
     ?retention ex:importLocation ?importLocation.
+    ?subsetHasTransfer ex:transferHasFormalBody ?transferHasFormalBody.
 } where {
     bind(@id as ?subsetReference)
     ?subset ex:subsetReference ?subsetReference.
@@ -12,5 +14,9 @@ construct {
     optional {
         ?subset ex:subsetHasRetention ?retention.
         optional { ?retention ex:importLocation ?importLocation }
+    }
+    optional {
+        ?subset ex:subsetHasTransfer ?subsetHasTransfer.
+        ?subsetHasTransfer ex:transferHasFormalBody ?transferHasFormalBody.
     }
 }

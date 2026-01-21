@@ -13,6 +13,7 @@ public class AssetIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, I
         var assetReference = new LiteralNode(dri.Reference);
         var id = existing.GetSingleUriNodeSubject(Vocabulary.AssetReference, assetReference) ?? CacheClient.NewId;
         var retention = existing.GetSingleUriNode(id, Vocabulary.AssetHasRetention) ?? CacheClient.NewId;
+        var transfer = existing.GetSingleUriNode(id, Vocabulary.AssetHasTransfer) ?? CacheClient.NewId;
 
         var subset = await cacheClient.CacheFetch(CacheEntityKind.Subset, dri.SubsetReference, cancellationToken);
         if (subset is null && dri.SubsetReference == "WO 409")//Special case
@@ -33,6 +34,13 @@ public class AssetIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, I
         if (!string.IsNullOrEmpty(dri.Directory))
         {
             graph.Assert(retention, Vocabulary.ImportLocation, new LiteralNode(dri.Directory));
+        }
+        if (dri.TransferringBody is not null)
+        {
+            graph.Assert(id, Vocabulary.AssetHasTransfer, transfer);
+            var bodyName = dri.TransferringBody.Segments.Last().Replace('_', ' ');
+            var bodyId = await cacheClient.CacheFetchOrNew(CacheEntityKind.FormalBody, bodyName, Vocabulary.FormalBodyName, cancellationToken);
+            graph.Assert(transfer, Vocabulary.TransferHasFormalBody, bodyId);
         }
 
         return graph;

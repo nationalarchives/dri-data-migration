@@ -4,8 +4,10 @@ construct {
     ?asset ex:assetDriId ?assetDriId;
         ex:assetReference ?reference;
         ex:assetHasSubset ?subset;
-        ex:assetHasRetention ?retention.
+        ex:assetHasRetention ?retention;
+        ex:assetHasTransfer ?assetHasTransfer.
     ?retention ex:importLocation ?importLocation.
+    ?assetHasTransfer ex:transferHasFormalBody ?transferHasFormalBody.
 } where {
     bind(@id as ?assetDriId)
     ?asset ex:assetDriId ?assetDriId;
@@ -14,5 +16,9 @@ construct {
     optional {
         ?asset ex:assetHasRetention ?retention.
         optional { ?retention ex:importLocation ?importLocation }
+    }
+    optional {
+        ?asset ex:assetHasTransfer ?assetHasTransfer.
+        ?assetHasTransfer ex:transferHasFormalBody ?transferHasFormalBody.
     }
 }

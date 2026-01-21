@@ -68,6 +68,7 @@ internal static class RecordMapper
         var courtCases = CourtCaseMapper.GetCourtCases(asset);
         var retentionFormalBodyName = FormalBodyNameMapper.GetBodyName(asset, Vocabulary.AssetHasRetention, Vocabulary.RetentionHasFormalBody);
         var creationFormalBodyName = FormalBodyNameMapper.GetBodyName(asset, Vocabulary.AssetHasCreation, Vocabulary.CreationHasFormalBody);
+        var transferFormalBodyName = FormalBodyNameMapper.GetBodyName(asset, Vocabulary.AssetHasTransfer, Vocabulary.TransferHasFormalBody);
         var changes = ChangeMapper.GetAllChanges(asset, variations);
         var files = VariationMapper.GetVariations(asset, variations);
         var location = LocationMapper.GetLocation(asset);
@@ -132,6 +133,7 @@ internal static class RecordMapper
             CopyrightHolders = copyrightTitles,
             HeldBy = retentionFormalBodyName,
             CreatedBy = creationFormalBodyName,
+            TransferredBy = transferFormalBodyName,
             DateLastModified = assetModifiedAt,
             CuratedModifiedAt = assetAlternativeModifiedAt,
             CuratedDateStart = assetHasAlternativeModifiedDateStart,

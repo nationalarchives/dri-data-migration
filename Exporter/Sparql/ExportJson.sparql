@@ -30,6 +30,7 @@ construct {
         ex:assetHasCopyright ?copyright;
         ex:assetHasRetention ?retention;
         ex:assetHasCreation ?creation;
+        ex:assetHasTransfer ?transfer;
         ex:assetHasAssociatedGeographicalPlace ?associatedGeographicalPlace;
         ex:assetHasOriginDateStart ?originDateStart;
         ex:assetHasOriginDateEnd ?originDateEnd;
@@ -72,6 +73,8 @@ construct {
     ?copyright ex:copyrightTitle ?copyrightTitle.
     ?creation ex:creationHasFormalBody ?creationHasFormalBody.
     ?creationHasFormalBody ex:formalBodyName ?creationFormalBodyName.
+    ?transfer ex:transferHasFormalBody ?transferHasFormalBody.
+    ?transferHasFormalBody ex:formalBodyName ?transferFormalBodyName.
     ?subset ex:subsetHasRetention ?sRetention;
         ex:subsetHasBroaderSubset ?broader;
         ex:subsetHasSensitivityReview ?srs.
@@ -290,6 +293,11 @@ construct {
         ?asset ex:assetHasCreation ?creation.
         ?creation ex:creationHasFormalBody ?creationHasFormalBody.
         ?creationHasFormalBody ex:formalBodyName ?creationFormalBodyName.
+    }
+    optional {
+        ?asset ex:assetHasTransfer ?transfer.
+        ?transfer ex:transferHasFormalBody ?transferHasFormalBody.
+        ?transferHasFormalBody ex:formalBodyName ?transferFormalBodyName.
     }
     optional {
         ?asset ex:assetHasAssociatedGeographicalPlace ?associatedGeographicalPlace.
