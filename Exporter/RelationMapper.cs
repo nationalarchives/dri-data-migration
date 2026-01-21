@@ -11,13 +11,21 @@ internal static class RelationMapper
         string assetReference, long? redactedPresentationSequence, bool? isRedacted)
     {
         var relationships = new List<RecordOutput.RecordRelationship>();
-        var descriptions = graph.GetTriplesWithPredicate(Vocabulary.AssetRelationDescription);
+        var descriptions = graph.GetTriplesWithPredicate(Vocabulary.AssetRelationDescription).ToList();
         var related = graph.GetTriplesWithPredicate(Vocabulary.AssetRelationIdentifier).Select(t =>
             new KeyValuePair<INode, string?>(t.Subject, graph.GetSingleText(t.Subject, Vocabulary.AssetRelationReference) ?? (t.Object as ILiteralNode)?.Value));
         foreach (var relation in related)
         {
-            var description = descriptions.WithSubject(relation.Key).SingleOrDefault()?.Object as ILiteralNode;
-            relationships.Add(new RecordOutput.RecordRelationship(RecordOutput.RelationshipType.RelatedMaterial, relation.Value!, description?.Value));
+            var description = descriptions.WithSubject(relation.Key).SingleOrDefault();
+            relationships.Add(new RecordOutput.RecordRelationship(RecordOutput.RelationshipType.RelatedMaterial, relation.Value!, (description?.Object as ILiteralNode)?.Value));
+            if (description is not null)
+            {
+                descriptions.Remove(description);
+            }
+        }
+        foreach (var relation in descriptions)
+        {
+            relationships.Add(new RecordOutput.RecordRelationship(RecordOutput.RelationshipType.RelatedMaterial, null, (relation.Object as ILiteralNode)?.Value));
         }
 
         var separated = (graph.GetLiteralNodes(Vocabulary.AssetConnectedAssetNote).Select(l => l.Value)).ToList();

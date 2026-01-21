@@ -192,7 +192,7 @@ public class RecordOutput
         public string? Reference { get; set; }
     }
 
-    public record RecordRelationship(RelationshipType Relationship, string Reference, string? Description = null);
+    public record RecordRelationship(RelationshipType Relationship, string? Reference, string? Description = null);
 
     public enum RelationshipType
     {
