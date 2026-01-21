@@ -117,7 +117,7 @@ public sealed class RdfExporterTest
         var reference = "Asset";
         var directory = "Location/";
         var subsetReference = "Subset";
-        var expected = new DriAsset(link, reference, directory, subsetReference);
+        var expected = new DriAsset(link, reference, directory, subsetReference, null);
         var graph = new Graph();
         var subject = graph.CreateUriNode(link);
         graph.Assert(subject, Vocabulary.AssetDriId, subject);
