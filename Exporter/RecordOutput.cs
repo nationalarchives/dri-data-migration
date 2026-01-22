@@ -169,7 +169,7 @@ public class RecordOutput
         public Diff? GroundForRetentionDescription { get; set; }
     }
 
-    public record Diff(object? Value, object? NewValue);
+    public record Diff(object? OldValue, object? NewValue);
 
     public class Variation
     {
