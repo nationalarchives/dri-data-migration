@@ -128,7 +128,7 @@ internal static class RecordMapper
             UsageRestrictionDescription = assetUsageRestrictionDescription,
             UkGovernmentWebArchive = assetHasUkGovernmentWebArchive,
             LegalStatus = legalStatus?.Segments.LastOrDefault(),
-            RecordType = assetTagType?.Segments.LastOrDefault(),
+            RecordType = assetTagType?.Segments.LastOrDefault()?.Replace("Asset", string.Empty),
             Language = languageName,
             CopyrightHolders = copyrightTitles,
             HeldBy = retentionFormalBodyName,
