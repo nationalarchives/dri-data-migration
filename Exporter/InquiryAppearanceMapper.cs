@@ -24,7 +24,7 @@ internal static class InquiryAppearanceMapper
             inquiries.Add(new()
             {
                 Sequence = inquiryAppearanceSequence,
-                WitnessNames = inquiryWitnessNames,
+                WitnessNames = inquiryWitnessNames.Any() ? inquiryWitnessNames : null,
                 AppearanceDescription = inquiryWitnessAppearanceDescription
             });
         }

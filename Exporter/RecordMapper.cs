@@ -150,7 +150,7 @@ internal static class RecordMapper
             FilmTitle = filmTitle,
             FilmDuration = filmDuration,
             EvidenceProvider = evidenceProviderName,
-            Investigations = investigationNames,
+            Investigations = investigationNames.Any() ? investigationNames: null,
             InquiryHearingDate = ToDate(inquiryHearingDate),
             InquirySessionDescription = inquirySessionDescription,
             InquiryAppearances = inquiryAppearances,
