@@ -7,15 +7,15 @@ public class RecordOutput
     public required string Reference { get; set; }
     public string? Title { get; set; }
     public string? TranslatedTitle { get; set; }
-    public string? PublishedTitle { get; set; }
+    public string? PublicTitle { get; set; }
     public string? CuratedTitle { get; set; }
     public string? Description { get; set; }
-    public string? PublishedDescription { get; set; }
+    public string? PublicDescription { get; set; }
     public string? PastReference { get; set; }
     public string? Summary { get; set; }
     public string? Tag { get; set; }
     public string? Arrangement { get; set; }
-    public string? PublishedArrangement { get; set; }
+    public string? PublicArrangement { get; set; }
     public string? ConsignmentId { get; set; }
     public string? DriBatchReference { get; set; }
     public string? SourceInternalName { get; set; }

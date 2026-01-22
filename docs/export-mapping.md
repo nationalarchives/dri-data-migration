@@ -15,15 +15,15 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | Reference | ex:assetReference and ex:redactedVariationSequence\|ex:presentationVariationSequence |
 | Title | ex:assetName |
 | TranslatedTitle | ex:assetAlternativeName |
-| PublishedTitle | ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveName or ex:variationHasSensitivityReview/ex:sensitivityReviewSensitiveName or ex:assetName |
+| PublicTitle | ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveName or ex:variationHasSensitivityReview/ex:sensitivityReviewSensitiveName or ex:assetName |
 | CuratedTitle | first ex:assetHasVariation/ex:variationAlternativeName |
 | Description | ex:assetDescription |
-| PublishedDescription | ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveDescription or ex:variationHasSensitivityReview/ex:sensitivityReviewSensitiveDescription or ex:assetDescription |
+| PublicDescription | ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveDescription or ex:variationHasSensitivityReview/ex:sensitivityReviewSensitiveDescription or ex:assetDescription |
 | PastReference | ex:assetPastReference |
 | Summary | ex:assetSummary |
 | Tag | ex:assetTag |
 | Arrangement | Iterate over ex:assetHasSubset/ex:subsetHasBroaderSubset/ex:importLocation |
-| PublishedArrangement | Iterate over ex:assetHasSubset/ex:subsetHasBroaderSubset/ex:importLocation and replace segment if ex:subsetHasSensitivityReview/ex:sensitivityReviewSensitiveName exists |
+| PublicArrangement | Iterate over ex:assetHasSubset/ex:subsetHasBroaderSubset/ex:importLocation and replace segment if ex:subsetHasSensitivityReview/ex:sensitivityReviewSensitiveName exists |
 | ConsignmentId | ex:consignmentTdrId |
 | DriBatchReference | ex:batchDriId |
 | SourceInternalName | ex:assetSourceInternalName |
