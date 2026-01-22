@@ -136,7 +136,6 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | Sensitivity.ClosureStartDate | ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionCalculationStartDate |
 | Sensitivity.ClosurePeriod | ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionDuration |
 | Sensitivity.ClosureEndYear | ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionEndYear |
-| Sensitivity.ClosureDescription | ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionDescription |
 | Sensitivity.FoiExemptions | ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionHasLegislation |
 | Sensitivity.InstrumentNumber | ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionInstrumentNumber |
 | Sensitivity.InstrumentSignedDate | ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionInstrumentSignatureDate |
