@@ -96,7 +96,8 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | tna:evidenceProvidedBy | ex:inquiryAssetHasEvidenceProvider/ex:inquiryEvidenceProviderName |
 | tna:investigation | ex:inquiryAssetHasInquiryInvestigation/ex:inquiryInvestigationName |
 | tna:restrictionOnUse | ex:assetUsageRestrictionDescription |
-| tna:formerReferenceTNA or tna:formerReferenceDepartment | ex:assetPastReference |
+| tna:formerReferenceTNA | ex:assetPastReference |
+| tna:formerReferenceDepartment | ex:assetPreviousReference |
 | tna:classification | ex:assetTag |
 | tna:internalDepartment | ex:assetSourceInternalName |
 | tna:filmMaker | ex:filmProductionCompanyName |

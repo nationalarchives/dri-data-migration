@@ -15,6 +15,7 @@ internal static class RecordMapper
         var assetName = asset.GetSingleText(Vocabulary.AssetName);
         var assetAlternativeName = asset.GetSingleText(Vocabulary.AssetAlternativeName);
         var assetPastReference = asset.GetSingleText(Vocabulary.AssetPastReference);
+        var assetPreviousReference = asset.GetSingleText(Vocabulary.AssetPreviousReference);
         var assetDescription = asset.GetSingleText(Vocabulary.AssetDescription);
         var assetSummary = asset.GetSingleText(Vocabulary.AssetSummary);
         var assetTag = asset.GetSingleText(Vocabulary.AssetTag);
@@ -114,7 +115,8 @@ internal static class RecordMapper
             CuratedTitle = variationAlternativeName,
             Description = assetDescription,
             PublicDescription = sr.SensitiveDescription ?? assetDescription,
-            PastReference = assetPastReference,
+            FormerReferenceTna = assetPastReference,
+            FormerReferenceDepartment = assetPreviousReference,
             Summary = assetSummary,
             Tag = assetTag,
             Arrangement = string.IsNullOrWhiteSpace(location.Original) ? null : location.Original,

@@ -1255,7 +1255,16 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:string;
 	rdfs:subPropertyOf :externalIdentifier;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset past reference".
+	rdfs:label "Asset past reference";
+	rdfs:comment "Former reference used by The National Archives.".
+
+:assetPreviousReference a owl:DatatypeProperty;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset previous reference";
+	rdfs:comment "Former reference used outside of The National Archives.".
 
 :assetTag a owl:DatatypeProperty;
 	rdfs:seeAlso rico:classification;

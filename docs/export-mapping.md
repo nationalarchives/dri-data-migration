@@ -19,7 +19,8 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | CuratedTitle | first ex:assetHasVariation/ex:variationAlternativeName |
 | Description | ex:assetDescription |
 | PublicDescription | ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveDescription or ex:variationHasSensitivityReview/ex:sensitivityReviewSensitiveDescription or ex:assetDescription |
-| PastReference | ex:assetPastReference |
+| FormerReferenceTna | ex:assetPastReference |
+| FormerReferenceDepartment | ex:assetPreviousReference |
 | Summary | ex:assetSummary |
 | Tag | ex:assetTag |
 | Arrangement | Iterate over ex:assetHasSubset/ex:subsetHasBroaderSubset/ex:importLocation |

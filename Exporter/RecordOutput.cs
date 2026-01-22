@@ -11,7 +11,8 @@ public class RecordOutput
     public string? CuratedTitle { get; set; }
     public string? Description { get; set; }
     public string? PublicDescription { get; set; }
-    public string? PastReference { get; set; }
+    public string? FormerReferenceTna { get; set; }
+    public string? FormerReferenceDepartment { get; set; }
     public string? Summary { get; set; }
     public string? Tag { get; set; }
     public string? Arrangement { get; set; }

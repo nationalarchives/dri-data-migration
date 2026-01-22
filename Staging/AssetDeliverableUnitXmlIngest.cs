@@ -48,7 +48,7 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
             [IngestVocabulary.PhysicalFormat] = Vocabulary.AssetPhysicalDescription,
             [IngestVocabulary.RestrictionOnUse] = Vocabulary.AssetUsageRestrictionDescription,
             [IngestVocabulary.FormerReferenceTna] = Vocabulary.AssetPastReference,
-            [IngestVocabulary.FormerReferenceDepartment] = Vocabulary.AssetPastReference,
+            [IngestVocabulary.FormerReferenceDepartment] = Vocabulary.AssetPreviousReference,
             [IngestVocabulary.Classification] = Vocabulary.AssetTag,
             [IngestVocabulary.InternalDepartment] = Vocabulary.AssetSourceInternalName,
             [IngestVocabulary.FilmMaker] = Vocabulary.FilmProductionCompanyName,
