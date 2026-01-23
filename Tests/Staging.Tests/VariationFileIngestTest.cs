@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging.Testing;
 using Moq;
 using System.Text;
 using VDS.RDF;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 
 namespace Staging.Tests;
@@ -36,7 +37,7 @@ public sealed class VariationFileIngestTest
             </rdf:RDF>
         </RdfNode>
         """;
-    private readonly DriVariationFile dri = new("Variation1", "/subset1", "Variation name", "Manifestation1", xml);
+    private readonly DriVariationFile dri = new("Variation1", "/subset1", "Variation name", "Manifestation1", xml, 1, "[]");
     private readonly FakeLogger<VariationFileIngest> logger = new();
     private readonly Mock<ISparqlClient> client = new();
     private readonly Mock<ICacheClient> cache;
@@ -74,7 +75,7 @@ public sealed class VariationFileIngestTest
 
         recordIngestedCount.Should().Be(1);
         client.Verify(c => c.ApplyDiffAsync(
-            It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 21 && !r.RemovedTriples.Any()),
+            It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 22 && !r.RemovedTriples.Any()),
             CancellationToken.None), Times.Once);
     }
 
@@ -105,6 +106,7 @@ public sealed class VariationFileIngestTest
         existing.Assert(date, Vocabulary.Year, new LiteralNode("1999", new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
         existing.Assert(date, Vocabulary.Month, new LiteralNode("--01", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
         existing.Assert(date, Vocabulary.Day, new LiteralNode("---02", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
+        existing.Assert(id, Vocabulary.VariationSizeBytes, new LongNode(dri.FileSize));
         existing.Assert(id, IngestVocabulary.Description, new LiteralNode("Temporary description to be removed"));
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
@@ -146,6 +148,7 @@ public sealed class VariationFileIngestTest
         existing.Assert(date, Vocabulary.Year, new LiteralNode("2001", new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
         existing.Assert(date, Vocabulary.Month, new LiteralNode("--09", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
         existing.Assert(date, Vocabulary.Day, new LiteralNode("---30", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
+        existing.Assert(id, Vocabulary.VariationSizeBytes, new LongNode(dri.FileSize));
         existing.Assert(id, IngestVocabulary.Description, new LiteralNode("Temporary description to be removed"));
         
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))

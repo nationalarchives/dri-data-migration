@@ -93,6 +93,7 @@ construct {
         ex:redactedVariationSequence ?redactedVariationSequence;
         ex:presentationVariationSequence ?presentationVariationSequence;
         ex:variationSequence ?variationSequence;
+        ex:variationSizeBytes ?variationSizeBytes;
         ex:variationNote ?variationNote;
         ex:variationRelativeLocation ?variationRelativeLocation;
         ex:variationPhysicalConditionDescription ?variationPhysicalConditionDescription;
@@ -101,6 +102,7 @@ construct {
         ex:scannerOperatorIdentifier ?scannerOperatorIdentifier;
         ex:scannerIdentifier ?scannerIdentifier;
         ex:variationHasDatedNote ?datedNote;
+        ex:variationHasVariationDataIntegrityCalculation ?dataIntegrityCalculation;
         ex:scannedVariationHasScannerGeographicalPlace ?scannerGeographicalPlace;
         ex:scannedVariationHasImageSplit ?scannedVariationHasImageSplit;
         ex:scannedVariationHasImageCrop ?scannedVariationHasImageCrop;
@@ -113,6 +115,8 @@ construct {
     ?noteDate ex:year ?datedNoteYear;
         ex:month ?datedNoteMonth;
         ex:day ?datedNoteDay.
+    ?dataIntegrityCalculation ex:variationDataIntegrityCalculationHasHashFunction ?hashFunction;
+        ex:checksum ?checksum.
     ?scannerGeographicalPlace ex:geographicalPlaceName ?scannerGeographicalPlaceName.
     ?srv ex:sensitivityReviewHasAccessCondition ?accessCondition;
         ex:sensitivityReviewDate ?vSensitivityReviewDate;
@@ -489,6 +493,7 @@ construct {
         optional { ?variation ex:redactedVariationSequence ?redactedVariationSequence }
         optional { ?variation ex:presentationVariationSequence ?presentationVariationSequence }
         optional { ?variation ex:variationSequence ?variationSequence }
+        optional { ?variation ex:variationSizeBytes ?variationSizeBytes }
         optional {
             ?variation ex:variationHasDatedNote ?datedNote.
             optional { ?datedNote ex:archivistNote ?archivistNote }
@@ -499,6 +504,11 @@ construct {
                 optional { ?noteDate ex:month ?datedNoteMonth }
                 optional { ?noteDate ex:day ?datedNoteDay }
             }
+        }
+        optional {
+            ?variation ex:variationHasVariationDataIntegrityCalculation ?dataIntegrityCalculation.
+            optional { ?dataIntegrityCalculation ex:variationDataIntegrityCalculationHasHashFunction ?hashFunction }
+            optional { ?dataIntegrityCalculation ex:checksum ?checksum }
         }
         optional {
             ?variation ex:scannedVariationHasScannerGeographicalPlace ?scannerGeographicalPlace.

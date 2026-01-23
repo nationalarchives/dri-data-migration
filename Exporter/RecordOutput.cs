@@ -176,6 +176,8 @@ public class RecordOutput
     {
         public required string FileId { get; set; }
         public required string FileName { get; set; }
+        public long SizeBytes { get; set; }
+        public IEnumerable<Checksum>? Checksums { get; set; }
         public long? SortOrder { get; set; }
         public long? Sequence { get; set; }
         public string? Location { get; set; }
@@ -185,6 +187,12 @@ public class RecordOutput
         public string? ScannedImageCrop { get; set; }
         public string? ScannedImageDeskew { get; set; }
         public string? ScannedImageSplit { get; set; }
+    }
+
+    public class Checksum
+    {
+        public string? Value { get; set; }
+        public string? Hash { get; set; }
     }
 
     public class Legislation

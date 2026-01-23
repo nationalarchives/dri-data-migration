@@ -16,14 +16,18 @@ construct {
         ex:scannedVariationHasImageCrop ?scannedVariationHasImageCrop;
         ex:scannedVariationHasImageDeskew ?scannedVariationHasImageDeskew;
         ex:variationAlternativeName ?variationAlternativeName;
+        ex:variationSizeBytes ?variationSizeBytes;
         <http://purl.org/dc/terms/description> ?dctermsDescription;
-        ex:variationHasDatedNote ?datedNote.
+        ex:variationHasDatedNote ?datedNote;
+        ex:variationHasVariationDataIntegrityCalculation ?dataIntegrityCalculation.
     ?datedNote ex:archivistNote ?archivistNote;
         ex:archivistNoteAt ?archivistNoteAt;
         ex:datedNoteHasDate ?date.
     ?date ex:year ?year;
           ex:month ?month;
           ex:day ?day.
+    ?dataIntegrityCalculation ex:variationDataIntegrityCalculationHasHashFunction ?hashFunction;
+        ex:checksum ?checksum.
 } where {
     bind(@id as ?variationDriId)
     ?variation ex:variationDriId ?variationDriId.
@@ -41,6 +45,7 @@ construct {
     optional { ?variation ex:scannedVariationHasImageCrop ?scannedVariationHasImageCrop }
     optional { ?variation ex:scannedVariationHasImageDeskew ?scannedVariationHasImageDeskew }
     optional { ?variation ex:variationAlternativeName ?variationAlternativeName }
+    optional { ?variation ex:variationSizeBytes ?variationSizeBytes }
     optional { ?variation <http://purl.org/dc/terms/description> ?dctermsDescription }
     optional {
         ?variation ex:variationHasDatedNote ?datedNote.
@@ -52,5 +57,10 @@ construct {
             optional { ?date ex:month ?month }
             optional { ?date ex:day ?day }
         }
+    }
+    optional {
+        ?variation ex:variationHasVariationDataIntegrityCalculation ?dataIntegrityCalculation.
+        optional { ?dataIntegrityCalculation ex:variationDataIntegrityCalculationHasHashFunction ?hashFunction }
+        optional { ?dataIntegrityCalculation ex:checksum ?checksum }
     }
 }

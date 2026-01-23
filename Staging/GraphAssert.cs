@@ -61,6 +61,14 @@ internal static class GraphAssert
         }
     }
 
+    internal static void Integer(IGraph graph, INode id, long? value, IUriNode immediatePredicate)
+    {
+        if (value.HasValue)
+        {
+            graph.Assert(id, immediatePredicate, new LongNode(value.Value));
+        }
+    }
+
     internal static void Integer(ILogger logger, IGraph graph, INode id, IGraph rdf,
         Dictionary<IUriNode, IUriNode> predicates)
     {

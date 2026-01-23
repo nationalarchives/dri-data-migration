@@ -13,7 +13,7 @@ public sealed class SqlExporterTest
     private const string Series = "Series 1";
     private const string SqlSchema = $"""
         create table dufile
-            (DELIVERABLEUNITREF TEXT, CATALOGUEREFERENCE TEXT, SECURITYTAG TEXT, DMETADATAREF TEXT, MANIFESTATIONREF TEXT, FILEREF TEXT, FMETADATAREF TEXT, FILELOCATION TEXT, NAME TEXT, Code TEXT);
+            (DELIVERABLEUNITREF TEXT, CATALOGUEREFERENCE TEXT, SECURITYTAG TEXT, DMETADATAREF TEXT, MANIFESTATIONREF TEXT, FILEREF TEXT, FMETADATAREF TEXT, FILELOCATION TEXT, NAME TEXT, Code TEXT, Checksums TEXT, FileSize INTEGER);
         create table deliverableunit
             (DELIVERABLEUNITREF TEXT, PARENTREF TEXT, METADATAREF TEXT);
         create table xmlmetadata
@@ -79,7 +79,7 @@ public sealed class SqlExporterTest
     {
         var sqliteInMemory = "Data Source=file:memdb-variation?mode=memory&cache=shared";
         options.Value.SqlConnectionString = sqliteInMemory;
-        var expected = new DriVariationFile("Variation1", "Location", "Variation name", "Manifestation1", "<xml/>");
+        var expected = new DriVariationFile("Variation1", "Location", "Variation name", "Manifestation1", "<xml/>", 1, "[]");
         PopulateVariation(expected, sqliteInMemory);
 
         var dris = exporter.GetVariationFiles(0, CancellationToken.None);
@@ -146,7 +146,7 @@ public sealed class SqlExporterTest
     {
         var metadataRef = "Metadata reference variation";
         var data = $"""
-            insert into dufile(FILEREF, FMETADATAREF, FILELOCATION, NAME, Code, MANIFESTATIONREF) values('{dri.Id}', '{metadataRef}', '{dri.Location}', '{dri.Name}', '{Series}', '{dri.ManifestationId}');
+            insert into dufile(FILEREF, FMETADATAREF, FILELOCATION, NAME, Code, MANIFESTATIONREF, FileSize, Checksums) values('{dri.Id}', '{metadataRef}', '{dri.Location}', '{dri.Name}', '{Series}', '{dri.ManifestationId}', {dri.FileSize}, '{dri.Checksums}');
             insert into xmlmetadata(METADATAREF, XMLCLOB) values('{metadataRef}', '{dri.Xml}');
         """;
 

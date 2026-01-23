@@ -26,7 +26,7 @@ public sealed class DateParserTest
             </rdf:RDF>
         </RdfNode>
         """;
-    private readonly DriVariationFile variationDri = new("Variation1", "/subset1", "Variation name", "Manifestation1", xml);
+    private readonly DriVariationFile variationDri = new("Variation1", "/subset1", "Variation name", "Manifestation1", xml, 1, null);
     private readonly DriAssetDeliverableUnit assetDri = new("Asset1", "Asset reference", xml, "BornDigital", "[]");
     private readonly FakeLogger<VariationFileIngest> variationLogger = new();
     private readonly FakeLogger<AssetDeliverableUnitIngest> assetLogger = new();
@@ -65,22 +65,22 @@ public sealed class DateParserTest
 
         using (new AssertionScope())
         {
-            client.Verify(c => c.ApplyDiffAsync(It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 5 && !r.RemovedTriples.Any()),
+            client.Verify(c => c.ApplyDiffAsync(It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 6 && !r.RemovedTriples.Any()),
                 CancellationToken.None), Times.Once);
             variationLogger.Collector.LatestRecord.Should().Match<FakeLogRecord>(l => l.Id.Id == 26);
         }
     }
 
     [TestMethod(DisplayName = "Parses date")]
-    [DataRow("[2001-12-31]", 2001, 12, 31, 9)]
-    [DataRow("2001 Sep", 2001, 9, null, 8)]
-    [DataRow("2001 Sept", 2001, 9, null, 8)]
-    [DataRow("31/12/2001", 2001, 12, 31, 9)]
-    [DataRow("2001 Feb 28", 2001, 2, 28, 9)]
-    [DataRow("2001 Nov 1", 2001, 11, 1, 9)]
-    [DataRow("2001-12-31", 2001, 12, 31, 9)]
-    [DataRow("2001-12-31 10:59:45.123", 2001, 12, 31, 9)]
-    [DataRow("2001", 2001, null, null, 7)]
+    [DataRow("[2001-12-31]", 2001, 12, 31, 10)]
+    [DataRow("2001 Sep", 2001, 9, null, 9)]
+    [DataRow("2001 Sept", 2001, 9, null, 9)]
+    [DataRow("31/12/2001", 2001, 12, 31, 10)]
+    [DataRow("2001 Feb 28", 2001, 2, 28, 10)]
+    [DataRow("2001 Nov 1", 2001, 11, 1, 10)]
+    [DataRow("2001-12-31", 2001, 12, 31, 10)]
+    [DataRow("2001-12-31 10:59:45.123", 2001, 12, 31, 10)]
+    [DataRow("2001", 2001, null, null, 8)]
     public async Task ParsesDate(string dateText, int year, int? month, int? day, int assertedTriples)
     {
         var ingest = new VariationFileIngest(cache.Object, client.Object, variationLogger);

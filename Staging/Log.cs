@@ -139,4 +139,7 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 45, Level = LogLevel.Warning, Message = "Asset tag {assetTag} not matched")]
     internal static partial void AssetTagTypeNotResolved(this ILogger logger, string assetTag);
+
+    [LoggerMessage(EventId = 46, Level = LogLevel.Warning, Message = "Hash function {hash} not matched")]
+    internal static partial void HashFunctionNotResolved(this ILogger logger, string hash);
 }

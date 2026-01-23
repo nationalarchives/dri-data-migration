@@ -3,6 +3,8 @@ create index deliverableunitmanifestation_ix on deliverableunitmanifestation (DE
 create index manifestationfile_ix on manifestationfile (MANIFESTATIONREF);
 create index digitalfile_ix on digitalfile (FILEREF, DELETED);
 create index xmlmetadata_ix on xmlmetadata (METADATAREF);
+create index digitalfilefixityinfo_ix on digitalfilefixityinfo (FILEREF);
+create index fixityalgorithm_ix on fixityalgorithm (FIXITYALGORITHMREF);
 
 create temp table temptop(TOPLEVELREF TEXT, DESCRIPTION TEXT);
 
@@ -26,10 +28,14 @@ where d.DELETED = 'F';
 
 create index tempdu_ix on tempdu(DELIVERABLEUNITREF);
 
-create table dufile(DELIVERABLEUNITREF TEXT, FILEREF TEXT, CATALOGUEREFERENCE TEXT, DMETADATAREF TEXT, MANIFESTATIONREF TEXT, Code TEXT, SECURITYTAG TEXT, FMETADATAREF TEXT, FILELOCATION TEXT, NAME TEXT);
+create table dufile(DELIVERABLEUNITREF TEXT, FILEREF TEXT, CATALOGUEREFERENCE TEXT, DMETADATAREF TEXT, MANIFESTATIONREF TEXT, Code TEXT, 
+	SECURITYTAG TEXT, FMETADATAREF TEXT, FILELOCATION TEXT, NAME TEXT, Checksums TEXT, FileSize INTEGER);
 
-insert into dufile(DELIVERABLEUNITREF, FILEREF, CATALOGUEREFERENCE, DMETADATAREF, Code, SECURITYTAG, MANIFESTATIONREF, FMETADATAREF, FILELOCATION, NAME)
-select d.DELIVERABLEUNITREF, f.FILEREF, d.CATALOGUEREFERENCE, d.DMETADATAREF, d.Code, d.SECURITYTAG, dm.MANIFESTATIONREF, f.METADATAREF, f.FILELOCATION, f.NAME
+insert into dufile(DELIVERABLEUNITREF, FILEREF, CATALOGUEREFERENCE, DMETADATAREF, Code, SECURITYTAG, MANIFESTATIONREF, FMETADATAREF, FILELOCATION, NAME, Checksums, FileSize)
+select d.DELIVERABLEUNITREF, f.FILEREF, d.CATALOGUEREFERENCE, d.DMETADATAREF, d.Code, d.SECURITYTAG, dm.MANIFESTATIONREF, f.METADATAREF, f.FILELOCATION, f.NAME,
+	(select concat('[', group_concat(json_object('alg', a.ALGORITHMNAME, 'checksum', i.FIXITYVALUE)),']') from digitalfilefixityinfo i
+	join fixityalgorithm a on a.FIXITYALGORITHMREF = i.FIXITYALGORITHMREF
+	where i.FILEREF = f.FILEREF), f.FILESIZE
 from digitalfile f
 join manifestationfile m on m.FILEREF = f.FILEREF
 join deliverableunitmanifestation dm on dm.MANIFESTATIONREF = m.MANIFESTATIONREF

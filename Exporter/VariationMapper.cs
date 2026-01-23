@@ -22,11 +22,15 @@ internal static class VariationMapper
             var scannedVariationHasImageSplit = graph.GetSingleUriNode(variation, Vocabulary.ScannedVariationHasImageSplit);
             var scannedVariationHasImageCrop = graph.GetSingleUriNode(variation, Vocabulary.ScannedVariationHasImageCrop);
             var scannedVariationHasImageDeskew = graph.GetSingleUriNode(variation, Vocabulary.ScannedVariationHasImageDeskew);
+            var variationSizeBytes = graph.GetSingleNumber(variation, Vocabulary.VariationSizeBytes)!.Value;
+            var checksums = GetChecksums(graph, variation);
 
             variations.Add(new()
             {
                 FileId = variationDriId,
                 FileName = variationName,
+                SizeBytes = variationSizeBytes,
+                Checksums = checksums.Any() ? checksums : null,
                 SortOrder = variationSequence,
                 Sequence = redactedVariationSequence,
                 Location = variationRelativeLocation,
@@ -40,5 +44,22 @@ internal static class VariationMapper
         }
 
         return variations;
+    }
+
+    private static List<RecordOutput.Checksum> GetChecksums(IGraph graph, IUriNode variation)
+    {
+        var checksums = new List<RecordOutput.Checksum>();
+        foreach (var dataIntegrityId in graph.GetUriNodes(variation, Vocabulary.VariationHasVariationDataIntegrityCalculation))
+        {
+            var checksum = graph.GetSingleText(dataIntegrityId, Vocabulary.Checksum);
+            var alg = graph.GetSingleUriNode(dataIntegrityId, Vocabulary.VariationDataIntegrityCalculationHasHashFunction);
+            checksums.Add(new RecordOutput.Checksum()
+            {
+                Hash = alg?.Uri.Segments.Last(),
+                Value = checksum
+            });
+        }
+
+        return checksums;
     }
 }

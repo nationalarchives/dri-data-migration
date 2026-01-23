@@ -165,6 +165,9 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | DigitalFileCount | Count of grouped variations |
 | DigitalFiles.FileId | ex:variationDriId |
 | DigitalFiles.FileName | ex:assetHasVariation/(ex:variationAlternativeName or ex:variationName) |
+| DigitalFiles.SizeBytes | ex:assetHasVariation/ex:variationSizeBytes |
+| DigitalFiles.Checksums.Hash | ex:assetHasVariation/variationHasVariationDataIntegrityCalculation/ex:variationDataIntegrityCalculationHasHashFunction |
+| DigitalFiles.Checksums.Value | ex:assetHasVariation/ex:variationHasVariationDataIntegrityCalculation/ex:checksum |
 | DigitalFiles.SortOrder | ex:assetHasVariation/ex:variationSequence |
 | DigitalFiles.Sequence | ex:assetHasVariation/(ex:redactedVariationSequence\|ex:presentationVariationSequence) |
 | DigitalFiles.Location | ex:assetHasVariation/ex:variationRelativeLocation |

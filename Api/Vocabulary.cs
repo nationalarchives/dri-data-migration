@@ -106,6 +106,7 @@ public static class Vocabulary
     public static readonly IUriNode VariationReferenceGoogleId = new UriNode(new(Namespace, "variationReferenceGoogleId"));
     public static readonly IUriNode VariationReferenceParentGoogleId = new UriNode(new(Namespace, "variationReferenceParentGoogleId"));
     public static readonly IUriNode VariationSequence = new UriNode(new(Namespace, "variationSequence"));
+    public static readonly IUriNode VariationSizeBytes = new UriNode(new(Namespace, "variationSizeBytes"));
     public static readonly IUriNode RedactedVariationSequence = new UriNode(new(Namespace, "redactedVariationSequence"));
     public static readonly IUriNode PresentationVariationSequence = new UriNode(new(Namespace, "presentationVariationSequence"));
     public static readonly IUriNode ScannerOperatorIdentifier = new UriNode(new(Namespace, "scannerOperatorIdentifier"));
@@ -113,10 +114,18 @@ public static class Vocabulary
     public static readonly IUriNode VariationHasSensitivityReview = new UriNode(new(Namespace, "variationHasSensitivityReview"));
     public static readonly IUriNode VariationHasDatedNote = new UriNode(new(Namespace, "variationHasDatedNote"));
     public static readonly IUriNode VariationHasChange = new UriNode(new(Namespace, "variationHasChange"));
+    public static readonly IUriNode VariationHasVariationDataIntegrityCalculation = new UriNode(new(Namespace, "variationHasVariationDataIntegrityCalculation"));
     public static readonly IUriNode ScannedVariationHasScannerGeographicalPlace = new UriNode(new(Namespace, "scannedVariationHasScannerGeographicalPlace"));
     public static readonly IUriNode ScannedVariationHasImageSplit = new UriNode(new(Namespace, "scannedVariationHasImageSplit"));
     public static readonly IUriNode ScannedVariationHasImageCrop = new UriNode(new(Namespace, "scannedVariationHasImageCrop"));
     public static readonly IUriNode ScannedVariationHasImageDeskew = new UriNode(new(Namespace, "scannedVariationHasImageDeskew"));
+    
+    public static readonly IUriNode VariationDataIntegrityCalculationHasHashFunction = new UriNode(new(Namespace, "variationDataIntegrityCalculationHasHashFunction"));
+    public static readonly IUriNode Checksum = new UriNode(new(Namespace, "checksum"));
+    public static readonly IUriNode MD5 = new UriNode(new(Namespace, "MD5"));
+    public static readonly IUriNode SHA1 = new UriNode(new(Namespace, "SHA1"));
+    public static readonly IUriNode SHA256 = new UriNode(new(Namespace, "SHA256"));
+    public static readonly IUriNode SHA512 = new UriNode(new(Namespace, "SHA512"));
 
     public static readonly IUriNode CustodianshipStartAt = new UriNode(new(Namespace, "custodianshipStartAt"));
     public static readonly IUriNode ImportLocation = new UriNode(new(Namespace, "importLocation"));

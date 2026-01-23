@@ -46,7 +46,8 @@ public class SqlExporter : IDriSqlExporter
 
     private static DriVariationFile MapVariationFile(SqliteDataReader reader) =>
             new(reader.GetString("FILEREF"), reader.GetString("FILELOCATION"),
-                reader.GetString("NAME"), reader.GetString("MANIFESTATIONREF"), reader.GetString("XMLCLOB"));
+                reader.GetString("NAME"), reader.GetString("MANIFESTATIONREF"),
+                reader.GetString("XMLCLOB"), reader.GetInt64("FileSize"), reader.GetString("Checksums"));
 
     private static DriChange MapChange(SqliteDataReader reader) =>
             new(reader.GetValue("CHANGEREF").ToString(), reader.GetString("TABLENAME"),

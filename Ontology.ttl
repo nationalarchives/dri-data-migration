@@ -109,6 +109,34 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Scanned variation".
 
+:VariationDataIntegrityCalculation a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation data integrity calculation".
+
+:HashFunction a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Hash function".
+
+:MD5 a owl:Class;
+	rdfs:subClassOf :HashFunction;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "MD5".
+
+:SHA1 a owl:Class;
+	rdfs:subClassOf :HashFunction;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "SHA-1".
+
+:SHA256 a owl:Class;
+	rdfs:subClassOf :HashFunction;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "SHA-256".
+
+:SHA512 a owl:Class;
+	rdfs:subClassOf :HashFunction;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "SHA-512".
+
 :Language a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:seeAlso rico:Language;
@@ -902,6 +930,18 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Change has variation".
 
+:variationHasVariationDataIntegrityCalculation a owl:ObjectProperty;
+	rdfs:domain :Variation;
+	rdfs:range :VariationDataIntegrityCalculation;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation has variation data integrity calculation".
+
+:variationDataIntegrityCalculationHasHashFunction a owl:ObjectProperty;
+	rdfs:domain :VariationDataIntegrityCalculation;
+	rdfs:range :HashFunction;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation data integrity calculation has hash function".
+
 :scannedVariationHasScannerGeographicalPlace a owl:ObjectProperty;
 	rdfs:domain :ScannedVariation;
 	rdfs:range :GeographicalPlace;
@@ -1590,6 +1630,19 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:integer;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation sequence".
+
+:variationSizeBytes a owl:DatatypeProperty;
+	rdfs:seeAlso rico:recordResourceExtent;
+	rdfs:domain :Variation;
+	rdfs:range xsd:integer;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation size bytes".
+
+:checksum a owl:DatatypeProperty;
+	rdfs:domain :VariationDataIntegrityCalculation;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Checksum".
 
 :redactedVariationSequence a owl:DatatypeProperty;
 	rdfs:domain :RedactedVariation;

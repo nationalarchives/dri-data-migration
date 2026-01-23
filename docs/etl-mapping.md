@@ -158,6 +158,9 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | Source | Target |
 | --- | --- |
 | _SQLite_ | |
+| digitalfile.FILESIZE | ex:variationSizeBytes |
+| digitalfilefixityinfo.ALGORITHMNAME | ex:variationHasVariationDataIntegrityCalculation/ex:variationDataIntegrityCalculationHasHashFunction |
+| digitalfilefixityinfo.FIXITYVALUE | ex:variationHasVariationDataIntegrityCalculation/ex:checksum |
 | xmlmetadata.XMLCLOB | ex:wo409SubsetDriXml |
 | _XMLCLOB_ | |
 | tnap:namePart | (ex:assetHasVeteran\|ex:assetHasPerson)/ex:personFullName or (ex:assetHasVeteran\|ex:assetHasPerson)/ex:personGivenName or (ex:assetHasVeteran\|ex:assetHasPerson)/ex:personFamilyName |
