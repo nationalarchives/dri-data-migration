@@ -7,10 +7,10 @@ using VDS.RDF;
 
 namespace Exporter;
 
-public class OutputGenerator(ILogger<OutputGenerator> logger, IOptions<ExportSettings> settings,
+public class OutputGenerator(ILogger<OutputGenerator> logger, IOptions<ExportSettings> exportSettings,
     IRecordRetrieval recordRetrieval) : IOutputGenerator
 {
-    private readonly ExportSettings settings = settings.Value;
+    private readonly ExportSettings settings = exportSettings.Value;
 
     private readonly JsonSerializerOptions serializerOptions = new()
     {
@@ -20,11 +20,11 @@ public class OutputGenerator(ILogger<OutputGenerator> logger, IOptions<ExportSet
         Converters = { new JsonStringEnumConverter() },
         Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
     };
-    private const string exportPath = "export";
     private readonly char[] invalidCharacters = Path.GetInvalidFileNameChars();
 
     public async Task GenerateOutputAsync(CancellationToken cancellationToken)
     {
+        var exportPath = $"export\\{ToValidName(exportSettings.Value.Code)}";
         var path = Directory.CreateDirectory(exportPath);
         logger.ExportPath(path.FullName);
         logger.ExportStarted(settings.ExportScope, settings.Code);
@@ -32,12 +32,12 @@ public class OutputGenerator(ILogger<OutputGenerator> logger, IOptions<ExportSet
         if (ids is not null)
         {
             logger.RecordListFound(ids.Count);
-            await GenerateRecordAsync(ids, cancellationToken);
+            await GenerateRecordAsync(exportPath, ids, cancellationToken);
         }
         logger.ExportFinished();
     }
 
-    private async Task GenerateRecordAsync(List<IUriNode> ids, CancellationToken cancellationToken)
+    private async Task GenerateRecordAsync(string exportPath, List<IUriNode> ids, CancellationToken cancellationToken)
     {
         var i = 0;
         foreach (var id in ids.Skip(settings.RestartFromOffset))
@@ -53,12 +53,12 @@ public class OutputGenerator(ILogger<OutputGenerator> logger, IOptions<ExportSet
                     {
                         logger.UnableFindRecord(id.Uri);
                     }
-                    Serialize(records);
+                    Serialize(exportPath, records);
                 }
                 if (settings.ExportScope is not ExportScopeType.JSON)
                 {
                     var xmls = await recordRetrieval.GetXmlAsync(id, cancellationToken);
-                    Serialize(xmls);
+                    Serialize(exportPath, xmls);
                 }
             }
             if (i % 500 == 0)
@@ -72,13 +72,13 @@ public class OutputGenerator(ILogger<OutputGenerator> logger, IOptions<ExportSet
         }
     }
 
-    private void Serialize(IEnumerable<RecordOutput> records)
+    private void Serialize(string exportPath, IEnumerable<RecordOutput> records)
     {
         foreach (var record in records)
         {
             try
             {
-                var fileName = FileName(record.Reference, "json");
+                var fileName = FileName(exportPath, record.Reference, "json");
                 var json = RecordToJson(record, fileName);
                 File.WriteAllText(fileName, json);
             }
@@ -90,13 +90,13 @@ public class OutputGenerator(ILogger<OutputGenerator> logger, IOptions<ExportSet
         }
     }
 
-    private void Serialize(IEnumerable<XmlWrapper> xmls)
+    private void Serialize(string exportPath, IEnumerable<XmlWrapper> xmls)
     {
         foreach (var xml in xmls)
         {
             try
             {
-                var fileName = FileName(xml.Reference, "xml");
+                var fileName = FileName(exportPath, xml.Reference, "xml");
                 if (File.Exists(fileName))
                 {
                     logger.ExistingFileRecord(fileName);
@@ -111,7 +111,7 @@ public class OutputGenerator(ILogger<OutputGenerator> logger, IOptions<ExportSet
         }
     }
 
-    private string FileName(string reference, string extension) =>
+    private string FileName(string exportPath, string reference, string extension) =>
         $"{exportPath}\\{string.Join('-', reference.Split(invalidCharacters))}.{extension}";
 
     private string RecordToJson(RecordOutput record, string fileName)
@@ -157,4 +157,6 @@ public class OutputGenerator(ILogger<OutputGenerator> logger, IOptions<ExportSet
 
         return JsonSerializer.Serialize(existing, serializerOptions);
     }
+
+    private string ToValidName(string name) => string.Join('-', name.Split(invalidCharacters));
 }
