@@ -40,7 +40,7 @@ from digitalfile f
 join manifestationfile m on m.FILEREF = f.FILEREF
 join deliverableunitmanifestation dm on dm.MANIFESTATIONREF = m.MANIFESTATIONREF
 join tempdu d on d.DELIVERABLEUNITREF = dm.DELIVERABLEUNITREF
-where f.DELETED = 'F' and f.EXTANT = 'T' and f.DIRECTORY = 'F' and
+where f.DELETED = 'F' and f.DIRECTORY = 'F' and
     dm.DELETED = 'F' and (dm.ORIGINALITY = 'T' or d.Code != 'WO 409');
 
 create index dufile_ix on dufile (Code);
