@@ -20,7 +20,10 @@ public static class Vocabulary
     public static readonly IUriNode Asset = new UriNode(new(Namespace, "Asset"));
     public static readonly IUriNode AssetDriId = new UriNode(new(Namespace, "assetDriId"));
     public static readonly IUriNode BatchDriId = new UriNode(new(Namespace, "batchDriId"));
-    public static readonly IUriNode ConsignmentTdrId = new UriNode(new(Namespace, "consignmentTdrId"));
+    public static readonly IUriNode ConsignmentTdrReference = new UriNode(new(Namespace, "consignmentTdrReference"));
+    public static readonly IUriNode FileTdrReference = new UriNode(new(Namespace, "fileTdrReference"));
+    public static readonly IUriNode ParentTdrReference = new UriNode(new(Namespace, "parentTdrReference"));
+    public static readonly IUriNode AssetTdrId = new UriNode(new(Namespace, "assetTdrId"));
     public static readonly IUriNode AssetDriXml = new UriNode(new(Namespace, "assetDriXml"));
     public static readonly IUriNode Wo409SubsetDriXml = new UriNode(new(Namespace, "wo409SubsetDriXml"));
     public static readonly IUriNode AssetReference = new UriNode(new(Namespace, "assetReference"));

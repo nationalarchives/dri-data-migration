@@ -1340,12 +1340,37 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Batch DRI Id".
 
-:consignmentTdrId a owl:DatatypeProperty, owl:FunctionalProperty;
+:consignmentTdrReference a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :Asset;
 	rdfs:range xsd:string;
 	rdfs:subPropertyOf :externalIdentifier;
 	rdfs:isDefinedBy this:schema;
-	rdfs:label "Consignment TDR Id".
+	rdfs:label "Consignment TDR reference";
+	rdfs:comment "One of the references used by Transfer Digital Records (https://www.nationalarchives.gov.uk/information-management/manage-information/digital-records-transfer/transfer-digital-records-tdr/).".
+
+:fileTdrReference a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "File TDR reference";
+	rdfs:comment "One of the references used by Transfer Digital Records (https://www.nationalarchives.gov.uk/information-management/manage-information/digital-records-transfer/transfer-digital-records-tdr/).".
+	
+:parentTdrReference a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Parent TDR reference";
+	rdfs:comment "One of the references used by Transfer Digital Records (https://www.nationalarchives.gov.uk/information-management/manage-information/digital-records-transfer/transfer-digital-records-tdr/).".
+	
+:assetTdrId a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:subPropertyOf :externalIdentifier;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset TDR Id";
+	rdfs:comment "One of the references used by Transfer Digital Records (https://www.nationalarchives.gov.uk/information-management/manage-information/digital-records-transfer/transfer-digital-records-tdr/).".
 
 :assetRelationIdentifier a owl:DatatypeProperty;
 	rdfs:domain :Asset;

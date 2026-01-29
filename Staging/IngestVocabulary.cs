@@ -11,6 +11,9 @@ public static class IngestVocabulary
 
     public static readonly IUriNode BatchIdentifier = new UriNode(new($"{TnaNamespace}batchIdentifier"));
     public static readonly IUriNode TdrConsignmentRef = new UriNode(new($"{TnaNamespace}tdrConsignmentRef"));
+    public static readonly IUriNode TdrFileReference = new UriNode(new($"{TnaNamespace}tdrFileReference"));
+    public static readonly IUriNode TdrParentReference = new UriNode(new($"{TnaNamespace}tdrParentReference"));
+    public static readonly IUriNode TdrUuid = new UriNode(new($"{TnaNamespace}tdrUuid"));
     public static readonly IUriNode RelatedMaterial = new UriNode(new($"{TnaNamespace}relatedMaterial"));
     public static readonly IUriNode LegalStatus = new UriNode(new($"{TnaNamespace}legalStatus"));
     public static readonly IUriNode HeldBy = new UriNode(new($"{TnaNamespace}heldBy"));

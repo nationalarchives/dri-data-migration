@@ -25,7 +25,10 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | Tag | ex:assetTag |
 | Arrangement | Iterate over ex:assetHasSubset/ex:subsetHasBroaderSubset/ex:importLocation |
 | PublicArrangement | Iterate over ex:assetHasSubset/ex:subsetHasBroaderSubset/ex:importLocation and replace segment if ex:subsetHasSensitivityReview/ex:sensitivityReviewSensitiveName exists |
-| ConsignmentId | ex:consignmentTdrId |
+| TdrConsignmentId | ex:consignmentTdrReference |
+| TdrFileReference | ex:fileTdrReference |
+| TdrParentReference | ex:parentTdrReference |
+| TdrUuid | ex:assetTdrId |
 | DriBatchReference | ex:batchDriId |
 | SourceInternalName | ex:assetSourceInternalName |
 | ConnectedAssetNote | ex:assetConnectedAssetNote |

@@ -17,7 +17,10 @@ public class RecordOutput
     public string? Tag { get; set; }
     public string? Arrangement { get; set; }
     public string? PublicArrangement { get; set; }
-    public string? ConsignmentId { get; set; }
+    public string? TdrConsignmentId { get; set; }
+    public string? TdrFileReference { get; set; }
+    public string? TdrParentReference { get; set; }
+    public string? TdrUuid { get; set; }
     public string? DriBatchReference { get; set; }
     public string? SourceInternalName { get; set; }
     public string? ConnectedAssetNote { get; set; }

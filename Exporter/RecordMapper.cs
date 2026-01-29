@@ -19,7 +19,10 @@ internal static class RecordMapper
         var assetDescription = asset.GetSingleText(Vocabulary.AssetDescription);
         var assetSummary = asset.GetSingleText(Vocabulary.AssetSummary);
         var assetTag = asset.GetSingleText(Vocabulary.AssetTag);
-        var consignmentTdrId = asset.GetSingleText(Vocabulary.ConsignmentTdrId);
+        var consignmentTdrReference = asset.GetSingleText(Vocabulary.ConsignmentTdrReference);
+        var fileTdrReference = asset.GetSingleText(Vocabulary.FileTdrReference);
+        var parentTdrReference = asset.GetSingleText(Vocabulary.ParentTdrReference);
+        var assetTdrId = asset.GetSingleText(Vocabulary.AssetTdrId);
         var batchDriId = asset.GetSingleText(Vocabulary.BatchDriId);
         var assetSourceInternalName = asset.GetSingleText(Vocabulary.AssetSourceInternalName);
         var assetConnectedAssetNote = asset.GetSingleText(Vocabulary.AssetConnectedAssetNote);
@@ -121,7 +124,10 @@ internal static class RecordMapper
             Tag = assetTag,
             Arrangement = string.IsNullOrWhiteSpace(location.Original) ? null : location.Original,
             PublicArrangement = string.IsNullOrWhiteSpace(location.SensitiveName) ? null : location.SensitiveName,
-            ConsignmentId = consignmentTdrId,
+            TdrConsignmentId = consignmentTdrReference,
+            TdrFileReference = fileTdrReference,
+            TdrParentReference = parentTdrReference,
+            TdrUuid = assetTdrId,
             DriBatchReference = batchDriId,
             SourceInternalName = assetSourceInternalName,
             ConnectedAssetNote = assetConnectedAssetNote,

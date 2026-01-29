@@ -87,7 +87,10 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | xmlmetadata.XMLCLOB | ex:assetDriXml |
 | _XMLCLOB_ | |
 | tna:batchIdentifier | ex:batchDriId |
-| tna:tdrConsignmentRef | ex:consignmentTdrId |
+| tna:tdrConsignmentRef | ex:consignmentTdrReference |
+| tna:tdrFileReference | ex:fileTdrReference |
+| tna:tdrParentReference | ex:parentTdrReference |
+| tna:tdrUuid | ex:assetTdrId |
 | dcterms:description or tna:contentManagementSystemContainer or tna:summary or tna:additionalInformation or tna:itemDescription | ex:assetDescription |
 | tna:administrativeBackground | ex:assetSummary |
 | tna:relatedMaterial or trans:relatedMaterial | ex:assetRelationDescription |

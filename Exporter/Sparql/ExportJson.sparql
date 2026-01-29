@@ -10,7 +10,10 @@ construct {
         ex:assetDescription ?assetDescription;
         ex:assetSummary ?assetSummary;
         ex:assetTag ?assetTag;
-        ex:consignmentTdrId ?consignmentTdrId;
+        ex:consignmentTdrReference ?consignmentTdrReference;
+        ex:fileTdrReference ?fileTdrReference;
+        ex:parentTdrReference ?parentTdrReference;
+        ex:assetTdrId ?assetTdrId;
         ex:batchDriId ?batchDriId;
         ex:assetSourceInternalName ?assetSourceInternalName;
         ex:assetConnectedAssetNote ?assetConnectedAssetNote;
@@ -262,7 +265,10 @@ construct {
     optional { ?asset ex:assetDescription ?assetDescription }
     optional { ?asset ex:assetSummary ?assetSummary }
     optional { ?asset ex:assetTag ?assetTag }
-    optional { ?asset ex:consignmentTdrId ?consignmentTdrId }
+    optional { ?asset ex:consignmentTdrReference ?consignmentTdrReference }
+    optional { ?asset ex:fileTdrReference ?fileTdrReference }
+    optional { ?asset ex:parentTdrReference ?parentTdrReference }
+    optional { ?asset ex:assetTdrId ?assetTdrId }
     optional { ?asset ex:batchDriId ?batchDriId }
     optional { ?asset ex:assetSourceInternalName ?assetSourceInternalName }
     optional { ?asset ex:assetConnectedAssetNote ?assetConnectedAssetNote }

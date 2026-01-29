@@ -35,7 +35,10 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
         GraphAssert.Text(graph, id, rdf, new Dictionary<IUriNode, IUriNode>()
         {
             [IngestVocabulary.BatchIdentifier] = Vocabulary.BatchDriId,
-            [IngestVocabulary.TdrConsignmentRef] = Vocabulary.ConsignmentTdrId,
+            [IngestVocabulary.TdrConsignmentRef] = Vocabulary.ConsignmentTdrReference,
+            [IngestVocabulary.TdrFileReference] = Vocabulary.FileTdrReference,
+            [IngestVocabulary.TdrParentReference] = Vocabulary.ParentTdrReference,
+            [IngestVocabulary.TdrUuid] = Vocabulary.AssetTdrId,
             [IngestVocabulary.Description] = Vocabulary.AssetDescription,
             [IngestVocabulary.ContentManagementSystemContainer] = Vocabulary.AssetDescription,
             [IngestVocabulary.Summary] = Vocabulary.AssetDescription,
