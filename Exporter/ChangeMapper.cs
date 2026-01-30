@@ -96,6 +96,17 @@ internal static class ChangeMapper
 
         return none ? null :
             onlyOne ? diff :
-            all ? current!.Equals(oldValue!) ? null : diff : null;
+            all ? HasDiff(current!, oldValue!) ? null : diff : null;
+    }
+
+    private static bool HasDiff<T>(T current, T oldValue) where T: notnull
+    {
+        if (current is IEnumerable<RecordOutput.Legislation> c &&
+            oldValue is IEnumerable<RecordOutput.Legislation> o)
+        {
+            return !c.Select(l => l.Reference).Except(o.Select(l => l.Reference)).Any();
+        }
+
+        return current.Equals(oldValue);
     }
 }
