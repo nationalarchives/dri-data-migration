@@ -173,7 +173,7 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | DigitalFiles.Checksums.Value | ex:assetHasVariation/ex:variationHasVariationDataIntegrityCalculation/ex:checksum |
 | DigitalFiles.SortOrder | ex:assetHasVariation/ex:variationSequence |
 | DigitalFiles.Sequence | ex:assetHasVariation/(ex:redactedVariationSequence\|ex:presentationVariationSequence) |
-| DigitalFiles.Location | ex:assetHasVariation/ex:variationRelativeLocation |
+| DigitalFiles.FilePath | ex:assetHasVariation/ex:variationRelativeLocation |
 | DigitalFiles.ScannerOperatorIdentifier | ex:assetHasVariation/ex:scannerOperatorIdentifier |
 | DigitalFiles.ScannerIdentifier | ex:assetHasVariation/ex:scannerIdentifier |
 | DigitalFiles.ScannerGeographicalPlace | ex:assetHasVariation/ex:scannedVariationHasScannerGeographicalPlace/ex:geographicalPlaceName |

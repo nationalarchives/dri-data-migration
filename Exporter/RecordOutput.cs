@@ -183,7 +183,7 @@ public class RecordOutput
         public IEnumerable<Checksum>? Checksums { get; set; }
         public long? SortOrder { get; set; }
         public long? Sequence { get; set; }
-        public string? Location { get; set; }
+        public string? FilePath { get; set; }
         public string? ScannerOperatorIdentifier { get; set; }
         public string? ScannerIdentifier { get; set; }
         public string? ScannerGeographicalPlace { get; set; }

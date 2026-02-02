@@ -33,7 +33,7 @@ internal static class VariationMapper
                 Checksums = checksums.Any() ? checksums : null,
                 SortOrder = variationSequence,
                 Sequence = redactedVariationSequence,
-                Location = variationRelativeLocation,
+                FilePath = variationRelativeLocation,
                 ScannerOperatorIdentifier = scannerOperatorIdentifier,
                 ScannerIdentifier = scannerIdentifier,
                 ScannerGeographicalPlace = scannerGeographicalPlace,
