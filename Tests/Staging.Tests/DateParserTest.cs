@@ -72,15 +72,15 @@ public sealed class DateParserTest
     }
 
     [TestMethod(DisplayName = "Parses date")]
-    [DataRow("[2001-12-31]", 2001, 12, 31, 10)]
-    [DataRow("2001 Sep", 2001, 9, null, 9)]
-    [DataRow("2001 Sept", 2001, 9, null, 9)]
-    [DataRow("31/12/2001", 2001, 12, 31, 10)]
-    [DataRow("2001 Feb 28", 2001, 2, 28, 10)]
-    [DataRow("2001 Nov 1", 2001, 11, 1, 10)]
-    [DataRow("2001-12-31", 2001, 12, 31, 10)]
-    [DataRow("2001-12-31 10:59:45.123", 2001, 12, 31, 10)]
-    [DataRow("2001", 2001, null, null, 8)]
+    [DataRow("[2001-12-31]", 2001, 12, 31, 11)]
+    [DataRow("2001 Sep", 2001, 9, null, 10)]
+    [DataRow("2001 Sept", 2001, 9, null, 10)]
+    [DataRow("31/12/2001", 2001, 12, 31, 11)]
+    [DataRow("2001 Feb 28", 2001, 2, 28, 11)]
+    [DataRow("2001 Nov 1", 2001, 11, 1, 11)]
+    [DataRow("2001-12-31", 2001, 12, 31, 11)]
+    [DataRow("2001-12-31 10:59:45.123", 2001, 12, 31, 11)]
+    [DataRow("2001", 2001, null, null, 9)]
     public async Task ParsesDate(string dateText, int year, int? month, int? day, int assertedTriples)
     {
         var ingest = new VariationFileIngest(cache.Object, client.Object, variationLogger);
@@ -116,16 +116,16 @@ public sealed class DateParserTest
     }
 
     [TestMethod(DisplayName = "Parses date range")]
-    [DataRow("[2001-12-31]", 2001, 12, 31, null, null, null, 6)]
-    [DataRow("2001 Sep", 2001, 9, null, null, null, null, 5)]
-    [DataRow("2001 Sept", 2001, 9, null, null, null, null, 5)]
-    [DataRow("31/12/2001", 2001, 12, 31, null, null, null, 6)]
-    [DataRow("2001 Feb 28", 2001, 2, 28, null, null, null, 6)]
-    [DataRow("2001 Nov 1", 2001, 11, 1, null, null, null, 6)]
-    [DataRow("2001-12-31", 2001, 12, 31, null, null, null, 6)]
-    [DataRow("2001-12-31 10:59:45.123", 2001, 12, 31, null, null, null, 6)]
-    [DataRow("2001", 2001, null, null, null, null, null, 4)]
-    [DataRow("2001-2002", 2001, null, null, 2002, null, null, 6)]
+    [DataRow("[2001-12-31]", 2001, 12, 31, null, null, null, 7)]
+    [DataRow("2001 Sep", 2001, 9, null, null, null, null, 6)]
+    [DataRow("2001 Sept", 2001, 9, null, null, null, null, 6)]
+    [DataRow("31/12/2001", 2001, 12, 31, null, null, null, 7)]
+    [DataRow("2001 Feb 28", 2001, 2, 28, null, null, null, 7)]
+    [DataRow("2001 Nov 1", 2001, 11, 1, null, null, null, 7)]
+    [DataRow("2001-12-31", 2001, 12, 31, null, null, null, 7)]
+    [DataRow("2001-12-31 10:59:45.123", 2001, 12, 31, null, null, null, 7)]
+    [DataRow("2001", 2001, null, null, null, null, null, 5)]
+    [DataRow("2001-2002", 2001, null, null, 2002, null, null, 8)]
     public async Task ParsesDateRange(string dateText, int startYear, int? startMonth, int? startDay,
         int? endYear, int? endMonth, int? endDay, int assertedTriples)
     {

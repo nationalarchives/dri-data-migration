@@ -75,7 +75,7 @@ public sealed class VariationFileIngestTest
 
         recordIngestedCount.Should().Be(1);
         client.Verify(c => c.ApplyDiffAsync(
-            It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 22 && !r.RemovedTriples.Any()),
+            It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 23 && !r.RemovedTriples.Any()),
             CancellationToken.None), Times.Once);
     }
 
@@ -103,6 +103,7 @@ public sealed class VariationFileIngestTest
         existing.Assert(id, Vocabulary.VariationHasDatedNote, datedNote);
         existing.Assert(datedNote, Vocabulary.ArchivistNote, new LiteralNode("Archivist note info"));
         existing.Assert(datedNote, Vocabulary.DatedNoteHasDate, date);
+        existing.Assert(date, Vocabulary.DateVerbatim, new LiteralNode("1999-01-02"));
         existing.Assert(date, Vocabulary.Year, new LiteralNode("1999", new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
         existing.Assert(date, Vocabulary.Month, new LiteralNode("--01", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
         existing.Assert(date, Vocabulary.Day, new LiteralNode("---02", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
@@ -117,7 +118,7 @@ public sealed class VariationFileIngestTest
 
         recordIngestedCount.Should().Be(1);
         client.Verify(c => c.ApplyDiffAsync(
-            It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 3 && r.RemovedTriples.Count() == 3),
+            It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 4 && r.RemovedTriples.Count() == 4),
             CancellationToken.None), Times.Once);
     }
 
@@ -145,6 +146,7 @@ public sealed class VariationFileIngestTest
         existing.Assert(id, Vocabulary.VariationHasDatedNote, datedNote);
         existing.Assert(datedNote, Vocabulary.ArchivistNote, new LiteralNode("Archivist note info"));
         existing.Assert(datedNote, Vocabulary.DatedNoteHasDate, date);
+        existing.Assert(date, Vocabulary.DateVerbatim, new LiteralNode("30 Sept 2001"));
         existing.Assert(date, Vocabulary.Year, new LiteralNode("2001", new Uri(XmlSpecsHelper.XmlSchemaDataTypeYear)));
         existing.Assert(date, Vocabulary.Month, new LiteralNode("--09", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gMonth")));
         existing.Assert(date, Vocabulary.Day, new LiteralNode("---30", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
