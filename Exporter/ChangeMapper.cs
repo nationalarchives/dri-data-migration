@@ -94,9 +94,11 @@ internal static class ChangeMapper
         var all = current is not null && oldValue is not null;
         var diff = new RecordOutput.Diff(oldValue, current);
 
+#pragma warning disable CS8714
         return none ? null :
             onlyOne ? diff :
             all ? HasDiff(current!, oldValue!) ? null : diff : null;
+#pragma warning restore CS8714
     }
 
     private static bool HasDiff<T>(T current, T oldValue) where T: notnull
