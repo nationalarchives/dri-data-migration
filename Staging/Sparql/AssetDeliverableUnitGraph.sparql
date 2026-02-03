@@ -286,7 +286,7 @@ construct {
     }
     optional {
         ?asset ex:sealAssetHasObverseEndDate ?sealObverseEndDate.
-        optional { ?sealObverseEndDate ex:dateVerbatim ?sealObverseEndDateVerbatim }s
+        optional { ?sealObverseEndDate ex:dateVerbatim ?sealObverseEndDateVerbatim }
         optional { ?sealObverseEndDate ex:year ?sealObverseEndYear }
         optional { ?sealObverseEndDate ex:month ?sealObverseEndMonth }
         optional { ?sealObverseEndDate ex:day ?sealObverseEndDay }
