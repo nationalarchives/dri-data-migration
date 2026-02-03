@@ -257,7 +257,7 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
                 [new UriNode(new($"{IngestVocabulary.TnaNamespace}hearing_start_date_{caseIndex}"))] = Vocabulary.CourtCaseHearingStartDate,
                 [new UriNode(new($"{IngestVocabulary.TnaNamespace}hearing_end_date_{caseIndex}"))] = Vocabulary.CourtCaseHearingEndDate
             });
-
+            
             caseIndex++;
             courtCase = FetchCourtCaseId(graph, rdf, id, existing, caseIndex);
         }
@@ -353,7 +353,7 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
                     var dob = existing.GetTriplesWithSubjectPredicate(person, Vocabulary.PersonHasDateOfBirth).SingleOrDefault()?.Object as IUriNode
                         ?? CacheClient.NewId;
                     graph.Assert(person, Vocabulary.PersonHasDateOfBirth, dob);
-                    GraphAssert.YearMonthDay(graph, dob, birthDt!.Year, birthDt!.Month, birthDt!.Day);
+                    GraphAssert.YearMonthDay(graph, dob, birthDt!.Year, birthDt!.Month, birthDt!.Day, birthDate.Value);
                 }
             }
 
@@ -383,12 +383,12 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
                 {
                     var startNode = existing.GetSingleUriNode(Vocabulary.AssetHasAlternativeModifiedDateStart) ?? CacheClient.NewId;
                     graph.Assert(id, Vocabulary.AssetHasAlternativeModifiedDateStart, startNode);
-                    GraphAssert.YearMonthDay(graph, startNode, range.FirstYear, range.FirstMonth, range.FirstDay);
+                    GraphAssert.YearMonthDay(graph, startNode, range.FirstYear, range.FirstMonth, range.FirstDay, curatedDate);
                     if (range.SecondYear.HasValue)
                     {
                         var endNode = existing.GetSingleUriNode(Vocabulary.AssetHasAlternativeModifiedDateEnd) ?? CacheClient.NewId;
                         graph.Assert(id, Vocabulary.AssetHasAlternativeModifiedDateEnd, endNode);
-                        GraphAssert.YearMonthDay(graph, endNode, range.SecondYear, range.SecondMonth, range.SecondDay);
+                        GraphAssert.YearMonthDay(graph, endNode, range.SecondYear, range.SecondMonth, range.SecondDay, curatedDate);
                     }
                 }
                 else

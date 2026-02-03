@@ -13,7 +13,8 @@ construct {
         ex:personHasBattalionMembership ?battalionMembership;
         ex:nationalRegistrationNumber ?nationalRegistrationNumber;
         ex:personHasNextOfKinRelationship ?nextOfKinRelationship.
-    ?dateOfBirth ex:year ?dateOfBirthYear;
+    ?dateOfBirth ex:dateVerbatim ?dateOfBirthDateVerbatim;
+        ex:year ?dateOfBirthYear;
         ex:month ?dateOfBirthMonth;
         ex:day ?dateOfBirthDay.
     ?battalionMembership ex:battalionMembershipHasBattalion ?battalionMembershipHasBattalion.
@@ -40,6 +41,7 @@ construct {
         optional { ?person ex:personHasContactPoint ?personHasContactPoint }
         optional {
             ?person ex:personHasDateOfBirth ?dateOfBirth.
+            optional { ?dateOfBirth ex:dateVerbatim ?dateOfBirthDateVerbatim }
             optional { ?dateOfBirth ex:year ?dateOfBirthYear }
             optional { ?dateOfBirth ex:month ?dateOfBirthMonth }
             optional { ?dateOfBirth ex:day ?dateOfBirthDay }

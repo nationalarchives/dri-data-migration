@@ -26,21 +26,21 @@ internal class AssetDeliverableUnitSealIngest(ILogger logger, ICacheClient cache
             {
                 case DateParser.DateRangeType.Date:
                     AssertSealDate(graph, existing, id, Vocabulary.SealAssetHasStartDate,
-                        Vocabulary.SealAssetHasEndDate, range);
+                        Vocabulary.SealAssetHasEndDate, range, dateNode.Value);
                     break;
                 case DateParser.DateRangeType.IdenticalObverseAndReverse:
                     AssertSealDate(graph, existing, id, Vocabulary.SealAssetHasObverseStartDate,
-                        Vocabulary.SealAssetHasObverseEndDate, range);
+                        Vocabulary.SealAssetHasObverseEndDate, range, dateNode.Value);
                     AssertSealDate(graph, existing, id, Vocabulary.SealAssetHasReverseStartDate,
-                        Vocabulary.SealAssetHasReverseEndDate, range);
+                        Vocabulary.SealAssetHasReverseEndDate, range, dateNode.Value);
                     break;
                 case DateParser.DateRangeType.Obverse:
                     AssertSealDate(graph, existing, id, Vocabulary.SealAssetHasObverseStartDate,
-                        Vocabulary.SealAssetHasObverseEndDate, range);
+                        Vocabulary.SealAssetHasObverseEndDate, range, dateNode.Value);
                     break;
                 case DateParser.DateRangeType.Reverse:
                     AssertSealDate(graph, existing, id, Vocabulary.SealAssetHasReverseStartDate,
-                        Vocabulary.SealAssetHasReverseEndDate, range);
+                        Vocabulary.SealAssetHasReverseEndDate, range, dateNode.Value);
                     break;
             }
         }
@@ -90,16 +90,16 @@ internal class AssetDeliverableUnitSealIngest(ILogger logger, ICacheClient cache
     }
 
     private static void AssertSealDate(IGraph graph, IGraph existing, IUriNode id,
-        IUriNode startDatePredicate, IUriNode endDatePredicate, DateParser.DateRange range)
+        IUriNode startDatePredicate, IUriNode endDatePredicate, DateParser.DateRange range, string date)
     {
         var startNode = existing.GetSingleUriNode(id, startDatePredicate) ?? CacheClient.NewId;
         graph.Assert(id, startDatePredicate, startNode);
-        GraphAssert.YearMonthDay(graph, startNode, range.FirstYear, range.FirstMonth, range.FirstDay);
+        GraphAssert.YearMonthDay(graph, startNode, range.FirstYear, range.FirstMonth, range.FirstDay, date);
         if (range.SecondYear.HasValue)
         {
             var endNode = existing.GetSingleUriNode(id, endDatePredicate) ?? CacheClient.NewId;
             graph.Assert(id, endDatePredicate, endNode);
-            GraphAssert.YearMonthDay(graph, endNode, range.SecondYear, range.SecondMonth, range.SecondDay);
+            GraphAssert.YearMonthDay(graph, endNode, range.SecondYear, range.SecondMonth, range.SecondDay, date);
         }
     }
 

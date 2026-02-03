@@ -33,10 +33,10 @@ internal class AssetDeliverableUnitOriginDateIngest(ILogger logger)
             switch (startYmd.DateKind)
             {
                 case DateParser.DateType.Date:
-                    ParseDate(graph, rdf, id, foundCoverage, startNode, endNode, startYmd);
+                    ParseDate(graph, rdf, id, foundCoverage, startNode, endNode, startYmd, start.Value);
                     break;
                 case DateParser.DateType.Approximate:
-                    ParseApproximateDate(graph, rdf, id, foundCoverage, startNode, endNode, startYmd);
+                    ParseApproximateDate(graph, rdf, id, foundCoverage, startNode, endNode, startYmd, start.Value);
                     break;
             }
         }
@@ -51,10 +51,10 @@ internal class AssetDeliverableUnitOriginDateIngest(ILogger logger)
     }
 
     private void ParseDate(IGraph graph, IGraph rdf, INode id, INode foundCoverage,
-        INode startNode, INode endNode, DateParser.YearMonthDay startYmd)
+        INode startNode, INode endNode, DateParser.YearMonthDay startYmd, string date)
     {
         graph.Assert(id, Vocabulary.AssetHasOriginDateStart, startNode);
-        GraphAssert.YearMonthDay(graph, startNode, startYmd.Year, startYmd.Month, startYmd.Day);
+        GraphAssert.YearMonthDay(graph, startNode, startYmd.Year, startYmd.Month, startYmd.Day, date);
         var end = rdf.GetTriplesWithSubjectPredicate(foundCoverage, IngestVocabulary.EndDate).FirstOrDefault()?.Object as ILiteralNode;
         if (end is not null && string.IsNullOrWhiteSpace(end.Value))
         {
@@ -66,16 +66,16 @@ internal class AssetDeliverableUnitOriginDateIngest(ILogger logger)
             if (endYmd.DateKind == DateParser.DateType.Date)
             {
                 graph.Assert(id, Vocabulary.AssetHasOriginDateEnd, endNode);
-                GraphAssert.YearMonthDay(graph, endNode, endYmd.Year, endYmd.Month, endYmd.Day);
+                GraphAssert.YearMonthDay(graph, endNode, endYmd.Year, endYmd.Month, endYmd.Day, end.Value);
             }
         }
     }
 
     private void ParseApproximateDate(IGraph graph, IGraph rdf, INode id,
-        INode foundCoverage, INode startNode, INode endNode, DateParser.YearMonthDay startYmd)
+        INode foundCoverage, INode startNode, INode endNode, DateParser.YearMonthDay startYmd, string date)
     {
         graph.Assert(id, Vocabulary.AssetHasOriginApproximateDateStart, startNode);
-        GraphAssert.YearMonthDay(graph, startNode, startYmd.Year, startYmd.Month, startYmd.Day);
+        GraphAssert.YearMonthDay(graph, startNode, startYmd.Year, startYmd.Month, startYmd.Day, date);
         var end = rdf.GetTriplesWithSubjectPredicate(foundCoverage, IngestVocabulary.EndDate).FirstOrDefault()?.Object as ILiteralNode;
         if (end is not null && !string.IsNullOrWhiteSpace(end.Value))
         {
@@ -83,7 +83,7 @@ internal class AssetDeliverableUnitOriginDateIngest(ILogger logger)
             if (endYmd.DateKind == DateParser.DateType.Approximate)
             {
                 graph.Assert(id, Vocabulary.AssetHasOriginApproximateDateEnd, endNode);
-                GraphAssert.YearMonthDay(graph, endNode, endYmd.Year, endYmd.Month, endYmd.Day);
+                GraphAssert.YearMonthDay(graph, endNode, endYmd.Year, endYmd.Month, endYmd.Day, end.Value);
             }
         }
     }
@@ -94,21 +94,21 @@ internal class AssetDeliverableUnitOriginDateIngest(ILogger logger)
         if (yearRange.DateRangeKind == DateParser.DateRangeType.Date)
         {
             graph.Assert(id, Vocabulary.AssetHasOriginDateStart, startNode);
-            GraphAssert.YearMonthDay(graph, startNode, yearRange.FirstYear, yearRange.FirstMonth, yearRange.FirstDay);
+            GraphAssert.YearMonthDay(graph, startNode, yearRange.FirstYear, yearRange.FirstMonth, yearRange.FirstDay, dateRangeNode.Value);
             if (yearRange.SecondYear.HasValue)
             {
                 graph.Assert(id, Vocabulary.AssetHasOriginDateEnd, endNode);
-                GraphAssert.YearMonthDay(graph, endNode, yearRange.SecondYear, yearRange.SecondMonth, yearRange.SecondDay);
+                GraphAssert.YearMonthDay(graph, endNode, yearRange.SecondYear, yearRange.SecondMonth, yearRange.SecondDay, dateRangeNode.Value);
             }
         }
         else if (yearRange.DateRangeKind == DateParser.DateRangeType.Approximate)
         {
             graph.Assert(id, Vocabulary.AssetHasOriginApproximateDateStart, startNode);
-            GraphAssert.YearMonthDay(graph, startNode, yearRange.FirstYear, yearRange.FirstMonth, yearRange.FirstDay);
+            GraphAssert.YearMonthDay(graph, startNode, yearRange.FirstYear, yearRange.FirstMonth, yearRange.FirstDay, dateRangeNode.Value);
             if (yearRange.SecondYear.HasValue)
             {
                 graph.Assert(id, Vocabulary.AssetHasOriginApproximateDateEnd, endNode);
-                GraphAssert.YearMonthDay(graph, endNode, yearRange.SecondYear, yearRange.SecondMonth, yearRange.SecondDay);
+                GraphAssert.YearMonthDay(graph, endNode, yearRange.SecondYear, yearRange.SecondMonth, yearRange.SecondDay, dateRangeNode.Value);
             }
         }
     }

@@ -204,6 +204,7 @@ public static class Vocabulary
     public static readonly IUriNode Year = new UriNode(new(Namespace, "year"));
     public static readonly IUriNode Month = new UriNode(new(Namespace, "month"));
     public static readonly IUriNode Day = new UriNode(new(Namespace, "day"));
+    public static readonly IUriNode DateVerbatim = new UriNode(new(Namespace, "dateVerbatim"));
 
     public static readonly IUriNode GeographicalPlaceName = new UriNode(new(Namespace, "geographicalPlaceName"));
 

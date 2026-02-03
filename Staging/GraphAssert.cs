@@ -138,7 +138,7 @@ internal static class GraphAssert
         }
     }
 
-    internal static void YearMonthDay(IGraph graph, INode id, int? year, int? month, int? day)
+    internal static void YearMonthDay(IGraph graph, INode id, int? year, int? month, int? day, string? date)
     {
         if (year is not null)
         {
@@ -151,6 +151,7 @@ internal static class GraphAssert
             {
                 graph.Assert(id, Vocabulary.Day, new LiteralNode($"---{day.Value.ToString().PadLeft(2, '0')}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
             }
+            Text(graph, id, date, Vocabulary.DateVerbatim);
         }
     }
 

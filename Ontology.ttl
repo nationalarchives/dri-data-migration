@@ -1923,6 +1923,12 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Day".
 
+:dateVerbatim a owl:DatatypeProperty;
+	rdfs:domain :Date;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Date verbatim".
+
 :geographicalPlaceName a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:seeAlso rico:location;
 	rdfs:domain :GeographicalPlace;

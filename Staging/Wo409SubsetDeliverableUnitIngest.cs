@@ -113,15 +113,13 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
             .SingleOrDefault()?.Object as IBlankNode;
         if (birth is not null)
         {
-            var birthDate = rdf.GetTriplesWithSubjectPredicate(birth, IngestVocabulary.Date)
-                .SingleOrDefault()?.Object as ILiteralNode;
+            var birthDate = rdf.GetSingleLiteral(birth, IngestVocabulary.Date);
             if (birthDate is not null && !string.IsNullOrWhiteSpace(birthDate.Value) &&
                 dateParser.TryParseDate(birthDate.Value, out var birthDt))
             {
-                var dob = existing.GetTriplesWithSubjectPredicate(person, Vocabulary.PersonHasDateOfBirth).SingleOrDefault()?.Object as IUriNode
-                        ?? CacheClient.NewId;
+                var dob = existing.GetSingleUriNode(person, Vocabulary.PersonHasDateOfBirth) ?? CacheClient.NewId;
                 graph.Assert(person, Vocabulary.PersonHasDateOfBirth, dob);
-                GraphAssert.YearMonthDay(graph, dob, birthDt!.Year, birthDt!.Month, birthDt!.Day);
+                GraphAssert.YearMonthDay(graph, dob, birthDt!.Year, birthDt!.Month, birthDt!.Day, birthDate.Value);
             }
             var birthAddress = await GetAddressAsync(rdf, birth, cancellationToken);
             if (birthAddress is not null)

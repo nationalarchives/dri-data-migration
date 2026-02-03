@@ -126,7 +126,7 @@ internal class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
                     if (ymd.DateKind == DateParser.DateType.Date)
                     {
                         graph.Assert(datedNote, Vocabulary.DatedNoteHasDate, noteDate);
-                        GraphAssert.YearMonthDay(graph, noteDate, ymd.Year, ymd.Month, ymd.Day);
+                        GraphAssert.YearMonthDay(graph, noteDate, ymd.Year, ymd.Month, ymd.Day, date.Value);
                     }
                 }
             }

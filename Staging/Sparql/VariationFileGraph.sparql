@@ -23,9 +23,10 @@ construct {
     ?datedNote ex:archivistNote ?archivistNote;
         ex:archivistNoteAt ?archivistNoteAt;
         ex:datedNoteHasDate ?date.
-    ?date ex:year ?year;
-          ex:month ?month;
-          ex:day ?day.
+    ?date ex:dateVerbatim ?dateVerbatim;
+        ex:year ?year;
+        ex:month ?month;
+        ex:day ?day.
     ?dataIntegrityCalculation ex:variationDataIntegrityCalculationHasHashFunction ?hashFunction;
         ex:checksum ?checksum.
 } where {
@@ -53,6 +54,7 @@ construct {
         optional { ?datedNote ex:archivistNoteAt ?archivistNoteAt }
         optional {
             ?datedNote ex:datedNoteHasDate ?date.
+            optional { ?date ex:dateVerbatim ?dateVerbatim }
             optional { ?date ex:year ?year }
             optional { ?date ex:month ?month }
             optional { ?date ex:day ?day }
