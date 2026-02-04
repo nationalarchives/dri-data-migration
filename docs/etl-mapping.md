@@ -146,7 +146,7 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | tna:legalStatus | ex:assetHasLegalStatus |
 | trans:typeOfSeal | ex:sealAssetHasSealCategory/ex:sealCategoryName |
 | trans:dateOfOriginalSeal | ex:sealAssetHasStartDate or ex:sealAssetHasObverseStartDate or ex:sealAssetHasReverseStartDate or ex:sealAssetHasEndDate or ex:sealAssetHasObverseEndDate or ex:sealAssetHasReverseEndDate |
-| trans:dimensions | ex:assetHasDimension or ex:sealAssetHasObverseDimension or ex:sealAssetHasReverseDimension or {any of the previous}/(ex:firstDimensionMillimetre\|ex:secondDimensionMillimetre) |
+| trans:dimensions | ex:dimensionVerbatim and ex:assetHasDimension or ex:sealAssetHasObverseDimension or ex:sealAssetHasReverseDimension or {any of the previous}/(ex:firstDimensionMillimetre\|ex:secondDimensionMillimetre) |
 | trans:surname | ex:assetHasPerson/ex:personFamilyName |
 | trans:forenames | ex:assetHasPerson/ex:personGivenName |
 | trans:officialNumber | ex:assetHasPerson/ex:seamanServiceNumber |

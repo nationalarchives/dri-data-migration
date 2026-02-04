@@ -37,6 +37,7 @@ construct {
         ex:imageSequenceEnd ?imageSequenceEnd;
         ex:paperNumber ?paperNumber;
         ex:poorLawUnionNumber ?poorLawUnionNumber;
+        ex:dimensionVerbatim ?dimensionVerbatim;
         ex:assetHasDimension ?dimension;
         ex:sealAssetHasObverseDimension ?obverseDimension;
         ex:sealAssetHasReverseDimension ?reverseDimension;
@@ -186,6 +187,7 @@ construct {
     optional { ?asset ex:imageSequenceEnd ?imageSequenceEnd }
     optional { ?asset ex:paperNumber ?paperNumber }
     optional { ?asset ex:poorLawUnionNumber ?poorLawUnionNumber }
+    optional { ?asset ex:dimensionVerbatim ?dimensionVerbatim }
     optional { ?asset ex:sealOwnerName ?sealOwnerName }
     optional { ?asset ex:sealColour ?sealColour }
     optional { ?asset ex:emailAttachmentReference ?emailAttachmentReference }

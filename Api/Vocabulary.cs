@@ -61,6 +61,7 @@ public static class Vocabulary
     public static readonly IUriNode SealOwnerName = new UriNode(new(Namespace, "sealOwnerName"));
     public static readonly IUriNode SealColour = new UriNode(new(Namespace, "sealColour"));
     public static readonly IUriNode EmailAttachmentReference = new UriNode(new(Namespace, "emailAttachmentReference"));
+    public static readonly IUriNode DimensionVerbatim = new UriNode(new(Namespace, "dimensionVerbatim"));
     public static readonly IUriNode AssetHasSubset = new UriNode(new(Namespace, "assetHasSubset"));
     public static readonly IUriNode AssetHasVariation = new UriNode(new(Namespace, "assetHasVariation"));
     public static readonly IUriNode AssetHasRetention = new UriNode(new(Namespace, "assetHasRetention"));

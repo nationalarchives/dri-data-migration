@@ -62,8 +62,13 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Paper asset".
 
-:SealAsset a owl:Class;
+:MeasurableAsset a owl:Class;
 	rdfs:subClassOf :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Measurable asset".
+
+:SealAsset a owl:Class;
+	rdfs:subClassOf :MeasurableAsset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Seal asset".
 
@@ -1450,6 +1455,12 @@ this:schema a owl:Ontology;
 	rdfs:subPropertyOf :externalIdentifier;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Poor Law union number".
+
+:dimensionVerbatim a owl:DatatypeProperty;
+	rdfs:domain :MeasurableAsset;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Dimension verbatim".
 
 :inquiryEvidenceProviderName a owl:DatatypeProperty;
 	rdfs:domain :InquiryEvidenceProvider;

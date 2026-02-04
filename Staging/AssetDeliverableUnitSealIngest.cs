@@ -48,6 +48,7 @@ internal class AssetDeliverableUnitSealIngest(ILogger logger, ICacheClient cache
         if (dimensionNode is not null && !string.IsNullOrWhiteSpace(dimensionNode.Value))
         {
             var dimension = dimensionParser.ParseCentimetre(obverseOrReverse?.Value, dimensionNode.Value);
+            GraphAssert.Text(graph, id, dimensionNode.Value, Vocabulary.DimensionVerbatim);
             switch (dimension.DimensionKind)
             {
                 case DimensionParser.DimensionType.Fragment:
