@@ -115,7 +115,8 @@ construct {
     ?datedNote ex:archivistNote ?archivistNote;
         ex:archivistNoteAt ?archivistNoteAt;
         ex:datedNoteHasDate ?noteDate.
-    ?noteDate ex:year ?datedNoteYear;
+    ?noteDate ex:dateVerbatim ?datedNoteDateVerbatim;
+        ex:year ?datedNoteYear;
         ex:month ?datedNoteMonth;
         ex:day ?datedNoteDay.
     ?dataIntegrityCalculation ex:variationDataIntegrityCalculationHasHashFunction ?hashFunction;
@@ -160,40 +161,52 @@ construct {
         ex:changeHasOperator ?operatorV.
     ?operatorV ex:operatorIdentifier ?operatorIdentifierV;
         ex:operatorName ?operatorNameV.
-    ?originDateStart ex:year ?startYear;
+    ?originDateStart ex:dateVerbatim ?originDateStartDateVerbatim;
+        ex:year ?startYear;
         ex:month ?startMonth;
         ex:day ?startDay.
-    ?originDateEnd ex:year ?endYear;
+    ?originDateEnd ex:dateVerbatim ?originDateEndDateVerbatim;
+        ex:year ?endYear;
         ex:month ?endMonth;
         ex:day ?endDay.
-    ?originApproximateDateStart ex:year ?approximateStartYear;
+    ?originApproximateDateStart ex:dateVerbatim ?originApproximateDateStartDateVerbatim;
+        ex:year ?approximateStartYear;
         ex:month ?approximateStartMonth;
         ex:day ?approximateStartDay.
-    ?originApproximateDateEnd ex:year ?approximateEndYear;
+    ?originApproximateDateEnd ex:dateVerbatim ?originApproximateDateEndDateVerbatim;
+        ex:year ?approximateEndYear;
         ex:month ?approximateEndMonth;
         ex:day ?approximateEndDay.
-    ?modifiedDateStart ex:year ?modifiedStartYear;
+    ?modifiedDateStart ex:dateVerbatim ?modifiedStartDateVerbatim;
+        ex:year ?modifiedStartYear;
         ex:month ?modifiedStartMonth;
         ex:day ?modifiedStartDay.
-    ?modifiedDateEnd ex:year ?modifiedEndYear;
+    ?modifiedDateEnd ex:dateVerbatim ?modifiedEndDateVerbatim;
+        ex:year ?modifiedEndYear;
         ex:month ?modifiedEndMonth;
         ex:day ?modifiedEndDay.
-    ?sealDateStart ex:year ?sealStartYear;
+    ?sealDateStart ex:dateVerbatim ?sealDateStartDateVerbatim;
+        ex:year ?sealStartYear;
         ex:month ?sealStartMonth;
         ex:day ?sealStartDay.
-    ?sealDateEnd ex:year ?sealEndYear;
+    ?sealDateEnd ex:dateVerbatim ?sealDateEndDateVerbatim;
+        ex:year ?sealEndYear;
         ex:month ?sealEndMonth;
         ex:day ?sealEndDay.
-    ?sealObverseStartDate ex:year ?sealObverseStartYear;
+    ?sealObverseStartDate ex:dateVerbatim ?sealObverseStartDateDateVerbatim;
+        ex:year ?sealObverseStartYear;
         ex:month ?sealObverseStartMonth;
         ex:day ?sealObverseStartDay.
-    ?sealObverseEndDate ex:year ?sealObverseEndYear;
+    ?sealObverseEndDate ex:dateVerbatim ?sealObverseEndDateDateVerbatim;
+        ex:year ?sealObverseEndYear;
         ex:month ?sealObverseEndMonth;
         ex:day ?sealObverseEndDay.
-    ?sealReverseStartDate ex:year ?sealReverseStartYear;
+    ?sealReverseStartDate ex:dateVerbatim ?sealReverseStartDateDateVerbatim;
+        ex:year ?sealReverseStartYear;
         ex:month ?sealReverseStartMonth;
         ex:day ?sealReverseStartDay.
-    ?sealReverseEndDate ex:year ?sealReverseEndYear;
+    ?sealReverseEndDate ex:dateVerbatim ?sealReverseEndDateDateVerbatim;
+        ex:year ?sealReverseEndYear;
         ex:month ?sealReverseEndMonth;
         ex:day ?sealReverseEndDay.
     ?dimension ex:firstDimensionMillimetre ?firstDimensionMillimetre;
@@ -244,7 +257,8 @@ construct {
         ex:personHasBattalionMembership ?battalionMembership;
         ex:personHasNextOfKinRelationship ?nextOfKinRelationship.
     ?personHasContactPoint ex:geographicalPlaceName ?personHasContactPointPlaceName.
-    ?dateOfBirth ex:year ?dateOfBirthYear;
+    ?dateOfBirth ex:dateVerbatim ?dateOfBirthDateVerbatim;
+        ex:year ?dateOfBirthYear;
         ex:month ?dateOfBirthMonth;
         ex:day ?dateOfBirthDay.
     ?personHasBirthAddress ex:geographicalPlaceName ?personHasBirthAddressPlaceName.
@@ -318,36 +332,42 @@ construct {
     optional {
         ?asset ex:assetHasOriginDateStart ?originDateStart.
         ?originDateStart ex:year ?startYear.
+        optional { ?originDateStart ex:dateVerbatim ?originDateStartDateVerbatim }
         optional { ?originDateStart ex:month ?startMonth }
         optional { ?originDateStart ex:day ?startDay }
     }
     optional {
         ?asset ex:assetHasOriginDateEnd ?originDateEnd.
         ?originDateEnd ex:year ?endYear.
+        optional { ?originDateEnd ex:dateVerbatim ?originDateEndDateVerbatim }
         optional { ?originDateEnd ex:month ?endMonth }
         optional { ?originDateEnd ex:day ?endDay }
     }
     optional {
         ?asset ex:assetHasOriginApproximateDateStart ?originApproximateDateStart.
         ?originApproximateDateStart ex:year ?approximateStartYear.
+        optional { ?originApproximateDateStart ex:dateVerbatim ?originApproximateDateStartDateVerbatim }
         optional { ?originApproximateDateStart ex:month ?approximateStartMonth }
         optional { ?originApproximateDateStart ex:day ?approximateStartDay }
     }
     optional {
         ?asset ex:assetHasOriginApproximateDateEnd ?originApproximateDateEnd.
         ?originApproximateDateEnd ex:year ?approximateEndYear.
+        optional { ?originApproximateDateEnd ex:dateVerbatim ?originApproximateDateEndDateVerbatim }
         optional { ?originApproximateDateEnd ex:month ?approximateEndMonth }
         optional { ?originApproximateDateEnd ex:day ?approximateEndDay }
     }
     optional {
         ?asset ex:assetHasAlternativeModifiedDateStart ?modifiedDateStart.
         ?modifiedDateStart ex:year ?modifiedStartYear.
+        optional { ?modifiedDateStart ex:dateVerbatim ?modifiedStartDateVerbatim }
         optional { ?modifiedDateStart ex:month ?modifiedStartMonth }
         optional { ?modifiedDateStart ex:day ?modifiedStartDay }
     }
     optional {
         ?asset ex:assetHasAlternativeModifiedDateEnd ?modifiedDateEnd.
         ?modifiedDateEnd ex:year ?modifiedEndYear.
+        optional { ?modifiedDateEnd ex:dateVerbatim ?modifiedEndDateVerbatim }
         optional { ?modifiedDateEnd ex:month ?modifiedEndMonth }
         optional { ?modifiedDateEnd ex:day ?modifiedEndDay }
     }
@@ -413,36 +433,42 @@ construct {
     optional {
         ?asset ex:sealAssetHasStartDate ?sealDateStart.
         ?sealDateStart ex:year ?sealStartYear.
+        optional { ?sealDateStart ex:dateVerbatim ?sealDateStartDateVerbatim }
         optional { ?sealDateStart ex:month ?sealStartMonth }
         optional { ?sealDateStart ex:day ?sealStartDay }
     }
     optional {
         ?asset ex:sealAssetHasEndDate ?sealDateEnd.
         ?sealDateEnd ex:year ?sealEndYear.
+        optional { ?sealDateEnd ex:dateVerbatim ?sealDateEndDateVerbatim }
         optional { ?sealDateEnd ex:month ?sealEndMonth }
         optional { ?sealDateEnd ex:day ?sealEndDay }
     }
     optional {
         ?asset ex:sealAssetHasObverseStartDate ?sealObverseStartDate.
         ?sealObverseStartDate ex:year ?sealObverseStartYear.
+        optional { ?sealObverseStartDate ex:dateVerbatim ?sealObverseStartDateDateVerbatim }
         optional { ?sealObverseStartDate ex:month ?sealObverseStartMonth }
         optional { ?sealObverseStartDate ex:day ?sealObverseStartDay }
     }
     optional {
         ?asset ex:sealAssetHasObverseEndDate ?sealObverseEndDate.
         ?sealObverseEndDate ex:year ?sealObverseEndYear.
+        optional { ?sealObverseEndDate ex:dateVerbatim ?sealObverseEndDateDateVerbatim }
         optional { ?sealObverseEndDate ex:month ?sealObverseEndMonth }
         optional { ?sealObverseEndDate ex:day ?sealObverseEndDay }
     }
     optional {
         ?asset ex:sealAssetHasReverseStartDate ?sealReverseStartDate.
         ?sealReverseStartDate ex:year ?sealReverseStartYear.
+        optional { ?sealReverseStartDate ex:dateVerbatim ?sealReverseStartDateDateVerbatim }
         optional { ?sealReverseStartDate ex:month ?sealReverseStartMonth }
         optional { ?sealReverseStartDate ex:day ?sealReverseStartDay }
     }
     optional {
         ?asset ex:sealAssetHasReverseEndDate ?sealReverseEndDate.
         ?sealReverseEndDate ex:year ?sealReverseEndYear.
+        optional { ?sealReverseEndDate ex:dateVerbatim ?sealReverseEndDateDateVerbatim }
         optional { ?sealReverseEndDate ex:month ?sealReverseEndMonth }
         optional { ?sealReverseEndDate ex:day ?sealReverseEndDay }
     }
@@ -507,6 +533,7 @@ construct {
             optional {
                 ?datedNote ex:datedNoteHasDate ?noteDate.
                 ?noteDate ex:year ?datedNoteYear.
+                optional { ?noteDate ex:dateVerbatim ?datedNoteDateVerbatim }
                 optional { ?noteDate ex:month ?datedNoteMonth }
                 optional { ?noteDate ex:day ?datedNoteDay }
             }
@@ -623,6 +650,7 @@ construct {
         }
         optional {
             ?person ex:personHasDateOfBirth ?dateOfBirth.
+            optional { ?dateOfBirth ex:dateVerbatim ?dateOfBirthDateVerbatim }
             optional { ?dateOfBirth ex:year ?dateOfBirthYear }
             optional { ?dateOfBirth ex:month ?dateOfBirthMonth }
             optional { ?dateOfBirth ex:day ?dateOfBirthDay }

@@ -46,8 +46,7 @@ public class RecordOutput
     public string? CoveringDateEnd { get; set; }
     public string? ProvidedCoveringDateStart { get; set; }
     public string? ProvidedCoveringDateEnd { get; set; }
-    public string? CoveringApproximateDateStart { get; set; }
-    public string? CoveringApproximateDateEnd { get; set; }
+    public string? ProvidedCoveringDateText { get; set; }
     public string? FilmProductionCompanyName { get; set; }
     public string? FilmTitle { get; set; }
     public TimeSpan? FilmDuration { get; set; }

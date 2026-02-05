@@ -28,8 +28,8 @@ internal static class RecordMapper
         var assetConnectedAssetNote = asset.GetSingleText(Vocabulary.AssetConnectedAssetNote);
         var assetModifiedAt = asset.GetSingleDate(Vocabulary.AssetModifiedAt);
         var assetAlternativeModifiedAt = asset.GetSingleDate(Vocabulary.AssetAlternativeModifiedAt);
-        var assetHasAlternativeModifiedDateStart = YmdMapper.GetYmd(asset, Vocabulary.AssetHasAlternativeModifiedDateStart);
-        var assetHasAlternativeModifiedDateEnd = YmdMapper.GetYmd(asset, Vocabulary.AssetHasAlternativeModifiedDateEnd);
+        var assetHasAlternativeModifiedDateStart = YmdMapper.GetTextDate(asset, Vocabulary.AssetHasAlternativeModifiedDateStart);
+        var assetHasAlternativeModifiedDateEnd = YmdMapper.GetTextDate(asset, Vocabulary.AssetHasAlternativeModifiedDateEnd);
         var assetAlternativeModifiedAtNote = asset.GetSingleText(Vocabulary.AssetAlternativeModifiedAtNote);
         var assetPhysicalDescription = asset.GetSingleText(Vocabulary.AssetPhysicalDescription);
         var paperNumber = asset.GetSingleText(Vocabulary.PaperNumber);
@@ -55,16 +55,13 @@ internal static class RecordMapper
         var languageName = asset.GetSingleTransitiveLiteral(Vocabulary.AssetHasLanguage, Vocabulary.LanguageName)?.Value;
         var sealCategoryName = asset.GetSingleTransitiveLiteral(Vocabulary.SealAssetHasSealCategory, Vocabulary.SealCategoryName)?.Value;
         var geographicalPlaceName = asset.GetSingleTransitiveLiteral(Vocabulary.AssetHasAssociatedGeographicalPlace, Vocabulary.GeographicalPlaceName)?.Value;
-        var assetHasOriginDateStart = YmdMapper.GetYmd(asset, Vocabulary.AssetHasOriginDateStart);
-        var assetHasOriginDateEnd = YmdMapper.GetYmd(asset, Vocabulary.AssetHasOriginDateEnd);
-        var assetHasOriginApproximateDateStart = YmdMapper.GetYmd(asset, Vocabulary.AssetHasOriginApproximateDateStart);
-        var assetHasOriginApproximateDateEnd = YmdMapper.GetYmd(asset, Vocabulary.AssetHasOriginApproximateDateEnd);
-        var sealAssetHasStartDate = YmdMapper.GetYmd(asset, Vocabulary.SealAssetHasStartDate);
-        var sealAssetHasEndDate = YmdMapper.GetYmd(asset, Vocabulary.SealAssetHasEndDate);
-        var sealAssetHasObverseStartDate = YmdMapper.GetYmd(asset, Vocabulary.SealAssetHasObverseStartDate);
-        var sealAssetHasObverseEndDate = YmdMapper.GetYmd(asset, Vocabulary.SealAssetHasObverseEndDate);
-        var sealAssetHasReverseStartDate = YmdMapper.GetYmd(asset, Vocabulary.SealAssetHasReverseStartDate);
-        var sealAssetHasReverseEndDate = YmdMapper.GetYmd(asset, Vocabulary.SealAssetHasReverseEndDate);
+
+        var sealAssetHasStartDate = YmdMapper.GetTextDate(asset, Vocabulary.SealAssetHasStartDate);
+        var sealAssetHasEndDate = YmdMapper.GetTextDate(asset, Vocabulary.SealAssetHasEndDate);
+        var sealAssetHasObverseStartDate = YmdMapper.GetTextDate(asset, Vocabulary.SealAssetHasObverseStartDate);
+        var sealAssetHasObverseEndDate = YmdMapper.GetTextDate(asset, Vocabulary.SealAssetHasObverseEndDate);
+        var sealAssetHasReverseStartDate = YmdMapper.GetTextDate(asset, Vocabulary.SealAssetHasReverseStartDate);
+        var sealAssetHasReverseEndDate = YmdMapper.GetTextDate(asset, Vocabulary.SealAssetHasReverseEndDate);
         var assetHasDimension = DimensionMapper.GetDimension(asset, Vocabulary.AssetHasDimension);
         var sealAssetHasObverseDimension = DimensionMapper.GetDimension(asset, Vocabulary.SealAssetHasObverseDimension);
         var sealAssetHasReverseDimension = DimensionMapper.GetDimension(asset, Vocabulary.SealAssetHasReverseDimension);
@@ -83,7 +80,7 @@ internal static class RecordMapper
         var relationships = RelationMapper.GetRelations(asset, assetReference, redactedPresentationSequence, isRedacted);
         var recordId = GetRecordId(asset, variations)!;
         var person = PersonMapper.GetIndividual(asset);
-
+        var coveringDate = CoveringDateMapper.GetDate(asset, assetModifiedAt);
         var variation = variations.FirstOrDefault()!;
         var variationAlternativeName = asset.GetSingleText(variation, Vocabulary.VariationAlternativeName);
         var variationNote = asset.GetSingleText(variation, Vocabulary.VariationNote);
@@ -103,7 +100,7 @@ internal static class RecordMapper
             }
             else
             {
-                archivistNoteDate = YmdMapper.GetYmd(asset, datedNote, Vocabulary.DatedNoteHasDate);
+                archivistNoteDate = YmdMapper.GetTextDate(asset, datedNote, Vocabulary.DatedNoteHasDate);
             }
         }
 
@@ -149,17 +146,16 @@ internal static class RecordMapper
             CuratedDateEnd = assetHasAlternativeModifiedDateEnd,
             CuratedModifiedAtNote = assetAlternativeModifiedAtNote,
             GeographicalPlace = geographicalPlaceName,
-            CoveringDateStart = assetHasOriginDateStart ?? assetModifiedAt?.ToString("yyyy-MM-dd"),
-            CoveringDateEnd = assetHasOriginDateEnd ?? assetModifiedAt?.ToString("yyyy-MM-dd"),
-            CoveringApproximateDateStart = assetHasOriginApproximateDateStart,
-            CoveringApproximateDateEnd = assetHasOriginApproximateDateEnd,
-            ProvidedCoveringDateStart = assetHasOriginDateStart,
-            ProvidedCoveringDateEnd = assetHasOriginDateEnd,
+            CoveringDateStart = coveringDate.FullStart,
+            CoveringDateEnd = coveringDate.FullEnd,
+            ProvidedCoveringDateStart = coveringDate.Start,
+            ProvidedCoveringDateEnd = coveringDate.End,
+            ProvidedCoveringDateText = coveringDate.IsTextExported() ? coveringDate.Text : null,
             FilmProductionCompanyName = filmProductionCompanyName,
             FilmTitle = filmTitle,
             FilmDuration = filmDuration,
             EvidenceProvider = evidenceProviderName,
-            Investigations = investigationNames.Any() ? investigationNames: null,
+            Investigations = investigationNames.Any() ? investigationNames : null,
             InquiryHearingDate = ToDate(inquiryHearingDate),
             InquirySessionDescription = inquirySessionDescription,
             InquiryAppearances = inquiryAppearances,

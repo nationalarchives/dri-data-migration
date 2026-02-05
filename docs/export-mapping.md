@@ -50,12 +50,11 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | CuratedDateEnd | ex:assetHasAlternativeModifiedDateEnd (ex:year, ex:month, ex:day) |
 | CuratedModifiedAtNote | ex:assetAlternativeModifiedAtNote |
 | GeographicalPlace | ex:assetHasAssociatedGeographicalPlace/ex:geographicalPlaceName |
-| CoveringDateStart | ex:assetHasOriginDateStart (ex:year, ex:month, ex:day)\|ex:assetModifiedAt |
-| CoveringDateEnd | ex:assetHasOriginDateEnd (ex:year, ex:month, ex:day)\|ex:assetModifiedAt |
-| CoveringApproximateDateStart | ex:assetHasOriginApproximateDateStart |
-| CoveringApproximateDateEnd | ex:assetHasOriginApproximateDateEnd |
-| ProvidedCoveringDateStart | ex:assetHasOriginDateStart (ex:year, ex:month, ex:day) |
-| ProvidedCoveringDateEnd | ex:assetHasOriginDateEnd (ex:year, ex:month, ex:day) |
+| CoveringDateStart | full date ex:assetHasOriginDateStart (ex:year, ex:month, ex:day)\|ex:assetHasOriginApproximateDateStart (ex:year, ex:month, ex:day)\|ex:assetModifiedAt |
+| CoveringDateEnd | full date ex:assetHasOriginDateEnd (ex:year, ex:month, ex:day)\|ex:assetHasOriginApproximateDateEnd (ex:year, ex:month, ex:day)\|ex:assetModifiedAt |
+| ProvidedCoveringDateStart | ex:assetHasOriginDateStart (ex:year, ex:month, ex:day)\|ex:assetHasOriginApproximateDateStart (ex:year, ex:month, ex:day) |
+| ProvidedCoveringDateEnd | ex:assetHasOriginDateEnd (ex:year, ex:month, ex:day)\|ex:assetHasOriginApproximateDateEnd (ex:year, ex:month, ex:day) |
+| ProvidedCoveringDateText | ex:assetHasOriginDateStart/ex:dateVerbatim\|ex:assetHasOriginApproximateDateStart/ex:dateVerbatim |
 | FilmProductionCompanyName | ex:filmProductionCompanyName |
 | FilmTitle | ex:filmTitle |
 | FilmDuration | ex:filmDuration |
