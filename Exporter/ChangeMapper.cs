@@ -30,12 +30,14 @@ internal static class ChangeMapper
                 if (pastSubject is not null)
                 {
                     srChange = GenerateChange(asset, pastSubject);
+                    srChange.Reason = currentSr.ClosureDescription;
                     srChange.Sensitivity = GenerateSrDiff(currentSr, pastSr);
                 }
                 else
                 {
                     srChange = new()
                     {
+                        Reason = currentSr.ClosureDescription,
                         Sensitivity = GenerateSrDiff(currentSr, pastSr)
                     };
                 }
@@ -70,7 +72,6 @@ internal static class ChangeMapper
         {
             AccessConditionCode = GenerateDiff(current.AccessConditionCode, past.AccessConditionCode),
             AccessConditionName = GenerateDiff(current.AccessConditionName, past.AccessConditionName),
-            ClosureDescription = GenerateDiff(current.ClosureDescription, past.ClosureDescription),
             ClosureEndYear = GenerateDiff(current.ClosureEndYear, past.ClosureEndYear),
             ClosurePeriod = GenerateDiff(current.ClosurePeriod, past.ClosurePeriod),
             ClosureReviewDate = GenerateDiff(current.ClosureReviewDate, past.ClosureReviewDate),

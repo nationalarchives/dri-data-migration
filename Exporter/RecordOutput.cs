@@ -148,6 +148,7 @@ public class RecordOutput
     public class Change
     {
         public string? DescriptionBase64 { get; set; }
+        public string? Reason { get; set; }
         public DateTimeOffset? Timestamp { get; set; }
         public string? OperatorName { get; set; }
         public SensitivityReviewDiff? Sensitivity { get; set; }

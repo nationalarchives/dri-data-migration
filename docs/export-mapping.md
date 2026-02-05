@@ -97,21 +97,6 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | SealObverseEndDate | ex:sealAssetHasObverseEndDate (ex:year, ex:month, ex:day) |
 | SealReverseStartDate | ex:sealAssetHasReverseStartDate (ex:year, ex:month, ex:day) |
 | SealReverseEndDate | ex:sealAssetHasReverseEndDate (ex:year, ex:month, ex:day) |
-| FoiAssertedDate | ex:assetHasVariation/ex:variationHasSensitivityReview/ex:sensitivityReviewDate |
-| AccessConditionName | ex:assetHasVariation/ex:variationHasSensitivityReview/ex:accessConditionName |
-| AccessConditionCode | ex:assetHasVariation/ex:variationHasSensitivityReview/ex:accessConditionCode |
-| ClosureReviewDate | ex:assetHasVariation/ex:variationHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionReviewDate |
-| ClosureStartDate | ex:assetHasVariation/ex:variationHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionCalculationStartDate |
-| ClosurePeriod | ex:assetHasVariation/ex:variationHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionDuration |
-| ClosureEndYear | ex:assetHasVariation/ex:variationHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionEndYear |
-| ClosureDescription | ex:assetHasVariation/ex:variationHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionDescription |
-| FoiExemptions.Url | ex:assetHasVariation/ex:variationHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionHasLegislation/ex:legislationHasUkLegislation |
-| FoiExemptions.Reference | ex:assetHasVariation/ex:variationHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionHasLegislation/ex:legislationSectionReference |
-| InstrumentNumber | ex:assetHasVariation/ex:variationHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionInstrumentNumber |
-| InstrumentSignedDate | ex:assetHasVariation/ex:variationHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionInstrumentSignatureDate |
-| RetentionReconsiderDate | ex:assetHasVariation/ex:variationHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionRestrictionReviewDate |
-| GroundForRetentionCode | ex:assetHasVariation/ex:variationHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionRestrictionHasGroundForRetention/ex:GroundForRetentionCode |
-| GroundForRetentionDescription | ex:assetHasVariation/ex:variationHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionRestrictionHasGroundForRetention/ex:GroundForRetentionDescription |
 | Address | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personHasContactPoint/ex:geographicalPlaceName |
 | BattalionName | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personHasBattalionMembership/ex:battalionMembershipHasBattalion/ex:battalionName |
 | BirthAddress | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personHasBirthAddress/ex:geographicalPlaceName |
@@ -149,6 +134,7 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | AuditTrail.DescriptionBase64 | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeDescription |
 | AuditTrail.Timestamp | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeDateTime |
 | AuditTrail.OperatorName | ex:assetHasChange\|(ex:assetHasSensitivityReview/ex:sensitivityReviewHasChange)\|ex:variationHasChange\|(ex:variationHasSensitivityReview/ex:sensitivityReviewHasChange)/ex:changeHasOperator/ex:operatorName |
+| AuditTrail.Reason | ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionDescription |
 | AuditTrail.Sensitivity.FoiAssertedDate.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewDate |
 | AuditTrail.Sensitivity.SensitiveName.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveName |
 | AuditTrail.Sensitivity.SensitiveDescription.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveDescription |
@@ -158,7 +144,6 @@ Data from the staging database: [query](https://github.com/nationalarchives/dri-
 | AuditTrail.Sensitivity.ClosureStartDate.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionCalculationStartDate |
 | AuditTrail.Sensitivity.ClosurePeriod.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionDuration |
 | AuditTrail.Sensitivity.ClosureEndYear.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionEndYear |
-| AuditTrail.Sensitivity.ClosureDescription.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionDescription |
 | AuditTrail.Sensitivity.FoiExemptions.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionHasLegislation |
 | AuditTrail.Sensitivity.InstrumentNumber.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionInstrumentNumber |
 | AuditTrail.Sensitivity.InstrumentSignedDate.{Value and/or NewValue} | Compare with following ex:assetHasSensitivityReview/ex:sensitivityReviewHasSensitivityReviewRestriction/ex:retentionInstrumentSignatureDate |
