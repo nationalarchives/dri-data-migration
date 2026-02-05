@@ -20,18 +20,17 @@ construct {
             ?subset rdfs:label ?reference.
             {
                 ?subset a dri:DeliverableUnit;
-                    dri:isPartOfUnit ?unit;
                     dri:isPartOfSeries ?series.
                 ?series rdfs:label ?code.
             }
             union
             {
                 ?subset a dri:DeliverableUnit;
-                    dri:isPartOfUnit ?unit;
                     dri:isPartOfSeries ?series.
                 ?series rdfs:label ?code2.
             }
             optional {
+                ?subset dri:isPartOfUnit ?unit.
                 ?batch dri:transferringBody ?transferringBody;
     			    rdfs:label ?batchLabel.
     		    filter(strends(str(?unit), concat('/',?batchLabel)))

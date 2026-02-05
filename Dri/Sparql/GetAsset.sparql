@@ -21,18 +21,17 @@ construct {
             ?a rdfs:label ?reference.
             {
                 ?a a dri:DeliverableUnit;
-                    dri:isPartOfUnit ?unit;
-    	            dri:isPartOfSeries ?series.
+                    dri:isPartOfSeries ?series.
                 ?series rdfs:label ?code.
             }
             union
             {
                 ?a a dri:DeliverableUnit;
-                    dri:isPartOfUnit ?unit;
-    	            dri:isPartOfSeries ?series.
+                    dri:isPartOfSeries ?series.
                 ?series rdfs:label ?code2.
             }
             optional {
+                ?a dri:isPartOfUnit ?unit.
                 ?batch dri:transferringBody ?transferringBody;
     			    rdfs:label ?batchLabel.
     		    filter(strends(str(?unit), concat('/',?batchLabel)))
