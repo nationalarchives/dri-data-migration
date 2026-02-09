@@ -1,4 +1,6 @@
-﻿namespace Exporter;
+﻿using System.Text.Json.Serialization;
+
+namespace Exporter;
 
 public class RecordOutput
 {
@@ -127,7 +129,6 @@ public class RecordOutput
     {
         public bool HasSensitiveMetadata { get; set; }
         public DateOnly? FoiAssertedDate { get; set; }
-        public string? SensitiveName { get; set; }
         public string? SensitiveDescription { get; set; }
         public string? AccessConditionName { get; set; }
         public string? AccessConditionCode { get; set; }
@@ -135,13 +136,18 @@ public class RecordOutput
         public DateOnly? ClosureStartDate { get; set; }
         public int? ClosurePeriod { get; set; }
         public int? ClosureEndYear { get; set; }
-        public string? ClosureDescription { get; set; }
         public IEnumerable<Legislation>? FoiExemptions { get; set; }
         public long? InstrumentNumber { get; set; }
         public DateOnly? InstrumentSignedDate { get; set; }
         public DateOnly? RetentionReconsiderDate { get; set; }
         public string? GroundForRetentionCode { get; set; }
         public string? GroundForRetentionDescription { get; set; }
+
+        [JsonIgnore]
+        public string? SensitiveName { get; set; }
+
+        [JsonIgnore]
+        public string? ClosureDescription { get; set; }
     }
 
     public class Change

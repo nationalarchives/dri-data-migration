@@ -75,7 +75,6 @@ internal static class RecordMapper
         var location = LocationMapper.GetLocation(asset);
         var hasSameLocation = location.Original.Equals(location.SensitiveName);
         var sr = SensitivityReviewMapper.Get(asset, variations, hasSameLocation);
-        sr.ClosureDescription = null;
         var copyrightTitles = CopyrightMapper.GetCopyrights(asset);
         var relationships = RelationMapper.GetRelations(asset, assetReference, redactedPresentationSequence, isRedacted);
         var recordId = GetRecordId(asset, variations)!;
