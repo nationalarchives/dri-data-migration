@@ -5,6 +5,7 @@ create index digitalfile_ix on digitalfile (FILEREF, DELETED);
 create index xmlmetadata_ix on xmlmetadata (METADATAREF);
 create index digitalfilefixityinfo_ix on digitalfilefixityinfo (FILEREF);
 create index fixityalgorithm_ix on fixityalgorithm (FIXITYALGORITHMREF);
+create index tableinvolved_ix on tableinvolved (TABLEINVOLVEDREF);
 
 create temp table temptop(TOPLEVELREF TEXT, DESCRIPTION TEXT);
 
@@ -42,6 +43,8 @@ join deliverableunitmanifestation dm on dm.MANIFESTATIONREF = m.MANIFESTATIONREF
 join tempdu d on d.DELIVERABLEUNITREF = dm.DELIVERABLEUNITREF
 where f.DELETED = 'F' and f.DIRECTORY = 'F' and
     dm.DELETED = 'F' and (dm.ORIGINALITY = 'T' or d.Code != 'WO 409');
+
+update auditchange set DATETIME = substr(DATETIME, 0, instr(DATETIME, '[')) where instr(DATETIME, '[') > 0
 
 create index dufile_ix on dufile (Code);
 create index dufile_ix2 on dufile (DELIVERABLEUNITREF);
