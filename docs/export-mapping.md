@@ -6,7 +6,8 @@ ex: [http://id.example.com/schema/](https://github.com/nationalarchives/dri-data
 
 ## JSON
 
-Data from the staging database: [query](https://github.com/nationalarchives/dri-data-migration/blob/main/Exporter/Sparql/ExportJson.sparql)
+Data from the staging database: [query](https://github.com/nationalarchives/dri-data-migration/blob/main/Exporter/Sparql/ExportJson.sparql)\
+JSON schema: [file](export-json-schema.json)
 
 | JSON | Staging |
 | --- | --- |

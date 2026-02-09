@@ -1,0 +1,1449 @@
+{
+	"type": [
+		"object",
+		"null"
+	],
+	"properties": {
+		"recordId": {
+			"type": "string"
+		},
+		"iaId": {
+			"type": "string"
+		},
+		"reference": {
+			"type": "string"
+		},
+		"title": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"translatedTitle": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"publicTitle": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"curatedTitle": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"description": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"publicDescription": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"formerReferenceTna": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"formerReferenceDepartment": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"summary": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"tag": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"arrangement": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"publicArrangement": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"tdrConsignmentId": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"tdrFileReference": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"tdrParentReference": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"tdrUuid": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"driBatchReference": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"sourceInternalName": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"connectedAssetNote": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"physicalDescription": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"paperNumber": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"poorLawUnionNumber": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"usageRestrictionDescription": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"ukGovernmentWebArchive": {
+			"type": [
+				"string",
+				"null"
+			],
+			"format": "uri"
+		},
+		"legalStatus": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"recordType": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"language": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"copyrightHolders": {
+			"type": [
+				"array",
+				"null"
+			],
+			"items": {
+				"type": [
+					"string",
+					"null"
+				]
+			}
+		},
+		"heldBy": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"createdBy": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"transferredBy": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"dateLastModified": {
+			"type": [
+				"string",
+				"null"
+			],
+			"format": "date-time"
+		},
+		"curatedModifiedAt": {
+			"type": [
+				"string",
+				"null"
+			],
+			"format": "date-time"
+		},
+		"curatedDateStart": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"curatedDateEnd": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"curatedModifiedAtNote": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"geographicalPlace": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"coveringDateStart": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"coveringDateEnd": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"providedCoveringDateStart": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"providedCoveringDateEnd": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"providedCoveringDateText": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"filmProductionCompanyName": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"filmTitle": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"filmDuration": {
+			"$comment": "Represents a System.TimeSpan value.",
+			"type": [
+				"string",
+				"null"
+			],
+			"pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$"
+		},
+		"evidenceProvider": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"investigations": {
+			"type": [
+				"array",
+				"null"
+			],
+			"items": {
+				"type": [
+					"string",
+					"null"
+				]
+			}
+		},
+		"inquiryHearingDate": {
+			"type": [
+				"string",
+				"null"
+			],
+			"format": "date"
+		},
+		"inquirySessionDescription": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"inquiryAppearances": {
+			"type": [
+				"array",
+				"null"
+			],
+			"items": {
+				"type": [
+					"object",
+					"null"
+				],
+				"properties": {
+					"sequence": {
+						"type": [
+							"integer",
+							"null"
+						]
+					},
+					"witnessNames": {
+						"type": [
+							"array",
+							"null"
+						],
+						"items": {
+							"type": [
+								"string",
+								"null"
+							]
+						}
+					},
+					"appearanceDescription": {
+						"type": [
+							"string",
+							"null"
+						]
+					}
+				}
+			}
+		},
+		"courtSession": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"courtSessionDate": {
+			"type": [
+				"string",
+				"null"
+			],
+			"format": "date"
+		},
+		"courtCases": {
+			"type": [
+				"array",
+				"null"
+			],
+			"items": {
+				"type": [
+					"object",
+					"null"
+				],
+				"properties": {
+					"sequence": {
+						"type": [
+							"integer",
+							"null"
+						]
+					},
+					"name": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"reference": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"summary": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"summaryJudgment": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"summaryReasonsForJudgment": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"hearingStartDate": {
+						"type": [
+							"string",
+							"null"
+						],
+						"format": "date"
+					},
+					"hearingEndDate": {
+						"type": [
+							"string",
+							"null"
+						],
+						"format": "date"
+					}
+				}
+			}
+		},
+		"sealOwnerName": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"sealColour": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"emailAttachmentReference": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"sealCategory": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"imageSequenceEnd": {
+			"type": [
+				"integer",
+				"null"
+			]
+		},
+		"imageSequenceStart": {
+			"type": [
+				"integer",
+				"null"
+			]
+		},
+		"dimensionMm": {
+			"type": [
+				"object",
+				"null"
+			],
+			"properties": {
+				"first": {
+					"type": [
+						"integer",
+						"null"
+					]
+				},
+				"second": {
+					"type": [
+						"integer",
+						"null"
+					]
+				},
+				"isFragment": {
+					"type": "boolean"
+				}
+			}
+		},
+		"obverseDimensionMm": {
+			"type": [
+				"object",
+				"null"
+			],
+			"properties": {
+				"first": {
+					"type": [
+						"integer",
+						"null"
+					]
+				},
+				"second": {
+					"type": [
+						"integer",
+						"null"
+					]
+				},
+				"isFragment": {
+					"type": "boolean"
+				}
+			}
+		},
+		"reverseDimensionMm": {
+			"type": [
+				"object",
+				"null"
+			],
+			"properties": {
+				"first": {
+					"type": [
+						"integer",
+						"null"
+					]
+				},
+				"second": {
+					"type": [
+						"integer",
+						"null"
+					]
+				},
+				"isFragment": {
+					"type": "boolean"
+				}
+			}
+		},
+		"sealStartDate": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"sealEndDate": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"sealObverseStartDate": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"sealObverseEndDate": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"sealReverseStartDate": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"sealReverseEndDate": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"givenName": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"familyName": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"fullName": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"address": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"dateOfBirth": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"birthAddress": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"nationalRegistrationNumber": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"seamanServiceNumber": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"battalionName": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"nextOfKinName": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"nextOfKinTypes": {
+			"type": [
+				"array",
+				"null"
+			],
+			"items": {
+				"type": [
+					"string",
+					"null"
+				]
+			}
+		},
+		"isVeteran": {
+			"type": [
+				"boolean",
+				"null"
+			]
+		},
+		"note": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"physicalConditionDescription": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"referenceGoogleId": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"referenceParentGoogleId": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"archivistNote": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"archivistNoteDate": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"sensitivity": {
+			"type": [
+				"object",
+				"null"
+			],
+			"properties": {
+				"hasSensitiveMetadata": {
+					"type": "boolean"
+				},
+				"foiAssertedDate": {
+					"type": [
+						"string",
+						"null"
+					],
+					"format": "date"
+				},
+				"sensitiveDescription": {
+					"type": [
+						"string",
+						"null"
+					]
+				},
+				"accessConditionName": {
+					"type": [
+						"string",
+						"null"
+					]
+				},
+				"accessConditionCode": {
+					"type": [
+						"string",
+						"null"
+					]
+				},
+				"closureReviewDate": {
+					"type": [
+						"string",
+						"null"
+					],
+					"format": "date"
+				},
+				"closureStartDate": {
+					"type": [
+						"string",
+						"null"
+					],
+					"format": "date"
+				},
+				"closurePeriod": {
+					"type": [
+						"integer",
+						"null"
+					]
+				},
+				"closureEndYear": {
+					"type": [
+						"integer",
+						"null"
+					]
+				},
+				"foiExemptions": {
+					"type": [
+						"array",
+						"null"
+					],
+					"items": {
+						"type": [
+							"object",
+							"null"
+						],
+						"properties": {
+							"url": {
+								"type": "string",
+								"format": "uri"
+							},
+							"reference": {
+								"type": [
+									"string",
+									"null"
+								]
+							}
+						},
+						"required": [
+							"url"
+						]
+					}
+				},
+				"instrumentNumber": {
+					"type": [
+						"integer",
+						"null"
+					]
+				},
+				"instrumentSignedDate": {
+					"type": [
+						"string",
+						"null"
+					],
+					"format": "date"
+				},
+				"retentionReconsiderDate": {
+					"type": [
+						"string",
+						"null"
+					],
+					"format": "date"
+				},
+				"groundForRetentionCode": {
+					"type": [
+						"string",
+						"null"
+					]
+				},
+				"groundForRetentionDescription": {
+					"type": [
+						"string",
+						"null"
+					]
+				}
+			}
+		},
+		"auditTrail": {
+			"type": [
+				"array",
+				"null"
+			],
+			"items": {
+				"type": [
+					"object",
+					"null"
+				],
+				"properties": {
+					"descriptionBase64": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"reason": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"timestamp": {
+						"type": [
+							"string",
+							"null"
+						],
+						"format": "date-time"
+					},
+					"operatorName": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"sensitivity": {
+						"type": [
+							"object",
+							"null"
+						],
+						"properties": {
+							"foiAssertedDate": {
+								"type": [
+									"object",
+									"null"
+								],
+								"properties": {
+									"oldValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									},
+									"newValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									}
+								},
+								"required": [
+									"oldValue",
+									"newValue"
+								]
+							},
+							"sensitiveName": {
+								"type": [
+									"object",
+									"null"
+								],
+								"properties": {
+									"oldValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									},
+									"newValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									}
+								},
+								"required": [
+									"oldValue",
+									"newValue"
+								]
+							},
+							"sensitiveDescription": {
+								"type": [
+									"object",
+									"null"
+								],
+								"properties": {
+									"oldValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									},
+									"newValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									}
+								},
+								"required": [
+									"oldValue",
+									"newValue"
+								]
+							},
+							"accessConditionName": {
+								"type": [
+									"object",
+									"null"
+								],
+								"properties": {
+									"oldValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									},
+									"newValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									}
+								},
+								"required": [
+									"oldValue",
+									"newValue"
+								]
+							},
+							"accessConditionCode": {
+								"type": [
+									"object",
+									"null"
+								],
+								"properties": {
+									"oldValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									},
+									"newValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									}
+								},
+								"required": [
+									"oldValue",
+									"newValue"
+								]
+							},
+							"closureReviewDate": {
+								"type": [
+									"object",
+									"null"
+								],
+								"properties": {
+									"oldValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									},
+									"newValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									}
+								},
+								"required": [
+									"oldValue",
+									"newValue"
+								]
+							},
+							"closureStartDate": {
+								"type": [
+									"object",
+									"null"
+								],
+								"properties": {
+									"oldValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									},
+									"newValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									}
+								},
+								"required": [
+									"oldValue",
+									"newValue"
+								]
+							},
+							"closurePeriod": {
+								"type": [
+									"object",
+									"null"
+								],
+								"properties": {
+									"oldValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									},
+									"newValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									}
+								},
+								"required": [
+									"oldValue",
+									"newValue"
+								]
+							},
+							"closureEndYear": {
+								"type": [
+									"object",
+									"null"
+								],
+								"properties": {
+									"oldValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									},
+									"newValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									}
+								},
+								"required": [
+									"oldValue",
+									"newValue"
+								]
+							},
+							"closureDescription": {
+								"type": [
+									"object",
+									"null"
+								],
+								"properties": {
+									"oldValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									},
+									"newValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									}
+								},
+								"required": [
+									"oldValue",
+									"newValue"
+								]
+							},
+							"foiExemptions": {
+								"type": [
+									"object",
+									"null"
+								],
+								"properties": {
+									"oldValue": {
+										"type": [
+											"array",
+											"null"
+										],
+										"items": {
+											"type": [
+												"object",
+												"null"
+											],
+											"properties": {
+												"url": {
+													"type": "string",
+													"format": "uri"
+												},
+												"reference": {
+													"type": [
+														"string",
+														"null"
+													]
+												}
+											},
+											"required": [
+												"url"
+											]
+										}
+									},
+									"newValue": {
+										"type": [
+											"array",
+											"null"
+										],
+										"items": {
+											"type": [
+												"object",
+												"null"
+											],
+											"properties": {
+												"url": {
+													"type": "string",
+													"format": "uri"
+												},
+												"reference": {
+													"type": [
+														"string",
+														"null"
+													]
+												}
+											},
+											"required": [
+												"url"
+											]
+										}
+									}
+								},
+								"required": [
+									"oldValue",
+									"newValue"
+								]
+							},
+							"instrumentNumber": {
+								"type": [
+									"object",
+									"null"
+								],
+								"properties": {
+									"oldValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									},
+									"newValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									}
+								},
+								"required": [
+									"oldValue",
+									"newValue"
+								]
+							},
+							"instrumentSignedDate": {
+								"type": [
+									"object",
+									"null"
+								],
+								"properties": {
+									"oldValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									},
+									"newValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									}
+								},
+								"required": [
+									"oldValue",
+									"newValue"
+								]
+							},
+							"retentionReconsiderDate": {
+								"type": [
+									"object",
+									"null"
+								],
+								"properties": {
+									"oldValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									},
+									"newValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									}
+								},
+								"required": [
+									"oldValue",
+									"newValue"
+								]
+							},
+							"groundForRetentionCode": {
+								"type": [
+									"object",
+									"null"
+								],
+								"properties": {
+									"oldValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									},
+									"newValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									}
+								},
+								"required": [
+									"oldValue",
+									"newValue"
+								]
+							},
+							"groundForRetentionDescription": {
+								"type": [
+									"object",
+									"null"
+								],
+								"properties": {
+									"oldValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									},
+									"newValue": {
+										"type": [
+											"object",
+											"null"
+										]
+									}
+								},
+								"required": [
+									"oldValue",
+									"newValue"
+								]
+							}
+						}
+					}
+				}
+			}
+		},
+		"digitalFileCount": {
+			"type": "integer"
+		},
+		"digitalFiles": {
+			"type": [
+				"array",
+				"null"
+			],
+			"items": {
+				"type": [
+					"object",
+					"null"
+				],
+				"properties": {
+					"fileId": {
+						"type": "string"
+					},
+					"fileName": {
+						"type": "string"
+					},
+					"sizeBytes": {
+						"type": "integer"
+					},
+					"checksums": {
+						"type": [
+							"array",
+							"null"
+						],
+						"items": {
+							"type": [
+								"object",
+								"null"
+							],
+							"properties": {
+								"value": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"hash": {
+									"type": [
+										"string",
+										"null"
+									]
+								}
+							}
+						}
+					},
+					"sortOrder": {
+						"type": [
+							"integer",
+							"null"
+						]
+					},
+					"sequence": {
+						"type": [
+							"integer",
+							"null"
+						]
+					},
+					"filePath": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"scannerOperatorIdentifier": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"scannerIdentifier": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"scannerGeographicalPlace": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"scannedImageCrop": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"scannedImageDeskew": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"scannedImageSplit": {
+						"type": [
+							"string",
+							"null"
+						]
+					}
+				},
+				"required": [
+					"fileId",
+					"fileName"
+				]
+			}
+		},
+		"relationships": {
+			"type": [
+				"array",
+				"null"
+			],
+			"items": {
+				"type": [
+					"object",
+					"null"
+				],
+				"properties": {
+					"relationship": {
+						"enum": [
+							"RedactionOf",
+							"HasRedaction",
+							"SeparatedMaterial",
+							"RelatedMaterial",
+							"ReplacementOf",
+							"HasReplacement"
+						]
+					},
+					"reference": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"description": {
+						"type": [
+							"string",
+							"null"
+						],
+						"default": null
+					}
+				},
+				"required": [
+					"relationship",
+					"reference"
+				]
+			}
+		}
+	},
+	"required": [
+		"recordId",
+		"iaId",
+		"reference"
+	]
+}
