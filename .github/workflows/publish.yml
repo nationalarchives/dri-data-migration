@@ -17,9 +17,13 @@ jobs:
 
       - name: Install dependencies
         run: dotnet restore
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: 1
 
       - name: Publish
         run: dotnet publish Migration --runtime win-x64 --framework net10.0 --configuration Release --self-contained true --output "publish/win-x64/" /p:DebugType=embedded /p:DebugSymbols=false /p:PublishSingleFile=true
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: 1
 
       - name: Upload
         uses: actions/upload-artifacts@v4

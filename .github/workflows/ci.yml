@@ -28,23 +28,33 @@ jobs:
 
       - name: Build
         run: dotnet build --no-restore --configuration Release
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: 1
 
       - name: Test Dri
         run: |
             cd Tests
             dotnet run --no-restore --project "Dri.Tests" --configuration Release
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: 1
 
       - name: Test Etl
         run: |
             cd Tests
             dotnet run --no-restore --project "Etl.Tests" --configuration Release
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: 1
 
       - name: Test Rdf
         run: |
             cd Tests
             dotnet run --no-restore --project "Rdf.Tests" --configuration Release
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: 1
 
       - name: Test Staging
         run: |
             cd Tests
             dotnet run --no-restore --project "Staging.Tests" --configuration Release
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: 1
