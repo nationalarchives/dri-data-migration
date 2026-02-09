@@ -25,6 +25,7 @@ public static class Vocabulary
     public static readonly IUriNode AssetTdrId = new UriNode(new(Namespace, "assetTdrId"));
     public static readonly IUriNode AssetDriXml = new UriNode(new(Namespace, "assetDriXml"));
     public static readonly IUriNode Wo409SubsetDriXml = new UriNode(new(Namespace, "wo409SubsetDriXml"));
+    public static readonly IUriNode Wo409SubsetDriId = new UriNode(new(Namespace, "wo409SubsetDriId"));
     public static readonly IUriNode AssetReference = new UriNode(new(Namespace, "assetReference"));
     public static readonly IUriNode AssetPastReference = new UriNode(new(Namespace, "assetPastReference"));
     public static readonly IUriNode AssetPreviousReference = new UriNode(new(Namespace, "assetPreviousReference"));

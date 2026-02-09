@@ -1,4 +1,4 @@
-﻿select d.DELIVERABLEUNITREF, x.XMLCLOB from xmlmetadata x
+﻿select d.DELIVERABLEUNITREF, p.DELIVERABLEUNITREF as ParentId, x.XMLCLOB from xmlmetadata x
 join deliverableunit p on p.METADATAREF = x.METADATAREF
 join deliverableunit du on du.PARENTREF = p.DELIVERABLEUNITREF
 join dufile d on d.DELIVERABLEUNITREF = du.DELIVERABLEUNITREF

@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Rdf;
 using System.Xml;
 using VDS.RDF;
-using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 
 namespace Staging;
@@ -32,6 +31,7 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
 
         var graph = new Graph();
         graph.Assert(id, Vocabulary.AssetDriId, driId);
+        GraphAssert.Text(graph, id, dri.ParentId, Vocabulary.Wo409SubsetDriId);
         if (!string.IsNullOrEmpty(dri.Xml))
         {
             GraphAssert.Base64(graph, id, dri.Xml, Vocabulary.Wo409SubsetDriXml);

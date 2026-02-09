@@ -3,6 +3,7 @@
 construct {
     ?asset ex:assetDriId ?assetDriId;
         ex:wo409SubsetDriXml ?wo409SubsetDriXml;
+        ex:wo409SubsetDriId ?wo409SubsetDriId;
         ?assetPersonPredicate ?person.
     ?person ex:personGivenName ?personGivenName;
         ex:personFamilyName ?personFamilyName;
@@ -25,6 +26,7 @@ construct {
     bind(@id as ?assetDriId)
     ?asset ex:assetDriId ?assetDriId.
     optional { ?asset ex:wo409SubsetDriXml ?wo409SubsetDriXml }
+    optional { ?asset ex:wo409SubsetDriId ?wo409SubsetDriId }
     optional {
         {
             ?asset ex:assetHasPerson ?person.

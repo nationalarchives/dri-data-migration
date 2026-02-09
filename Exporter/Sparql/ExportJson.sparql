@@ -3,6 +3,7 @@
 construct {
     ?asset ex:assetDriId ?assetDriId;
         ex:assetReference ?assetReference;
+        ex:wo409SubsetDriId ?wo409SubsetDriId;
         ex:assetName ?assetName;
         ex:assetAlternativeName ?assetAlternativeName;
         ex:assetPastReference ?assetPastReference;
@@ -272,6 +273,7 @@ construct {
     ?asset ex:assetDriId ?assetDriId;
         ex:assetReference ?assetReference;
         ex:assetHasSubset ?subset.
+    optional { ?asset ex:wo409SubsetDriId ?wo409SubsetDriId }
     optional { ?asset ex:assetName ?assetName }
     optional { ?asset ex:assetAlternativeName ?assetAlternativeName }
     optional { ?asset ex:assetPastReference ?assetPastReference }

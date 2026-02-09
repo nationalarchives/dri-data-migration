@@ -10,7 +10,7 @@ internal static class RecordMapper
     public static RecordOutput Map(IGraph asset, List<IUriNode> variations,
         long? redactedPresentationSequence, bool? isRedacted)
     {
-        var assetDriId = asset.GetSingleText(Vocabulary.AssetDriId)!;
+        var assetDriId = (asset.GetSingleText(Vocabulary.Wo409SubsetDriId) ?? asset.GetSingleText(Vocabulary.AssetDriId))!;
         var assetReference = asset.GetSingleText(Vocabulary.AssetReference)!;
         var assetName = asset.GetSingleText(Vocabulary.AssetName);
         var assetAlternativeName = asset.GetSingleText(Vocabulary.AssetAlternativeName);

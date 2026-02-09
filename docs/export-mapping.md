@@ -12,7 +12,7 @@ JSON schema: [file](export-json-schema.json)
 | JSON | Staging |
 | --- | --- |
 | RecordId | ex:variationDriManifestationId |
-| IaId | ex:assetDriId and ex:redactedVariationSequence\|ex:presentationVariationSequence |
+| IaId | (ex:wo409SubsetDriId\|ex:assetDriId) and ex:redactedVariationSequence\|ex:presentationVariationSequence |
 | Reference | ex:assetReference and ex:redactedVariationSequence\|ex:presentationVariationSequence |
 | Title | ex:assetName |
 | TranslatedTitle | ex:assetAlternativeName |

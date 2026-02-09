@@ -1332,6 +1332,13 @@ this:schema a owl:Ontology;
 	rdfs:label "WO 409 subset DRI XML";
 	rdfs:comment "Special case (WO 409 series), where additional information is only available at the level of the subset in the source.".
 
+:wo409SubsetDriId a owl:DatatypeProperty;
+	rdfs:domain :Asset;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "WO 409 subset DRI Id";
+	rdfs:comment "Special case (WO 409 series), where additional information is only available at the level of the subset in the source.".
+
 :batchDriId a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:domain :Asset;
 	rdfs:range xsd:string;
