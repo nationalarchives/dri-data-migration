@@ -9,7 +9,7 @@ namespace Staging.Tests;
 [TestClass]
 public sealed class AssetIngestTest
 {
-    private readonly DriAsset dri = new(new("http://example.com/asset1"), "Asset1", "/subset1", "Subset1", null);
+    private readonly DriAsset dri = new(new("http://example.com/asset1"), "Asset1", "/subset1", "Subset1", null, null);
     private readonly FakeLogger<AssetIngest> logger = new();
     private readonly Mock<ISparqlClient> client = new();
     private readonly Mock<ICacheClient> cache;

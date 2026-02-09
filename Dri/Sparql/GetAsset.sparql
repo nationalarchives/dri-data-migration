@@ -12,10 +12,11 @@ construct {
         ex:assetHasRetention [
             ex:importLocation ?directory
     	];
-        ex:assetHasTransfer ?transferringBody.
+        ex:assetHasTransfer ?transferringBody;
+        ex:assetHasCreation ?creatingBody.
 } where {
     {
-        select distinct ?a ?reference ?subset ?directory ?transferringBody where {
+        select distinct ?a ?reference ?subset ?directory ?transferringBody ?creatingBody where {
             bind(@id as ?code)
             bind(replace(@id,' ','_') as ?code2)
             ?a rdfs:label ?reference.
@@ -36,6 +37,7 @@ construct {
     			    rdfs:label ?batchLabel.
     		    filter(strends(str(?unit), concat('/',?batchLabel)))
             }
+            optional { ?series dri:creatingBody ?creatingBody }
             optional { ?a dri:hasDirectory/rdfs:label ?directDirectory }
             optional { ?a dri:parent/dri:hasDirectory/rdfs:label ?parentDirectory }
             optional { ?a dri:parent/rdfs:label ?parentLabel }

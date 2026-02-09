@@ -13,7 +13,6 @@ public class AssetIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, I
         var assetReference = new LiteralNode(dri.Reference);
         var id = existing.GetSingleUriNodeSubject(Vocabulary.AssetReference, assetReference) ?? CacheClient.NewId;
         var retention = existing.GetSingleUriNode(id, Vocabulary.AssetHasRetention) ?? CacheClient.NewId;
-        var transfer = existing.GetSingleUriNode(id, Vocabulary.AssetHasTransfer) ?? CacheClient.NewId;
 
         var subset = await cacheClient.CacheFetch(CacheEntityKind.Subset, dri.SubsetReference, cancellationToken);
         if (subset is null && dri.SubsetReference == "WO 409")//Special case
@@ -37,10 +36,19 @@ public class AssetIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, I
         }
         if (dri.TransferringBody is not null)
         {
+            var transfer = existing.GetSingleUriNode(id, Vocabulary.AssetHasTransfer) ?? CacheClient.NewId;
             graph.Assert(id, Vocabulary.AssetHasTransfer, transfer);
             var bodyName = dri.TransferringBody.Segments.Last().Replace('_', ' ');
             var bodyId = await cacheClient.CacheFetchOrNew(CacheEntityKind.FormalBody, bodyName, Vocabulary.FormalBodyName, cancellationToken);
             graph.Assert(transfer, Vocabulary.TransferHasFormalBody, bodyId);
+        }
+        if (dri.CreationBody is not null)
+        {
+            var creation = existing.GetSingleUriNode(id, Vocabulary.AssetHasCreation) ?? CacheClient.NewId;
+            graph.Assert(id, Vocabulary.AssetHasCreation, creation);
+            var bodyName = dri.CreationBody.Segments.Last().Replace('_', ' ');
+            var bodyId = await cacheClient.CacheFetchOrNew(CacheEntityKind.FormalBody, bodyName, Vocabulary.FormalBodyName, cancellationToken);
+            graph.Assert(creation, Vocabulary.CreationHasFormalBody, bodyId);
         }
 
         return graph;

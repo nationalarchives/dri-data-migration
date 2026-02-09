@@ -54,7 +54,6 @@ construct {
         ex:assetHasCopyright ?copyright;
         ex:assetHasAssociatedGeographicalPlace ?associatedGeographicalPlace;
         ex:assetHasRetention ?retention;
-        ex:assetHasCreation ?creation;
         ex:assetHasOriginDateStart ?originDateStart;
         ex:assetHasOriginDateEnd ?originDateEnd;
         ex:assetHasOriginApproximateDateStart ?originApproximateDateStart;
@@ -72,7 +71,6 @@ construct {
         ex:assetHasVariation ?redactedVariation, ?presentationVariation;
         ex:assetHasPerson ?person.
     ?retention ex:retentionHasFormalBody ?retentionHasFormalBody.
-    ?creation ex:creationHasFormalBody ?creationHasFormalBody.
     ?originDateStart ex:dateVerbatim ?startDateVerbatim;
         ex:year ?startYear;
         ex:month ?startMonth;
@@ -218,10 +216,6 @@ construct {
     optional {
         ?asset ex:assetHasRetention ?retention.
         optional { ?retention ex:retentionHasFormalBody ?retentionHasFormalBody }
-    }
-    optional {
-        ?asset ex:assetHasCreation ?creation.
-        optional { ?creation ex:creationHasFormalBody ?creationHasFormalBody }
     }
     optional {
         ?asset ex:assetHasOriginDateStart ?originDateStart.

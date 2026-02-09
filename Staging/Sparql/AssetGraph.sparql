@@ -5,9 +5,11 @@ construct {
         ex:assetReference ?reference;
         ex:assetHasSubset ?subset;
         ex:assetHasRetention ?retention;
-        ex:assetHasTransfer ?assetHasTransfer.
+        ex:assetHasTransfer ?assetHasTransfer;
+        ex:assetHasCreation ?assetHasCreation.
     ?retention ex:importLocation ?importLocation.
     ?assetHasTransfer ex:transferHasFormalBody ?transferHasFormalBody.
+    ?assetHasCreation ex:creationHasFormalBody ?creationHasFormalBody.
 } where {
     bind(@id as ?assetDriId)
     ?asset ex:assetDriId ?assetDriId;
@@ -20,5 +22,9 @@ construct {
     optional {
         ?asset ex:assetHasTransfer ?assetHasTransfer.
         ?assetHasTransfer ex:transferHasFormalBody ?transferHasFormalBody.
+    }
+    optional {
+        ?asset ex:assetHasCreation ?assetHasCreation.
+        ?assetHasCreation ex:creationHasFormalBody ?creationHasFormalBody.
     }
 }

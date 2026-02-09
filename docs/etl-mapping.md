@@ -74,6 +74,8 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | dri:DeliverableUnit (rdfs:label) | ex:assetReference |
 | dri:DeliverableUnit (dri:parent/rdfs:label) or series code | ex:assetHasSubset/ex:subsetReference |
 | dri:DeliverableUnit (dri:hasDirectory/rdfs:label or dri:parent/dri:hasDirectory/rdfs:label) | ex:assetHasRetention/ex:importLocation |
+| dri:DeliverableUnit (dri:isPartOfUnit where matches dri:Batch rdfs:label) | ex:assetHasTransfer/ex:transferHasFormalBody/ex:formalBodyName |
+| dri:DeliverableUnit (dri:isPartOfSeries/dri:creatingBody) | ex:assetHasCreation/ex:creationHasFormalBody/ex:formalBodyName |
 
 ### Sequence step 7
 
@@ -141,7 +143,6 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | dcterms:language | ex:assetHasLanguage/ex:languageName |
 | trans:counties or tnas:county | ex:assetHasAssociatedGeographicalPlace/ex:geographicalPlaceName |
 | tna:heldBy | ex:assetHasRetention/ex:retentionHasFormalBody/ex:formalBodyName |
-| dcterms:creator | ex:assetHasCreation/ex:creationHasFormalBody/ex:formalBodyName |
 | dcterms:rights | ex:assetHasCopyright/ex:copyrightTitle |
 | tna:legalStatus | ex:assetHasLegalStatus |
 | trans:typeOfSeal | ex:sealAssetHasSealCategory/ex:sealCategoryName |

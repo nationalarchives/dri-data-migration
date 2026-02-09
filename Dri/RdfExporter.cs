@@ -117,8 +117,9 @@ public class RdfExporter : IDriRdfExporter
         var retention = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AssetHasRetention).SingleOrDefault().Object as IBlankNode;
         var location = graph.GetSingleText(retention!, Vocabulary.ImportLocation);
         var transfer = graph.GetSingleUriNode(subject, Vocabulary.AssetHasTransfer)?.Uri;
+        var creation = graph.GetSingleUriNode(subject, Vocabulary.AssetHasCreation)?.Uri;
 
-        return new DriAsset(id!.Uri, reference!, location, subsetReference!, transfer);
+        return new DriAsset(id!.Uri, reference!, location, subsetReference!, transfer, creation);
     };
 
     private static Func<IGraph, IUriNode, DriVariation> MapVariation => (graph, subject) =>

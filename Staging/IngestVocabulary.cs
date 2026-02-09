@@ -69,7 +69,6 @@ public static class IngestVocabulary
 
     public static readonly IUriNode Title = new UriNode(new(DctermsNamespace, "title"));
     public static readonly IUriNode Description = new UriNode(new(DctermsNamespace, "description"));
-    public static readonly IUriNode Creator = new UriNode(new(DctermsNamespace, "creator"));
     public static readonly IUriNode Language = new UriNode(new(DctermsNamespace, "language"));
     public static readonly IUriNode Rights = new UriNode(new(DctermsNamespace, "rights"));
     public static readonly IUriNode Coverage = new UriNode(new(DctermsNamespace, "coverage"));

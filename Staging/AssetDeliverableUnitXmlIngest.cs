@@ -125,15 +125,6 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
             graph.Assert(id, Vocabulary.AssetHasRetention, retention);
         }
 
-        var creation = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasCreation).SingleOrDefault()?.Object ?? CacheClient.NewId;
-        var creationFormalBody = await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, creation, rdf,
-            IngestVocabulary.Creator, CacheEntityKind.FormalBody,
-            Vocabulary.CreationHasFormalBody, Vocabulary.FormalBodyName, cancellationToken);
-        if (creationFormalBody is not null)
-        {
-            graph.Assert(id, Vocabulary.AssetHasCreation, creation);
-        }
-
         await AddCopyrightAsync(graph, rdf, id, cancellationToken);
         AddLegalStatus(graph, rdf, id);
         await sealIngest.AddSealAsync(graph, rdf, existing, id, cancellationToken);
