@@ -1006,12 +1006,6 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has transfer".
 
-:subsetHasTransfer a owl:ObjectProperty, owl:FunctionalProperty;
-	rdfs:domain :Subset;
-	rdfs:range :Transfer;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Subset has transfer".
-
 :transferHasFormalBody a owl:ObjectProperty, owl:FunctionalProperty;
 	rdfs:domain :Transfer;
 	rdfs:range :FormalBody;

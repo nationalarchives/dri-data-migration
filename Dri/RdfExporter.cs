@@ -104,9 +104,8 @@ public class RdfExporter : IDriRdfExporter
         {
             parent = graph.GetSingleText(broader, Vocabulary.SubsetReference);
         }
-        var transfer = graph.GetSingleUriNode(subject, Vocabulary.SubsetHasTransfer)?.Uri;
-
-        return new DriSubset(reference!, directory, parent, transfer);
+        
+        return new DriSubset(reference!, directory, parent);
     };
 
     private static Func<IGraph, IUriNode, DriAsset> MapAsset => (graph, subject) =>
