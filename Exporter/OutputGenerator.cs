@@ -116,9 +116,9 @@ public class OutputGenerator(ILogger<OutputGenerator> logger, IOptions<ExportSet
 
     private string RecordToJson(RecordOutput record, string fileName)
     {
-        var medicals = new string[] {"WO/409/27/101/1071","WO/409/27/102/1059","WO/409/27/14/537",
-            "WO/409/27/30/1058","WO/409/27/4/678","WO/409/27/51/738","WO/409/27/70/1074",
-            "WO/409/27/93/662","WO/409/27/93/663","WO/409/27/93/664","WO/409/27/93/665" };
+        var medicals = new string[] {"WO 409/27/102/1059", "WO 409/27/4/678",
+            "WO 409/27/51/738", "WO 409/27/70/1074", "WO 409/27/93/662",
+            "WO 409/27/93/663", "WO 409/27/93/664", "WO 409/27/93/665" };
         if (File.Exists(fileName))
         {
             logger.ExistingFileRecord(fileName);
