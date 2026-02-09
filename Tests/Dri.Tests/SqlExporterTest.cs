@@ -66,7 +66,7 @@ public sealed class SqlExporterTest
 
         var sqliteInMemory = "Data Source=file:memdb-wo-409?mode=memory&cache=shared";
         wo409Options.Value.SqlConnectionString = sqliteInMemory;
-        var expected = new DriWo409SubsetDeliverableUnit("Wo409Subset1", "<xml/>");
+        var expected = new DriWo409SubsetDeliverableUnit("Wo409Subset1", "Wo409Parent1", "<xml/>");
         PopulateWo409Subset(expected, sqliteInMemory);
 
         var dris = wo409Exporter.GetWo409SubsetDeliverableUnits(0, CancellationToken.None);
@@ -123,14 +123,13 @@ public sealed class SqlExporterTest
     private static void PopulateWo409Subset(DriWo409SubsetDeliverableUnit dri, string sqliteConnectionString)
     {
         var metadataRef = "Metadata reference WO 409";
-        var parentRef = "Parent WO 409";
         var data = $"""
             insert into dufile(DELIVERABLEUNITREF, Code)
                 values('{dri.Id}', 'WO 409');
             insert into deliverableunit(DELIVERABLEUNITREF, PARENTREF)
-                values('{dri.Id}', '{parentRef}');
+                values('{dri.Id}', '{dri.ParentId}');
             insert into deliverableunit(DELIVERABLEUNITREF, METADATAREF)
-                values('{parentRef}', '{metadataRef}');
+                values('{dri.ParentId}', '{metadataRef}');
             insert into xmlmetadata(METADATAREF, XMLCLOB) values('{metadataRef}', '{dri.Xml}');
         """;
 
