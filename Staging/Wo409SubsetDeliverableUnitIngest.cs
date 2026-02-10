@@ -186,6 +186,7 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
                         }
                         else
                         {
+                            GraphAssert.Text(graph, relationship, string.Join(' ', typeValues).Trim(), Vocabulary.KinshipVerbatim);
                             List<IUriNode> kinships = [];
                             foreach (var typeValue in typeValues)
                             {
@@ -260,9 +261,9 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
         }
     }
 
-    private async Task<IUriNode?> GetAddressAsync(IGraph rdf, INode subjectid, CancellationToken cancellationToken)
+    private async Task<IUriNode?> GetAddressAsync(IGraph rdf, INode subjectId, CancellationToken cancellationToken)
     {
-        var address = rdf.GetTriplesWithSubjectPredicate(subjectid, IngestVocabulary.Address)
+        var address = rdf.GetTriplesWithSubjectPredicate(subjectId, IngestVocabulary.Address)
             .SingleOrDefault()?.Object as IBlankNode;
         if (address is not null)
         {

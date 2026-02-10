@@ -20,7 +20,8 @@ construct {
         ex:day ?dateOfBirthDay.
     ?battalionMembership ex:battalionMembershipHasBattalion ?battalionMembershipHasBattalion.
     ?nextOfKinRelationship ex:nextOfKinRelationshipHasNextOfKin ?nextOfKinRelationshipHasNextOfKin;
-        ex:nextOfKinRelationshipHasKinship ?nextOfKinRelationshipHasKinship.
+        ex:nextOfKinRelationshipHasKinship ?nextOfKinRelationshipHasKinship;
+        ex:kinshipVerbatim ?kinshipVerbatim.
     ?nextOfKinRelationshipHasNextOfKin ex:personFullName ?nextOfKinPersonFullName.
 } where {
     bind(@id as ?assetDriId)
@@ -61,6 +62,7 @@ construct {
                 optional { ?nextOfKinRelationshipHasNextOfKin ex:personFullName ?nextOfKinPersonFullName }
             }
             optional { ?nextOfKinRelationship ex:nextOfKinRelationshipHasKinship ?nextOfKinRelationshipHasKinship }
+            optional { ?nextOfKinRelationship ex:kinshipVerbatim ?kinshipVerbatim }
         }
     }
 }

@@ -247,6 +247,7 @@ public static class Vocabulary
     public static readonly IUriNode BattalionMembershipHasBattalion = new UriNode(new(Namespace, "battalionMembershipHasBattalion"));
 
     public static readonly IUriNode NextOfKinRelationshipHasKinship = new UriNode(new(Namespace, "nextOfKinRelationshipHasKinship"));
+    public static readonly IUriNode KinshipVerbatim = new UriNode(new(Namespace, "kinshipVerbatim"));
     public static readonly IUriNode Wife = new UriNode(new(Namespace, "Wife"));
     public static readonly IUriNode Husband = new UriNode(new(Namespace, "Husband"));
     public static readonly IUriNode Mother = new UriNode(new(Namespace, "Mother"));

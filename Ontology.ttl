@@ -2044,3 +2044,9 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Battalion name".
+
+:kinshipVerbatim a owl:DatatypeProperty;
+	rdfs:domain :NextOfKinRelationship;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Kinship verbatim".
