@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="dotNetRdf.Core" />
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="dotNetRdf" />
   </ItemGroup>
