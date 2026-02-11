@@ -31,7 +31,7 @@ internal class AssetDeliverableUnitVariationRelationIngest(ILogger logger, ICach
         {
             var namespaceManager = new XmlNamespaceManager(doc.NameTable);
             namespaceManager.AddNamespace("tna", IngestVocabulary.TnaNamespace.ToString());
-            var xmlFiles = doc.SelectNodes($"descendant::tna:{relationshipPredicate.Uri.Fragment.Trim('#')}", namespaceManager);
+            var xmlFiles = doc.SelectNodes($"descendant::tna:{relationshipPredicate.Uri.TrimmedFragment()!}", namespaceManager);
             if (xmlFiles is null)
             {
                 return;

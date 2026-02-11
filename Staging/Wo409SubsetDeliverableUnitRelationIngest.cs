@@ -41,7 +41,7 @@ internal class Wo409SubsetDeliverableUnitRelationIngest(ILogger<Wo409SubsetDeliv
         {
             return;
         }
-        var typeValues = GetUriFragment(relationType.Uri)?.Split('_', StringSplitOptions.RemoveEmptyEntries);
+        var typeValues = relationType.Uri.TrimmedFragment()?.Split('_', StringSplitOptions.RemoveEmptyEntries);
         if (typeValues is null)
         {
             logger.UnrecognizedKinship(relationType.Uri);
@@ -118,6 +118,4 @@ internal class Wo409SubsetDeliverableUnitRelationIngest(ILogger<Wo409SubsetDeliv
             "Undefined" => [Vocabulary.UndefinedKinship],
             _ => null
         };
-
-    internal static string? GetUriFragment(Uri? uri) => uri?.Fragment.Length > 1 ? uri.Fragment.TrimStart('#') : null;
 }

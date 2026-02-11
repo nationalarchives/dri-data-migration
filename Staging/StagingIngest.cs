@@ -55,6 +55,4 @@ public abstract class StagingIngest<T> : IStagingIngest<T> where T : IDriRecord
         }
         return total;
     }
-
-    internal static string? GetUriFragment(Uri? uri) => uri?.Fragment.Length > 1 ? uri.Fragment.TrimStart('#') : null;
 }

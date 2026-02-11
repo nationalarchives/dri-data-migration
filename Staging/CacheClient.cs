@@ -173,8 +173,6 @@ public class CacheClient : ICacheClient
         }
     }
 
-    internal static string? GetUriFragment(Uri? uri) => uri?.Fragment.Length > 1 ? uri.Fragment.TrimStart('#') : null;
-
     private CacheFetchInfo? ToCacheFetchInfo(CacheEntityKind kind, string key) => kind switch
     {
         CacheEntityKind.Asset => new(assetSparql, $"asset-{key}"),
