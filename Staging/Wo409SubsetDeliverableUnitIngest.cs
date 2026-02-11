@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Rdf;
 using System.Xml;
 using VDS.RDF;
-using VDS.RDF.Parsing;
 
 namespace Staging;
 
@@ -13,10 +12,10 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
 {
     private readonly RdfXmlLoader rdfXmlLoader = new(logger);
     private readonly DateParser dateParser = new(logger);
+    private readonly Wo409SubsetDeliverableUnitRelationIngest relationIngest = new(logger);
     private readonly IUriNode wo409 = new UriNode(new Uri("http://example.com/subject"));
     private readonly Uri givenName = new("http://example.com/given");
     private readonly Uri familyName = new("http://example.com/familyName");
-    private readonly IUriNode rdfsObject = new UriNode(new Uri(RdfSpecsHelper.RdfObject));
 
     internal override async Task<Graph?> BuildAsync(IGraph existing,
         DriWo409SubsetDeliverableUnit dri, CancellationToken cancellationToken)
@@ -77,7 +76,7 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
 
         await AddBirthAsync(graph, existing, rdf, subjectTriple.Object, person, cancellationToken);
         await AddPlaceAsync(graph, existing, rdf, person, cancellationToken);
-        AddRelation(graph, existing, rdf, subjectTriple.Object, person);
+        relationIngest.AddRelation(graph, existing, rdf, subjectTriple.Object, person);
     }
 
     private IUriNode? AddPerson(IGraph graph, IGraph existing, IGraph rdf, INode id)
@@ -145,118 +144,6 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
                     Vocabulary.BattalionName, cancellationToken);
                 graph.Assert(person, Vocabulary.PersonHasBattalionMembership, membership);
                 graph.Assert(membership, Vocabulary.BattalionMembershipHasBattalion, armyUnit);
-            }
-        }
-    }
-
-    private void AddRelation(IGraph graph, IGraph existing, IGraph rdf,
-        INode subjectId, IUriNode person)
-    {
-        var relation = rdf.GetTriplesWithSubjectPredicate(subjectId, IngestVocabulary.Relation)
-            .SingleOrDefault()?.Object as IBlankNode;
-        if (relation is not null)
-        {
-            var relationPerson = rdf.GetTriplesWithSubjectPredicate(relation, IngestVocabulary.Person)
-                .SingleOrDefault()?.Object as IBlankNode;
-            if (relationPerson is not null)
-            {
-                var relationNameSubject = rdf.GetTriplesWithSubjectPredicate(relationPerson, IngestVocabulary.Name)
-                    .SingleOrDefault()?.Object as IBlankNode ?? relationPerson;
-                var relationName = rdf.GetTriplesWithSubjectPredicate(relationNameSubject, IngestVocabulary.NameString)
-                    .SingleOrDefault()?.Object as ILiteralNode;
-                if (relationName is not null && !string.IsNullOrWhiteSpace(relationName.Value))
-                {
-                    var relationship = existing.GetTriplesWithSubjectPredicate(person, Vocabulary.PersonHasNextOfKinRelationship)
-                        .SingleOrDefault()?.Object ?? CacheClient.NewId;
-                    graph.Assert(person, Vocabulary.PersonHasNextOfKinRelationship, relationship);
-
-                    var personNextOfKin = existing.GetTriplesWithSubjectPredicate(relationship, Vocabulary.NextOfKinRelationshipHasNextOfKin)
-                        .SingleOrDefault()?.Object ?? CacheClient.NewId;
-                    graph.Assert(relationship, Vocabulary.NextOfKinRelationshipHasNextOfKin, personNextOfKin);
-                    GraphAssert.Text(graph, personNextOfKin, relationName.Value, Vocabulary.PersonFullName);
-
-                    var relationType = rdf.GetTriplesWithPredicateObject(rdfsObject, relation)
-                        .SingleOrDefault()?.Subject as IUriNode;
-                    if (relationType is not null)
-                    {
-                        var typeValues = GetUriFragment(relationType.Uri)?.Split('_', StringSplitOptions.RemoveEmptyEntries);
-                        if (typeValues is null)
-                        {
-                            logger.UnrecognizedKinship(relationType.Uri);
-                        }
-                        else
-                        {
-                            GraphAssert.Text(graph, relationship, string.Join(' ', typeValues).Trim(), Vocabulary.KinshipVerbatim);
-                            List<IUriNode> kinships = [];
-                            foreach (var typeValue in typeValues)
-                            {
-                                IUriNode[]? kinship = typeValue.Replace('-', ' ').Trim() switch
-                                {
-                                    "Wife" or "wife" or "w" => [Vocabulary.Wife],
-                                    "Husband" => [Vocabulary.Husband],
-                                    "Mother" => [Vocabulary.Mother],
-                                    "Father" or "father" or "Parents  Father" => [Vocabulary.Father],
-                                    "Sister" or "sister" or "Eldest Sister" => [Vocabulary.Sister],
-                                    "Brother" or "Brothers" => [Vocabulary.Brother],
-                                    "Brother OR Sister" => [Vocabulary.Brother, Vocabulary.Sister],
-                                    "Uncle" or "Uncle  Guardian" => [Vocabulary.Uncle],
-                                    "Son" or "Sons" or "Eldest Son" or "Eldest son" => [Vocabulary.Son],
-                                    "Adopted Mother" => [Vocabulary.AdoptedMother],
-                                    "Adopted Daughter" => [Vocabulary.AdoptedDaughter],
-                                    "Adopted Son" => [Vocabulary.AdoptedSon],
-                                    "Daughter" => [Vocabulary.Daughter],
-                                    "Three Children" or "Eldest Child" => [Vocabulary.Daughter, Vocabulary.Son],
-                                    "Parents" or "Parent" => [Vocabulary.Mother, Vocabulary.Father],
-                                    "Grandparents" or "Grandparent" => [Vocabulary.Grandmother, Vocabulary.Grandfather],
-                                    "Grandmother" => [Vocabulary.Grandmother],
-                                    "Grandfather" => [Vocabulary.Grandfather],
-                                    "Grandson" => [Vocabulary.Grandson],
-                                    "Aunt" or "Mother s Sister" => [Vocabulary.Aunt],
-                                    "Stepmother" => [Vocabulary.Stepmother],
-                                    "Stepfather" => [Vocabulary.Stepfather],
-                                    "Step Uncle" => [Vocabulary.Stepuncle],
-                                    "Stepsister" or "Step sister" => [Vocabulary.Stepsister],
-                                    "Stepbrother" or "Step Brother" => [Vocabulary.Stepbrother],
-                                    "Half brother" or "Half Brother" => [Vocabulary.HalfBrother],
-                                    "Foster Mother" => [Vocabulary.FosterMother],
-                                    "Foster Father" => [Vocabulary.FosterFather],
-                                    "Foster Parent" or "Foster Parents" => [Vocabulary.FosterMother, Vocabulary.FosterFather],
-                                    "Stepson" => [Vocabulary.Stepson],
-                                    "Niece" => [Vocabulary.Niece],
-                                    "Sister in Law" or "Sister in law" => [Vocabulary.SisterInLaw],
-                                    "Brother in Law" => [Vocabulary.BrotherInLaw],
-                                    "Mother in Law" => [Vocabulary.MotherInLaw],
-                                    "Father in Law" => [Vocabulary.FatherInLaw],
-                                    "Son in Law" => [Vocabulary.SonInLaw],
-                                    "Not Related" => [Vocabulary.NotRelated],
-                                    "Friend" => [Vocabulary.Friend],
-                                    "Nephew" => [Vocabulary.Nephew],
-                                    "Cousin" => [Vocabulary.Cousin],
-                                    "Fiance" => [Vocabulary.Fiance],
-                                    "Fiancee" => [Vocabulary.Fiancee],
-                                    "Landlady" => [Vocabulary.Landlady],
-                                    "Housekeeper" => [Vocabulary.Housekeeper],
-                                    "Guardian" => [Vocabulary.Guardian],
-                                    "Undefined" => [Vocabulary.UndefinedKinship],
-                                    _ => null
-                                };
-                                if (kinship is null)
-                                {
-                                    logger.UnrecognizedKinship(relationType.Uri);
-                                }
-                                else
-                                {
-                                    kinships.AddRange(kinship);
-                                }
-
-                            }
-                            foreach (var kinship in kinships)
-                            {
-                                graph.Assert(relationship, Vocabulary.NextOfKinRelationshipHasKinship, kinship);
-                            }
-                        }
-                    }
-                }
             }
         }
     }

@@ -80,5 +80,8 @@ public static class GraphSelectionExtensions
 
         public IUriNode? GetSingleUriNodeSubject(IUriNode predicate, INode obj) =>
             graph.GetTriplesWithPredicateObject(predicate, obj).SingleOrDefault()?.Subject as IUriNode;
+
+        public IBlankNode? GetSingleBlankNode(INode subject, IUriNode predicate) =>
+            graph.GetTriplesWithSubjectPredicate(subject, predicate).SingleOrDefault()?.Object as IBlankNode;
     }
 }
