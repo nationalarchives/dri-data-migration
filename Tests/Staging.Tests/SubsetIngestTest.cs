@@ -1,7 +1,9 @@
 ﻿using Api;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Testing;
 using Moq;
+using System.Diagnostics.Metrics;
 using VDS.RDF;
 
 namespace Staging.Tests;
@@ -14,6 +16,7 @@ public sealed class SubsetIngestTest
     private readonly Mock<ISparqlClient> client = new();
     private readonly Mock<ICacheClient> cache;
     private readonly IUriNode broaderSubset = CacheClient.NewId;
+    private readonly IMeterFactory meterFactory;
 
     public SubsetIngestTest()
     {
@@ -21,6 +24,10 @@ public sealed class SubsetIngestTest
         cache.Setup(c => c.CacheFetchOrNew(CacheEntityKind.Subset, dri.ParentReference!,
             Vocabulary.SubsetReference, CancellationToken.None))
             .ReturnsAsync(broaderSubset);
+
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddMetrics();
+        meterFactory = serviceCollection.BuildServiceProvider().GetRequiredService<IMeterFactory>();
     }
 
     [TestInitialize]
@@ -41,7 +48,7 @@ public sealed class SubsetIngestTest
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(new Graph());
 
-        var ingest = new SubsetIngest(cache.Object, client.Object, logger);
+        var ingest = new SubsetIngest(cache.Object, client.Object, logger, meterFactory);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 
@@ -65,7 +72,7 @@ public sealed class SubsetIngestTest
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
-        var ingest = new SubsetIngest(cache.Object, client.Object, logger);
+        var ingest = new SubsetIngest(cache.Object, client.Object, logger, meterFactory);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 
@@ -75,7 +82,7 @@ public sealed class SubsetIngestTest
             CancellationToken.None), Times.Once);
     }
 
-    [TestMethod(DisplayName = "Does nothing if completly matches existing data")]
+    [TestMethod(DisplayName = "Does nothing if completely matches existing data")]
     public async Task IsIdempotent()
     {
         var existing = new Graph();
@@ -88,7 +95,7 @@ public sealed class SubsetIngestTest
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
-        var ingest = new SubsetIngest(cache.Object, client.Object, logger);
+        var ingest = new SubsetIngest(cache.Object, client.Object, logger, meterFactory);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 

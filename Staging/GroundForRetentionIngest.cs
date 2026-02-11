@@ -1,12 +1,13 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using Rdf;
+using System.Diagnostics.Metrics;
 using VDS.RDF;
 
 namespace Staging;
 
-public class GroundForRetentionIngest(ISparqlClient sparqlClient, ILogger<GroundForRetentionIngest> logger) :
-    StagingIngest<DriGroundForRetention>(sparqlClient, logger, "GroundForRetentionGraph")
+public class GroundForRetentionIngest(ISparqlClient sparqlClient, ILogger<GroundForRetentionIngest> logger,
+    IMeterFactory meterFactory) : StagingIngest<DriGroundForRetention>(sparqlClient, logger, meterFactory, "GroundForRetentionGraph")
 {
     internal override Task<Graph?> BuildAsync(IGraph existing, DriGroundForRetention dri, CancellationToken cancellationToken)
     {

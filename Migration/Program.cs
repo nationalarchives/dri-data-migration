@@ -26,9 +26,10 @@ builder.Logging.AddOpenTelemetry(configure =>
 });
 
 builder.Services.AddOpenTelemetry()
-    .ConfigureResource(configure => configure.AddService("DRI Migration"))
+    .ConfigureResource(configure => configure.AddService("Migration"))
     .WithMetrics(configure => configure.AddMeter("System.Net.Http")
-        .AddMeter("System.Net.NameResolution"))
+        .AddMeter("System.Net.NameResolution")
+        .AddMeter("Migration.Staging"))
     .WithTracing(configure => configure.AddHttpClientInstrumentation())
     .UseOtlpExporter(OtlpExportProtocol.Grpc, new Uri("http://localhost:4317/"));
 

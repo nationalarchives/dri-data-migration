@@ -1,7 +1,9 @@
 ﻿using Api;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Testing;
 using Moq;
+using System.Diagnostics.Metrics;
 using System.Text;
 using VDS.RDF;
 using VDS.RDF.Nodes;
@@ -44,6 +46,7 @@ public sealed class VariationFileIngestTest
     private readonly IUriNode scanLocation = CacheClient.NewId;
     private readonly IUriNode datedNote = CacheClient.NewId;
     private readonly IUriNode date = CacheClient.NewId;
+    private readonly IMeterFactory meterFactory;
 
     public VariationFileIngestTest()
     {
@@ -51,6 +54,10 @@ public sealed class VariationFileIngestTest
         cache.Setup(c => c.CacheFetchOrNew(CacheEntityKind.GeographicalPlace, "Scan location",
             Vocabulary.GeographicalPlaceName, CancellationToken.None))
             .ReturnsAsync(scanLocation);
+
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddMetrics();
+        meterFactory = serviceCollection.BuildServiceProvider().GetRequiredService<IMeterFactory>();
     }
 
     [TestInitialize]
@@ -69,7 +76,7 @@ public sealed class VariationFileIngestTest
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
 
-        var ingest = new VariationFileIngest(cache.Object, client.Object, logger);
+        var ingest = new VariationFileIngest(cache.Object, client.Object, logger, meterFactory);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 
@@ -112,7 +119,7 @@ public sealed class VariationFileIngestTest
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
-        var ingest = new VariationFileIngest(cache.Object, client.Object, logger);
+        var ingest = new VariationFileIngest(cache.Object, client.Object, logger, meterFactory);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 
@@ -122,7 +129,7 @@ public sealed class VariationFileIngestTest
             CancellationToken.None), Times.Once);
     }
 
-    [TestMethod(DisplayName = "Does nothing if completly matches existing data")]
+    [TestMethod(DisplayName = "Does nothing if completely matches existing data")]
     public async Task IsIdempotent()
     {
         var existing = new Graph();
@@ -155,7 +162,7 @@ public sealed class VariationFileIngestTest
         
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
-        var ingest = new VariationFileIngest(cache.Object, client.Object, logger);
+        var ingest = new VariationFileIngest(cache.Object, client.Object, logger, meterFactory);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 

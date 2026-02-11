@@ -1,14 +1,15 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using Rdf;
+using System.Diagnostics.Metrics;
 using System.Xml;
 using VDS.RDF;
 
 namespace Staging;
 
 public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient sparqlClient,
-    ILogger<Wo409SubsetDeliverableUnitIngest> logger) :
-    StagingIngest<DriWo409SubsetDeliverableUnit>(sparqlClient, logger, "Wo409SubsetDeliverableUnitGraph")
+    ILogger<Wo409SubsetDeliverableUnitIngest> logger, IMeterFactory meterFactory) :
+    StagingIngest<DriWo409SubsetDeliverableUnit>(sparqlClient, logger, meterFactory, "Wo409SubsetDeliverableUnitGraph")
 {
     private readonly RdfXmlLoader rdfXmlLoader = new(logger);
     private readonly DateParser dateParser = new(logger);

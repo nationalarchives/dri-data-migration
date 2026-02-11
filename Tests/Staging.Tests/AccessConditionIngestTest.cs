@@ -1,7 +1,9 @@
 ﻿using Api;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Testing;
 using Moq;
+using System.Diagnostics.Metrics;
 using VDS.RDF;
 
 namespace Staging.Tests;
@@ -12,6 +14,14 @@ public sealed class AccessConditionIngestTest
     private readonly DriAccessCondition dri = new(new("http://example.com/access-condition#ac1"), "Access condition name");
     private readonly FakeLogger<AccessConditionIngest> logger = new();
     private readonly Mock<ISparqlClient> client = new();
+    private readonly IMeterFactory meterFactory;
+
+    public AccessConditionIngestTest()
+    {
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddMetrics();
+        meterFactory = serviceCollection.BuildServiceProvider().GetRequiredService<IMeterFactory>();
+    }
 
     [TestInitialize]
     public void TestInitialize()
@@ -30,7 +40,7 @@ public sealed class AccessConditionIngestTest
     {
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(new Graph());
-        var ingest = new AccessConditionIngest(client.Object, logger);
+        var ingest = new AccessConditionIngest(client.Object, logger, meterFactory);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 
@@ -50,7 +60,7 @@ public sealed class AccessConditionIngestTest
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
-        var ingest = new AccessConditionIngest(client.Object, logger);
+        var ingest = new AccessConditionIngest(client.Object, logger, meterFactory);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 
@@ -60,7 +70,7 @@ public sealed class AccessConditionIngestTest
             CancellationToken.None), Times.Once);
     }
 
-    [TestMethod(DisplayName = "Does nothing if completly matches existing data")]
+    [TestMethod(DisplayName = "Does nothing if completely matches existing data")]
     public async Task IsIdempotent()
     {
         var existing = new Graph();
@@ -70,7 +80,7 @@ public sealed class AccessConditionIngestTest
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
-        var ingest = new AccessConditionIngest(client.Object, logger);
+        var ingest = new AccessConditionIngest(client.Object, logger, meterFactory);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 

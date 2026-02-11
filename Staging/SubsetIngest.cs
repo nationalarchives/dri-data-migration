@@ -1,12 +1,14 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using Rdf;
+using System.Diagnostics.Metrics;
 using VDS.RDF;
 
 namespace Staging;
 
-public class SubsetIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<SubsetIngest> logger) :
-    StagingIngest<DriSubset>(sparqlClient, logger, "SubsetGraph")
+public class SubsetIngest(ICacheClient cacheClient, ISparqlClient sparqlClient,
+    ILogger<SubsetIngest> logger, IMeterFactory meterFactory) :
+    StagingIngest<DriSubset>(sparqlClient, logger, meterFactory, "SubsetGraph")
 {
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriSubset dri, CancellationToken cancellationToken)
     {

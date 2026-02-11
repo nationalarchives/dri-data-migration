@@ -1,12 +1,13 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using Rdf;
+using System.Diagnostics.Metrics;
 using VDS.RDF;
 
 namespace Staging;
 
-public class LegislationIngest(ISparqlClient sparqlClient, ILogger<LegislationIngest> logger) :
-    StagingIngest<DriLegislation>(sparqlClient, logger, "LegislationGraph")
+public class LegislationIngest(ISparqlClient sparqlClient, ILogger<LegislationIngest> logger, IMeterFactory meterFactory) :
+    StagingIngest<DriLegislation>(sparqlClient, logger, meterFactory, "LegislationGraph")
 {
     internal override Task<Graph?> BuildAsync(IGraph existing, DriLegislation dri, CancellationToken cancellationToken)
     {

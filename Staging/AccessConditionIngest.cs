@@ -1,12 +1,13 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using Rdf;
+using System.Diagnostics.Metrics;
 using VDS.RDF;
 
 namespace Staging;
 
-public class AccessConditionIngest(ISparqlClient sparqlClient, ILogger<AccessConditionIngest> logger) :
-    StagingIngest<DriAccessCondition>(sparqlClient, logger, "AccessConditionGraph")
+public class AccessConditionIngest(ISparqlClient sparqlClient, ILogger<AccessConditionIngest> logger, IMeterFactory meterFactory) :
+    StagingIngest<DriAccessCondition>(sparqlClient, logger, meterFactory, "AccessConditionGraph")
 {
     internal override Task<Graph?> BuildAsync(IGraph existing, DriAccessCondition dri, CancellationToken cancellationToken)
     {

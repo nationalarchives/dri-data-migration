@@ -1,14 +1,16 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using Rdf;
+using System.Diagnostics.Metrics;
 using System.Text.Json;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 
 namespace Staging;
 
-public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<VariationFileIngest> logger) :
-    StagingIngest<DriVariationFile>(sparqlClient, logger, "VariationFileGraph")
+public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlClient,
+    ILogger<VariationFileIngest> logger, IMeterFactory meterFactory) :
+    StagingIngest<DriVariationFile>(sparqlClient, logger, meterFactory, "VariationFileGraph")
 {
     private readonly VariationFileXmlIngest xmlIngest = new(logger, cacheClient);
     private readonly JsonSerializerOptions jsonSerializerOptions = new()

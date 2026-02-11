@@ -1,9 +1,11 @@
 ﻿using Api;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Testing;
 using Moq;
+using System.Diagnostics.Metrics;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 
@@ -33,6 +35,7 @@ public sealed class DateParserTest
     private readonly Mock<ISparqlClient> client = new();
     private readonly Mock<ICacheClient> cache = new();
     private readonly Mock<IAssetDeliverableUnitRelation> assetDeliverableUnitRelation = new();
+    private readonly IMeterFactory meterFactory;
 
     public DateParserTest()
     {
@@ -48,6 +51,10 @@ public sealed class DateParserTest
             .ReturnsAsync(asset);
         variationLogger.ControlLevel(LogLevel.Trace, false);
         assetLogger.ControlLevel(LogLevel.Trace, false);
+
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddMetrics();
+        meterFactory = serviceCollection.BuildServiceProvider().GetRequiredService<IMeterFactory>();
     }
 
     [TestInitialize]
@@ -59,7 +66,7 @@ public sealed class DateParserTest
     [TestMethod(DisplayName = "Rejects invalid date")]
     public async Task InvalidDate()
     {
-        var ingest = new VariationFileIngest(cache.Object, client.Object, variationLogger);
+        var ingest = new VariationFileIngest(cache.Object, client.Object, variationLogger, meterFactory);
 
         await ingest.SetAsync([variationDri], CancellationToken.None);
 
@@ -83,7 +90,7 @@ public sealed class DateParserTest
     [DataRow("2001", 2001, null, null, 9)]
     public async Task ParsesDate(string dateText, int year, int? month, int? day, int assertedTriples)
     {
-        var ingest = new VariationFileIngest(cache.Object, client.Object, variationLogger);
+        var ingest = new VariationFileIngest(cache.Object, client.Object, variationLogger, meterFactory);
         var replacedDri = variationDri with { Xml = xml.Replace("DATEPLACEHOLDER", dateText) };
 
         await ingest.SetAsync([replacedDri], CancellationToken.None);
@@ -103,7 +110,7 @@ public sealed class DateParserTest
     [TestMethod(DisplayName = "Rejects invalid date range")]
     public async Task InvalidDateRange()
     {
-        var ingest = new AssetDeliverableUnitIngest(cache.Object, client.Object, assetLogger, assetDeliverableUnitRelation.Object);
+        var ingest = new AssetDeliverableUnitIngest(cache.Object, client.Object, assetLogger, meterFactory, assetDeliverableUnitRelation.Object);
 
         await ingest.SetAsync([assetDri], CancellationToken.None);
 
@@ -129,7 +136,7 @@ public sealed class DateParserTest
     public async Task ParsesDateRange(string dateText, int startYear, int? startMonth, int? startDay,
         int? endYear, int? endMonth, int? endDay, int assertedTriples)
     {
-        var ingest = new AssetDeliverableUnitIngest(cache.Object, client.Object, assetLogger, assetDeliverableUnitRelation.Object);
+        var ingest = new AssetDeliverableUnitIngest(cache.Object, client.Object, assetLogger, meterFactory, assetDeliverableUnitRelation.Object);
         var replacedDri = assetDri with { Xml = xml.Replace("DATERANGEPLACEHOLDER", dateText) };
 
         await ingest.SetAsync([replacedDri], CancellationToken.None);

@@ -1,13 +1,15 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using Rdf;
+using System.Diagnostics.Metrics;
 using VDS.RDF;
 
 namespace Staging;
 
 public class AssetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlClient sparqlClient,
-    ILogger<AssetDeliverableUnitIngest> logger, IAssetDeliverableUnitRelation assetDeliverableUnitRelation) :
-    StagingIngest<DriAssetDeliverableUnit>(sparqlClient, logger, "AssetDeliverableUnitGraph")
+    ILogger<AssetDeliverableUnitIngest> logger, IMeterFactory meterFactory,
+    IAssetDeliverableUnitRelation assetDeliverableUnitRelation) :
+    StagingIngest<DriAssetDeliverableUnit>(sparqlClient, logger, meterFactory, "AssetDeliverableUnitGraph")
 {
     private readonly AssetDeliverableUnitXmlIngest xmlIngest = new(logger, cacheClient, assetDeliverableUnitRelation);
 

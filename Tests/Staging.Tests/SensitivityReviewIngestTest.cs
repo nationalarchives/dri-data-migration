@@ -1,7 +1,9 @@
 ﻿using Api;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Testing;
 using Moq;
+using System.Diagnostics.Metrics;
 using System.Text;
 using VDS.RDF;
 using VDS.RDF.Nodes;
@@ -35,7 +37,8 @@ public sealed class SensitivityReviewIngestTest
     private readonly IUriNode retentionRestriction = CacheClient.NewId;
     private readonly IUriNode change = CacheClient.NewId;
     private readonly IUriNode changeOperator = CacheClient.NewId;
-    
+    private readonly IMeterFactory meterFactory;
+
     public SensitivityReviewIngestTest()
     {
         cache = new();
@@ -53,6 +56,10 @@ public sealed class SensitivityReviewIngestTest
         cache.Setup(c => c.CacheFetchOrNew(CacheEntityKind.Operator, dri.ChangeOperatorId!,
                 Vocabulary.OperatorIdentifier, CancellationToken.None))
             .ReturnsAsync(changeOperator);
+
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddMetrics();
+        meterFactory = serviceCollection.BuildServiceProvider().GetRequiredService<IMeterFactory>();
     }
 
     [TestInitialize]
@@ -85,7 +92,7 @@ public sealed class SensitivityReviewIngestTest
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(new Graph());
 
-        var ingest = new SensitivityReviewIngest(cache.Object, client.Object, logger);
+        var ingest = new SensitivityReviewIngest(cache.Object, client.Object, logger, meterFactory);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 
@@ -127,7 +134,7 @@ public sealed class SensitivityReviewIngestTest
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
-        var ingest = new SensitivityReviewIngest(cache.Object, client.Object, logger);
+        var ingest = new SensitivityReviewIngest(cache.Object, client.Object, logger, meterFactory);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 
@@ -137,7 +144,7 @@ public sealed class SensitivityReviewIngestTest
             CancellationToken.None), Times.Once);
     }
 
-    [TestMethod(DisplayName = "Does nothing if completly matches existing data")]
+    [TestMethod(DisplayName = "Does nothing if completely matches existing data")]
     public async Task IsIdempotent()
     {
         var existing = new Graph();
@@ -169,7 +176,7 @@ public sealed class SensitivityReviewIngestTest
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
-        var ingest = new SensitivityReviewIngest(cache.Object, client.Object, logger);
+        var ingest = new SensitivityReviewIngest(cache.Object, client.Object, logger, meterFactory);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 

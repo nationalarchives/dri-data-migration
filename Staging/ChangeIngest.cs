@@ -1,12 +1,14 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using Rdf;
+using System.Diagnostics.Metrics;
 using VDS.RDF;
 
 namespace Staging;
 
-public class ChangeIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<ChangeIngest> logger) :
-    StagingIngest<DriChange>(sparqlClient, logger, "ChangeGraph")
+public class ChangeIngest(ICacheClient cacheClient, ISparqlClient sparqlClient,
+    ILogger<ChangeIngest> logger, IMeterFactory meterFactory) :
+    StagingIngest<DriChange>(sparqlClient, logger, meterFactory, "ChangeGraph")
 {
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriChange dri, CancellationToken cancellationToken)
     {

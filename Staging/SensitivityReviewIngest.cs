@@ -1,14 +1,16 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using Rdf;
+using System.Diagnostics.Metrics;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 
 namespace Staging;
 
-public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<SensitivityReviewIngest> logger) :
-    StagingIngest<DriSensitivityReview>(sparqlClient, logger, "SensitivityReviewGraph")
+public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient sparqlClient,
+    ILogger<SensitivityReviewIngest> logger, IMeterFactory meterFactory) :
+    StagingIngest<DriSensitivityReview>(sparqlClient, logger, meterFactory, "SensitivityReviewGraph")
 {
 #pragma warning disable CS8618
     private Dictionary<string, IUriNode> legislations;

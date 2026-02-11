@@ -1,7 +1,9 @@
 ﻿using Api;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Testing;
 using Moq;
+using System.Diagnostics.Metrics;
 using VDS.RDF;
 
 namespace Staging.Tests;
@@ -12,6 +14,14 @@ public sealed class LegislationIngestTest
     private readonly DriLegislation dri = new(new("http://example.com/legislation1"), "Section1");
     private readonly FakeLogger<LegislationIngest> logger = new();
     private readonly Mock<ISparqlClient> client = new();
+    private readonly IMeterFactory meterFactory;
+
+    public LegislationIngestTest()
+    {
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddMetrics();
+        meterFactory = serviceCollection.BuildServiceProvider().GetRequiredService<IMeterFactory>();
+    }
 
     [TestInitialize]
     public void TestInitialize()
@@ -31,7 +41,7 @@ public sealed class LegislationIngestTest
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(new Graph());
 
-        var ingest = new LegislationIngest(client.Object, logger);
+        var ingest = new LegislationIngest(client.Object, logger, meterFactory);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 
@@ -51,7 +61,7 @@ public sealed class LegislationIngestTest
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
-        var ingest = new LegislationIngest(client.Object, logger);
+        var ingest = new LegislationIngest(client.Object, logger, meterFactory);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 
@@ -61,7 +71,7 @@ public sealed class LegislationIngestTest
             CancellationToken.None), Times.Once);
     }
 
-    [TestMethod(DisplayName = "Does nothing if completly matches existing data")]
+    [TestMethod(DisplayName = "Does nothing if completely matches existing data")]
     public async Task IsIdempotent()
     {
         var existing = new Graph();
@@ -71,7 +81,7 @@ public sealed class LegislationIngestTest
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
-        var ingest = new LegislationIngest(client.Object, logger);
+        var ingest = new LegislationIngest(client.Object, logger, meterFactory);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 

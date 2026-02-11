@@ -1,12 +1,14 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using Rdf;
+using System.Diagnostics.Metrics;
 using VDS.RDF;
 
 namespace Staging;
 
-public class AssetIngest(ICacheClient cacheClient, ISparqlClient sparqlClient, ILogger<AssetIngest> logger) :
-    StagingIngest<DriAsset>(sparqlClient, logger, "AssetGraph")
+public class AssetIngest(ICacheClient cacheClient, ISparqlClient sparqlClient,
+    ILogger<AssetIngest> logger, IMeterFactory meterFactory) :
+    StagingIngest<DriAsset>(sparqlClient, logger, meterFactory, "AssetGraph")
 {
     internal override async Task<Graph?> BuildAsync(IGraph existing, DriAsset dri, CancellationToken cancellationToken)
     {

@@ -1,7 +1,9 @@
 ﻿using Api;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Testing;
 using Moq;
+using System.Diagnostics.Metrics;
 using VDS.RDF;
 
 namespace Staging.Tests;
@@ -15,12 +17,17 @@ public sealed class AssetIngestTest
     private readonly Mock<ICacheClient> cache;
     private readonly IUriNode subset = CacheClient.NewId;
     private readonly IUriNode retention = CacheClient.NewId;
+    private readonly IMeterFactory meterFactory;
 
     public AssetIngestTest()
     {
         cache = new();
         cache.Setup(c => c.CacheFetch(CacheEntityKind.Subset, dri.SubsetReference, CancellationToken.None))
             .ReturnsAsync(subset);
+
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddMetrics();
+        meterFactory = serviceCollection.BuildServiceProvider().GetRequiredService<IMeterFactory>();
     }
 
     [TestInitialize]
@@ -41,7 +48,7 @@ public sealed class AssetIngestTest
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(new Graph());
 
-        var ingest = new AssetIngest(cache.Object, client.Object, logger);
+        var ingest = new AssetIngest(cache.Object, client.Object, logger, meterFactory);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 
@@ -64,7 +71,7 @@ public sealed class AssetIngestTest
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
-        var ingest = new AssetIngest(cache.Object, client.Object, logger);
+        var ingest = new AssetIngest(cache.Object, client.Object, logger, meterFactory);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 
@@ -74,7 +81,7 @@ public sealed class AssetIngestTest
             CancellationToken.None), Times.Once);
     }
 
-    [TestMethod(DisplayName = "Does nothing if completly matches existing data")]
+    [TestMethod(DisplayName = "Does nothing if completely matches existing data")]
     public async Task IsIdempotent()
     {
         var existing = new Graph();
@@ -87,7 +94,7 @@ public sealed class AssetIngestTest
 
         client.Setup(c => c.GetGraphAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>(), CancellationToken.None))
             .ReturnsAsync(existing);
-        var ingest = new AssetIngest(cache.Object, client.Object, logger);
+        var ingest = new AssetIngest(cache.Object, client.Object, logger, meterFactory);
 
         var recordIngestedCount = await ingest.SetAsync([dri], CancellationToken.None);
 
