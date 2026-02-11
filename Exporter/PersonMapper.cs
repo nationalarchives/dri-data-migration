@@ -30,7 +30,7 @@ internal static class PersonMapper
             null : graph.GetSingleTransitiveLiteral(nextOfKinRelationship, Vocabulary.NextOfKinRelationshipHasNextOfKin, Vocabulary.PersonFullName)?.Value;
         var kins = nextOfKinRelationship is null ?
             null : graph.GetUriNodes(nextOfKinRelationship, Vocabulary.NextOfKinRelationshipHasKinship)
-            .Select(n => n.Uri.Segments.Last());
+            .Select(n => n.Uri.LastSegment());
         var seamanServiceNumber = graph.GetSingleText(person, Vocabulary.SeamanServiceNumber);
 
         return new()

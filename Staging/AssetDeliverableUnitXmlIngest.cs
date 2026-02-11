@@ -285,7 +285,7 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
             var cTitle = copyright switch
             {
                 ILiteralNode literalRight => literalRight.Value,
-                IUriNode uriRight => uriRight.Uri.Segments.Last().Replace('_', ' '),
+                IUriNode uriRight => uriRight.Uri.LastSegment().Replace('_', ' '),
                 _ => null
             };
             if (!string.IsNullOrWhiteSpace(cTitle))
@@ -301,7 +301,7 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
         var legal = rdf.GetTriplesWithPredicate(IngestVocabulary.LegalStatus).SingleOrDefault()?.Object;
         if (legal is IUriNode legalUri)
         {
-            var statusType = legalUri.Uri.Segments.Last() switch
+            var statusType = legalUri.Uri.LastSegment() switch
             {
                 "Public_Record(s)" or "Public_record" or "Public_Record" or "PublicRecord" =>
                     Vocabulary.PublicRecord,

@@ -169,7 +169,7 @@ internal static class GraphAssert
         var name = node switch
         {
             ILiteralNode literalNode => literalNode.Value,
-            IUriNode uriNode => uriNode.Uri.Segments.Last().Replace('_', ' '),
+            IUriNode uriNode => uriNode.Uri.LastSegment().Replace('_', ' '),
             _ => null
         };
         if (string.IsNullOrWhiteSpace(name))
@@ -197,7 +197,7 @@ internal static class GraphAssert
         var name = node switch
         {
             ILiteralNode literalNode => literalNode.Value,
-            IUriNode uriNode => uriNode.Uri.Segments.Last().Replace('_', ' '),
+            IUriNode uriNode => uriNode.Uri.LastSegment().Replace('_', ' '),
             _ => null
         };
         if (string.IsNullOrWhiteSpace(name))

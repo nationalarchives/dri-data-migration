@@ -55,7 +55,7 @@ internal static class VariationMapper
             var alg = graph.GetSingleUriNode(dataIntegrityId, Vocabulary.VariationDataIntegrityCalculationHasHashFunction);
             checksums.Add(new RecordOutput.Checksum()
             {
-                Hash = alg?.Uri.Segments.Last(),
+                Hash = alg?.Uri.LastSegment(),
                 Value = checksum
             });
         }

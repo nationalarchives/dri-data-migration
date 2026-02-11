@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Api;
 
@@ -12,9 +11,9 @@ public record DriSensitivityReview(Uri Link, string TargetReference, Uri TargetL
     Uri? ChangeDriLink = null, string? ChangeDescription = null, DateTimeOffset? ChangeTimestamp = null,
     Uri? ChangeOperatorLink = null, string? ChangeOperatorName = null) : IDriRecord
 {
-    public string Id => Link.Segments.Last();
-    public string TargetId => TargetLink.Segments.Last();
-    public string? PreviousId => PreviousLink?.Segments.Last();
-    public string? ChangeId => ChangeDriLink?.Segments.Last();
-    public string? ChangeOperatorId => ChangeOperatorLink?.Segments.Last();
+    public string Id => Link.LastSegment();
+    public string TargetId => TargetLink.LastSegment();
+    public string? PreviousId => PreviousLink?.LastSegment();
+    public string? ChangeId => ChangeDriLink?.LastSegment();
+    public string? ChangeOperatorId => ChangeOperatorLink?.LastSegment();
 }
