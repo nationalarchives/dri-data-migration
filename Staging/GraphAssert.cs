@@ -1,4 +1,5 @@
 ﻿using Api;
+using Rdf;
 using Microsoft.Extensions.Logging;
 using System.Text;
 using VDS.RDF;
@@ -37,10 +38,10 @@ internal static class GraphAssert
     internal static void Text(IGraph graph, INode id, IGraph rdf,
         IUriNode findPredicate, IUriNode immediatePredicate)
     {
-        var found = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
-        if (found is ILiteralNode foundNode)
+        var found = rdf.GetSingleLiteral(findPredicate);
+        if (found is not null)
         {
-            Text(graph, id, foundNode.Value, immediatePredicate);
+            Text(graph, id, found.Value, immediatePredicate);
         }
     }
 
@@ -81,16 +82,16 @@ internal static class GraphAssert
     internal static void Integer(ILogger logger, IGraph graph, INode id, IGraph rdf,
         IUriNode findPredicate, IUriNode immediatePredicate)
     {
-        var found = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
-        if (found is ILiteralNode foundNode && !string.IsNullOrWhiteSpace(foundNode.Value))
+        var found = rdf.GetSingleLiteral(findPredicate);
+        if (found is not null && !string.IsNullOrWhiteSpace(found.Value))
         {
-            if (int.TryParse(foundNode.Value, out var value))
+            if (int.TryParse(found.Value, out var value))
             {
                 graph.Assert(id, immediatePredicate, new LongNode(value));
             }
             else
             {
-                logger.InvalidIntegerValue(foundNode.Value);
+                logger.InvalidIntegerValue(found.Value);
             }
         }
     }
@@ -123,8 +124,8 @@ internal static class GraphAssert
     internal static void Date(DateParser dateParser, IGraph graph,
         INode id, IGraph rdf, IUriNode findPredicate, IUriNode immediatePredicate)
     {
-        var found = rdf.GetTriplesWithPredicate(findPredicate).SingleOrDefault()?.Object;
-        if (found is ILiteralNode foundNode && dateParser.TryParseDate(foundNode.Value, out var dt))
+        var found = rdf.GetSingleLiteral(findPredicate);
+        if (found is not null && dateParser.TryParseDate(found.Value, out var dt))
         {
             graph.Assert(id, immediatePredicate, new DateNode(new DateTimeOffset((int)dt!.Year!, (int)dt!.Month!, (int)dt!.Day!, 0, 0, 0, TimeSpan.Zero)));
         }

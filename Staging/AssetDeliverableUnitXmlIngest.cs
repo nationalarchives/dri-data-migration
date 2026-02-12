@@ -116,7 +116,7 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
             IngestVocabulary.County, CacheEntityKind.GeographicalPlace,
             Vocabulary.AssetHasAssociatedGeographicalPlace, Vocabulary.GeographicalPlaceName, cancellationToken);
 
-        var retention = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasRetention).SingleOrDefault()?.Object ?? CacheClient.NewId;
+        var retention = existing.GetSingleUriNode(id, Vocabulary.AssetHasRetention) ?? CacheClient.NewId;
         var retentionFormalBody = await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, retention, rdf,
             IngestVocabulary.HeldBy, CacheEntityKind.FormalBody,
             Vocabulary.RetentionHasFormalBody, Vocabulary.FormalBodyName, cancellationToken);
@@ -160,10 +160,10 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
 
     private void AddFilmDuration(IGraph graph, IGraph rdf, INode id)
     {
-        var foundDuration = rdf.GetTriplesWithPredicate(IngestVocabulary.DurationMins).SingleOrDefault()?.Object;
-        if (foundDuration is ILiteralNode durationNode && !string.IsNullOrWhiteSpace(durationNode.Value))
+        var foundDuration = rdf.GetSingleLiteral(IngestVocabulary.DurationMins);
+        if (foundDuration is not null && !string.IsNullOrWhiteSpace(foundDuration.Value))
         {
-            if (TimeSpan.TryParseExact(durationNode.Value, "mm\\:ss", CultureInfo.InvariantCulture, out var ts))
+            if (TimeSpan.TryParseExact(foundDuration.Value, "mm\\:ss", CultureInfo.InvariantCulture, out var ts))
             {
                 var hours = ts.Hours == 0 ? string.Empty : $"{ts.Hours}H";
                 var minutes = ts.Minutes == 0 ? string.Empty : $"{ts.Minutes}M";
@@ -172,17 +172,17 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
             }
             else
             {
-                logger.UnrecognizedFilmDurationFormat(durationNode.Value);
+                logger.UnrecognizedFilmDurationFormat(foundDuration.Value);
             }
         }
     }
 
     private static void AddWebArchive(IGraph graph, IGraph rdf, INode id)
     {
-        var foundWebArchive = rdf.GetTriplesWithPredicate(IngestVocabulary.WebArchiveUrl).SingleOrDefault()?.Object;
-        if (foundWebArchive is ILiteralNode webArchiveNode && !string.IsNullOrWhiteSpace(webArchiveNode.Value))
+        var foundWebArchive = rdf.GetSingleLiteral(IngestVocabulary.WebArchiveUrl);
+        if (foundWebArchive is not null && !string.IsNullOrWhiteSpace(foundWebArchive.Value))
         {
-            graph.Assert(id, Vocabulary.AssetHasUkGovernmentWebArchive, new UriNode(new Uri(webArchiveNode.AsValuedNode().AsString())));
+            graph.Assert(id, Vocabulary.AssetHasUkGovernmentWebArchive, new UriNode(new Uri(foundWebArchive.Value)));
         }
     }
 
@@ -206,14 +206,13 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
     private async Task<IUriNode?> FetchWitnessIdAsync(IGraph graph, IGraph rdf, INode id, IGraph existing, int witnessIndex, CancellationToken cancellationToken)
     {
         var witnessNamePredicate = new UriNode(new($"{IngestVocabulary.TnaNamespace}witness_list_{witnessIndex}"));
-        var foundWitness = rdf.GetTriplesWithPredicate(witnessNamePredicate).SingleOrDefault()?.Object;
-        if (foundWitness is ILiteralNode witnessNode && !string.IsNullOrWhiteSpace(witnessNode.Value))
+        var foundWitness = rdf.GetSingleLiteral(witnessNamePredicate);
+        if (foundWitness is not null && !string.IsNullOrWhiteSpace(foundWitness.Value))
         {
-            var foundDescription = rdf.GetTriplesWithPredicate(new UriNode(new($"{IngestVocabulary.TnaNamespace}subject_role_{witnessIndex}"))).SingleOrDefault()?.Object as ILiteralNode;
+            var foundDescription = rdf.GetSingleLiteral(new UriNode(new($"{IngestVocabulary.TnaNamespace}subject_role_{witnessIndex}")));
             if (foundDescription is not null)
             {
-                var witnessAppearanceId = existing.GetTriplesWithPredicateObject(Vocabulary.InquiryAppearanceSequence, new LongNode(witnessIndex)).SingleOrDefault()?.Subject as IUriNode
-                    ?? CacheClient.NewId;
+                var witnessAppearanceId = existing.GetSingleUriNodeSubject(Vocabulary.InquiryAppearanceSequence, new LongNode(witnessIndex)) ?? CacheClient.NewId;
                 GraphAssert.Integer(graph, witnessAppearanceId, witnessIndex, Vocabulary.InquiryAppearanceSequence);
                 await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, witnessAppearanceId, rdf,
                     witnessNamePredicate, CacheEntityKind.Witness, Vocabulary.InquiryAppearanceHasInquiryWitness,
@@ -260,12 +259,11 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
 
     private static IUriNode? FetchCourtCaseId(IGraph graph, IGraph rdf, INode id, IGraph existing, int caseIndex)
     {
-        var foundCase = rdf.GetTriplesWithPredicate(new UriNode(new($"{IngestVocabulary.TnaNamespace}case_id_{caseIndex}"))).SingleOrDefault()?.Object;
-        if (foundCase is ILiteralNode caseNode && !string.IsNullOrWhiteSpace(caseNode.Value))
+        var foundCase = rdf.GetSingleLiteral(new UriNode(new($"{IngestVocabulary.TnaNamespace}case_id_{caseIndex}")));
+        if (foundCase is not null && !string.IsNullOrWhiteSpace(foundCase.Value))
         {
-            var caseReference = new LiteralNode(caseNode.Value);
-            var caseId = existing.GetTriplesWithPredicateObject(Vocabulary.CourtCaseReference, caseReference).SingleOrDefault()?.Subject as IUriNode
-                    ?? CacheClient.NewId;
+            var caseReference = new LiteralNode(foundCase.Value);
+            var caseId = existing.GetSingleUriNodeSubject(Vocabulary.CourtCaseReference, caseReference) ?? CacheClient.NewId;
             graph.Assert(id, Vocabulary.CourtAssetHasCourtCase, caseId);
             GraphAssert.Integer(graph, caseId, caseIndex, Vocabulary.CourtCaseSequence);
             graph.Assert(caseId, Vocabulary.CourtCaseReference, caseReference);
@@ -298,10 +296,10 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
 
     private void AddLegalStatus(IGraph graph, IGraph rdf, INode id)
     {
-        var legal = rdf.GetTriplesWithPredicate(IngestVocabulary.LegalStatus).SingleOrDefault()?.Object;
-        if (legal is IUriNode legalUri)
+        var legal = rdf.GetSingleUriNode(IngestVocabulary.LegalStatus);
+        if (legal is not null)
         {
-            var statusType = legalUri.Uri.LastSegment() switch
+            var statusType = legal.Uri.LastSegment() switch
             {
                 "Public_Record(s)" or "Public_record" or "Public_Record" or "PublicRecord" =>
                     Vocabulary.PublicRecord,
@@ -311,7 +309,7 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
             };
             if (statusType is null)
             {
-                logger.UnrecognizedLegalStatus(legalUri.Uri.ToString());
+                logger.UnrecognizedLegalStatus(legal.Uri.ToString());
             }
             else
             {
@@ -320,13 +318,12 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
         }
     }
 
-    private async Task AddPersonAsync(IGraph graph, IGraph rdf, INode id, IGraph existing, CancellationToken cancellationToken)
+    private async Task AddPersonAsync(IGraph graph, IGraph rdf, IUriNode id, IGraph existing, CancellationToken cancellationToken)
     {
-        var surname = rdf.GetTriplesWithPredicate(IngestVocabulary.Surname).SingleOrDefault()?.Object;
-        if (surname is ILiteralNode surnameNode && !string.IsNullOrWhiteSpace(surnameNode.Value))
+        var surname = rdf.GetSingleLiteral(IngestVocabulary.Surname);
+        if (surname is not null && !string.IsNullOrWhiteSpace(surname.Value))
         {
-            var person = existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasPerson).SingleOrDefault()?.Object as IUriNode
-                ?? CacheClient.NewId;
+            var person = existing.GetSingleUriNode(id, Vocabulary.AssetHasPerson) ?? CacheClient.NewId;
             graph.Assert(id, Vocabulary.AssetHasPerson, person);
             GraphAssert.Text(graph, person, rdf, new Dictionary<IUriNode, IUriNode>
             {
@@ -335,20 +332,19 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
                 [IngestVocabulary.OfficialNumber] = Vocabulary.SeamanServiceNumber
             });
 
-            var birth = rdf.GetTriplesWithPredicate(IngestVocabulary.BirthDate).SingleOrDefault()?.Object;
+            var birth = rdf.GetSingleLiteral(IngestVocabulary.BirthDate);
             if (birth is not null)
             {
-                var birthDate = rdf.GetTriplesWithSubjectPredicate(birth, IngestVocabulary.TransDate).SingleOrDefault()?.Object as ILiteralNode;
+                var birthDate = rdf.GetSingleLiteral(birth, IngestVocabulary.TransDate);
                 if (birthDate is not null && dateParser.TryParseDate(birthDate.Value, out var birthDt))
                 {
-                    var dob = existing.GetTriplesWithSubjectPredicate(person, Vocabulary.PersonHasDateOfBirth).SingleOrDefault()?.Object as IUriNode
-                        ?? CacheClient.NewId;
+                    var dob = existing.GetSingleUriNode(person, Vocabulary.PersonHasDateOfBirth) ?? CacheClient.NewId;
                     graph.Assert(person, Vocabulary.PersonHasDateOfBirth, dob);
                     GraphAssert.YearMonthDay(graph, dob, birthDt!.Year, birthDt!.Month, birthDt!.Day, birthDate.Value);
                 }
             }
 
-            var placeOfBirth = rdf.GetTriplesWithPredicate(IngestVocabulary.PlaceOfBirth).SingleOrDefault()?.Object as ILiteralNode;
+            var placeOfBirth = rdf.GetSingleLiteral(IngestVocabulary.PlaceOfBirth);
             if (placeOfBirth is ILiteralNode placeOfBirthNode && !string.IsNullOrWhiteSpace(placeOfBirthNode.Value))
             {
                 var birthAddress = await cacheClient.CacheFetchOrNew(CacheEntityKind.GeographicalPlace,

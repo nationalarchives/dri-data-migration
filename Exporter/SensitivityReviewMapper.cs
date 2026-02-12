@@ -37,8 +37,7 @@ internal static class SensitivityReviewMapper
             Vocabulary.AccessConditionName)?.Value;
         sr.FoiAssertedDate = RecordMapper.ToDate(
             asset.GetSingleDate(srSubject, Vocabulary.SensitivityReviewDate));
-        var restriction = asset.GetTriplesWithSubjectPredicate(srSubject, Vocabulary.SensitivityReviewHasSensitivityReviewRestriction)
-            .SingleOrDefault()?.Object as IUriNode;
+        var restriction = asset.GetSingleUriNode(srSubject, Vocabulary.SensitivityReviewHasSensitivityReviewRestriction);
         if (restriction is not null)
         {
             sr.ClosureReviewDate = RecordMapper.ToDate(

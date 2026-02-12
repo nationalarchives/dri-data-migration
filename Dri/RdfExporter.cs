@@ -96,9 +96,9 @@ public class RdfExporter : IDriRdfExporter
     private static Func<IGraph, IUriNode, DriSubset> MapSubset => (graph, subject) =>
     {
         var reference = graph.GetSingleText(subject, Vocabulary.SubsetReference);
-        var retention = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SubsetHasRetention).SingleOrDefault().Object as IBlankNode;
+        var retention = graph.GetSingleBlankNode(subject, Vocabulary.SubsetHasRetention);
         var directory = graph.GetSingleText(retention!, Vocabulary.ImportLocation);
-        var broader = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.SubsetHasBroaderSubset).SingleOrDefault()?.Object as IBlankNode;
+        var broader = graph.GetSingleBlankNode(subject, Vocabulary.SubsetHasBroaderSubset);
         string? parent = null;
         if (broader is not null)
         {
@@ -112,9 +112,9 @@ public class RdfExporter : IDriRdfExporter
     {
         var id = graph.GetSingleUriNode(subject, Vocabulary.AssetDriId);
         var reference = graph.GetSingleText(subject, Vocabulary.AssetReference);
-        var subset = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AssetHasSubset).SingleOrDefault().Object as IBlankNode;
+        var subset = graph.GetSingleBlankNode(subject, Vocabulary.AssetHasSubset);
         var subsetReference = graph.GetSingleText(subset!, Vocabulary.SubsetReference);
-        var retention = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.AssetHasRetention).SingleOrDefault().Object as IBlankNode;
+        var retention = graph.GetSingleBlankNode(subject, Vocabulary.AssetHasRetention);
         var location = graph.GetSingleText(retention!, Vocabulary.ImportLocation);
         var transfer = graph.GetSingleUriNode(subject, Vocabulary.AssetHasTransfer)?.Uri;
         var creation = graph.GetSingleUriNode(subject, Vocabulary.AssetHasCreation)?.Uri;
@@ -125,9 +125,9 @@ public class RdfExporter : IDriRdfExporter
     private static Func<IGraph, IUriNode, DriVariation> MapVariation => (graph, subject) =>
     {
         var id = graph.GetSingleUriNode(subject, Vocabulary.VariationDriId);
-        var asset = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.VariationHasAsset).SingleOrDefault().Object as IBlankNode;
+        var asset = graph.GetSingleBlankNode(subject, Vocabulary.VariationHasAsset);
         var assetReference = graph.GetSingleText(asset!, Vocabulary.AssetReference);
-        var name = graph.GetTriplesWithSubjectPredicate(subject, Vocabulary.VariationName).SingleOrDefault().Object as ILiteralNode;
+        var name = graph.GetSingleLiteral(subject, Vocabulary.VariationName);
 
         return new DriVariation(id!.Uri, name.AsValuedNode().AsString(), assetReference!);
     };

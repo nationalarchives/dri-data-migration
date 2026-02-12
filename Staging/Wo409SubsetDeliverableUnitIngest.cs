@@ -80,7 +80,7 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
         relationIngest.AddRelation(graph, existing, rdf, subjectTriple.Object, person);
     }
 
-    private IUriNode? AddPerson(IGraph graph, IGraph existing, IGraph rdf, INode id)
+    private IUriNode? AddPerson(IGraph graph, IGraph existing, IGraph rdf, IUriNode id)
     {
         var names = rdf.GetTriplesWithPredicate(IngestVocabulary.NamePart).Select(t => t.Object).Cast<ILiteralNode>();
         var firstName = names.SingleOrDefault(n => n.DataType == givenName)?.Value;
@@ -91,12 +91,11 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
         {
             return null;
         }
-        var previousMilitaryService = rdf.GetTriplesWithPredicate(IngestVocabulary.PreviousMilitaryService)
-            .SingleOrDefault()?.Object as ILiteralNode;
+        var previousMilitaryService = rdf.GetSingleLiteral(IngestVocabulary.PreviousMilitaryService);
         bool isVeteran = previousMilitaryService?.Value == "true";
         var person = (isVeteran ?
-            existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasVeteran).SingleOrDefault()?.Object as IUriNode :
-            existing.GetTriplesWithSubjectPredicate(id, Vocabulary.AssetHasPerson).SingleOrDefault()?.Object as IUriNode) ??
+            existing.GetSingleUriNode(id, Vocabulary.AssetHasVeteran) :
+            existing.GetSingleUriNode(id, Vocabulary.AssetHasPerson)) ??
             CacheClient.NewId;
         graph.Assert(id, isVeteran ? Vocabulary.AssetHasVeteran : Vocabulary.AssetHasPerson, person);
         GraphAssert.Text(graph, person, firstName, Vocabulary.PersonGivenName);
@@ -109,8 +108,7 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
     private async Task AddBirthAsync(IGraph graph, IGraph existing, IGraph rdf, INode subjectId,
         IUriNode person, CancellationToken cancellationToken)
     {
-        var birth = rdf.GetTriplesWithSubjectPredicate(subjectId, IngestVocabulary.Birth)
-            .SingleOrDefault()?.Object as IBlankNode;
+        var birth = rdf.GetSingleBlankNode(subjectId, IngestVocabulary.Birth);
         if (birth is not null)
         {
             var birthDate = rdf.GetSingleLiteral(birth, IngestVocabulary.Date);
@@ -132,14 +130,13 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
     private async Task AddPlaceAsync(IGraph graph, IGraph existing,
         IGraph rdf, IUriNode person, CancellationToken cancellationToken)
     {
-        var place = rdf.GetTriplesWithPredicate(IngestVocabulary.County).SingleOrDefault()?.Object as ILiteralNode;
+        var place = rdf.GetSingleLiteral(IngestVocabulary.County);
         if (place is not null && !string.IsNullOrWhiteSpace(place.Value))
         {
-            var battalionNumber = rdf.GetTriplesWithPredicate(IngestVocabulary.References).SingleOrDefault()?.Object as ILiteralNode;
+            var battalionNumber = rdf.GetSingleLiteral(IngestVocabulary.References);
             if (battalionNumber is not null && !string.IsNullOrWhiteSpace(battalionNumber.Value))
             {
-                var membership = existing.GetTriplesWithSubjectPredicate(person, Vocabulary.PersonHasBattalionMembership).SingleOrDefault()?.Object ??
-                    CacheClient.NewId;
+                var membership = existing.GetSingleUriNode(person, Vocabulary.PersonHasBattalionMembership) ?? CacheClient.NewId;
                 var unitAndPlace = $"{battalionNumber.Value} {place.Value}";
                 var armyUnit = await cacheClient.CacheFetchOrNew(CacheEntityKind.Battalion, unitAndPlace,
                     Vocabulary.BattalionName, cancellationToken);
@@ -151,12 +148,10 @@ public class Wo409SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparqlC
 
     private async Task<IUriNode?> GetAddressAsync(IGraph rdf, INode subjectId, CancellationToken cancellationToken)
     {
-        var address = rdf.GetTriplesWithSubjectPredicate(subjectId, IngestVocabulary.Address)
-            .SingleOrDefault()?.Object as IBlankNode;
+        var address = rdf.GetSingleBlankNode(subjectId, IngestVocabulary.Address);
         if (address is not null)
         {
-            var addressText = rdf.GetTriplesWithSubjectPredicate(address, IngestVocabulary.AddressString)
-                .SingleOrDefault()?.Object as ILiteralNode;
+            var addressText = rdf.GetSingleLiteral(address, IngestVocabulary.AddressString);
             if (addressText is not null && !string.IsNullOrWhiteSpace(addressText.Value))
             {
                 return await cacheClient.CacheFetchOrNew(CacheEntityKind.GeographicalPlace,

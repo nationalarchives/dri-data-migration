@@ -69,7 +69,7 @@ public class VariationFileIngest(ICacheClient cacheClient, ISparqlClient sparqlC
                 logger.HashFunctionNotResolved(hash.Alg);
                 continue;
             }
-            var dataIntegrityId = existing.GetTriplesWithPredicateObject(Vocabulary.VariationDataIntegrityCalculationHasHashFunction, alg).SingleOrDefault()?.Subject ?? CacheClient.NewId;
+            var dataIntegrityId = existing.GetSingleUriNodeSubject(Vocabulary.VariationDataIntegrityCalculationHasHashFunction, alg) ?? CacheClient.NewId;
             graph.Assert(id, Vocabulary.VariationHasVariationDataIntegrityCalculation, dataIntegrityId);
             graph.Assert(dataIntegrityId, Vocabulary.VariationDataIntegrityCalculationHasHashFunction, alg);
             GraphAssert.Text(graph, dataIntegrityId, hash.Checksum, Vocabulary.Checksum);

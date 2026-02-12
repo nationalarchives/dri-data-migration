@@ -111,7 +111,7 @@ internal class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
         var foundNote = rdf.GetTriplesWithPredicate(IngestVocabulary.ArchivistNote).SingleOrDefault()?.Object;
         if (foundNote is not null)
         {
-            var info = rdf.GetTriplesWithSubjectPredicate(foundNote, IngestVocabulary.ArchivistNoteInfo).SingleOrDefault()?.Object as ILiteralNode;
+            var info = rdf.GetSingleLiteral(foundNote, IngestVocabulary.ArchivistNoteInfo);
             if (info is not null && !string.IsNullOrWhiteSpace(info.Value))
             {
                 var datedNote = datedNoteNodes.SingleOrDefault(dn => existing.GetSingleUriNode(dn, Vocabulary.DatedNoteHasDate) is not null) ?? CacheClient.NewId;
@@ -119,7 +119,7 @@ internal class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
 
                 graph.Assert(id, Vocabulary.VariationHasDatedNote, datedNote);
                 GraphAssert.Text(graph, datedNote, info.Value, Vocabulary.ArchivistNote); //TODO: review notes to check if can be better modelled
-                var date = rdf.GetTriplesWithSubjectPredicate(foundNote, IngestVocabulary.ArchivistNoteDate).SingleOrDefault()?.Object as ILiteralNode;
+                var date = rdf.GetSingleLiteral(foundNote, IngestVocabulary.ArchivistNoteDate);
                 if (date is not null && !string.IsNullOrWhiteSpace(date.Value))
                 {
                     var ymd = dateParser.ParseDate(date.Value);

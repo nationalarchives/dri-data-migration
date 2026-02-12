@@ -16,9 +16,9 @@ internal class AssetDeliverableUnitSealIngest(ILogger logger, ICacheClient cache
             IngestVocabulary.TypeOfSeal, CacheEntityKind.SealCategory,
             Vocabulary.SealAssetHasSealCategory, Vocabulary.SealCategoryName, cancellationToken);
 
-        var obverseOrReverse = rdf.GetTriplesWithPredicate(IngestVocabulary.Face).SingleOrDefault()?.Object as ILiteralNode;
+        var obverseOrReverse = rdf.GetSingleLiteral(IngestVocabulary.Face);
 
-        var dateNode = rdf.GetTriplesWithPredicate(IngestVocabulary.DateOfOriginalSeal).FirstOrDefault()?.Object as ILiteralNode;
+        var dateNode = rdf.GetSingleLiteral(IngestVocabulary.DateOfOriginalSeal);
         if (dateNode is not null && !string.IsNullOrWhiteSpace(dateNode.Value))
         {
             var range = dateParser.ParseDateRange(obverseOrReverse?.Value, dateNode.Value);
@@ -44,11 +44,11 @@ internal class AssetDeliverableUnitSealIngest(ILogger logger, ICacheClient cache
                     break;
             }
         }
-        var dimensionNode = rdf.GetTriplesWithPredicate(IngestVocabulary.Dimensions).SingleOrDefault()?.Object as ILiteralNode;
+        var dimensionNode = rdf.GetSingleLiteral(IngestVocabulary.Dimensions);
         if (dimensionNode is not null && !string.IsNullOrWhiteSpace(dimensionNode.Value))
         {
-            var dimension = dimensionParser.ParseCentimetre(obverseOrReverse?.Value, dimensionNode.Value);
             GraphAssert.Text(graph, id, dimensionNode.Value, Vocabulary.DimensionVerbatim);
+            var dimension = dimensionParser.ParseCentimetre(obverseOrReverse?.Value, dimensionNode.Value);
             switch (dimension.DimensionKind)
             {
                 case DimensionParser.DimensionType.Fragment:
