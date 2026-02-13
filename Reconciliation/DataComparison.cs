@@ -13,6 +13,18 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
     {
         //TODO: use sensitive name in logs
         logger.ReconciliationStarted(settings.MapKind, settings.Code);
+        if (settings.MapKind == ReconciliationMapType.Metadata)
+        {
+            logger.MetadataReconciliationInfo();
+        }
+        else if (settings.MapKind == ReconciliationMapType.Closure)
+        {
+            logger.ClosureReconciliationInfo();
+        }
+        else
+        {
+            logger.DiscoveryReconciliationInfo();
+        }
         var expected = await GetExpectedDataAsync(cancellationToken);
         logger.ReconciliationRecordCount(expected.Count);
 
@@ -46,6 +58,7 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
         }
 
         logger.ReconciliationFinished();
+        PrintReconciliationSummary(summary);
     }
 
     private async Task<List<Dictionary<ReconciliationFieldName, object>>> GetExpectedDataAsync(CancellationToken cancellationToken)
@@ -74,6 +87,7 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
         var additionalFilesCount = 0;
         var additionalFolderCount = 0;
         var diffCount = 0;
+        var recordDiffs = new List<ReconciliationSummary.Diff>();
         foreach (var stagingRow in staging)
         {
             var stagingIdentifier = GetStagingIdentifier(stagingRow);
@@ -97,21 +111,24 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
                     continue;
                 }
 
-                var diffs = ReconciliationEqualityComparer.Check(expectedRow!, stagingRow!);
-                if (diffs.Any())
+                var diffFields = ReconciliationEqualityComparer.Check(expectedRow!, stagingRow!);
+                if (diffFields.Any())
                 {
-                    foreach (var diff in diffs)
+                    var recordDiffDetails = new List<ReconciliationSummary.DiffDetail>();
+                    foreach (var diffField in diffFields)
                     {
-                        var actualValue = stagingRow.TryGetValue(diff, out var value) ? value : "NOT FOUND";
-                        logger.ReconciliationDiffDetails(diff, expectedRow[diff], actualValue);
+                        var actualValue = stagingRow.TryGetValue(diffField, out var value) ? value : "NOT FOUND";
+                        logger.ReconciliationDiffDetails(diffField, expectedRow[diffField], actualValue);
+                        recordDiffDetails.Add(new ReconciliationSummary.DiffDetail(diffField, expectedRow[diffField], actualValue));
                     }
                     diffCount++;
+                    recordDiffs.Add(new ReconciliationSummary.Diff(stagingIdentifier, recordDiffDetails));
                 }
                 expected.Remove(expectedRow);
             }
         }
 
-        return new ReconciliationSummary(additionalFilesCount, additionalFolderCount, 0, 0, diffCount);
+        return new ReconciliationSummary(additionalFilesCount, additionalFolderCount, 0, 0, diffCount, recordDiffs);
     }
 
     private ReconciliationSummary CheckMissing(List<Dictionary<ReconciliationFieldName, object>> expected)
@@ -119,6 +136,8 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
         logger.FindingMissingRecords();
         var missingFilesCount = 0;
         var missingFolderCount = 0;
+        var missingFiles = new List<string>();
+        var missingFolders = new List<string>();
 
         foreach (var item in expected)
         {
@@ -129,11 +148,13 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
                 {
                     logger.ReconciliationFolderNotFound();
                     missingFolderCount++;
+                    missingFolders.Add(identifier);
                 }
                 else
                 {
                     logger.ReconciliationFileNotFound();
                     missingFilesCount++;
+                    missingFiles.Add(identifier ?? "NOT FOUND");
                 }
             }
         }
@@ -161,4 +182,36 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
         settings.MapKind == ReconciliationMapType.Discovery ?
                 (item[ReconciliationFieldName.Id] as string)! :
                 (item[ReconciliationFieldName.Location] as string)!;
+
+    private void PrintReconciliationSummary(ReconciliationSummary summary)
+    {
+        if (summary.DiffDetails.Count > 0)
+        {
+            logger.DiffCount(summary.DiffDetails.Count);
+            foreach (var record in summary.DiffDetails)
+            {
+                logger.DiffRecord(record.Id);
+                foreach (var diff in record.Details)
+                {
+                    logger.DiffDetails(diff.Field, diff.Expected, diff.Actual);
+                }
+            }
+        }
+        if (summary.MissingFiles.Count > 0)
+        {
+            logger.MissingFilesCount(summary.MissingFiles.Count);
+            foreach (var missing in summary.MissingFiles)
+            {
+                logger.MissingRecord(missing);
+            }
+        }
+        if (summary.MissingFolders.Count > 0)
+        {
+            logger.MissingFoldersCount(summary.MissingFolders.Count);
+            foreach (var missing in summary.MissingFolders)
+            {
+                logger.MissingRecord(missing);
+            }
+        }
+    }
 }

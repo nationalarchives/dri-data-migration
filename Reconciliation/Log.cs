@@ -57,4 +57,64 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 17, Level = LogLevel.Information, Message = "No difference found")]
     internal static partial void ReconciliationNoDiff(this ILogger logger);
+
+    [LoggerMessage(EventId = 18, Level = LogLevel.Information, Message = "{count} differences (field, expected value, actual value)")]
+    internal static partial void DiffCount(this ILogger logger, int count);
+
+    [LoggerMessage(EventId = 19, Level = LogLevel.Information, Message = "{id}")]
+    internal static partial void DiffRecord(this ILogger logger, string Id);
+
+    [LoggerMessage(EventId = 20, Level = LogLevel.Information, Message = "\t{field}\t{expected}\t{actual}")]
+    internal static partial void DiffDetails(this ILogger logger, ReconciliationFieldName field, object expected, object actual);
+
+    [LoggerMessage(EventId = 21, Level = LogLevel.Information, Message = "{count} missing files")]
+    internal static partial void MissingFilesCount(this ILogger logger, int count);
+
+    [LoggerMessage(EventId = 22, Level = LogLevel.Information, Message = "{count} missing folders")]
+    internal static partial void MissingFoldersCount(this ILogger logger, int count);
+
+    [LoggerMessage(EventId = 23, Level = LogLevel.Information, Message = "{id}")]
+    internal static partial void MissingRecord(this ILogger logger, string Id);
+
+    [LoggerMessage(EventId = 24, Level = LogLevel.Information, Message = @"
+Reconciles following fields:
+Location        identifier
+Name            file_name
+FileFolder      folder
+ModifiedAt      date_last_modified
+CoveringDateEnd end_date")]
+    internal static partial void MetadataReconciliationInfo(this ILogger logger);
+
+    [LoggerMessage(EventId = 25, Level = LogLevel.Information, Message = @"
+Reconciles following fields:
+Location                identifier
+FileFolder              folder
+AccessConditionName     closure_type
+RetentionType           retention_type
+ClosurePeriod           closure_period
+ClosureStartDate        closure_start_date
+FoiExemptionReference   foi_exemption_code
+FoiAssertedDate         foi_exemption_asserted
+InstrumentNumber        RI_number
+InstrumentSignedDate    RI_signed_date
+GroundForRetentionCode  retention_justification
+IsPublicName            title_public
+SensitiveName           title_alternate
+IsPublicDescription     description_public
+SensitiveDescription    description_alternate")]
+    internal static partial void ClosureReconciliationInfo(this ILogger logger);
+
+    [LoggerMessage(EventId = 26, Level = LogLevel.Information, Message = @"
+Reconciles following fields:
+Id                  Id
+Name                Title
+Reference           Reference
+CoveringDateStart   NumStartDate
+CoveringDateEnd     NumEndDate
+ClosureStatus       ClosureStatus
+AccessConditionCode ClosureType
+HeldBy              HeldBy
+ClosurePeriod       ClosureType & ClosureCode
+ClosureEndYear      ClosureType & ClosureCode")]
+    internal static partial void DiscoveryReconciliationInfo(this ILogger logger);
 }
