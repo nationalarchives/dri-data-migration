@@ -3,6 +3,7 @@
 - [Diagram](#diagram)
 - [Examples](#examples)
 - [Mapping](export-mapping.md)
+- [WO 409](export-wo-409.md)
 
 Runs process to generate JSON and/or XML files from the extracted and transformed data (staging database). If data is exported into JSON files, then it is split into groups by variation within the asset: redacted and unredacted. Assumption is made that all values across grouped unredacted variations are identical.\
 Command: `export`

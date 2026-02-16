@@ -43,11 +43,11 @@ Data migration operates on two data sources: SQLite and graph database. [A new t
 Both the target (staging) and source (DRI) triplestores can be [hosted using Docker](https://github.com/nationalarchives/dri-data-migration/blob/main/compose.yaml).
 
 1. Download the DRI triplestore backup.
-2. Export a subset of SQL data from to a SQLite database.
+2. Export a subset of SQL data to a SQLite database.
 3. [Apply script](https://github.com/nationalarchives/dri-data-migration/blob/main/PostSqliteExport.sql).
 4. [Start Docker container](https://github.com/nationalarchives/dri-data-migration/blob/main/compose.yaml).
-5. Create the `dri` repository.
-6. Import backup into the `dri` repository.
+5. Create the `dri` graph repository.
+6. Import the DRI triplestore backup into the `dri` repository.
 7. Set the `dri` repository to `read-only`.
-8. [Create the `staging` repository](https://github.com/nationalarchives/dri-data-migration/blob/main/staging.http#L3).
+8. [Create the `staging` graph repository](https://github.com/nationalarchives/dri-data-migration/blob/main/staging.http#L3).
 9. [Apply the ontology](https://github.com/nationalarchives/dri-data-migration/blob/main/staging.http#L53).
