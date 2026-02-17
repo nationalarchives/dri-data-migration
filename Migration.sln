@@ -53,6 +53,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{30EF5BD8-7
 		docs\etl.md = docs\etl.md
 		docs\export-json-schema.json = docs\export-json-schema.json
 		docs\export-mapping.md = docs\export-mapping.md
+		docs\export-wo-409.md = docs\export-wo-409.md
 		docs\export.md = docs\export.md
 		docs\reconciliation-mapping.md = docs\reconciliation-mapping.md
 		docs\reconciliation.md = docs\reconciliation.md
