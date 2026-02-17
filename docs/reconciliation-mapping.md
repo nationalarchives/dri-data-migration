@@ -47,7 +47,7 @@ Data from the staging triplestore: [query](https://github.com/nationalarchives/d
 
 | Name | Source | Staging |
 | --- | --- | --- |
-|Id | Id | ex:assetDriId |
+|Id | Id (`required`) | ex:assetDriId |
 |Name | Title | ex:variationHasSensitivityReview/ex:sensitivityReviewSensitiveName or ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveName or ex:assetName |
 |Reference | Reference | ex:assetReference |
 |CoveringDateStart | NumStartDate | ex:assetHasOriginDateStart (ex:year, ex:month, ex:day) |
