@@ -28,7 +28,7 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
         var expected = await GetExpectedDataAsync(cancellationToken);
         logger.ReconciliationRecordCount(expected.Count);
 
-        var summary = new ReconciliationSummary(0, 0, 0, 0, 0);
+        var summary = new ReconciliationSummary();
         List<Dictionary<ReconciliationFieldName, object>> page;
         var offset = 0;
         do
@@ -49,8 +49,8 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
 
         if (summary.HasDifference)
         {
-            logger.ReconciliationTotalDiff(summary.AdditionalFilesCount, summary.AdditionalFolderCount,
-                summary.MissingFilesCount, summary.MissingFolderCount, summary.DiffCount);
+            logger.ReconciliationTotalDiff(summary.AdditionalFiles.Count, summary.AdditionalFolders.Count,
+                summary.MissingFiles.Count, summary.MissingFolders.Count, summary.DiffDetails.Count);
         }
         else
         {
@@ -84,9 +84,8 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
         List<Dictionary<ReconciliationFieldName, object>> staging)
     {
         logger.ComparingRecords(staging.Count);
-        var additionalFilesCount = 0;
-        var additionalFolderCount = 0;
-        var diffCount = 0;
+        var additionalFolders = new List<string>();
+        var additionalFiles = new List<string>();
         var recordDiffs = new List<ReconciliationSummary.Diff>();
         foreach (var stagingRow in staging)
         {
@@ -101,12 +100,12 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
                     if (isFolder)
                     {
                         logger.ReconciliationFolderAdditional();
-                        additionalFolderCount++;
+                        additionalFolders.Add(stagingIdentifier);
                     }
                     else
                     {
                         logger.ReconciliationFileAdditional();
-                        additionalFilesCount++;
+                        additionalFiles.Add(stagingIdentifier);
                     }
                     continue;
                 }
@@ -121,21 +120,18 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
                         logger.ReconciliationDiffDetails(diffField, expectedRow[diffField], actualValue);
                         recordDiffDetails.Add(new ReconciliationSummary.DiffDetail(diffField, expectedRow[diffField], actualValue));
                     }
-                    diffCount++;
                     recordDiffs.Add(new ReconciliationSummary.Diff(stagingIdentifier, recordDiffDetails));
                 }
                 expected.Remove(expectedRow);
             }
         }
 
-        return new ReconciliationSummary(additionalFilesCount, additionalFolderCount, 0, 0, diffCount, recordDiffs);
+        return new ReconciliationSummary(recordDiffs, additionalFiles: additionalFiles, additionalFolders: additionalFolders);
     }
 
     private ReconciliationSummary CheckMissing(List<Dictionary<ReconciliationFieldName, object>> expected)
     {
         logger.FindingMissingRecords();
-        var missingFilesCount = 0;
-        var missingFolderCount = 0;
         var missingFiles = new List<string>();
         var missingFolders = new List<string>();
 
@@ -147,19 +143,17 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
                 if (identifier?.EndsWith('/') == true)
                 {
                     logger.ReconciliationFolderNotFound();
-                    missingFolderCount++;
                     missingFolders.Add(identifier);
                 }
                 else
                 {
                     logger.ReconciliationFileNotFound();
-                    missingFilesCount++;
                     missingFiles.Add(identifier ?? "NOT FOUND");
                 }
             }
         }
 
-        return new ReconciliationSummary(0, 0, missingFilesCount, missingFolderCount, 0);
+        return new ReconciliationSummary(missingFiles: missingFiles, missingFolders: missingFolders);
     }
 
     private static string GetStagingIdentifier(Dictionary<ReconciliationFieldName, object> stagingRow)
@@ -211,6 +205,22 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
             foreach (var missing in summary.MissingFolders)
             {
                 logger.MissingRecord(missing);
+            }
+        }
+        if (summary.AdditionalFiles.Count > 0)
+        {
+            logger.AdditionalFilesCount(summary.AdditionalFiles.Count);
+            foreach (var missing in summary.AdditionalFiles)
+            {
+                logger.AdditionalRecord(missing);
+            }
+        }
+        if (summary.AdditionalFolders.Count > 0)
+        {
+            logger.AdditionalFoldersCount(summary.AdditionalFolders.Count);
+            foreach (var missing in summary.AdditionalFolders)
+            {
+                logger.AdditionalRecord(missing);
             }
         }
     }

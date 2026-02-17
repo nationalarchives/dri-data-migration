@@ -2,12 +2,6 @@
 
 public class ReconciliationSummary
 {
-    public int AdditionalFilesCount { get; private set; }
-    public int AdditionalFolderCount { get; private set; }
-    public int MissingFilesCount { get; private set; }
-    public int MissingFolderCount { get; private set; }
-    public int DiffCount { get; private set; }
-    
     private List<Diff> diffDetails { get; set; }
     public IReadOnlyCollection<Diff> DiffDetails => diffDetails;
 
@@ -17,34 +11,34 @@ public class ReconciliationSummary
     private List<string> missingFolders { get; set; }
     public IReadOnlyCollection<string> MissingFolders => missingFolders;
 
-    public ReconciliationSummary(int additionalFilesCount, int additionalFolderCount,
-        int missingFilesCount, int missingFolderCount, int diffCount,
-        List<Diff>? diffDetails = null, List<string>? missingFiles=null, List<string>? missingFolders = null)
+    private List<string> additionalFiles { get; set; }
+    public IReadOnlyCollection<string> AdditionalFiles => additionalFiles;
+
+    private List<string> additionalFolders { get; set; }
+    public IReadOnlyCollection<string> AdditionalFolders => additionalFolders;
+
+    public ReconciliationSummary(List<Diff>? diffDetails = null,
+        List<string>? missingFiles=null, List<string>? missingFolders = null,
+        List<string>? additionalFiles = null, List<string>? additionalFolders = null)
     {
-        AdditionalFilesCount = additionalFilesCount;
-        AdditionalFolderCount = additionalFolderCount;
-        MissingFilesCount = missingFilesCount;
-        MissingFolderCount = missingFolderCount;
-        DiffCount = diffCount;
         this.diffDetails = diffDetails ?? [];
         this.missingFiles = missingFiles ?? [];
         this.missingFolders = missingFolders ?? [];
+        this.additionalFiles = additionalFiles ?? [];
+        this.additionalFolders = additionalFolders ?? [];
     }
 
     public void Update(ReconciliationSummary summary)
     {
-        AdditionalFilesCount += summary.AdditionalFilesCount;
-        AdditionalFolderCount += summary.AdditionalFolderCount;
-        MissingFilesCount += summary.MissingFilesCount;
-        MissingFolderCount += summary.MissingFolderCount;
-        DiffCount += summary.DiffCount;
         diffDetails.AddRange(summary.DiffDetails);
         missingFiles.AddRange(summary.MissingFiles);
         missingFolders.AddRange(summary.MissingFolders);
+        additionalFiles.AddRange(summary.AdditionalFiles);
+        additionalFolders.AddRange(summary.AdditionalFolders);
     }
 
-    public bool HasDifference => AdditionalFilesCount > 0 || AdditionalFolderCount > 0 ||
-        MissingFilesCount > 0 || MissingFolderCount > 0 || DiffCount > 0;
+    public bool HasDifference => AdditionalFiles.Count > 0 || AdditionalFolders.Count > 0 ||
+        MissingFiles.Count > 0 || MissingFolders.Count > 0 || DiffDetails.Count > 0;
 
     public record Diff(string Id, List<DiffDetail> Details);
 

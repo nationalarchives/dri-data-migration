@@ -117,4 +117,13 @@ HeldBy              HeldBy
 ClosurePeriod       ClosureType & ClosureCode
 ClosureEndYear      ClosureType & ClosureCode")]
     internal static partial void DiscoveryReconciliationInfo(this ILogger logger);
+
+    [LoggerMessage(EventId = 27, Level = LogLevel.Information, Message = "{count} additional files")]
+    internal static partial void AdditionalFilesCount(this ILogger logger, int count);
+
+    [LoggerMessage(EventId = 28, Level = LogLevel.Information, Message = "{count} additional folders")]
+    internal static partial void AdditionalFoldersCount(this ILogger logger, int count);
+
+    [LoggerMessage(EventId = 29, Level = LogLevel.Information, Message = "{id}")]
+    internal static partial void AdditionalRecord(this ILogger logger, string Id);
 }
