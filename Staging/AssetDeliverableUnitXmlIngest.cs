@@ -332,7 +332,7 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
                 [IngestVocabulary.OfficialNumber] = Vocabulary.SeamanServiceNumber
             });
 
-            var birth = rdf.GetSingleLiteral(IngestVocabulary.BirthDate);
+            var birth = rdf.GetTriplesWithPredicate(IngestVocabulary.BirthDate).SingleOrDefault()?.Object as ILiteralNode;
             if (birth is not null)
             {
                 var birthDate = rdf.GetSingleLiteral(birth, IngestVocabulary.TransDate);
