@@ -27,6 +27,7 @@ construct {
         ex:assetRelationReference ?assetRelationReference;
         ex:paperNumber ?paperNumber;
         ex:poorLawUnionNumber ?poorLawUnionNumber;
+        ex:dimensionVerbatim ?dimensionVerbatim;
         ex:assetUsageRestrictionDescription ?assetUsageRestrictionDescription;
         ex:assetHasUkGovernmentWebArchive ?assetHasUkGovernmentWebArchive;
         ex:assetHasLegalStatus ?legalStatus;
@@ -297,6 +298,7 @@ construct {
     optional { ?asset ex:assetPhysicalDescription ?assetPhysicalDescription }
     optional { ?asset ex:paperNumber ?paperNumber }
     optional { ?asset ex:poorLawUnionNumber ?poorLawUnionNumber }
+    optional { ?asset ex:dimensionVerbatim ?dimensionVerbatim }
     optional { ?asset ex:assetUsageRestrictionDescription ?assetUsageRestrictionDescription }
     optional { ?asset ex:assetHasUkGovernmentWebArchive ?assetHasUkGovernmentWebArchive }
     optional { ?asset ex:assetHasLegalStatus ?legalStatus }

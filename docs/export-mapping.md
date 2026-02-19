@@ -82,6 +82,7 @@ JSON schema: [file](export-json-schema.json)
 | SealCategory | ex:sealAssetHasSealCategory/ex:sealCategoryName |
 | ImageSequenceEnd | ex:imageSequenceStart |
 | ImageSequenceStart | ex:imageSequenceEnd |
+| DimensionText | ex:dimensionVerbatim |
 | DimensionMm.First | ex:assetHasDimension/ex:firstDimensionMillimetre |
 | DimensionMm.Second | ex:assetHasDimension/ex:secondDimensionMillimetre |
 | DimensionMm.IsFragment | Set to true if ex:assetHasDimension's object is ex:FragmentDimension |

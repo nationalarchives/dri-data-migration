@@ -62,6 +62,7 @@ internal static class RecordMapper
         var sealAssetHasObverseEndDate = YmdMapper.GetTextDate(asset, Vocabulary.SealAssetHasObverseEndDate);
         var sealAssetHasReverseStartDate = YmdMapper.GetTextDate(asset, Vocabulary.SealAssetHasReverseStartDate);
         var sealAssetHasReverseEndDate = YmdMapper.GetTextDate(asset, Vocabulary.SealAssetHasReverseEndDate);
+        var dimensionVerbatim = asset.GetSingleText(Vocabulary.DimensionVerbatim);
         var assetHasDimension = DimensionMapper.GetDimension(asset, Vocabulary.AssetHasDimension);
         var sealAssetHasObverseDimension = DimensionMapper.GetDimension(asset, Vocabulary.SealAssetHasObverseDimension);
         var sealAssetHasReverseDimension = DimensionMapper.GetDimension(asset, Vocabulary.SealAssetHasReverseDimension);
@@ -167,6 +168,7 @@ internal static class RecordMapper
             SealCategory = sealCategoryName,
             ImageSequenceEnd = imageSequenceStart,
             ImageSequenceStart = imageSequenceEnd,
+            DimensionText = dimensionVerbatim,
             DimensionMm = assetHasDimension,
             ObverseDimensionMm = sealAssetHasObverseDimension,
             ReverseDimensionMm = sealAssetHasReverseDimension,

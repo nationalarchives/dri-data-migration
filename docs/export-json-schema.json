@@ -476,6 +476,12 @@
 				"null"
 			]
 		},
+		"dimensionText": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
 		"dimensionMm": {
 			"type": [
 				"object",

@@ -66,6 +66,7 @@ public class RecordOutput
     public string? SealCategory { get; set; }
     public long? ImageSequenceEnd { get; set; }
     public long? ImageSequenceStart { get; set; }
+    public string? DimensionText { get; set; }
     public Dimension? DimensionMm { get; set; }
     public Dimension? ObverseDimensionMm { get; set; }
     public Dimension? ReverseDimensionMm { get; set; }
