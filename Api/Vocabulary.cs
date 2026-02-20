@@ -78,10 +78,10 @@ public static class Vocabulary
     public static readonly IUriNode AssetHasOriginApproximateDateEnd = new UriNode(new(Namespace, "assetHasOriginApproximateDateEnd"));
     public static readonly IUriNode AssetHasAlternativeModifiedDateStart = new UriNode(new(Namespace, "assetHasAlternativeModifiedDateStart"));
     public static readonly IUriNode AssetHasAlternativeModifiedDateEnd = new UriNode(new(Namespace, "assetHasAlternativeModifiedDateEnd"));
-    public static readonly IUriNode AssetHasDimension = new UriNode(new(Namespace, "assetHasDimension"));
     public static readonly IUriNode AssetHasChange = new UriNode(new(Namespace, "assetHasChange"));
     public static readonly IUriNode AssetHasPerson = new UriNode(new(Namespace, "assetHasPerson"));
     public static readonly IUriNode AssetHasVeteran = new UriNode(new(Namespace, "assetHasVeteran"));
+    public static readonly IUriNode MeasurableAssetHasDimension = new UriNode(new(Namespace, "measurableAssetHasDimension"));
     public static readonly IUriNode CourtAssetHasCourtCase = new UriNode(new(Namespace, "courtAssetHasCourtCase"));
     public static readonly IUriNode SealAssetHasSealCategory = new UriNode(new(Namespace, "sealAssetHasSealCategory"));
     public static readonly IUriNode SealAssetHasStartDate = new UriNode(new(Namespace, "sealAssetHasStartDate"));

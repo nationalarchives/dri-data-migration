@@ -52,7 +52,7 @@ internal class AssetDeliverableUnitSealIngest(ILogger logger, ICacheClient cache
             switch (dimension.DimensionKind)
             {
                 case DimensionParser.DimensionType.Fragment:
-                    graph.Assert(id, Vocabulary.AssetHasDimension, Vocabulary.FragmentDimension);
+                    graph.Assert(id, Vocabulary.MeasurableAssetHasDimension, Vocabulary.FragmentDimension);
                     break;
                 case DimensionParser.DimensionType.ObverseFragment:
                     graph.Assert(id, Vocabulary.SealAssetHasObverseDimension, Vocabulary.FragmentDimension);
@@ -71,7 +71,7 @@ internal class AssetDeliverableUnitSealIngest(ILogger logger, ICacheClient cache
                     AssertFirstDimension(graph, existing, id, Vocabulary.SealAssetHasReverseDimension, dimension);
                     break;
                 case DimensionParser.DimensionType.Dimension:
-                    AssertFirstDimension(graph, existing, id, Vocabulary.AssetHasDimension, dimension);
+                    AssertFirstDimension(graph, existing, id, Vocabulary.MeasurableAssetHasDimension, dimension);
                     break;
                 case DimensionParser.DimensionType.FragmentObverseSecondReverse:
                     graph.Assert(id, Vocabulary.SealAssetHasObverseDimension, Vocabulary.FragmentDimension);

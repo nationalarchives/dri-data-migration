@@ -38,7 +38,7 @@ construct {
         ex:paperNumber ?paperNumber;
         ex:poorLawUnionNumber ?poorLawUnionNumber;
         ex:dimensionVerbatim ?dimensionVerbatim;
-        ex:assetHasDimension ?dimension;
+        ex:measurableAssetHasDimension ?dimension;
         ex:sealAssetHasObverseDimension ?obverseDimension;
         ex:sealAssetHasReverseDimension ?reverseDimension;
         ex:sealOwnerName ?sealOwnerName;
@@ -199,7 +199,7 @@ construct {
     optional { ?asset ex:inquiryAssetHasEvidenceProvider ?inquiryAssetHasEvidenceProvider }
     optional { ?asset ex:inquiryAssetHasInquiryInvestigation ?inquiryAssetHasInquiryInvestigation }
     optional {
-        ?asset ex:assetHasDimension ?dimension.
+        ?asset ex:measurableAssetHasDimension ?dimension.
         optional { ?dimension ex:firstDimensionMillimetre ?firstDimensionMillimetre }
         optional { ?dimension ex:secondDimensionMillimetre ?secondDimensionMillimetre }
     }

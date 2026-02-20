@@ -83,9 +83,9 @@ JSON schema: [file](export-json-schema.json)
 | ImageSequenceEnd | ex:imageSequenceStart |
 | ImageSequenceStart | ex:imageSequenceEnd |
 | DimensionText | ex:dimensionVerbatim |
-| DimensionMm.First | ex:assetHasDimension/ex:firstDimensionMillimetre |
-| DimensionMm.Second | ex:assetHasDimension/ex:secondDimensionMillimetre |
-| DimensionMm.IsFragment | Set to true if ex:assetHasDimension's object is ex:FragmentDimension |
+| DimensionMm.First | ex:measurableAssetHasDimension/ex:firstDimensionMillimetre |
+| DimensionMm.Second | ex:measurableAssetHasDimension/ex:secondDimensionMillimetre |
+| DimensionMm.IsFragment | Set to true if ex:measurableAssetHasDimension's object is ex:FragmentDimension |
 | ObverseDimensionMm.First | ex:sealAssetHasObverseDimension/ex:firstDimensionMillimetre |
 | ObverseDimensionMm.Second | ex:sealAssetHasObverseDimension/ex:secondDimensionMillimetre |
 | ObverseDimensionMm.IsFragment | Set to true if ex:sealAssetHasObverseDimension's object is ex:FragmentDimension |

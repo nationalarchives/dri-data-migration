@@ -63,7 +63,7 @@ internal static class RecordMapper
         var sealAssetHasReverseStartDate = YmdMapper.GetTextDate(asset, Vocabulary.SealAssetHasReverseStartDate);
         var sealAssetHasReverseEndDate = YmdMapper.GetTextDate(asset, Vocabulary.SealAssetHasReverseEndDate);
         var dimensionVerbatim = asset.GetSingleText(Vocabulary.DimensionVerbatim);
-        var assetHasDimension = DimensionMapper.GetDimension(asset, Vocabulary.AssetHasDimension);
+        var assetHasDimension = DimensionMapper.GetDimension(asset, Vocabulary.MeasurableAssetHasDimension);
         var sealAssetHasObverseDimension = DimensionMapper.GetDimension(asset, Vocabulary.SealAssetHasObverseDimension);
         var sealAssetHasReverseDimension = DimensionMapper.GetDimension(asset, Vocabulary.SealAssetHasReverseDimension);
         var inquiryAppearances = InquiryAppearanceMapper.GetInquiryAppearances(asset);

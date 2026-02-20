@@ -61,7 +61,7 @@ construct {
         ex:sealAssetHasSealCategory ?sealAssetHasSealCategory;
         ex:imageSequenceStart ?imageSequenceStart;
         ex:imageSequenceEnd ?imageSequenceEnd;
-        ex:assetHasDimension ?dimension;
+        ex:measurableAssetHasDimension ?dimension;
         ex:sealAssetHasObverseDimension ?obverseDimension;
         ex:sealAssetHasReverseDimension ?reverseDimension;
         ex:sealAssetHasStartDate ?sealDateStart;
@@ -420,7 +420,7 @@ construct {
     optional { ?asset ex:imageSequenceStart ?imageSequenceStart }
     optional { ?asset ex:imageSequenceEnd ?imageSequenceEnd }
     optional {
-        ?asset ex:assetHasDimension ?dimension.
+        ?asset ex:measurableAssetHasDimension ?dimension.
         optional { ?dimension ex:firstDimensionMillimetre ?firstDimensionMillimetre }
         optional { ?dimension ex:secondDimensionMillimetre ?secondDimensionMillimetre }
     }

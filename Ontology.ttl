@@ -728,17 +728,17 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Change has asset".
 
-:assetHasDimension a owl:ObjectProperty;
-	rdfs:domain :Asset;
-	rdfs:range :Dimension;
-	rdfs:isDefinedBy this:schema;
-	rdfs:label "Asset has dimension".
-
 :assetHasAssetTagType a owl:ObjectProperty;
 	rdfs:domain :Asset;
 	rdfs:range :AssetTagType;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has asset tag type".
+
+:measurableAssetHasDimension a owl:ObjectProperty;
+	rdfs:domain :MeasurableAsset;
+	rdfs:range :Dimension;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Measurable asset has dimension".
 
 :sealAssetHasSealCategory a owl:ObjectProperty;
 	rdfs:domain :SealAsset;
