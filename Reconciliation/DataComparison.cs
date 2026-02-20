@@ -138,17 +138,19 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
         foreach (var item in expected)
         {
             var identifier = SelectIdentifier(item);
+            var isFolder = item.TryGetValue(ReconciliationFieldName.FileFolder, out var fileFolder) ? 
+                fileFolder as string == "folder": identifier?.EndsWith('/') == true;
             using (logger.BeginScope(("RecordId", identifier)))
             {
-                if (identifier?.EndsWith('/') == true)
+                if (isFolder)
                 {
                     logger.ReconciliationFolderNotFound();
-                    missingFolders.Add(identifier);
+                    missingFolders.Add(identifier!);
                 }
                 else
                 {
                     logger.ReconciliationFileNotFound();
-                    missingFiles.Add(identifier ?? "NOT FOUND");
+                    missingFiles.Add(identifier!);
                 }
             }
         }
