@@ -65,7 +65,7 @@ prefix rico:<https://www.ica.org/standards/RiC/ontology#>
 insert data {
   _:b1 <http://www.ontotext.com/owlim/system#schemaTransaction> _:b2.
 
-  <Paste content of the Ontology.ttl>
+  <Paste content of the Ontology.ttl excluding prefixes>
 }
 
 ### Modifying ontology
