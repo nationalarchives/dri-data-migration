@@ -44,7 +44,7 @@ Content-Type: text/turtle
             graphdb:imports "" ;
             graphdb:repository-type "file-repository" ;
             graphdb:storage-folder "storage" ;
-            graphdb:entity-index-size "70000000" ;
+            graphdb:entity-index-size "80000000" ;
             graphdb:in-memory-literal-properties "false" ;
             graphdb:enable-literal-index "false" ;
         ]
@@ -149,102 +149,52 @@ construct {
       ex:accessConditionName ?accessConditionName.
 }
 
-### Legislation count
-POST {{endpoint}}
-Content-Type: application/sparql-query
+### Update DRI repository
+PUT http://localhost:7200/repositories/dri
+Content-Type: text/turtle
 
-prefix ex: <http://id.example.com/schema/>
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rep: <http://www.openrdf.org/config/repository#>.
+@prefix sr: <http://www.openrdf.org/config/repository/sail#>.
+@prefix sail: <http://www.openrdf.org/config/sail#>.
+@prefix graphdb: <http://www.ontotext.com/config/graphdb#>.
 
-select (count(?s) as ?x) where {
-    ?s ex:legislationHasUkLegislation ?legislationHasUkLegislation.
-}
+[] a rep:Repository ;
+    rep:repositoryID "dri" ;
+    rep:repositoryImpl [
+        rep:repositoryType "graphdb:SailRepository" ;
+        sr:sailImpl [
+            sail:sailType "graphdb:Sail" ;
 
-### Legislations
-POST {{endpoint}}
-Content-Type: application/sparql-query
-Accept: text/turtle
+            graphdb:read-only "false" ;
 
-prefix ex: <http://id.example.com/schema/>
+            # Inference and Validation
+            graphdb:ruleset "empty" ;
+            graphdb:disable-sameAs "false" ;
+            graphdb:check-for-inconsistencies "false" ;
 
-construct {
-    ?s ex:legislationHasUkLegislation ?legislationHasUkLegislation;
-      ex:legislationSectionReference ?legislationSectionReference.
-} where {
-    ?s ex:legislationHasUkLegislation ?legislationHasUkLegislation.
-    optional { ?s ex:legislationSectionReference ?legislationSectionReference }
-}
+            # Indexing
+            graphdb:entity-id-size "32" ;
+            graphdb:enable-context-index "false" ;
+            graphdb:enablePredicateList "true" ;
+            graphdb:enable-fts-index "false" ;
+            graphdb:fts-indexes ("default" "iri") ;
+            graphdb:fts-string-literals-index "default" ;
+            graphdb:fts-iris-index "none" ;
 
-### Ground for retention count
-POST {{endpoint}}
-Content-Type: application/sparql-query
+            # Queries and Updates
+            graphdb:query-timeout "0" ;
+            graphdb:throw-QueryEvaluationException-on-timeout "false" ;
+            graphdb:query-limit-results "0" ;
 
-prefix ex: <http://id.example.com/schema/>
-
-select (count(?s) as ?x) where {
-    ?s ex:groundForRetentionCode ?groundForRetentionCode.
-}
-
-### Grounds for retention
-POST {{endpoint}}
-Content-Type: application/sparql-query
-Accept: text/turtle
-
-prefix ex: <http://id.example.com/schema/>
-
-construct {
-    ?s ex:groundForRetentionCode ?groundForRetentionCode;
-      ex:groundForRetentionDescription ?groundForRetentionDescription.
-} where {
-    ?s ex:groundForRetentionCode ?groundForRetentionCode.
-    optional { ?s ex:groundForRetentionDescription ?groundForRetentionDescription }
-}
-
-### Subsets count
-POST {{endpoint}}
-Content-Type: application/sparql-query
-
-prefix ex: <http://id.example.com/schema/>
-
-select (count(distinct ?subsetReference) as ?x) where {
-    ?subset ex:subsetReference ?subsetReference.
-}
-
-### Subsets
-POST {{endpoint}}
-Content-Type: application/sparql-query
-
-prefix ex: <http://id.example.com/schema/>
-
-select ?subsetReference where {
-    ?subset ex:subsetReference ?subsetReference.
-} order by ?subsetReference
-
-### Assets count
-POST {{endpoint}}
-Content-Type: application/sparql-query
-
-prefix ex: <http://id.example.com/schema/>
-
-select (count(?assetReference) as ?x) where {
-    ?asset ex:assetReference ?assetReference.
-}
-
-### Variations count
-POST {{endpoint}}
-Content-Type: application/sparql-query
-
-prefix ex: <http://id.example.com/schema/>
-
-select (count(?variation) as ?x) where {
-    ?variation ex:variationName ?variationName.
-}
-
-### Sensitivity reviews count
-POST {{endpoint}}
-Content-Type: application/sparql-query
-
-prefix ex: <http://id.example.com/schema/>
-
-select (count(?id) as ?x) where {
-    ?sr ex:sensitivityReviewDriId ?id.
-}
+            # Settable in the file but otherwise hidden in the UI and in the RDF4J console
+            graphdb:base-URL "http://example.org/owlim#" ;
+            graphdb:defaultNS "" ;
+            graphdb:imports "" ;
+            graphdb:repository-type "file-repository" ;
+            graphdb:storage-folder "storage" ;
+            graphdb:entity-index-size "70000000" ;
+            graphdb:in-memory-literal-properties "false" ;
+            graphdb:enable-literal-index "false" ;
+        ]
+    ].

@@ -46,7 +46,7 @@ Both the target (staging) and source (DRI) triplestores can be [hosted using Doc
 2. Export a subset of SQL data to a SQLite database.
 3. [Apply script](https://github.com/nationalarchives/dri-data-migration/blob/main/PostSqliteExport.sql).
 4. [Start Docker container](https://github.com/nationalarchives/dri-data-migration/blob/main/compose.yaml).
-5. Create the `dri` graph repository.
+5. [Create the `dri` graph repository](https://github.com/nationalarchives/dri-data-migration/blob/main/staging.http#L152).
 6. Import the DRI triplestore backup into the `dri` repository.
 7. Set the `dri` repository to `read-only`.
 8. [Create the `staging` graph repository](https://github.com/nationalarchives/dri-data-migration/blob/main/staging.http#L3).
