@@ -65,6 +65,18 @@ Restart from `Sensitivity review` stage at record 100:
 .\Migration.exe migrate --reference "XYZ 123" --restart-from-stage SensitivityReview --restart-from-offset 100
 ```
 
+Debug with `Migration/Properties/launchSettings.json`
+```json
+{
+    "profiles": {
+        "migration": {
+            "commandName": "Project",
+            "commandLineArgs": "migrate --reference \"XYZ 123\""
+        }
+    }
+}
+```
+
 ## Migration sequence
 
 1. Access conditions\

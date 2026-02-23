@@ -59,3 +59,15 @@ Discovery API (default URI and custom page size):
 ```cmd
 .\Migration.exe reconcile --reference "XYZ 123" --mapping Discovery --page-size 2000
 ```
+
+Debug with `Migration/Properties/launchSettings.json`
+```json
+{
+    "profiles": {
+        "reconciliation": {
+            "commandName": "Project",
+            "commandLineArgs": "reconcile --reference \"XYZ 123\" --mapping Metadata --reconciliation-file \"c:\\XYZ_123\""
+        }
+    }
+}
+```

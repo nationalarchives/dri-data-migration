@@ -46,3 +46,15 @@ Custom page size and restart at record 500:
 ```cmd
 .\Migration.exe export --reference "XYZ 123" --page-size 100 --restart-from-offset 500
 ```
+
+Debug with `Migration/Properties/launchSettings.json`
+```json
+{
+    "profiles": {
+        "export": {
+            "commandName": "Project",
+            "commandLineArgs": "export --reference \"XYZ 123\""
+        }
+    }
+}
+```
