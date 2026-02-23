@@ -5,7 +5,7 @@
 [![Publish](https://github.com/nationalarchives/dri-data-migration/actions/workflows/publish.yml/badge.svg)](https://github.com/nationalarchives/dri-data-migration/actions/workflows/publish.yml)
 
 - [Staging data model](#staging-data-model)
-- [Logging](#logging)
+- [Observability](#observability)
 - [Docker](#docker)
 - [Setup](#setup)
 - [Migration](docs/etl.md)
@@ -24,10 +24,11 @@ Migration.exe --help
 Digital preservation ontology. It is a simplified model that serves ingestion process only.\
 Visualization at [WebVOWL](https://service.tib.eu/webvowl/#iri=https://raw.githubusercontent.com/nationalarchives/dri-data-migration/refs/heads/main/Ontology.ttl).
 
-## Logging
+## Observability
 
 Uses [Serilog](https://serilog.net/) for structured logging implementation. Default logging configuration is defined in the [appsettings.json](https://github.com/nationalarchives/dri-data-migration/blob/main/Migration/appsettings.json) file.\
-Default location for the log output is `Console`, `OpenTelemetry` (http://localhost:4317) and `logs` folder.
+Default location for the log output is `Console`, `OpenTelemetry` (http://localhost:4317) and `logs` folder.\
+Code is [configured](https://github.com/nationalarchives/dri-data-migration/blob/main/Migration/Program.cs#L29-L34) to collect and export metrics. [Additional custom metrics](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/StagingIngest.cs#L28-L32) count numbers of processed and ingested records.
 
 ## Docker
 
