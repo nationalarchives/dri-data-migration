@@ -152,6 +152,9 @@ internal static class GraphAssert
             {
                 graph.Assert(id, Vocabulary.Day, new LiteralNode($"---{day.Value.ToString().PadLeft(2, '0')}", new Uri($"{XmlSpecsHelper.NamespaceXmlSchema}gDay")));
             }
+        }
+        if (!string.IsNullOrWhiteSpace(date))
+        {
             Text(graph, id, date, Vocabulary.DateVerbatim);
         }
     }

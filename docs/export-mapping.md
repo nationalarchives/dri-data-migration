@@ -55,7 +55,7 @@ JSON schema: [file](export-json-schema.json)
 | CoveringDateEnd | full date ex:assetHasOriginDateEnd (ex:year, ex:month, ex:day)\|ex:assetHasOriginApproximateDateEnd (ex:year, ex:month, ex:day)\|ex:assetModifiedAt |
 | ProvidedCoveringDateStart | ex:assetHasOriginDateStart (ex:year, ex:month, ex:day)\|ex:assetHasOriginApproximateDateStart (ex:year, ex:month, ex:day) |
 | ProvidedCoveringDateEnd | ex:assetHasOriginDateEnd (ex:year, ex:month, ex:day)\|ex:assetHasOriginApproximateDateEnd (ex:year, ex:month, ex:day) |
-| ProvidedCoveringDateText | ex:assetHasOriginDateStart/ex:dateVerbatim\|ex:assetHasOriginApproximateDateStart/ex:dateVerbatim |
+| ProvidedCoveringDateText | (Only if date value contains additional characters) ex:assetHasOriginDateStart/ex:dateVerbatim\|ex:assetHasOriginApproximateDateStart/ex:dateVerbatim |
 | FilmProductionCompanyName | ex:filmProductionCompanyName |
 | FilmTitle | ex:filmTitle |
 | FilmDuration | ex:filmDuration |

@@ -72,14 +72,14 @@ public sealed class DateParserTest
 
         using (new AssertionScope())
         {
-            client.Verify(c => c.ApplyDiffAsync(It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 6 && !r.RemovedTriples.Any()),
+            client.Verify(c => c.ApplyDiffAsync(It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 7 && !r.RemovedTriples.Any()),
                 CancellationToken.None), Times.Once);
             variationLogger.Collector.LatestRecord.Should().Match<FakeLogRecord>(l => l.Id.Id == 26);
         }
     }
 
     [TestMethod(DisplayName = "Parses date")]
-    [DataRow("[2001-12-31]", 2001, 12, 31, 11)]
+    [DataRow("[2001-12-31]", 2001, 12, 31, 10)]
     [DataRow("2001 Sep", 2001, 9, null, 10)]
     [DataRow("2001 Sept", 2001, 9, null, 10)]
     [DataRow("31/12/2001", 2001, 12, 31, 11)]
@@ -116,7 +116,7 @@ public sealed class DateParserTest
 
         using (new AssertionScope())
         {
-            client.Verify(c => c.ApplyDiffAsync(It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 2 && !r.RemovedTriples.Any()),
+            client.Verify(c => c.ApplyDiffAsync(It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 4 && !r.RemovedTriples.Any()),
                 CancellationToken.None), Times.Once);
             assetLogger.Collector.LatestRecord.Should().Match<FakeLogRecord>(l => l.Id.Id == 26);
         }
@@ -133,6 +133,8 @@ public sealed class DateParserTest
     [DataRow("2001-12-31 10:59:45.123", 2001, 12, 31, null, null, null, 7)]
     [DataRow("2001", 2001, null, null, null, null, null, 5)]
     [DataRow("2001-2002", 2001, null, null, 2002, null, null, 8)]
+    [DataRow("2001 Jan 1-2002 Jun 2", 2001, 1, 1, 2002, 6, 2, 12)]
+    [DataRow("2001 Jun 1-2002 June 2", 2001, 6, 1, 2002, 6, 2, 12)]
     public async Task ParsesDateRange(string dateText, int startYear, int? startMonth, int? startDay,
         int? endYear, int? endMonth, int? endDay, int assertedTriples)
     {

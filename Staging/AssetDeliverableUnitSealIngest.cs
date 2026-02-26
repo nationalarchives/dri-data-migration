@@ -25,6 +25,8 @@ internal class AssetDeliverableUnitSealIngest(ILogger logger, ICacheClient cache
             switch (range.DateRangeKind)
             {
                 case DateParser.DateRangeType.Date:
+                case DateParser.DateRangeType.Approximate:
+                case DateParser.DateRangeType.None:
                     AssertSealDate(graph, existing, id, Vocabulary.SealAssetHasStartDate,
                         Vocabulary.SealAssetHasEndDate, range, dateNode.Value);
                     break;

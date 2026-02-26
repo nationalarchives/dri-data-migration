@@ -247,7 +247,7 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
                 [new UriNode(new($"{IngestVocabulary.TnaNamespace}hearing_start_date_{caseIndex}"))] = Vocabulary.CourtCaseHearingStartDate,
                 [new UriNode(new($"{IngestVocabulary.TnaNamespace}hearing_end_date_{caseIndex}"))] = Vocabulary.CourtCaseHearingEndDate
             });
-            
+
             caseIndex++;
             courtCase = FetchCourtCaseId(graph, rdf, id, existing, caseIndex);
         }
@@ -366,11 +366,11 @@ internal class AssetDeliverableUnitXmlIngest(ILogger logger, ICacheClient cacheC
             else
             {
                 var range = dateParser.ParseDateRange(null, curatedDate);
+                var startNode = existing.GetSingleUriNode(Vocabulary.AssetHasAlternativeModifiedDateStart) ?? CacheClient.NewId;
+                graph.Assert(id, Vocabulary.AssetHasAlternativeModifiedDateStart, startNode);
+                GraphAssert.YearMonthDay(graph, startNode, range.FirstYear, range.FirstMonth, range.FirstDay, curatedDate);
                 if (range.DateRangeKind == DateParser.DateRangeType.Date)
                 {
-                    var startNode = existing.GetSingleUriNode(Vocabulary.AssetHasAlternativeModifiedDateStart) ?? CacheClient.NewId;
-                    graph.Assert(id, Vocabulary.AssetHasAlternativeModifiedDateStart, startNode);
-                    GraphAssert.YearMonthDay(graph, startNode, range.FirstYear, range.FirstMonth, range.FirstDay, curatedDate);
                     if (range.SecondYear.HasValue)
                     {
                         var endNode = existing.GetSingleUriNode(Vocabulary.AssetHasAlternativeModifiedDateEnd) ?? CacheClient.NewId;

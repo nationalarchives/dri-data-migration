@@ -9,12 +9,12 @@ internal partial class DateParser(ILogger logger)
     internal YearMonthDay ParseDate(string dateText)
     {
         var trimmedDate = dateText.Trim();
+        var dateType = trimmedDate.StartsWith("c ") || trimmedDate.StartsWith('[') ? DateType.Approximate : DateType.Date;
         if (trimmedDate.StartsWith('[') && trimmedDate.IndexOf(']') == trimmedDate.Length - 1)
         {
             trimmedDate = trimmedDate.Remove(trimmedDate.Length - 1, 1).Remove(0, 1);
         }
-        var dateType = trimmedDate.StartsWith("c ") ? DateType.Approximate : DateType.Date;
-        if (dateType == DateType.Approximate)
+        if (trimmedDate.StartsWith("c "))
         {
             trimmedDate = trimmedDate.Remove(0, 2);
         }
@@ -24,6 +24,16 @@ internal partial class DateParser(ILogger logger)
             return new(dateType, singleDate!.Year, singleDate!.Month, singleDate!.Day);
         }
 
+        var rangeList = new List<Regex>() { YearRange(), FullDateRange() };
+        foreach (var rangeRegex in rangeList)
+        {
+            var matchRange = rangeRegex.Match(trimmedDate);
+            if (matchRange.Success)
+            {
+                return new(DateType.Range);
+            }
+        }
+
         logger.UnrecognizedYearMonthDayFormat(dateText);
         return new(DateType.None);
     }
@@ -31,6 +41,7 @@ internal partial class DateParser(ILogger logger)
     internal DateRange ParseDateRange(string? obverseOrReverseText, string dateText)
     {
         var trimmedDate = dateText.Trim();
+        var dateType = trimmedDate.StartsWith("c ") || trimmedDate.StartsWith('[') ? DateRangeType.Approximate : DateRangeType.Date;
         if (trimmedDate.StartsWith('[') && trimmedDate.IndexOf(']') == trimmedDate.Length - 1)
         {
             trimmedDate = trimmedDate.Remove(trimmedDate.Length - 1, 1).Remove(0, 1);
@@ -39,8 +50,7 @@ internal partial class DateParser(ILogger logger)
         {
             return new DateRange(DateRangeType.None);
         }
-        var dateType = trimmedDate.StartsWith("c ") ? DateRangeType.Approximate : DateRangeType.Date;
-        if (dateType == DateRangeType.Approximate)
+        if (trimmedDate.StartsWith("c "))
         {
             trimmedDate = trimmedDate.Remove(0, 2);
         }
@@ -101,18 +111,33 @@ internal partial class DateParser(ILogger logger)
             }
         }
 
+        var dateRangeList = new List<Regex>() { YearRange(), FullDateRange() };
+        foreach (var rangeRegex in dateRangeList)
+        {
+            var match = rangeRegex.Match(trimmedDate);
+            if (match.Success &&
+                TryParseDate(match.Groups["start"].Value, out var start, true) &&
+                TryParseDate(match.Groups["end"].Value, out var end, true))
+            {
+                return new(dateRangeType, start!.Year, start.Month, start.Day, end!.Year, end.Month, end.Day);
+            }
+        }
+
         logger.UnrecognizedYearMonthDayFormat(dateText);
         return new DateRange(DateRangeType.None);
     }
 
     internal record Ymd(int? Year = null, int? Month = null, int? Day = null);
-    
+
     internal record YearMonthDay(DateType DateKind, int? Year = null, int? Month = null, int? Day = null);
 
     internal record DateRange(DateRangeType DateRangeKind, int? FirstYear = null, int? FirstMonth = null, int? FirstDay = null, int? SecondYear = null, int? SecondMonth = null, int? SecondDay = null);
 
     [GeneratedRegex("^(?<startYear>\\d{4})-(?<endYear>\\d{4})$")]
     public static partial Regex YearRange();
+
+    [GeneratedRegex("^(?<start>\\d{4} [A-Z]{1}[a-z]{2,3} \\d{1,2})\\s*-\\s*(?<end>\\d{4} [A-Z]{1}[a-z]{2,3} \\d{1,2})$")]
+    public static partial Regex FullDateRange();
 
     [GeneratedRegex("^Obverse:\\s*(?<startYear>\\d{4})$")]
     public static partial Regex ObverseSingleYear();
@@ -136,7 +161,8 @@ internal partial class DateParser(ILogger logger)
     {
         None,
         Date,
-        Approximate
+        Approximate,
+        Range
     }
 
     public enum DateRangeType
@@ -178,9 +204,14 @@ internal partial class DateParser(ILogger logger)
             dt = new(dt2.Year, dt2.Month, dt2.Day);
             return true;
         }
-        if (DateTimeOffset.TryParse(date, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt3))
+        if (DateTimeOffset.TryParseExact(date, "yyyy MMMM d", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt3))
         {
             dt = new(dt3.Year, dt3.Month, dt3.Day);
+            return true;
+        }
+        if (DateTimeOffset.TryParse(date, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dt4))
+        {
+            dt = new(dt4.Year, dt4.Month, dt4.Day);
             return true;
         }
         if (int.TryParse(date, out var singleYear))
