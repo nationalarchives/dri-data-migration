@@ -16,6 +16,7 @@ public abstract class Etl<T>(ILogger logger, IStagingIngest<T> ingest) where T :
         [typeof(DriLegislation)] = EtlStageType.Legislation,
         [typeof(DriGroundForRetention)] = EtlStageType.GroundForRetention,
         [typeof(DriSubset)] = EtlStageType.Subset,
+        [typeof(DriAdm158SubsetDeliverableUnit)] = EtlStageType.Adm158SubsetDeliverableUnit,
         [typeof(DriAsset)] = EtlStageType.Asset,
         [typeof(DriVariation)] = EtlStageType.Variation,
         [typeof(DriAssetDeliverableUnit)] = EtlStageType.AssetDeliverableUnit,

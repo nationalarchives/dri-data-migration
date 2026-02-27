@@ -16,6 +16,7 @@
     <EmbeddedResource Include="Sparql\GetVariation.sparql" />
     <EmbeddedResource Include="Sql\GetChange.sql" />
     <EmbeddedResource Include="Sql\GetVariationFile.sql" />
+    <EmbeddedResource Include="Sql\GetAdm158SubsetDeliverableUnit.sql" />
     <EmbeddedResource Include="Sql\GetWo409SubsetDeliverableUnit.sql" />
     <EmbeddedResource Include="Sql\GetAssetDeliverableUnit.sql" />
   </ItemGroup>

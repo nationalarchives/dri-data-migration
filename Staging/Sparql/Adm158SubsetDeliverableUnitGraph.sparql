@@ -1,0 +1,42 @@
+﻿prefix ex: <http://id.example.com/schema/>
+
+construct {
+    ?subset ex:subsetReference ?subsetReference;
+        ex:adm158SubsetDriXml ?adm158SubsetDriXml;
+        ex:subsetHasPerson ?person.
+    ?person ex:personFamilyName ?personFamilyName;
+        ex:personAlternativeFamilyName ?personAlternativeFamilyName;
+        ex:personGivenName ?personGivenName;
+        ex:personAlternativeGivenName ?personAlternativeGivenName;
+        ex:personAge ?personAge;
+        ex:personHasBirthAddress ?birthAddress;
+        ex:personHasNavyMembership ?navyMembership.
+    ?birthAddress ex:parish ?parish;
+        ex:town ?town;
+        ex:county ?county;
+        ex:country ?country.
+    ?navyMembership ex:navyMembershipHasNavyDivision ?navyDivision.
+} where {
+    bind(@id as ?subsetReference)
+    ?subset ex:subsetReference ?subsetReference.
+    optional { ?subset ex:adm158SubsetDriXml ?adm158SubsetDriXml }
+    optional {
+        ?subset ex:subsetHasPerson ?person.
+        optional { ?person ex:personFamilyName ?personFamilyName }
+        optional { ?person ex:personAlternativeFamilyName ?personAlternativeFamilyName }
+        optional { ?person ex:personGivenName ?personGivenName }
+        optional { ?person ex:personAlternativeGivenName ?personAlternativeGivenName }
+        optional { ?person ex:personAge ?personAge }
+        optional {
+            ?person ex:personHasBirthAddress ?birthAddress.
+            optional { ?birthAddress ex:parish ?parish }
+            optional { ?birthAddress ex:town ?town }
+            optional { ?birthAddress ex:county ?county }
+            optional { ?birthAddress ex:country ?country }
+        }
+        optional {
+            ?person ex:personHasNavyMembership ?navyMembership.
+            optional { ?navyMembership ex:navyMembershipHasNavyDivision ?navyDivision }
+        }
+    }
+}

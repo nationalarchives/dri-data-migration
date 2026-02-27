@@ -25,6 +25,9 @@ public class SqlExporter : IDriSqlExporter
         embedded = new(currentAssembly, baseName);
     }
 
+    public IEnumerable<DriAdm158SubsetDeliverableUnit> GetAdm158SubsetDeliverableUnits(int offset, CancellationToken cancellationToken) =>
+        Get(EtlStageType.Adm158SubsetDeliverableUnit, offset, MapAdm158SubsetDeliverableUnit, cancellationToken);
+
     public IEnumerable<DriAssetDeliverableUnit> GetAssetDeliverableUnits(int offset, CancellationToken cancellationToken) =>
         Get(EtlStageType.AssetDeliverableUnit, offset, MapAssetDeliverableUnit, cancellationToken);
 
@@ -36,6 +39,9 @@ public class SqlExporter : IDriSqlExporter
 
     public IEnumerable<DriChange> GetChanges(int offset, CancellationToken cancellationToken) =>
         Get(EtlStageType.Change, offset, MapChange, cancellationToken);
+
+    private static DriAdm158SubsetDeliverableUnit MapAdm158SubsetDeliverableUnit(SqliteDataReader reader) =>
+            new(reader.GetString("CATALOGUEREFERENCE"), reader.GetString("XMLCLOB"));
 
     private static DriAssetDeliverableUnit MapAssetDeliverableUnit(SqliteDataReader reader) =>
         new(reader.GetString("DELIVERABLEUNITREF"), reader.GetString("CATALOGUEREFERENCE"),

@@ -93,10 +93,19 @@ public static class IngestVocabulary
     public static readonly IUriNode Face = new UriNode(new($"{TransNamespace}face"));
     public static readonly IUriNode OfficialNumber = new UriNode(new($"{TransNamespace}officialNumber"));
     public static readonly IUriNode Surname = new UriNode(new($"{TransNamespace}surname"));
+    public static readonly IUriNode SurnameOther = new UriNode(new($"{TransNamespace}surnameOther"));
     public static readonly IUriNode Forenames = new UriNode(new($"{TransNamespace}forenames"));
+    public static readonly IUriNode ForenamesOther = new UriNode(new($"{TransNamespace}forenamesOther"));
     public static readonly IUriNode PlaceOfBirth = new UriNode(new($"{TransNamespace}placeOfBirth"));
     public static readonly IUriNode BirthDate = new UriNode(new($"{TransNamespace}birthDate"));
     public static readonly IUriNode TransDate = new UriNode(new($"{TransNamespace}date"));
+    public static readonly IUriNode AgeYears = new UriNode(new($"{TransNamespace}ageYears"));
+    public static readonly IUriNode AgeMonths = new UriNode(new($"{TransNamespace}ageMonths"));
+    public static readonly IUriNode PlaceOfBirthParish = new UriNode(new($"{TransNamespace}placeOfBirthParish"));
+    public static readonly IUriNode PlaceOfBirthTown= new UriNode(new($"{TransNamespace}placeOfBirthTown"));
+    public static readonly IUriNode PlaceOfBirthCounty= new UriNode(new($"{TransNamespace}placeOfBirthCounty"));
+    public static readonly IUriNode PlaceOfBirthCountry= new UriNode(new($"{TransNamespace}placeOfBirthCountry"));
+    public static readonly IUriNode DivisionDescription = new UriNode(new($"{TransNamespace}divisionDescription"));
 
     public static readonly IUriNode County = new UriNode(new(TnaNamespaceWithSlash, "spatial/county"));
     public static readonly IUriNode Address = new UriNode(new(TnaNamespaceWithSlash, "spatial/address"));

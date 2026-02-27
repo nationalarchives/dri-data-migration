@@ -593,6 +593,14 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Battalion".
 
+:NavyMembership a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Navy membership".
+
+:NavyDivision a owl:Class;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Navy division".
+
 :AssetTagType a owl:Class;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset tag type".
@@ -643,6 +651,12 @@ this:schema a owl:Ontology;
 	rdfs:range :Subset;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Subset has narrower subset".
+
+:subsetHasPerson a owl:ObjectProperty;
+	rdfs:domain :Subset;
+	rdfs:range :Person;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Subset has person".
 
 :subsetHasAsset a owl:ObjectProperty, owl:InverseFunctionalProperty;
 	rdfs:domain :Subset;
@@ -1179,6 +1193,12 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Person has battalion membership".
 
+:personHasNavyMembership a owl:ObjectProperty;
+	rdfs:domain :Person;
+	rdfs:range :NavyMembership;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Person has Navy membership".
+
 :personHasContactPoint a owl:ObjectProperty;
 	rdfs:domain :Person;
 	rdfs:range :GeographicalPlace;
@@ -1221,6 +1241,12 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Battalion membership has battalion".
 
+:navyMembershipHasNavyDivision a owl:ObjectProperty, owl:FunctionalProperty;
+	rdfs:domain :NavyMembership;
+	rdfs:range :NavyDivision;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Navy membership has Navy division".
+
 
 ## Data type properties
 
@@ -1251,6 +1277,13 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Subset reference";
 	rdfs:comment "Unique reference of the :Subset. It is a catalogue reference.".
+
+:adm158SubsetDriXml a owl:DatatypeProperty;
+	rdfs:domain :Subset;
+	rdfs:range xsd:base64Binary;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "ADM 158 subset DRI XML";
+	rdfs:comment "Special case (ADM 158 series), where additional information is only available at the level of the subset in the source.".
 
 :assetName a owl:DatatypeProperty, owl:FunctionalProperty;
 	rdfs:seeAlso rico:title;
@@ -1949,6 +1982,38 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Geographical place name".
 
+:parish a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:seeAlso rico:location;
+	rdfs:domain :GeographicalPlace;
+	rdfs:subPropertyOf :name;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Parish".
+
+:town a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:seeAlso rico:location;
+	rdfs:domain :GeographicalPlace;
+	rdfs:subPropertyOf :name;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Town".
+
+:county a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:seeAlso rico:location;
+	rdfs:domain :GeographicalPlace;
+	rdfs:subPropertyOf :name;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "County".
+
+:country a owl:DatatypeProperty, owl:FunctionalProperty;
+	rdfs:seeAlso rico:location;
+	rdfs:domain :GeographicalPlace;
+	rdfs:subPropertyOf :name;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Country".
+
 :sealCategoryName a owl:DatatypeProperty;
 	rdfs:domain :SealCategory;
 	rdfs:subPropertyOf :name;
@@ -2017,12 +2082,32 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Person given name".
 
+:personAlternativeGivenName a owl:DatatypeProperty;
+	rdfs:domain :Person;
+	rdfs:subPropertyOf :name;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Person alternative given name".
+
 :personFamilyName a owl:DatatypeProperty;
 	rdfs:domain :Person;
 	rdfs:subPropertyOf :name;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Person family name".
+
+:personAlternativeFamilyName a owl:DatatypeProperty;
+	rdfs:domain :Person;
+	rdfs:subPropertyOf :name;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Person alternative family name".
+
+:personAge a owl:DatatypeProperty;
+	rdfs:domain :Person;
+	rdfs:range xsd:duration;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Person age".
 
 :nationalRegistrationNumber a owl:DatatypeProperty;
 	rdfs:domain :Person;
@@ -2044,6 +2129,13 @@ this:schema a owl:Ontology;
 	rdfs:range xsd:string;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Battalion name".
+
+:navyDivisionName a owl:DatatypeProperty;
+	rdfs:domain :NavyDivision;
+	rdfs:subPropertyOf :name;
+	rdfs:range xsd:string;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Navy division name".
 
 :kinshipVerbatim a owl:DatatypeProperty;
 	rdfs:domain :NextOfKinRelationship;

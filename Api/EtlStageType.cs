@@ -6,11 +6,12 @@ public enum EtlStageType
     Legislation = 1,
     GroundForRetention = 2,
     Subset = 3,
-    Asset = 4,
-    Variation = 5,
-    AssetDeliverableUnit = 6,
-    Wo409SubsetDeliverableUnit = 7,
-    VariationFile = 8,
-    SensitivityReview = 9,
-    Change = 10
+    Adm158SubsetDeliverableUnit = 4,
+    Asset = 5,
+    Variation = 6,
+    AssetDeliverableUnit = 7,
+    Wo409SubsetDeliverableUnit = 8,
+    VariationFile = 9,
+    SensitivityReview = 10,
+    Change = 11
 }

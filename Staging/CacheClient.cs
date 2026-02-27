@@ -24,6 +24,7 @@ public class CacheClient : ICacheClient
     private readonly string evidenceProviderSparql;
     private readonly string investigationSparql;
     private readonly string witnessSparql;
+    private readonly string navyDivisionSparql;
 
     private readonly string accessConditionsSparql;
     private readonly string legislationsSparql;
@@ -59,6 +60,7 @@ public class CacheClient : ICacheClient
         evidenceProviderSparql = embedded.GetSparql("GetEvidenceProvider");
         investigationSparql = embedded.GetSparql("GetInvestigation");
         witnessSparql = embedded.GetSparql("GetWitness");
+        navyDivisionSparql = embedded.GetSparql("GetNavyDivision");
 
         accessConditionsSparql = embedded.GetSparql("GetAccessConditions");
         legislationsSparql = embedded.GetSparql("GetLegislations");
@@ -190,6 +192,7 @@ public class CacheClient : ICacheClient
         CacheEntityKind.EvidenceProvider => new(evidenceProviderSparql, $"evidence-provider-{key}"),
         CacheEntityKind.Investigation => new(investigationSparql, $"investigation-{key}"),
         CacheEntityKind.Witness => new(witnessSparql, $"witness-{key}"),
+        CacheEntityKind.NavyDivision => new(navyDivisionSparql, $"navy-division-{key}"),
         _ => null
     };
 

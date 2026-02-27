@@ -1,6 +1,6 @@
 ﻿using Api;
-using Rdf;
 using Microsoft.Extensions.Logging;
+using Rdf;
 using System.Text;
 using VDS.RDF;
 using VDS.RDF.Nodes;
@@ -18,30 +18,30 @@ internal static class GraphAssert
         }
     }
 
-    internal static void Text(IGraph graph, INode id, string? value, IUriNode immediatePredicate)
+    internal static void Text(IGraph graph, INode id, string? value, IUriNode immediatePredicate, string? ignoreToken = null)
     {
-        if (!string.IsNullOrWhiteSpace(value))
+        if (!string.IsNullOrWhiteSpace(value) && (ignoreToken is null || value != ignoreToken))
         {
             graph.Assert(id, immediatePredicate, new LiteralNode(value.ReplaceLineEndings("\n")));
         }
     }
 
     internal static void Text(IGraph graph, INode id, IGraph rdf,
-        Dictionary<IUriNode, IUriNode> predicates)
+        Dictionary<IUriNode, IUriNode> predicates, string? ignoreToken = null)
     {
         foreach (var predicate in predicates)
         {
-            Text(graph, id, rdf, predicate.Key, predicate.Value);
+            Text(graph, id, rdf, predicate.Key, predicate.Value, ignoreToken);
         }
     }
 
     internal static void Text(IGraph graph, INode id, IGraph rdf,
-        IUriNode findPredicate, IUriNode immediatePredicate)
+        IUriNode findPredicate, IUriNode immediatePredicate, string? ignoreToken = null)
     {
         var found = rdf.GetSingleLiteral(findPredicate);
         if (found is not null)
         {
-            Text(graph, id, found.Value, immediatePredicate);
+            Text(graph, id, found.Value, immediatePredicate, ignoreToken);
         }
     }
 

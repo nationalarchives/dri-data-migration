@@ -16,5 +16,6 @@ public enum CacheEntityKind
     AssetRelation,
     EvidenceProvider,
     Investigation,
-    Witness
+    Witness,
+    NavyDivision
 }

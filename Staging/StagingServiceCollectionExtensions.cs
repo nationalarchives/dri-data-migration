@@ -18,6 +18,7 @@ public static class StagingServiceCollectionExtensions
             services.AddTransient<IStagingIngest<DriLegislation>, LegislationIngest>();
             services.AddTransient<IStagingIngest<DriGroundForRetention>, GroundForRetentionIngest>();
             services.AddTransient<IStagingIngest<DriSubset>, SubsetIngest>();
+            services.AddTransient<IStagingIngest<DriAdm158SubsetDeliverableUnit>, Adm158SubsetDeliverableUnitIngest>();
             services.AddTransient<IStagingIngest<DriAsset>, AssetIngest>();
             services.AddTransient<IStagingIngest<DriAssetDeliverableUnit>, AssetDeliverableUnitIngest>();
             services.AddTransient<IStagingIngest<DriWo409SubsetDeliverableUnit>, Wo409SubsetDeliverableUnitIngest>();

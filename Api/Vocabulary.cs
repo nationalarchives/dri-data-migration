@@ -10,11 +10,13 @@ public static class Vocabulary
     public static readonly IUriNode Subset = new UriNode(new(Namespace, "Subset"));
     public static readonly IUriNode SubsetName = new UriNode(new(Namespace, "subsetName"));
     public static readonly IUriNode SubsetReference = new UriNode(new(Namespace, "subsetReference"));
+    public static readonly IUriNode Adm158SubsetDriXml = new UriNode(new(Namespace, "adm158SubsetDriXml"));
     public static readonly IUriNode SubsetHasBroaderSubset = new UriNode(new(Namespace, "subsetHasBroaderSubset"));
     public static readonly IUriNode SubsetHasNarrowerSubset = new UriNode(new(Namespace, "subsetHasNarrowerSubset"));
     public static readonly IUriNode SubsetHasAsset = new UriNode(new(Namespace, "subsetHasAsset"));
     public static readonly IUriNode SubsetHasSensitivityReview = new UriNode(new(Namespace, "subsetHasSensitivityReview"));
     public static readonly IUriNode SubsetHasRetention = new UriNode(new(Namespace, "subsetHasRetention"));
+    public static readonly IUriNode SubsetHasPerson = new UriNode(new(Namespace, "subsetHasPerson"));
 
     public static readonly IUriNode Asset = new UriNode(new(Namespace, "Asset"));
     public static readonly IUriNode AssetDriId = new UriNode(new(Namespace, "assetDriId"));
@@ -208,6 +210,10 @@ public static class Vocabulary
     public static readonly IUriNode DateVerbatim = new UriNode(new(Namespace, "dateVerbatim"));
 
     public static readonly IUriNode GeographicalPlaceName = new UriNode(new(Namespace, "geographicalPlaceName"));
+    public static readonly IUriNode Parish = new UriNode(new(Namespace, "parish"));
+    public static readonly IUriNode Town = new UriNode(new(Namespace, "town"));
+    public static readonly IUriNode County = new UriNode(new(Namespace, "county"));
+    public static readonly IUriNode Country = new UriNode(new(Namespace, "country"));
 
     public static readonly IUriNode ImageSplit = new UriNode(new(Namespace, "ImageSplit"));
     public static readonly IUriNode CompositeImageSplit = new UriNode(new(Namespace, "CompositeImageSplit"));
@@ -235,16 +241,19 @@ public static class Vocabulary
 
     public static readonly IUriNode PersonFullName = new UriNode(new(Namespace, "personFullName"));
     public static readonly IUriNode PersonGivenName = new UriNode(new(Namespace, "personGivenName"));
+    public static readonly IUriNode PersonAlternativeGivenName = new UriNode(new(Namespace, "personAlternativeGivenName"));
     public static readonly IUriNode PersonFamilyName = new UriNode(new(Namespace, "personFamilyName"));
+    public static readonly IUriNode PersonAlternativeFamilyName = new UriNode(new(Namespace, "personAlternativeFamilyName"));
     public static readonly IUriNode NationalRegistrationNumber = new UriNode(new(Namespace, "nationalRegistrationNumber"));
     public static readonly IUriNode SeamanServiceNumber = new UriNode(new(Namespace, "seamanServiceNumber"));
+    public static readonly IUriNode PersonAge = new UriNode(new(Namespace, "personAge"));
     public static readonly IUriNode PersonHasBattalionMembership = new UriNode(new(Namespace, "personHasBattalionMembership"));
+    public static readonly IUriNode PersonHasNavyMembership = new UriNode(new(Namespace, "personHasNavyMembership"));
     public static readonly IUriNode PersonHasContactPoint = new UriNode(new(Namespace, "personHasContactPoint"));
     public static readonly IUriNode PersonHasBirthAddress = new UriNode(new(Namespace, "personHasBirthAddress"));
     public static readonly IUriNode PersonHasDateOfBirth = new UriNode(new(Namespace, "personHasDateOfBirth"));
     public static readonly IUriNode PersonHasNextOfKinRelationship = new UriNode(new(Namespace, "personHasNextOfKinRelationship"));
     public static readonly IUriNode NextOfKinRelationshipHasNextOfKin = new UriNode(new(Namespace, "nextOfKinRelationshipHasNextOfKin"));
-    public static readonly IUriNode BattalionMembershipHasBattalion = new UriNode(new(Namespace, "battalionMembershipHasBattalion"));
 
     public static readonly IUriNode NextOfKinRelationshipHasKinship = new UriNode(new(Namespace, "nextOfKinRelationshipHasKinship"));
     public static readonly IUriNode KinshipVerbatim = new UriNode(new(Namespace, "kinshipVerbatim"));
@@ -290,7 +299,11 @@ public static class Vocabulary
     public static readonly IUriNode Guardian = new UriNode(new(Namespace, "Guardian"));
     public static readonly IUriNode UndefinedKinship = new UriNode(new(Namespace, "UndefinedKinship"));
 
+    public static readonly IUriNode BattalionMembershipHasBattalion = new UriNode(new(Namespace, "battalionMembershipHasBattalion"));
     public static readonly IUriNode BattalionName = new UriNode(new(Namespace, "battalionName"));
+
+    public static readonly IUriNode NavyMembershipHasNavyDivision = new UriNode(new(Namespace, "navyMembershipHasNavyDivision"));
+    public static readonly IUriNode NavyDivisionName = new UriNode(new(Namespace, "navyDivisionName"));
 
     public static readonly IUriNode AssetHasAssetTagType = new UriNode(new(Namespace, "assetHasAssetTagType"));
     public static readonly IUriNode BornDigitalAsset = new UriNode(new(Namespace, "BornDigitalAsset"));

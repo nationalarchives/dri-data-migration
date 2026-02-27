@@ -14,6 +14,7 @@ public static class EtlServiceCollectionExtensions
             services.AddTransient<IEtl, EtlLegislation>();
             services.AddTransient<IEtl, EtlGroundForRetention>();
             services.AddTransient<IEtl, EtlSubset>();
+            services.AddTransient<IEtl, EtlAdm158SubsetDeliverableUnit>();
             services.AddTransient<IEtl, EtlAsset>();
             services.AddTransient<IEtl, EtlVariation>();
             services.AddTransient<IEtl, EtlAssetDeliverableUnit>();
