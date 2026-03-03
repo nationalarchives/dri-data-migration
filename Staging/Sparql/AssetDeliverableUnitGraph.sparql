@@ -289,6 +289,7 @@ construct {
     }
     optional {
         ?asset ex:sealAssetHasReverseStartDate ?sealReverseStartDate.
+        optional { ?sealReverseStartDate ex:dateVerbatim ?sealReverseStartDateVerbatim }
         optional { ?sealReverseStartDate ex:year ?sealReverseStartYear }
         optional { ?sealReverseStartDate ex:month ?sealReverseStartMonth }
         optional { ?sealReverseStartDate ex:day ?sealReverseStartDay }
