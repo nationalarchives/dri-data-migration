@@ -40,6 +40,15 @@ construct {
                 }
                 union
                 {
+                    ?adm158Subset a dri:DeliverableUnit;
+                        dri:parent ?subset.
+                    filter not exists {
+                        ?adm158Manifestation dri:file ?adm158File;
+                            dri:parent ?adm158Subset.
+                    }
+                }
+                union
+                {
                     filter not exists {
                         ?m dri:file ?f;
                             dri:parent ?subset.
