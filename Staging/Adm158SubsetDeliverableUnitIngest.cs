@@ -94,7 +94,7 @@ public class Adm158SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparql
         var placeOfBirthCounty = rdf.GetSingleText(IngestVocabulary.PlaceOfBirthCounty);
         var placeOfBirthCountry = rdf.GetSingleText(IngestVocabulary.PlaceOfBirthCountry);
 
-        var place = $"{SpaceOrComma(placeOfBirthParish)}{SpaceOrComma(placeOfBirthTown)}{SpaceOrComma(placeOfBirthCounty)}{SpaceOrComma(placeOfBirthCountry)}".Trim().Trim(',');
+        var place = $"Parish: {EmptyOrPlace(placeOfBirthParish)}, Town: {EmptyOrPlace(placeOfBirthTown)}, County: {EmptyOrPlace(placeOfBirthCounty)}, Country: {EmptyOrPlace(placeOfBirthCountry)}";
 
         var birthAddress = await cacheClient.CacheFetchOrNew(CacheEntityKind.GeographicalPlace,
             place, Vocabulary.GeographicalPlaceName, cancellationToken);
@@ -105,7 +105,7 @@ public class Adm158SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparql
         GraphAssert.Text(graph, birthAddress!, placeOfBirthCountry, Vocabulary.Country, "*");
     }
 
-    private static string SpaceOrComma(string? text) => string.IsNullOrWhiteSpace(text) || text == "*" ? string.Empty : $"{text}, ";
+    private static string EmptyOrPlace(string? text) => string.IsNullOrWhiteSpace(text) || text == "*" ? string.Empty : text;
 
     private async Task AddNavyAsync(IGraph graph, IGraph existing,
         IGraph rdf, IUriNode person, CancellationToken cancellationToken)
