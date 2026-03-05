@@ -44,7 +44,7 @@ join tempdu d on d.DELIVERABLEUNITREF = dm.DELIVERABLEUNITREF
 where f.DELETED = 'F' and f.DIRECTORY = 'F' and
     dm.DELETED = 'F' and (dm.ORIGINALITY = 'T' or d.Code != 'WO 409');
 
-update auditchange set DATETIME = substr(DATETIME, 0, instr(DATETIME, '[')) where instr(DATETIME, '[') > 0
+update auditchange set DATETIME = substr(DATETIME, 0, instr(DATETIME, '[')) where instr(DATETIME, '[') > 0;
 
 create index dufile_ix on dufile (Code);
 create index dufile_ix2 on dufile (DELIVERABLEUNITREF);
