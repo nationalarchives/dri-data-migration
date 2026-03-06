@@ -64,7 +64,7 @@ public static class IngestVocabulary
     public static readonly IUriNode ImageCrop = new UriNode(new($"{TnaNamespace}imageCrop"));
     public static readonly IUriNode ImageDeskew = new UriNode(new($"{TnaNamespace}imageDeskew"));
     public static readonly IUriNode Ordinal = new UriNode(new($"{TnaNamespace}ordinal"));
-    
+
     public static readonly IUriNode Comment = new UriNode(new($"{NamespaceMapper.RDFS}comment"));
 
     public static readonly IUriNode Title = new UriNode(new(DctermsNamespace, "title"));
@@ -102,9 +102,9 @@ public static class IngestVocabulary
     public static readonly IUriNode AgeYears = new UriNode(new($"{TransNamespace}ageYears"));
     public static readonly IUriNode AgeMonths = new UriNode(new($"{TransNamespace}ageMonths"));
     public static readonly IUriNode PlaceOfBirthParish = new UriNode(new($"{TransNamespace}placeOfBirthParish"));
-    public static readonly IUriNode PlaceOfBirthTown= new UriNode(new($"{TransNamespace}placeOfBirthTown"));
-    public static readonly IUriNode PlaceOfBirthCounty= new UriNode(new($"{TransNamespace}placeOfBirthCounty"));
-    public static readonly IUriNode PlaceOfBirthCountry= new UriNode(new($"{TransNamespace}placeOfBirthCountry"));
+    public static readonly IUriNode PlaceOfBirthTown = new UriNode(new($"{TransNamespace}placeOfBirthTown"));
+    public static readonly IUriNode PlaceOfBirthCounty = new UriNode(new($"{TransNamespace}placeOfBirthCounty"));
+    public static readonly IUriNode PlaceOfBirthCountry = new UriNode(new($"{TransNamespace}placeOfBirthCountry"));
     public static readonly IUriNode DivisionDescription = new UriNode(new($"{TransNamespace}divisionDescription"));
 
     public static readonly IUriNode County = new UriNode(new(TnaNamespaceWithSlash, "spatial/county"));
@@ -117,6 +117,6 @@ public static class IngestVocabulary
     public static readonly IUriNode Relation = new UriNode(new(TnaNamespaceWithSlash, "person/relation"));
     public static readonly IUriNode Person = new UriNode(new(TnaNamespaceWithSlash, "person/person"));
     public static readonly IUriNode NameString = new UriNode(new(TnaNamespaceWithSlash, "person/nameString"));
-    public static readonly IUriNode Name= new UriNode(new(TnaNamespaceWithSlash, "person/name"));
+    public static readonly IUriNode Name = new UriNode(new(TnaNamespaceWithSlash, "person/name"));
     public static readonly IUriNode PreviousMilitaryService = new UriNode(new("http://nationalarchives.gov.uk/dataset/homeguard/metadata/previousMilitaryService"));
 }
