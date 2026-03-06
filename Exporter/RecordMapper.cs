@@ -79,7 +79,8 @@ internal static class RecordMapper
         var copyrightTitles = CopyrightMapper.GetCopyrights(asset);
         var relationships = RelationMapper.GetRelations(asset, assetReference, redactedPresentationSequence, isRedacted);
         var recordId = GetRecordId(asset, variations)!;
-        var person = PersonMapper.GetIndividual(asset);
+        var person = PersonMapper.GetFromAsset(asset);
+        var people = PersonMapper.GetFromSubset(asset);
         var coveringDate = CoveringDateMapper.GetDate(asset, assetModifiedAt);
         var variation = variations.FirstOrDefault()!;
         var variationAlternativeName = asset.GetSingleText(variation, Vocabulary.VariationAlternativeName);
@@ -190,6 +191,7 @@ internal static class RecordMapper
             NextOfKinName = person?.NextOfKinName,
             NextOfKinTypes = person?.NextOfKinTypes,
             SeamanServiceNumber = person?.SeamanServiceNumber,
+            People = people,
             Note = variationNote,
             PhysicalConditionDescription = variationPhysicalConditionDescription,
             ReferenceGoogleId = variationReferenceGoogleId,

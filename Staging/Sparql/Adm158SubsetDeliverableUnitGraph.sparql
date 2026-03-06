@@ -3,6 +3,7 @@
 construct {
     ?subset ex:subsetReference ?subsetReference;
         ex:adm158SubsetDriXml ?adm158SubsetDriXml;
+        ex:relatedSubsetHasAsset ?asset;
         ex:subsetHasPerson ?person.
     ?person ex:personFamilyName ?personFamilyName;
         ex:personAlternativeFamilyName ?personAlternativeFamilyName;
@@ -20,6 +21,7 @@ construct {
     bind(@id as ?subsetReference)
     ?subset ex:subsetReference ?subsetReference.
     optional { ?subset ex:adm158SubsetDriXml ?adm158SubsetDriXml }
+    optional { ?subset ex:relatedSubsetHasAsset ?asset }
     optional {
         ?subset ex:subsetHasPerson ?person.
         optional { ?person ex:personFamilyName ?personFamilyName }

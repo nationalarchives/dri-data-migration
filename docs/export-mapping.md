@@ -109,6 +109,16 @@ JSON schema: [file](export-json-schema.json)
 | NextOfKinName | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personHasNextOfKinRelationship/ex:nextOfKinRelationshipHasNextOfKin/ex:personFullName |
 | NextOfKinTypes | Last URI segments of (ex:assetHasPerson\|ex:assetHasVeteran)/ex:personHasNextOfKinRelationship/ex:nextOfKinRelationshipHasKinship |
 | SeamanServiceNumber | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:seamanServiceNumber |
+| People.Parish | ex:assetHasRelatedSubset/ex:subsetHasPerson/ex:parish |
+| People.Town | ex:assetHasRelatedSubset/ex:subsetHasPerson/ex:town |
+| People.County | ex:assetHasRelatedSubset/ex:subsetHasPerson/ex:county |
+| People.Country | ex:assetHasRelatedSubset/ex:subsetHasPerson/ex:country |
+| People.NavyDivisionName | ex:assetHasRelatedSubset/ex:subsetHasPerson/ex:personHasNavyMembership/ex:navyMembershipHasNavyDivision/ex:navyDivisionName |
+| People.Age | ex:assetHasRelatedSubset/ex:subsetHasPerson/ex:personAge |
+| People.GivenName | ex:assetHasRelatedSubset/ex:subsetHasPerson/ex:personGivenName |
+| People.FamilyName | ex:assetHasRelatedSubset/ex:subsetHasPerson/ex:personFamilyName |
+| People.AlternativeGivenName | ex:assetHasRelatedSubset/ex:subsetHasPerson/ex:personAlternativeGivenName |
+| People.AlternativeFamilyName | ex:assetHasRelatedSubset/ex:subsetHasPerson/ex:personAlternativeFamilyName |
 | Note | first ex:assetHasVariation/ex:variationNote |
 | PhysicalConditionDescription | first ex:assetHasVariation/ex:variationPhysicalConditionDescription |
 | ReferenceGoogleId | first ex:assetHasVariation/ex:variationReferenceGoogleId |

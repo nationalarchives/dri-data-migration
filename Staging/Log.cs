@@ -142,4 +142,7 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 46, Level = LogLevel.Warning, Message = "Hash function {hash} not matched")]
     internal static partial void HashFunctionNotResolved(this ILogger logger, string hash);
+
+    [LoggerMessage(EventId = 47, Level = LogLevel.Debug, Message = "Subset {subset} missing RDF in the XML")]
+    internal static partial void SubsetXmlMissingRdf(this ILogger logger, Uri subset);
 }

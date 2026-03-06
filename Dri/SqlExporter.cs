@@ -41,7 +41,7 @@ public class SqlExporter : IDriSqlExporter
         Get(EtlStageType.Change, offset, MapChange, cancellationToken);
 
     private static DriAdm158SubsetDeliverableUnit MapAdm158SubsetDeliverableUnit(SqliteDataReader reader) =>
-            new(reader.GetString("CATALOGUEREFERENCE"), reader.GetString("XMLCLOB"));
+            new(reader.GetString("CATALOGUEREFERENCE"), reader.GetString("asset"), reader.GetString("XMLCLOB"));
 
     private static DriAssetDeliverableUnit MapAssetDeliverableUnit(SqliteDataReader reader) =>
         new(reader.GetString("DELIVERABLEUNITREF"), reader.GetString("CATALOGUEREFERENCE"),

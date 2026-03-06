@@ -27,6 +27,15 @@ public class Adm158SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparql
 
         var graph = new Graph();
         graph.Assert(id, Vocabulary.SubsetReference, driId);
+        
+        var asset = await cacheClient.CacheFetch(CacheEntityKind.Asset, dri.AssetReference, cancellationToken);
+        if (asset is null)
+        {
+            logger.AssetNotFound(dri.AssetReference);
+            return null;
+        }
+        graph.Assert(id, Vocabulary.RelatedSubsetHasAsset, asset);
+        
         if (!string.IsNullOrEmpty(dri.Xml))
         {
             GraphAssert.Base64(graph, id, dri.Xml, Vocabulary.Adm158SubsetDriXml);
@@ -45,7 +54,7 @@ public class Adm158SubsetDeliverableUnitIngest(ICacheClient cacheClient, ISparql
         var rdf = rdfXmlLoader.GetRdf(doc);
         if (rdf is null)
         {
-            logger.AssetXmlMissingRdf(id.Uri);
+            logger.SubsetXmlMissingRdf(id.Uri);
             return;
         }
 

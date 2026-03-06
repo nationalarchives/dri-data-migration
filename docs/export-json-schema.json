@@ -635,6 +635,84 @@
 				"null"
 			]
 		},
+		"people": {
+			"type": [
+				"array",
+				"null"
+			],
+			"items": {
+				"type": [
+					"object",
+					"null"
+				],
+				"properties": {
+					"url": {
+						"type": "string",
+						"format": "uri"
+					},
+					"parish": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"town": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"county": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"country": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"navyDivisionName": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"age": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"givenName": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"familyName": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"alternativeGivenName": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"alternativeFamilyName": {
+						"type": [
+							"string",
+							"null"
+						]
+					}
+				}
+			}
+		},
 		"battalionName": {
 			"type": [
 				"string",

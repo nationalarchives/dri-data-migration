@@ -72,6 +72,7 @@ construct {
         ex:sealAssetHasReverseEndDate ?sealReverseEndDate;
         ex:assetHasChange ?change;
         ex:assetHasSubset ?subset;
+        ex:assetHasRelatedSubset ?relatedSubset;
         ex:assetHasVariation ?variation;
         ex:assetHasSensitivityReview ?sr;
         ?assetPersonPredicate ?person.
@@ -91,6 +92,7 @@ construct {
         ex:subsetHasSensitivityReview ?srsb.
     ?broaderRetention ex:importLocation ?sbImportLocation.
     ?srsb ex:sensitivityReviewSensitiveName ?sbSensitivityReviewSensitiveName.
+    ?relatedSubset ex:subsetHasPerson ?person.
     ?variation ex:variationDriId ?variationDriId;
         ex:variationName ?variationName;
         ex:variationAlternativeName ?variationAlternativeName;
@@ -251,21 +253,31 @@ construct {
     ?person ex:personGivenName ?personGivenName;
         ex:personFamilyName ?personFamilyName;
         ex:personFullName ?personFullName;
+        ex:personAlternativeFamilyName ?personAlternativeFamilyName;
+        ex:personAlternativeGivenName ?personAlternativeGivenName;
+        ex:personAge ?personAge;
         ex:personHasContactPoint ?personHasContactPoint;
         ex:personHasDateOfBirth ?dateOfBirth;
         ex:personHasBirthAddress ?personHasBirthAddress;
         ex:nationalRegistrationNumber ?nationalRegistrationNumber;
         ex:seamanServiceNumber ?seamanServiceNumber;
         ex:personHasBattalionMembership ?battalionMembership;
+        ex:personHasNavyMembership ?navyMembership;
         ex:personHasNextOfKinRelationship ?nextOfKinRelationship.
     ?personHasContactPoint ex:geographicalPlaceName ?personHasContactPointPlaceName.
     ?dateOfBirth ex:dateVerbatim ?dateOfBirthDateVerbatim;
         ex:year ?dateOfBirthYear;
         ex:month ?dateOfBirthMonth;
         ex:day ?dateOfBirthDay.
-    ?personHasBirthAddress ex:geographicalPlaceName ?personHasBirthAddressPlaceName.
+    ?personHasBirthAddress ex:geographicalPlaceName ?personHasBirthAddressPlaceName;
+        ex:parish ?parish;
+        ex:town ?town;
+        ex:county ?county;
+        ex:country ?country.
     ?battalionMembership ex:battalionMembershipHasBattalion ?battalionMembershipHasBattalion.
     ?battalionMembershipHasBattalion ex:battalionName ?battalionName.
+    ?navyMembership ex:navyMembershipHasNavyDivision ?navyDivision.
+    ?navyDivision ex:navyDivisionName ?navyDivisionName.
     ?nextOfKinRelationship ex:nextOfKinRelationshipHasNextOfKin ?nextOfKinRelationshipHasNextOfKin;
         ex:nextOfKinRelationshipHasKinship ?nextOfKinRelationshipHasKinship.
     ?nextOfKinRelationshipHasNextOfKin ex:personFullName ?nextOfKinPersonFullName.
@@ -510,6 +522,29 @@ construct {
                     ?srsb ex:sensitivityReviewSensitiveName ?sbSensitivityReviewSensitiveName.
                     filter not exists { ?futureSrsb ex:sensitivityReviewHasPastSensitivityReview ?srsb }
                 }
+            }
+        }
+    }
+    optional {
+        ?asset ex:assetHasRelatedSubset ?relatedSubset.
+        ?relatedSubset ex:subsetHasPerson ?person.
+        optional { ?person ex:personFamilyName ?personFamilyName }
+        optional { ?person ex:personGivenName ?personGivenName }
+        optional { ?person ex:personAlternativeFamilyName ?personAlternativeFamilyName }
+        optional { ?person ex:personAlternativeGivenName ?personAlternativeGivenName }
+        optional { ?person ex:personAge ?personAge }
+        optional {
+            ?person ex:personHasBirthAddress ?personHasBirthAddress.
+            optional { ?personHasBirthAddress ex:parish ?parish }
+            optional { ?personHasBirthAddress ex:town ?town }
+            optional { ?personHasBirthAddress ex:county ?county }
+            optional { ?personHasBirthAddress ex:country ?country }
+        }
+        optional {
+            ?person ex:personHasNavyMembership ?navyMembership.
+            optional {
+                ?navyMembership ex:navyMembershipHasNavyDivision ?navyDivision.
+                ?navyDivision ex:navyDivisionName ?navyDivisionName.
             }
         }
     }

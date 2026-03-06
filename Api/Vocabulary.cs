@@ -14,6 +14,7 @@ public static class Vocabulary
     public static readonly IUriNode SubsetHasBroaderSubset = new UriNode(new(Namespace, "subsetHasBroaderSubset"));
     public static readonly IUriNode SubsetHasNarrowerSubset = new UriNode(new(Namespace, "subsetHasNarrowerSubset"));
     public static readonly IUriNode SubsetHasAsset = new UriNode(new(Namespace, "subsetHasAsset"));
+    public static readonly IUriNode RelatedSubsetHasAsset = new UriNode(new(Namespace, "relatedSubsetHasAsset"));
     public static readonly IUriNode SubsetHasSensitivityReview = new UriNode(new(Namespace, "subsetHasSensitivityReview"));
     public static readonly IUriNode SubsetHasRetention = new UriNode(new(Namespace, "subsetHasRetention"));
     public static readonly IUriNode SubsetHasPerson = new UriNode(new(Namespace, "subsetHasPerson"));

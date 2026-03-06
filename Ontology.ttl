@@ -671,6 +671,20 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Asset has subset".
 
+:relatedSubsetHasAsset a owl:ObjectProperty;
+	rdfs:domain :Subset;
+	rdfs:range :Asset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Related subset has asset".
+
+:assetHasRelatedSubset a owl:ObjectProperty;
+	owl:inverseOf :relatedSubsetHasAsset;
+	rdfs:domain :Asset;
+	rdfs:range :Subset;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Asset has related subset";
+	rdfs:comment "Special case (ADM 158 series), where additional information is only available at the level of the subset which is under asset level.".
+
 :assetHasLanguage a owl:ObjectProperty;
 	rdfs:seeAlso rico:hasOrHadLanguage;
 	rdfs:domain :Asset;

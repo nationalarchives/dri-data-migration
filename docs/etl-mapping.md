@@ -70,6 +70,7 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | --- | --- |
 | _SQLite_ | |
 | deliverableunit.CATALOGUEREFERENCE | ex:subsetReference |
+| deliverableunit.CATALOGUEREFERENCE | ex:relatedSubsetHasAsset |
 | xmlmetadata.XMLCLOB | ex:adm158SubsetDriXml |
 | _XMLCLOB_ | |
 | trans:surname | ex:subsetHasPerson/ex:personFamilyName |

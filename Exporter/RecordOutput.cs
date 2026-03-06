@@ -84,6 +84,7 @@ public class RecordOutput
     public string? BirthAddress { get; set; }
     public string? NationalRegistrationNumber { get; set; }
     public string? SeamanServiceNumber { get; set; }
+    public IEnumerable<Person>? People { get; set; }
     public string? BattalionName { get; set; }
     public string? NextOfKinName { get; set; }
     public IEnumerable<string>? NextOfKinTypes { get; set; }
@@ -209,6 +210,30 @@ public class RecordOutput
     {
         public required Uri Url { get; set; }
         public string? Reference { get; set; }
+    }
+
+    public class Person
+    {
+        public string? GivenName { get; set; }
+        public string? FamilyName { get; set; }
+        public string? AlternativeGivenName { get; set; }
+        public string? AlternativeFamilyName { get; set; }
+        public string? FullName { get; set; }
+        public string? Address { get; set; }
+        public string? BirthAddress { get; set; }
+        public string? Parish { get; set; }
+        public string? Town { get; set; }
+        public string? County { get; set; }
+        public string? Country { get; set; }
+        public string? DateOfBirth { get; set; }
+        public string? Age { get; set; }
+        public string? NationalRegistrationNumber { get; set; }
+        public string? SeamanServiceNumber { get; set; }
+        public string? BattalionName { get; set; }
+        public string? NavyDivisionName { get; set; }
+        public string? NextOfKinName { get; set; }
+        public IEnumerable<string>? NextOfKinTypes { get; set; }
+        public bool? IsVeteran { get; set; }
     }
 
     public record RecordRelationship(RelationshipType Relationship, string? Reference, string? Description = null);
