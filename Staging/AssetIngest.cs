@@ -40,7 +40,7 @@ public class AssetIngest(ICacheClient cacheClient, ISparqlClient sparqlClient,
         {
             var transfer = existing.GetSingleUriNode(id, Vocabulary.AssetHasTransfer) ?? CacheClient.NewId;
             graph.Assert(id, Vocabulary.AssetHasTransfer, transfer);
-            var bodyName = dri.TransferringBody.LastSegment().Replace('_', ' ');
+            var bodyName = dri.TransferringBody.LastSegment().Replace('_', ' ').Replace('+', ' ');
             var bodyId = await cacheClient.CacheFetchOrNew(CacheEntityKind.FormalBody, bodyName, Vocabulary.FormalBodyName, cancellationToken);
             graph.Assert(transfer, Vocabulary.TransferHasFormalBody, bodyId);
         }
@@ -48,7 +48,7 @@ public class AssetIngest(ICacheClient cacheClient, ISparqlClient sparqlClient,
         {
             var creation = existing.GetSingleUriNode(id, Vocabulary.AssetHasCreation) ?? CacheClient.NewId;
             graph.Assert(id, Vocabulary.AssetHasCreation, creation);
-            var bodyName = dri.CreationBody.LastSegment().Replace('_', ' ');
+            var bodyName = dri.CreationBody.LastSegment().Replace('_', ' ').Replace('+', ' ');
             var bodyId = await cacheClient.CacheFetchOrNew(CacheEntityKind.FormalBody, bodyName, Vocabulary.FormalBodyName, cancellationToken);
             graph.Assert(creation, Vocabulary.CreationHasFormalBody, bodyId);
         }
