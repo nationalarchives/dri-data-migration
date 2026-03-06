@@ -51,12 +51,13 @@ public sealed class Adm158SubsetDeliverableUnitIngestTest
         	</Metadata>
         </DeliverableUnit>
         """;
-    private readonly DriAdm158SubsetDeliverableUnit dri = new("ADM/158/1/2/3", xml);
+    private readonly DriAdm158SubsetDeliverableUnit dri = new("ADM/158/1/2/3", "ADM/158/1/2", xml);
     private readonly FakeLogger<Adm158SubsetDeliverableUnitIngest> logger = new();
     private readonly Mock<ISparqlClient> client = new();
     private readonly Mock<ICacheClient> cache;
     private readonly IUriNode address = CacheClient.NewId;
     private readonly IUriNode membership = CacheClient.NewId;
+    private readonly IUriNode asset = CacheClient.NewId;
     private readonly IMeterFactory meterFactory;
 
     public Adm158SubsetDeliverableUnitIngestTest()
@@ -66,6 +67,7 @@ public sealed class Adm158SubsetDeliverableUnitIngestTest
             Vocabulary.GeographicalPlaceName, CancellationToken.None)).ReturnsAsync(address);
         cache.Setup(c => c.CacheFetchOrNew(CacheEntityKind.NavyDivision, It.IsAny<string>(),
             Vocabulary.NavyDivisionName, CancellationToken.None)).ReturnsAsync(membership);
+        cache.Setup(c => c.CacheFetch(CacheEntityKind.Asset, It.IsAny<string>(), CancellationToken.None)).ReturnsAsync(asset);
 
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddMetrics();
@@ -94,7 +96,7 @@ public sealed class Adm158SubsetDeliverableUnitIngestTest
 
         recordIngestedCount.Should().Be(1);
         client.Verify(c => c.ApplyDiffAsync(
-            It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 11 && !r.RemovedTriples.Any()),
+            It.Is<GraphDiffReport>(r => r.AddedTriples.Count() == 12 && !r.RemovedTriples.Any()),
             CancellationToken.None), Times.Once);
     }
 }
