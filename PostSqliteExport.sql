@@ -1,4 +1,7 @@
 create index deliverableunit_ix on deliverableunit (DELETED);
+create index deliverableunit_ix2 on deliverableunit (DELIVERABLEUNITREF);
+create index deliverableunit_ix3 on deliverableunit (METADATAREF);
+create index deliverableunit_ix4 on deliverableunit (PARENTREF);
 create index deliverableunitmanifestation_ix on deliverableunitmanifestation (DELETED, ACTIVE);
 create index manifestationfile_ix on manifestationfile (MANIFESTATIONREF);
 create index digitalfile_ix on digitalfile (FILEREF, DELETED);
