@@ -16,6 +16,10 @@ select ?t ?importLocation ?variationName ?assetModifiedAt ?endCoveringDate where
             ex:assetHasVariation ?variation.
         ?variation ex:variationName ?varName.
         optional { ?variation ex:variationAlternativeName ?variationAlternativeName }
+        optional {
+            ?variation ex:redactedVariationSequence ?ignore;
+                ex:variationModifiedAt ?variationModifiedAt.
+        }
         optional { ?asset ex:assetHasRetention/ex:importLocation ?importFolder }
         optional { ?asset ex:assetModifiedAt ?modifiedAt }
         optional { ?asset ex:assetAlternativeModifiedAt ?assetAlternativeModifiedAt }
@@ -37,7 +41,7 @@ select ?t ?importLocation ?variationName ?assetModifiedAt ?endCoveringDate where
         bind(ex:Variation as ?t)
         bind(coalesce(?variationAlternativeName, ?varName) as ?variationName)
         bind(concat(coalesce(?importFolder, ?id), '/', ?variationName) as ?importLocation)
-        bind(coalesce(?assetAlternativeModifiedAt, ?modifiedAt) as ?assetModifiedAt)
+        bind(coalesce(?variationModifiedAt, ?assetAlternativeModifiedAt, ?modifiedAt) as ?assetModifiedAt)
     }
 }
 order by ?importLocation
