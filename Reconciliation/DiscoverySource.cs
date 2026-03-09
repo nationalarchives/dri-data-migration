@@ -37,7 +37,7 @@ public class DiscoverySource(HttpClient httpClient, ILogger<DiscoverySource> log
         logger.GetDiscoveryRecordsPage(batchStartMark);
         var builder = new UriBuilder(searchRecordsUri)
         {
-            Query = $"sps.recordSeries={code}&sps.batchStartMark={batchStartMark}&sps.resultsPageSize=1000&sps.sortByOption=REFERENCE_ASCENDING"
+            Query = $"sps.recordSeries={code}&sps.batchStartMark={batchStartMark}&sps.searchQuery=*&sps.resultsPageSize=1000&sps.sortByOption=REFERENCE_ASCENDING"
         };
 
         return await httpClient.GetFromJsonAsync<DiscoverySearchRecordsResponse>(builder.Uri, cancellationToken);
