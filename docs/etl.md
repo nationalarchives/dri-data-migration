@@ -90,11 +90,11 @@ Debug with `Migration/Properties/launchSettings.json`
    [Data comes from the DRI triplestore](https://github.com/nationalarchives/dri-data-migration/blob/main/Dri/Sparql/GetGroundsForRetentionAsync.sparql).
 4. [Subsets](https://github.com/nationalarchives/dri-data-migration/blob/main/docs/etl-mapping.md#sequence-step-4)\
    [Data comes from the DRI triplestore](https://github.com/nationalarchives/dri-data-migration/blob/main/Dri/Sparql/GetSubsetsByCodeAsync.sparql).
-5. [`ADM 158` subset (deliverable units)](https://github.com/nationalarchives/dri-data-migration/blob/main/docs/etl-mapping.md#sequence-step-5)\
+5. [Assets](https://github.com/nationalarchives/dri-data-migration/blob/main/docs/etl-mapping.md#sequence-step-6)\
+   [Data comes from the DRI triplestore](https://github.com/nationalarchives/dri-data-migration/blob/main/Dri/Sparql/GetAssetsByCodeAsync.sparql).
+6. [`ADM 158` subset (deliverable units)](https://github.com/nationalarchives/dri-data-migration/blob/main/docs/etl-mapping.md#sequence-step-6)\
    Only applies to `ADM 158` series. Enhances data ingested in step 4 by parsing XML stored in the SQL database.
    [Data comes from the SQLite](https://github.com/nationalarchives/dri-data-migration/blob/main/Dri/Sql/GetAdm158SubsetDeliverableUnit.sql).
-6. [Assets](https://github.com/nationalarchives/dri-data-migration/blob/main/docs/etl-mapping.md#sequence-step-6)\
-   [Data comes from the DRI triplestore](https://github.com/nationalarchives/dri-data-migration/blob/main/Dri/Sparql/GetAssetsByCodeAsync.sparql).
 7. [Variations](https://github.com/nationalarchives/dri-data-migration/blob/main/docs/etl-mapping.md#sequence-step-7)\
    [Data comes from the DRI triplestore](https://github.com/nationalarchives/dri-data-migration/blob/main/Dri/Sparql/GetVariationsByCodeAsync.sparql).
 8. [Assets (deliverable units)](https://github.com/nationalarchives/dri-data-migration/blob/main/docs/etl-mapping.md#sequence-step-8)\

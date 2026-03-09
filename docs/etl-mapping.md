@@ -61,7 +61,7 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | dri:DeliverableUnit (dri:parent/rdfs:label) or dri:DeliverableUnit (dri:hasDirectory/rdfs:label) or series code | ex:subsetHasBroaderSubset/ex:subsetReference |
 | dri:DeliverableUnit (dri:hasDirectory/rdfs:label) | ex:subsetHasRetention/ex:importLocation |
 
-### Sequence step 5
+### Sequence step 6
 
 Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main/Dri/Sql/GetAdm158SubsetDeliverableUnit.sql)\
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/Adm158SubsetDeliverableUnitGraph.sparql)
@@ -86,7 +86,7 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 
 ## Asset
 
-### Sequence step 6
+### Sequence step 5
 
 Source: [query](https://github.com/nationalarchives/dri-data-migration/blob/main/Dri/Sparql/GetAsset.sparql)\
 Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main/Staging/Sparql/AssetGraph.sparql)
