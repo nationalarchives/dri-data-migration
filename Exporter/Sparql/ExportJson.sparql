@@ -101,6 +101,7 @@ construct {
         ex:presentationVariationSequence ?presentationVariationSequence;
         ex:variationSequence ?variationSequence;
         ex:variationSizeBytes ?variationSizeBytes;
+        ex:variationModifiedAt ?variationModifiedAt;
         ex:variationNote ?variationNote;
         ex:variationRelativeLocation ?variationRelativeLocation;
         ex:variationPhysicalConditionDescription ?variationPhysicalConditionDescription;
@@ -565,6 +566,7 @@ construct {
         optional { ?variation ex:presentationVariationSequence ?presentationVariationSequence }
         optional { ?variation ex:variationSequence ?variationSequence }
         optional { ?variation ex:variationSizeBytes ?variationSizeBytes }
+        optional { ?variation ex:variationModifiedAt ?variationModifiedAt }
         optional {
             ?variation ex:variationHasDatedNote ?datedNote.
             optional { ?datedNote ex:archivistNote ?archivistNote }

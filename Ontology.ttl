@@ -1722,6 +1722,13 @@ this:schema a owl:Ontology;
 	rdfs:isDefinedBy this:schema;
 	rdfs:label "Variation size bytes".
 
+:variationModifiedAt a owl:DatatypeProperty;
+	rdfs:seeAlso rico:wasLastUpdatedAtDate;
+	rdfs:domain :Variation;
+	rdfs:range xsd:dateTime;
+	rdfs:isDefinedBy this:schema;
+	rdfs:label "Variation modified at".
+
 :checksum a owl:DatatypeProperty;
 	rdfs:domain :VariationDataIntegrityCalculation;
 	rdfs:range xsd:string;

@@ -1,6 +1,7 @@
 ﻿using Api;
 using Microsoft.Extensions.Logging;
 using Rdf;
+using System.Globalization;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 
@@ -33,6 +34,19 @@ internal class VariationFileXmlIngest(ILogger logger, ICacheClient cacheClient)
             [IngestVocabulary.Description] = IngestVocabulary.Description //TODO: remove after checking
         });
         GraphAssert.Integer(logger, graph, id, rdf, IngestVocabulary.Ordinal, Vocabulary.VariationSequence);
+
+        var modified = rdf.GetSingleText(IngestVocabulary.Modified);
+        if (!string.IsNullOrEmpty(modified))
+        {
+            if (DateTimeOffset.TryParse(modified, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var modifiedDT))
+            {
+                GraphAssert.DateTime(graph, id, modifiedDT, Vocabulary.VariationModifiedAt);
+            }
+            else
+            {
+                logger.UnrecognizedDateFormat(modified);
+            }
+        }
 
         await GraphAssert.ExistingOrNewWithRelationshipAsync(cacheClient, graph, id, rdf,
             IngestVocabulary.ScanLocation, CacheEntityKind.GeographicalPlace,

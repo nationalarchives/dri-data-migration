@@ -45,7 +45,7 @@ JSON schema: [file](export-json-schema.json)
 | HeldBy | ex:assetHasRetention/ex:retentionHasFormalBody/ex:formalBodyName |
 | CreatedBy | ex:assetHasCreation/ex:creationHasFormalBody/ex:formalBodyName |
 | TransferredBy | ex:assetHasTransfer/ex:transferHasFormalBody/ex:formalBodyName |
-| DateLastModified  | ex:assetModifiedAt |
+| DateLastModified  | ex:assetModifiedAt or when redacted and value exists ex:assetHasVariation/ex:variationModifiedAt |
 | CuratedModifiedAt | ex:assetAlternativeModifiedAt |
 | CuratedDateStart | ex:assetHasAlternativeModifiedDateStart (ex:year, ex:month, ex:day) |
 | CuratedDateEnd | ex:assetHasAlternativeModifiedDateEnd (ex:year, ex:month, ex:day) |

@@ -104,6 +104,11 @@ internal static class RecordMapper
                 archivistNoteDate = YmdMapper.GetTextDate(asset, datedNote, Vocabulary.DatedNoteHasDate);
             }
         }
+        if (redactedPresentationSequence is not null)
+        {
+            var variationModifiedAt = asset.GetSingleDate(variation, Vocabulary.VariationModifiedAt);
+            assetModifiedAt = variationModifiedAt ?? assetModifiedAt;
+        }
 
         return new()
         {

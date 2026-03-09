@@ -114,6 +114,7 @@ public static class Vocabulary
     public static readonly IUriNode VariationReferenceParentGoogleId = new UriNode(new(Namespace, "variationReferenceParentGoogleId"));
     public static readonly IUriNode VariationSequence = new UriNode(new(Namespace, "variationSequence"));
     public static readonly IUriNode VariationSizeBytes = new UriNode(new(Namespace, "variationSizeBytes"));
+    public static readonly IUriNode VariationModifiedAt = new UriNode(new(Namespace, "variationModifiedAt"));
     public static readonly IUriNode RedactedVariationSequence = new UriNode(new(Namespace, "redactedVariationSequence"));
     public static readonly IUriNode PresentationVariationSequence = new UriNode(new(Namespace, "presentationVariationSequence"));
     public static readonly IUriNode ScannerOperatorIdentifier = new UriNode(new(Namespace, "scannerOperatorIdentifier"));

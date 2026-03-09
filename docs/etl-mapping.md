@@ -240,7 +240,7 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | tna:curatedTitle | ex:variationAlternativeName |
 | tna:archivistNote/tna:archivistNoteInfo | ex:variationHasDatedNote/ex:archivistNote |
 | tna:archivistNote/tna:archivistNoteDate | ex:variationHasDatedNote/ex:datedNoteHasDate |
-
+| dcterms:modified | ex:variationModifiedAt |
 
 ## Sensitivity review
 
