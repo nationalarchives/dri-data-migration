@@ -26,7 +26,7 @@ public sealed class ChangeIngestTest
     public ChangeIngestTest()
     {
         cache = new();
-        cache.Setup(c => c.CacheFetch(CacheEntityKind.Asset, dri.Reference, CancellationToken.None))
+        cache.Setup(c => c.CacheFetch(CacheEntityKind.AssetDri, dri.Reference, CancellationToken.None))
             .ReturnsAsync(asset);
         cache.Setup(c => c.CacheFetchOrNew(CacheEntityKind.Operator, dri.UserName,
             Vocabulary.OperatorIdentifier, CancellationToken.None))

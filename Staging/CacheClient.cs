@@ -10,22 +10,7 @@ public class CacheClient : ICacheClient
     private readonly ILogger<CacheClient> logger;
     private readonly IMemoryCache cache;
     private readonly ISparqlClient sparqlClient;
-    private readonly string srSparql;
-    private readonly string assetSparql;
-    private readonly string subsetSparql;
-    private readonly string variationSparql;
-    private readonly string languageSparql;
-    private readonly string formalBodySparql;
-    private readonly string copyrightSparql;
-    private readonly string geographicalPlaceSparql;
-    private readonly string sealCategorySparql;
-    private readonly string operatorSparql;
-    private readonly string battalionSparql;
-    private readonly string evidenceProviderSparql;
-    private readonly string investigationSparql;
-    private readonly string witnessSparql;
-    private readonly string navyDivisionSparql;
-
+    private readonly string getSparql;
     private readonly string accessConditionsSparql;
     private readonly string legislationsSparql;
     private readonly string groundsForRetentionSparql;
@@ -46,55 +31,20 @@ public class CacheClient : ICacheClient
         var baseName = $"{typeof(CacheClient).Namespace}.Sparql";
         var embedded = new EmbeddedResource(currentAssembly, baseName);
 
-        srSparql = embedded.GetSparql("GetSensitivityReview");
-        assetSparql = embedded.GetSparql("GetAsset");
-        subsetSparql = embedded.GetSparql("GetSubset");
-        variationSparql = embedded.GetSparql("GetVariation");
-        languageSparql = embedded.GetSparql("GetLanguage");
-        formalBodySparql = embedded.GetSparql("GetFormalBody");
-        copyrightSparql = embedded.GetSparql("GetCopyright");
-        geographicalPlaceSparql = embedded.GetSparql("GetGeographicalPlace");
-        sealCategorySparql = embedded.GetSparql("GetSealCategory");
-        operatorSparql = embedded.GetSparql("GetOperator");
-        battalionSparql = embedded.GetSparql("GetBattalion");
-        evidenceProviderSparql = embedded.GetSparql("GetEvidenceProvider");
-        investigationSparql = embedded.GetSparql("GetInvestigation");
-        witnessSparql = embedded.GetSparql("GetWitness");
-        navyDivisionSparql = embedded.GetSparql("GetNavyDivision");
-
+        getSparql = embedded.GetSparql("Get");
         accessConditionsSparql = embedded.GetSparql("GetAccessConditions");
         legislationsSparql = embedded.GetSparql("GetLegislations");
         groundsForRetentionSparql = embedded.GetSparql("GetGroundsForRetention");
     }
 
-    public void CacheCreate(CacheEntityKind kind, string key, object value)
-    {
-        var info = ToCacheFetchInfo(kind, key);
-        if (info is null)
+    public object? CacheCreate(string key, object value) =>
+        cache.GetOrCreate(key, entry =>
         {
-            logger.InvalidCacheEntityKind();
-        }
-        else
-        {
-            cache.GetOrCreate(info.Key, entry =>
-            {
-                entry.SlidingExpiration = TimeSpan.FromHours(1);
-                return value;
-            });
-        }
-    }
-    
-    public object? CacheFetch(CacheEntityKind kind, string key)
-    {
-        var info = ToCacheFetchInfo(kind, key);
-        if (info is null)
-        {
-            logger.InvalidCacheEntityKind();
-            return null;
-        }
+            entry.SlidingExpiration = TimeSpan.FromHours(1);
+            return value;
+        });
 
-        return cache.Get(info.Key);
-    }
+    public object? CacheFetch(string key) => cache.Get(key);
 
     public async Task<IUriNode?> CacheFetch(CacheEntityKind kind, string key, CancellationToken cancellationToken)
     {
@@ -106,17 +56,13 @@ public class CacheClient : ICacheClient
         }
 
         var item = (IUriNode?)cache.Get(info.Key) ?? await sparqlClient.GetSubjectAsync(
-            info.Sparql, new Dictionary<string, string> { ["id"] = key }, cancellationToken);
+            getSparql, new Dictionary<string, object> { ["id"] = key, ["predicate"] = info.Predicate.Uri }, cancellationToken);
 
         if (item is null)
         {
             return null;
         }
-        return cache.GetOrCreate(info.Key, entry =>
-        {
-            entry.SlidingExpiration = TimeSpan.FromHours(1);
-            return item;
-        });
+        return CacheCreate(info.Key, item) as IUriNode;
     }
 
     public async Task<IUriNode?> CacheFetchOrNew(CacheEntityKind kind, string key, IUriNode predicate, CancellationToken cancellationToken)
@@ -132,7 +78,7 @@ public class CacheClient : ICacheClient
         {
             entry.SlidingExpiration = TimeSpan.FromHours(1);
             var subject = await sparqlClient.GetSubjectAsync(
-                info.Sparql, new Dictionary<string, string> { ["id"] = key }, cancellationToken);
+                getSparql, new Dictionary<string, object> { ["id"] = key, ["predicate"] = info.Predicate.Uri }, cancellationToken);
             if (subject is null)
             {
                 subject = NewId;
@@ -175,28 +121,28 @@ public class CacheClient : ICacheClient
         }
     }
 
-    private CacheFetchInfo? ToCacheFetchInfo(CacheEntityKind kind, string key) => kind switch
+    private static CacheFetchInfo? ToCacheFetchInfo(CacheEntityKind kind, string key) => kind switch
     {
-        CacheEntityKind.Asset => new(assetSparql, $"asset-{key}"),
-        CacheEntityKind.SensitivityReview => new(srSparql, $"sensitivity-review-{key}"),
-        CacheEntityKind.Subset => new(subsetSparql, $"subset-{key}"),
-        CacheEntityKind.Variation => new(variationSparql, $"variation-{key}"),
-        CacheEntityKind.Language => new(languageSparql, $"language-{key}"),
-        CacheEntityKind.FormalBody => new(formalBodySparql, $"formal-body-{key}"),
-        CacheEntityKind.Copyright => new(copyrightSparql, $"copyright-{key}"),
-        CacheEntityKind.GeographicalPlace => new(geographicalPlaceSparql, $"geographical-place-{key}"),
-        CacheEntityKind.SealCategory => new(sealCategorySparql, $"seal-category-{key}"),
-        CacheEntityKind.Operator => new(operatorSparql, $"operator-{key}"),
-        CacheEntityKind.Battalion => new(battalionSparql, $"battalion-{key}"),
-        CacheEntityKind.AssetRelation => new(string.Empty, $"asset-relation-{key}"),
-        CacheEntityKind.EvidenceProvider => new(evidenceProviderSparql, $"evidence-provider-{key}"),
-        CacheEntityKind.Investigation => new(investigationSparql, $"investigation-{key}"),
-        CacheEntityKind.Witness => new(witnessSparql, $"witness-{key}"),
-        CacheEntityKind.NavyDivision => new(navyDivisionSparql, $"navy-division-{key}"),
+        CacheEntityKind.Asset => new(Vocabulary.AssetReference, $"asset-{key}"),
+        CacheEntityKind.AssetDri => new(Vocabulary.AssetDriId, $"asset-dri-{key}"),
+        CacheEntityKind.SensitivityReview => new(Vocabulary.SensitivityReviewDriId, $"sensitivity-review-{key}"),
+        CacheEntityKind.Subset => new(Vocabulary.SubsetReference, $"subset-{key}"),
+        CacheEntityKind.Variation => new(Vocabulary.VariationDriId, $"variation-{key}"),
+        CacheEntityKind.Language => new(Vocabulary.LanguageName, $"language-{key}"),
+        CacheEntityKind.FormalBody => new(Vocabulary.FormalBodyName, $"formal-body-{key}"),
+        CacheEntityKind.Copyright => new(Vocabulary.CopyrightTitle, $"copyright-{key}"),
+        CacheEntityKind.GeographicalPlace => new(Vocabulary.GeographicalPlaceName, $"geographical-place-{key}"),
+        CacheEntityKind.SealCategory => new(Vocabulary.SealCategoryName, $"seal-category-{key}"),
+        CacheEntityKind.Operator => new(Vocabulary.OperatorIdentifier, $"operator-{key}"),
+        CacheEntityKind.Battalion => new(Vocabulary.BattalionName, $"battalion-{key}"),
+        CacheEntityKind.EvidenceProvider => new(Vocabulary.InquiryEvidenceProviderName, $"evidence-provider-{key}"),
+        CacheEntityKind.Investigation => new(Vocabulary.InquiryInvestigationName, $"investigation-{key}"),
+        CacheEntityKind.Witness => new(Vocabulary.InquiryWitnessName, $"witness-{key}"),
+        CacheEntityKind.NavyDivision => new(Vocabulary.NavyDivisionName, $"navy-division-{key}"),
         _ => null
     };
 
-    private sealed record CacheFetchInfo(string Sparql, string Key);
+    private sealed record CacheFetchInfo(IUriNode Predicate, string Key);
 
     public static IUriNode NewId => new UriNode(new Uri(idNamespace, Guid.NewGuid().ToString()));
 }

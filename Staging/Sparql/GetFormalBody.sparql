@@ -1,8 +1,0 @@
-﻿prefix ex: <http://id.example.com/schema/>
-            
-construct {
-    ?s ex:formalBodyName ?formalBodyName.
-} where {
-    bind(@id as ?formalBodyName)
-    ?s ex:formalBodyName ?formalBodyName.
-}

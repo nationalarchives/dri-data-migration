@@ -20,7 +20,7 @@ public class ChangeIngest(ICacheClient cacheClient, ISparqlClient sparqlClient,
         GraphAssert.DateTime(graph, id, dri.Timestamp, Vocabulary.ChangeDateTime);
         if (dri.Table == "DeliverableUnit")
         {
-            var asset = await cacheClient.CacheFetch(CacheEntityKind.Asset, dri.Reference, cancellationToken);
+            var asset = await cacheClient.CacheFetch(CacheEntityKind.AssetDri, dri.Reference, cancellationToken);
             if (asset is null)
             {
                 logger.AssetNotFound(dri.Reference);

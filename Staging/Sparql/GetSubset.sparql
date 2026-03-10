@@ -1,8 +1,0 @@
-﻿prefix ex: <http://id.example.com/schema/>
-            
-construct {
-    ?s ex:subsetReference ?subsetReference.
-} where {
-    bind(@id as ?subsetReference)
-    ?s ex:subsetReference ?subsetReference.
-}

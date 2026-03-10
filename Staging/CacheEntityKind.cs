@@ -3,6 +3,7 @@
 public enum CacheEntityKind
 {
     Asset,
+    AssetDri,
     SensitivityReview,
     Subset,
     Variation,
@@ -13,7 +14,6 @@ public enum CacheEntityKind
     SealCategory,
     Operator,
     Battalion,
-    AssetRelation,
     EvidenceProvider,
     Investigation,
     Witness,

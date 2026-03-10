@@ -8,28 +8,14 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Sparql\AccessConditionGraph.sparql" />
-    <EmbeddedResource Include="Sparql\GetNavyDivision.sparql" />
-    <EmbeddedResource Include="Sparql\GetWitness.sparql" />
-    <EmbeddedResource Include="Sparql\GetInvestigation.sparql" />
-    <EmbeddedResource Include="Sparql\GetEvidenceProvider.sparql" />
     <EmbeddedResource Include="Sparql\Adm158SubsetDeliverableUnitGraph.sparql" />
+    <EmbeddedResource Include="Sparql\Get.sparql" />
     <EmbeddedResource Include="Sparql\Wo409SubsetDeliverableUnitGraph.sparql" />
     <EmbeddedResource Include="Sparql\AssetDeliverableUnitGraph.sparql" />
     <EmbeddedResource Include="Sparql\AssetGraph.sparql" />
     <EmbeddedResource Include="Sparql\GetAccessConditions.sparql" />
-    <EmbeddedResource Include="Sparql\GetAsset.sparql" />
-    <EmbeddedResource Include="Sparql\GetCopyright.sparql" />
-    <EmbeddedResource Include="Sparql\GetBattalion.sparql" />
-    <EmbeddedResource Include="Sparql\GetOperator.sparql" />
-    <EmbeddedResource Include="Sparql\GetSealCategory.sparql" />
     <EmbeddedResource Include="Sparql\GetGroundsForRetention.sparql" />
-    <EmbeddedResource Include="Sparql\GetFormalBody.sparql" />
-    <EmbeddedResource Include="Sparql\GetGeographicalPlace.sparql" />
     <EmbeddedResource Include="Sparql\GetLegislations.sparql" />
-    <EmbeddedResource Include="Sparql\GetSensitivityReview.sparql" />
-    <EmbeddedResource Include="Sparql\GetLanguage.sparql" />
-    <EmbeddedResource Include="Sparql\GetSubset.sparql" />
-    <EmbeddedResource Include="Sparql\GetVariation.sparql" />
     <EmbeddedResource Include="Sparql\GroundForRetentionGraph.sparql" />
     <EmbeddedResource Include="Sparql\LegislationGraph.sparql" />
     <EmbeddedResource Include="Sparql\SensitivityReviewGraph.sparql" />

@@ -16,13 +16,13 @@ internal class AssetDeliverableUnitRelation(HttpClient httpClient,
         if (!string.IsNullOrWhiteSpace(relatedId))
         {
             GraphAssert.Text(graph, id, relatedId, Vocabulary.AssetRelationIdentifier);
-            var reference = cacheClient.CacheFetch(CacheEntityKind.AssetRelation, relatedId) as string;
+            var reference = cacheClient.CacheFetch(AssetRelationKey(relatedId)) as string;
             if (reference is null)
             {
                 reference = await GetReferenceAsync(relatedId, cancellationToken);
                 if (reference is not null)
                 {
-                    cacheClient.CacheCreate(CacheEntityKind.AssetRelation, relatedId, reference);
+                    cacheClient.CacheCreate(AssetRelationKey(relatedId), reference);
                 }
             }
             if (reference is not null)
@@ -31,6 +31,8 @@ internal class AssetDeliverableUnitRelation(HttpClient httpClient,
             }
         }
     }
+
+    private static string AssetRelationKey(string key) => $"asset-relation-{key}";
 
     private async Task<string?> GetReferenceAsync(string relatedId, CancellationToken cancellationToken)
     {

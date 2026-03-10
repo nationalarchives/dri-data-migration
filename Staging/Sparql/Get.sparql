@@ -1,0 +1,7 @@
+construct {
+    ?s ?predicate ?id.
+} where {
+    bind(@predicate as ?predicate)
+    bind(@id as ?id)
+    ?s ?predicate ?id.
+}
