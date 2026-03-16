@@ -198,3 +198,83 @@ Content-Type: text/turtle
             graphdb:enable-literal-index "false" ;
         ]
     ].
+
+### List all series
+POST http://localhost:7200/repositories/dri
+Content-Type: application/sparql-query
+Accept: application/sparql-results+json
+
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix dri: <http://nationalarchives.gov.uk/terms/dri#>
+
+select ?code where {
+    ?s a dri:Series;
+    	rdfs:label ?code.
+} order by ?code
+
+### Asset and variation count by series
+POST {{endpoint}}
+Content-Type: application/sparql-query
+Accept: application/sparql-results+json
+
+prefix ex: <http://id.example.com/schema/>
+
+select ?subsetReference (count(distinct ?a) as ?assetCount) (count(distinct ?v) as ?variationCount) where {
+    ?a ex:assetHasSubset ?as;
+    	ex:assetHasVariation ?v.
+    ?s ex:subsetReference ?subsetReference;
+    	ex:subsetHasNarrowerSubset* ?as.
+    minus { ?s ex:subsetHasBroaderSubset ?bs }
+} group by ?subsetReference
+order by ?subsetReference
+
+### Maximum variation count per asset
+POST {{endpoint}}
+Content-Type: application/sparql-query
+Accept: application/sparql-results+json
+
+prefix ex: <http://id.example.com/schema/>
+
+select ?subsetReference (max(?cv) as ?maxVariation) where {
+    select ?subsetReference (count(?v) as ?cv) where {
+        ?a ex:assetHasSubset ?as;
+            ex:assetHasVariation ?v.
+        ?s ex:subsetReference ?subsetReference;
+            ex:subsetHasNarrowerSubset* ?as.
+        minus { ?s ex:subsetHasBroaderSubset ?bs }
+    } group by ?a ?subsetReference
+} group by ?subsetReference
+order by ?subsetReference
+
+### Maximum variation count (excluding redactions) per asset
+POST {{endpoint}}
+Content-Type: application/sparql-query
+Accept: application/sparql-results+json
+
+prefix ex: <http://id.example.com/schema/>
+
+select ?subsetReference (max(?cv) as ?maxVariation) where {
+    select ?subsetReference (count(?v) as ?cv) where {
+        ?a ex:assetHasSubset ?as;
+            ex:assetHasVariation ?v.
+        filter not exists { ?v ex:redactedVariationSequence ?rs }
+        ?s ex:subsetReference ?subsetReference;
+            ex:subsetHasNarrowerSubset* ?as.
+        minus { ?s ex:subsetHasBroaderSubset ?bs }
+    } group by ?a ?subsetReference
+} group by ?subsetReference
+order by ?subsetReference
+
+### Subset count by series
+POST {{endpoint}}
+Content-Type: application/sparql-query
+Accept: application/sparql-results+json
+
+prefix ex: <http://id.example.com/schema/>
+
+select ?subsetReference (count(distinct ?s) as ?subsetCount) where {
+    ?s ex:subsetHasBroaderSubset* ?bs.
+    ?bs ex:subsetReference ?subsetReference.
+    filter not exists { ?bs ex:subsetHasBroaderSubset ?t}
+} group by ?subsetReference
+order by ?subsetReference
