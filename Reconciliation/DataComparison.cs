@@ -142,15 +142,16 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
                 fileFolder as string == "folder": identifier?.EndsWith('/') == true;
             using (logger.BeginScope(("RecordId", identifier)))
             {
+                var label = item.TryGetValue(ReconciliationFieldName.Reference, out var reference) ? reference.ToString() : identifier;
                 if (isFolder)
                 {
                     logger.ReconciliationFolderNotFound();
-                    missingFolders.Add(identifier!);
+                    missingFolders.Add(label!);
                 }
                 else
                 {
                     logger.ReconciliationFileNotFound();
-                    missingFiles.Add(identifier!);
+                    missingFiles.Add(label!);
                 }
             }
         }
