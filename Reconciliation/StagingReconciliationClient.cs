@@ -60,7 +60,7 @@ public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClien
         { "isPublicDescription", new(ReconciliationFieldName.IsPublicDescription, ToRequiredBool) },
         { Vocabulary.SensitivityReviewRestrictionCalculationStartDate.Uri.LastSegment(), new(ReconciliationFieldName.ClosureStartDate, ToDateTime) },
         { Vocabulary.SensitivityReviewRestrictionDuration.Uri.LastSegment(), new(ReconciliationFieldName.ClosurePeriod, ToTimeSpan) },
-        { Vocabulary.SensitivityReviewRestrictionEndYear.Uri.LastSegment(), new(ReconciliationFieldName.ClosureEndYear, ToInt) },
+        { Vocabulary.SensitivityReviewRestrictionEndYear.Uri.LastSegment(), new(ReconciliationFieldName.ClosureEndYear, ToYear) },
         { Vocabulary.LegislationSectionReference.Uri.LastSegment(), new(ReconciliationFieldName.FoiExemptionReference, ToText) },
         { "retentionBodyName", new(ReconciliationFieldName.HeldBy, ToText) },
         { Vocabulary.RetentionInstrumentNumber.Uri.LastSegment(), new(ReconciliationFieldName.InstrumentNumber, ToInt) },
@@ -73,5 +73,6 @@ public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClien
     private static readonly Func<object?, object?> ToDateTime = result => result is DateTimeOffset dt ? dt : null;
     private static readonly Func<object?, object?> ToTimeSpan = result => result is TimeSpan ts ? ts : null;
     private static readonly Func<object?, object?> ToInt = result => result is long l ? (int)l : null;
+    private static readonly Func<object?, object?> ToYear = result => result is ILiteralNode l && int.TryParse(l.Value, out var endYear) ? endYear : null;
     private static readonly Func<object?, object?> ToRequiredBool = result => result is null;
 }
