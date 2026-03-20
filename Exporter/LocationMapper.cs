@@ -36,7 +36,8 @@ internal static class LocationMapper
         {
             var segment = string.IsNullOrWhiteSpace(location.Original) ?
                 string.Empty : string.IsNullOrWhiteSpace(previous) ?
-                location.Original : location.Original.Replace(previous, string.Empty);
+                location.Original : location.Original.IndexOf(previous) >= 0 ?
+                location.Original.Remove(location.Original.IndexOf(previous), previous.Length) : location.Original;
             if (!string.IsNullOrWhiteSpace(location.SensitiveName))
             {
                 published.Add(location.SensitiveName.Trim('/'));
