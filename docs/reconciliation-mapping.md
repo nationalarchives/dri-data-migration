@@ -50,8 +50,8 @@ Data from the staging triplestore: [query](https://github.com/nationalarchives/d
 |Id | Id (`required`) | ex:assetDriId |
 |Name | Title | ex:variationHasSensitivityReview/ex:sensitivityReviewSensitiveName or ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveName or ex:assetName |
 |Reference | Reference | ex:assetReference |
-|CoveringDateStart | NumStartDate | ex:assetHasOriginDateStart (ex:year, ex:month, ex:day) |
-|CoveringDateEnd | NumEndDate | ex:assetHasOriginDateEnd (ex:year, ex:month, ex:day) |
+|CoveringDateStart | NumStartDate | ex:inquiryHearingDate\|ex:assetAlternativeModifiedAt\|ex:assetHasAlternativeModifiedDateStart (ex:year, ex:month, ex:day)\| ex:assetHasOriginDateStart (ex:year, ex:month, ex:day)\|ex:assetHasOriginApproximateDateStart (ex:year, ex:month, ex:day)\|ex:assetModifiedAt |
+|CoveringDateEnd | NumEndDate | ex:inquiryHearingDate\|ex:assetAlternativeModifiedAt\|ex:assetHasAlternativeModifiedDateEnd (ex:year, ex:month, ex:day)\| ex:assetHasOriginDateEnd (ex:year, ex:month, ex:day)\|ex:assetHasOriginApproximateDateEnd (ex:year, ex:month, ex:day)\|ex:assetModifiedAt |
 |ClosureStatus | ClosureStatus | ex:variationHasSensitivityReview/ex:sensitivityReviewHasAccessCondition/ex:accessConditionCode |
 |AccessConditionCode | ClosureType | ex:variationHasSensitivityReview/ex:sensitivityReviewHasAccessCondition/ex:accessConditionCode |
 |HeldBy | HeldBy | ex:assetHasRetention/ex:retentionHasFormalBody/ex:formalBodyName |

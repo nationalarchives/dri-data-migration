@@ -81,7 +81,8 @@ internal static class RecordMapper
         var recordId = GetRecordId(asset, variations)!;
         var person = PersonMapper.GetFromAsset(asset);
         var people = PersonMapper.GetFromSubset(asset);
-        var coveringDate = CoveringDateMapper.GetDate(asset, assetModifiedAt);
+        var coveringDate = CoveringDateMapper.GetDate(asset, inquiryHearingDate, assetAlternativeModifiedAt,
+            assetHasAlternativeModifiedDateStart, assetHasAlternativeModifiedDateEnd, assetModifiedAt);
         var variation = variations.FirstOrDefault()!;
         var variationAlternativeName = asset.GetSingleText(variation, Vocabulary.VariationAlternativeName);
         var variationNote = asset.GetSingleText(variation, Vocabulary.VariationNote);

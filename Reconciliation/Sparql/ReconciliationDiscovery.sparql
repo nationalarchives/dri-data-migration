@@ -35,19 +35,20 @@ where {
             ?srA ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveNameA.
         }
     }
+    optional { ?asset ex:inquiryHearingDate ?inquiryHearingDate }
     optional {
-        ?asset ex:assetHasOriginDateStart ?assetHasOriginDateStart.
+        ?asset ex:assetHasOriginDateStart|ex:assetHasOriginApproximateDateStart ?assetHasOriginDateStart.
         ?assetHasOriginDateStart ex:year ?startYear.
         optional { ?assetHasOriginDateStart ex:month ?startMonth }
         optional { ?assetHasOriginDateStart ex:day ?startDay }
-        bind(concat(str(?startYear), coalesce(str(?startMonth), ''), coalesce(str(?startDay), '')) as ?startOriginDate)
+        bind(concat(str(?startYear), coalesce(str(?startMonth), '--01'), coalesce(str(?startDay), '---01')) as ?startOriginDate)
     }
     optional {
-        ?asset ex:assetHasOriginDateEnd ?assetHasOriginDateEnd.
+        ?asset ex:assetHasOriginDateEnd|ex:assetHasOriginApproximateDateEnd ?assetHasOriginDateEnd.
         ?assetHasOriginDateEnd ex:year ?endYear.
         optional { ?assetHasOriginDateEnd ex:month ?endMonth }
         optional { ?assetHasOriginDateEnd ex:day ?endDay }
-        bind(concat(str(?endYear), coalesce(str(?endMonth), ''), coalesce(str(?endDay), '')) as ?endOriginDate)
+        bind(concat(str(?endYear), coalesce(str(?endMonth), '--12'), coalesce(str(?endDay), '')) as ?endOriginDate)
     }
     optional { ?asset ex:assetModifiedAt ?assetModifiedAt }
     optional { ?asset ex:assetAlternativeModifiedAt ?assetAlternativeModifiedAt }
@@ -56,17 +57,17 @@ where {
         ?modifiedDateStart ex:year ?modifiedStartYear.
         optional { ?modifiedDateStart ex:month ?modifiedStartMonth }
         optional { ?modifiedDateStart ex:day ?modifiedStartDay }
-        bind(concat(str(?modifiedStartYear), coalesce(str(?modifiedStartMonth), ''), coalesce(str(?modifiedStartDay), '')) as ?startModifiedDate)
+        bind(concat(str(?modifiedStartYear), coalesce(str(?modifiedStartMonth), '--01'), coalesce(str(?modifiedStartDay), '---01')) as ?startModifiedDate)
     }
     optional {
         ?asset ex:assetHasAlternativeModifiedDateEnd ?modifiedDateEnd.
         ?modifiedDateEnd ex:year ?modifiedEndYear.
         optional { ?modifiedDateEnd ex:month ?modifiedEndMonth }
         optional { ?modifiedDateEnd ex:day ?modifiedEndDay }
-        bind(concat(str(?modifiedEndYear), coalesce(str(?modifiedEndMonth), ''), coalesce(str(?modifiedEndDay), '')) as ?endModifiedDate)
+        bind(concat(str(?modifiedEndYear), coalesce(str(?modifiedEndMonth), '--12'), coalesce(str(?modifiedEndDay), '')) as ?endModifiedDate)
     }
-    bind(coalesce(?startOriginDate, str(?assetAlternativeModifiedAt), ?startModifiedDate, str(?assetModifiedAt)) as ?startCoveringDate)
-    bind(coalesce(?endOriginDate, str(?assetAlternativeModifiedAt), ?endModifiedDate, str(?assetModifiedAt)) as ?endCoveringDate)
+    bind(coalesce(str(?inquiryHearingDate), str(?assetAlternativeModifiedAt), ?startModifiedDate, ?startOriginDate, str(?assetModifiedAt)) as ?startCoveringDate)
+    bind(coalesce(str(?inquiryHearingDate), str(?assetAlternativeModifiedAt), ?endModifiedDate, ?endOriginDate, str(?assetModifiedAt)) as ?endCoveringDate)
     optional { ?variation ex:redactedVariationSequence ?redactedVariationSequence }
     optional {
         ?variation ex:variationHasSensitivityReview ?sr.

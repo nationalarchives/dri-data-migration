@@ -51,8 +51,8 @@ JSON schema: [file](export-json-schema.json)
 | CuratedDateEnd | ex:assetHasAlternativeModifiedDateEnd (ex:year, ex:month, ex:day) |
 | CuratedModifiedAtNote | ex:assetAlternativeModifiedAtNote |
 | GeographicalPlace | ex:assetHasAssociatedGeographicalPlace/ex:geographicalPlaceName |
-| CoveringDateStart | full date ex:assetHasOriginDateStart (ex:year, ex:month, ex:day)\|ex:assetHasOriginApproximateDateStart (ex:year, ex:month, ex:day)\|ex:assetModifiedAt |
-| CoveringDateEnd | full date ex:assetHasOriginDateEnd (ex:year, ex:month, ex:day)\|ex:assetHasOriginApproximateDateEnd (ex:year, ex:month, ex:day)\|ex:assetModifiedAt |
+| CoveringDateStart | ex:inquiryHearingDate\|ex:assetAlternativeModifiedAt\|ex:assetHasAlternativeModifiedDateStart (ex:year, ex:month, ex:day)\| ex:assetHasOriginDateStart (ex:year, ex:month, ex:day)\|ex:assetHasOriginApproximateDateStart (ex:year, ex:month, ex:day)\|ex:assetModifiedAt |
+| CoveringDateEnd | ex:inquiryHearingDate\|ex:assetAlternativeModifiedAt\|ex:assetHasAlternativeModifiedDateEnd (ex:year, ex:month, ex:day)\| ex:assetHasOriginDateEnd (ex:year, ex:month, ex:day)\|ex:assetHasOriginApproximateDateEnd (ex:year, ex:month, ex:day)\|ex:assetModifiedAt |
 | ProvidedCoveringDateStart | ex:assetHasOriginDateStart (ex:year, ex:month, ex:day)\|ex:assetHasOriginApproximateDateStart (ex:year, ex:month, ex:day) |
 | ProvidedCoveringDateEnd | ex:assetHasOriginDateEnd (ex:year, ex:month, ex:day)\|ex:assetHasOriginApproximateDateEnd (ex:year, ex:month, ex:day) |
 | ProvidedCoveringDateText | (Only if date value contains additional characters) ex:assetHasOriginDateStart/ex:dateVerbatim\|ex:assetHasOriginApproximateDateStart/ex:dateVerbatim |

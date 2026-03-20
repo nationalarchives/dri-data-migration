@@ -1,4 +1,5 @@
 ﻿using Api;
+using System.Globalization;
 using VDS.RDF;
 using VDS.RDF.Dynamic;
 using VDS.RDF.Nodes;
@@ -47,7 +48,7 @@ public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClien
         { Vocabulary.VariationName.Uri.LastSegment(), new(ReconciliationFieldName.Name, ToText) },
         { Vocabulary.AssetDriId.Uri.LastSegment(), new(ReconciliationFieldName.Id, ToText) },
         { "startCoveringDate", new(ReconciliationFieldName.CoveringDateStart, ToText) },
-        { "endCoveringDate", new(ReconciliationFieldName.CoveringDateEnd, ToText) },
+        { "endCoveringDate", new(ReconciliationFieldName.CoveringDateEnd, ToEnd) },
         { Vocabulary.AssetModifiedAt.Uri.LastSegment(), new(ReconciliationFieldName.ModifiedAt, ToDateTime) },
         { Vocabulary.AccessConditionCode.Uri.LastSegment(), new(ReconciliationFieldName.AccessConditionCode, ToText) },
         { "closureStatus", new(ReconciliationFieldName.ClosureStatus, ToText) },
@@ -69,10 +70,26 @@ public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClien
     };
 
     private static readonly Func<object?, object?> ToUri = result => result is Uri uri ? uri : null;
+    private static readonly Func<object?, object?> ToEnd = result => result is string txt ? AdjustEndDate(txt) : null;
     private static readonly Func<object?, object?> ToText = result => result is string txt && !string.IsNullOrWhiteSpace(txt) ? txt : null;
     private static readonly Func<object?, object?> ToDateTime = result => result is DateTimeOffset dt ? dt : null;
     private static readonly Func<object?, object?> ToTimeSpan = result => result is TimeSpan ts ? ts : null;
     private static readonly Func<object?, object?> ToInt = result => result is long l ? (int)l : null;
     private static readonly Func<object?, object?> ToYear = result => result is ILiteralNode l && int.TryParse(l.Value, out var endYear) ? endYear : null;
     private static readonly Func<object?, object?> ToRequiredBool = result => result is null;
+
+    private static string? AdjustEndDate(string? date)
+    {
+        if (date is null)
+        {
+            return null;
+        }
+        if (date.Length < 9)
+        {
+            var lastDay = DateTime.ParseExact($"{date}---01", "yyyy--MM---dd", CultureInfo.InvariantCulture)
+                .AddMonths(1).AddDays(-1).Day;
+            return $"{date}---{lastDay}";
+        }
+        return date;
+    }
 }

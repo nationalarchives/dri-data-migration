@@ -5,20 +5,29 @@ namespace Exporter;
 
 internal static class CoveringDateMapper
 {
-    internal static CoveringDate GetDate(IGraph asset, DateTimeOffset? assetModifiedAt)
+    internal static CoveringDate GetDate(IGraph asset, DateTimeOffset? inquiryHearingDate,
+        DateTimeOffset? assetAlternativeModifiedAt, string? assetHasAlternativeModifiedDateStart,
+        string? assetHasAlternativeModifiedDateEnd, DateTimeOffset? assetModifiedAt)
     {
         var assetHasOriginDateStart = YmdMapper.GetYmd(asset, null, Vocabulary.AssetHasOriginDateStart);
         var assetHasOriginDateEnd = YmdMapper.GetYmd(asset, null, Vocabulary.AssetHasOriginDateEnd);
         var assetHasOriginApproximateDateStart = YmdMapper.GetYmd(asset, null, Vocabulary.AssetHasOriginApproximateDateStart);
         var assetHasOriginApproximateDateEnd = YmdMapper.GetYmd(asset, null, Vocabulary.AssetHasOriginApproximateDateEnd);
 
+        // Fallback sequence following https://github.com/nationalarchives/dri-xslt-discovery-transfer2/wiki/InformationAsset_CoveringToDate_Branch_A
         return new()
         {
-            FullStart = AdjustDate(true, assetHasOriginDateStart) ??
+            FullStart = inquiryHearingDate?.ToString("yyyy-MM-dd") ??
+                assetAlternativeModifiedAt?.ToString("yyyy-MM-dd") ??
+                assetHasAlternativeModifiedDateStart ??
+                AdjustDate(true, assetHasOriginDateStart) ??
                 AdjustDate(true, assetHasOriginApproximateDateStart) ??
                 assetModifiedAt?.ToString("yyyy-MM-dd"),
             Start = (assetHasOriginDateStart ?? assetHasOriginApproximateDateStart)?.ToTextDate(),
-            FullEnd = AdjustDate(false, assetHasOriginDateEnd) ??
+            FullEnd = inquiryHearingDate?.ToString("yyyy-MM-dd") ??
+                assetAlternativeModifiedAt?.ToString("yyyy-MM-dd") ??
+                assetHasAlternativeModifiedDateEnd ??
+                AdjustDate(false, assetHasOriginDateEnd) ??
                 AdjustDate(false, assetHasOriginApproximateDateEnd) ??
                 assetModifiedAt?.ToString("yyyy-MM-dd"),
             End = (assetHasOriginDateEnd ?? assetHasOriginApproximateDateEnd)?.ToTextDate(),
