@@ -40,7 +40,7 @@ internal static partial class Log
     [LoggerMessage(EventId = 11, Level = LogLevel.Information, Message = "Fetching data from Discovery API {uri}")]
     internal static partial void GetDiscoveryRecords(this ILogger logger, Uri uri);
 
-    [LoggerMessage(EventId = 12, Level = LogLevel.Information, Message = "Fetching records from mark {mark}")]
+    [LoggerMessage(EventId = 12, Level = LogLevel.Debug, Message = "Fetching records from mark {mark}")]
     internal static partial void GetDiscoveryRecordsPage(this ILogger logger, string mark);
 
     [LoggerMessage(EventId = 13, Level = LogLevel.Information, Message = "Comparing {count} records")]
