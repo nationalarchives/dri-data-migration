@@ -81,7 +81,7 @@ internal static class StagingReconciliationParser
         {
             return null;
         }
-        var dt = date.Split(['-', 'T'], StringSplitOptions.RemoveEmptyEntries);
+        var dt = date.Split(['-', '+', 'T'], StringSplitOptions.RemoveEmptyEntries);
         if (dt.Length == 0)
         {
             return null;
