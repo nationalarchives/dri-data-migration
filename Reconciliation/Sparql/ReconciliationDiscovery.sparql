@@ -2,7 +2,7 @@
 
 select ?assetDriId ?reference ?redactedVariationSequence
     ?variationName
-	?retentionBodyName ?isPublicDescription
+	?retentionBodyName ?isPublicDescription ?isPublicName
     ?startCoveringDate ?endCoveringDate ?accessConditionCode ?closureStatus
     ?sensitivityReviewRestrictionCalculationStartDate
     ?sensitivityReviewRestrictionDuration
@@ -92,5 +92,6 @@ where {
         }
     }
     bind(coalesce(?sensitivityReviewSensitiveDescriptionV, ?sensitivityReviewSensitiveDescriptionA) as ?isPublicDescription)
+    bind(coalesce(?sensitivityReviewSensitiveNameV, ?sensitivityReviewSensitiveNameA) as ?isPublicName)
     bind(coalesce(?sensitivityReviewSensitiveNameV, ?sensitivityReviewSensitiveNameA, ?assetName) as ?variationName)
 }
