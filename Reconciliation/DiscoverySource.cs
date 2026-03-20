@@ -46,6 +46,7 @@ public class DiscoverySource(HttpClient httpClient, ILogger<DiscoverySource> log
     private static IEnumerable<Dictionary<ReconciliationFieldName, object>> Filter(DiscoverySearchRecordsResponse.Record[] records) =>
         records.Where(r => !string.IsNullOrWhiteSpace(r.Reference))
         .Where(r => r.Id?.StartsWith('C') == false)
+        .Where(r => !CheckZAfterSlash(r.Reference!))
         .Select(r => new Dictionary<ReconciliationFieldName, object?>()
         {
             [ReconciliationFieldName.Id] = r.Id,
@@ -60,6 +61,15 @@ public class DiscoverySource(HttpClient httpClient, ILogger<DiscoverySource> log
             [ReconciliationFieldName.ClosureEndYear] = ToEndYear(r.ClosureType, r.ClosureCode),
         }).Select(d => d.Where(kv => kv.Value is not null).ToDictionary(kv => kv.Key, kv => kv.Value!));
 
+    private static bool CheckZAfterSlash(string reference)
+    {
+        var sections = reference.Split('/');
+        if (sections.Length >= 1)
+        {
+            return sections[1].StartsWith('Z');
+        }
+        return false;
+    }
     private static readonly string[] YearDuration = ["D", "U"];
     private static int? ToDuration(string? closureType, string? txt) =>
         int.TryParse(txt, out int v) && closureType is not null ? !YearDuration.Contains(closureType) ? v : null : null;
