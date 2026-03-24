@@ -258,6 +258,8 @@ Target: [graph](https://github.com/nationalarchives/dri-data-migration/blob/main
 | dri:exemptionAsserted | ex:sensitivityReviewDate |
 | dri:titleAlternative | ex:sensitivityReviewSensitiveName |
 | dcterms:alternative | ex:sensitivityReviewSensitiveDescription |
+| dri:titleStatus | ex:sensitivityReviewHasMissingSensitiveInformation |
+| dri:descriptionStatus | ex:sensitivityReviewHasMissingSensitiveInformation |
 | prov:wasRevisionOf | ex:sensitivityReviewHasPastSensitivityReview |
 | dri:reviewDate | ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionReviewDate |
 | dri:startDate | ex:sensitivityReviewHasSensitivityReviewRestriction/ex:sensitivityReviewRestrictionCalculationStartDate |

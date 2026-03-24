@@ -146,10 +146,14 @@ public static class Vocabulary
     public static readonly IUriNode SensitivityReviewDate = new UriNode(new(Namespace, "sensitivityReviewDate"));
     public static readonly IUriNode SensitivityReviewSensitiveName = new UriNode(new(Namespace, "sensitivityReviewSensitiveName"));
     public static readonly IUriNode SensitivityReviewSensitiveDescription = new UriNode(new(Namespace, "sensitivityReviewSensitiveDescription"));
+    public static readonly IUriNode SensitivityReviewHasMissingSensitiveInformation = new UriNode(new(Namespace, "sensitivityReviewHasMissingSensitiveInformation"));
     public static readonly IUriNode SensitivityReviewHasPastSensitivityReview = new UriNode(new(Namespace, "sensitivityReviewHasPastSensitivityReview"));
     public static readonly IUriNode SensitivityReviewHasSensitivityReviewRestriction = new UriNode(new(Namespace, "sensitivityReviewHasSensitivityReviewRestriction"));
     public static readonly IUriNode SensitivityReviewHasAccessCondition = new UriNode(new(Namespace, "sensitivityReviewHasAccessCondition"));
     public static readonly IUriNode SensitivityReviewHasChange = new UriNode(new(Namespace, "sensitivityReviewHasChange"));
+    
+    public static readonly IUriNode MissingSensitiveName = new UriNode(new(Namespace, "MissingSensitiveName"));
+    public static readonly IUriNode MissingSensitiveDescription = new UriNode(new(Namespace, "MissingSensitiveDescription"));
 
     public static readonly IUriNode SensitivityReviewRestrictionCalculationStartDate = new UriNode(new(Namespace, "sensitivityReviewRestrictionCalculationStartDate"));
     public static readonly IUriNode SensitivityReviewRestrictionDuration = new UriNode(new(Namespace, "sensitivityReviewRestrictionDuration"));

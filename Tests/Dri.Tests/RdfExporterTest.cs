@@ -177,7 +177,7 @@ public sealed class RdfExporterTest
         var changeOperatorLink = new Uri("http://example.com/operator");
         var changeOperatorName = "Operator name";
         var expected = new DriSensitivityReview(link, targetReference, targetLink,
-            targetType, null, [], null, previousSrLink, sensitiveName,
+            targetType, null, [], false, false, null, previousSrLink, sensitiveName,
             sensitiveDescription, date, null, null, null, null, null, null, null,
             changeDriId, changeDescription, changeDateTime, changeOperatorLink, changeOperatorName);
         var graph = new Graph();
@@ -233,7 +233,7 @@ public sealed class RdfExporterTest
         var changeOperatorLink = new Uri("http://example.com/operator");
         var changeOperatorName = "Operator name";
         var expected = new DriSensitivityReview(link, targetReference, targetLink,
-            targetType, acLink, [legislationLink], reviewDate, previousSrLink,
+            targetType, acLink, [legislationLink], false, false, reviewDate, previousSrLink,
             sensitiveName, sensitiveDescription, date, restrictionStartDate,
             restrictionDuration, restrictionDescription, instrumentNumber,
             instrumentSignedDate, restrictionReviewDate, groundForRetention,

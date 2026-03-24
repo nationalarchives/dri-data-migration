@@ -88,6 +88,14 @@ public class SensitivityReviewIngest(ICacheClient cacheClient, ISparqlClient spa
             [Vocabulary.SensitivityReviewSensitiveName] = dri.SensitiveName,
             [Vocabulary.SensitivityReviewSensitiveDescription] = dri.SensitiveDescription
         });
+        if (dri.HasSensitiveNameMissing && string.IsNullOrWhiteSpace(dri.SensitiveName))
+        {
+            graph.Assert(id, Vocabulary.SensitivityReviewHasMissingSensitiveInformation, Vocabulary.MissingSensitiveName);
+        }
+        if (dri.HasSensitiveDescriptionMissing && string.IsNullOrWhiteSpace(dri.SensitiveDescription))
+        {
+            graph.Assert(id, Vocabulary.SensitivityReviewHasMissingSensitiveInformation, Vocabulary.MissingSensitiveDescription);
+        }
         if (dri.AccessCondition is not null)
         {
             var acCode = dri.AccessCondition.TrimmedFragment();

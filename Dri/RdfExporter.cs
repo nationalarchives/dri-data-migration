@@ -146,6 +146,9 @@ public class RdfExporter : IDriRdfExporter
         var date = graph.GetSingleLiteral(subject, Vocabulary.SensitivityReviewDate);
         var sensitiveName = graph.GetSingleText(subject, Vocabulary.SensitivityReviewSensitiveName);
         var sensitiveDescription = graph.GetSingleText(subject, Vocabulary.SensitivityReviewSensitiveDescription);
+        var missingSensitiveInformation = graph.GetUriNodes(subject, Vocabulary.SensitivityReviewHasMissingSensitiveInformation);
+        var hasSensitiveNameMissing = missingSensitiveInformation.Contains(Vocabulary.MissingSensitiveName);
+        var hasSensitiveDescriptionMissing = missingSensitiveInformation.Contains(Vocabulary.MissingSensitiveDescription);
         var past = graph.GetSingleUriNode(subject, Vocabulary.SensitivityReviewHasPastSensitivityReview);
         var changeDriId = graph.GetSingleUriNode(subject, Vocabulary.ChangeDriId);
         var changeDescription = graph.GetSingleText(subject, Vocabulary.ChangeDescription);
@@ -156,12 +159,11 @@ public class RdfExporter : IDriRdfExporter
 
         if (targetType!.Uri.Fragment == "#DeliverableUnit")
         {
-            return new DriSensitivityReview(id!.Uri, reference!,
-                targetId!.Uri, targetType!.Uri, null, [], null, past?.Uri,
-                sensitiveName, sensitiveDescription, date?.AsValuedNode().AsDateTimeOffset(),
-                null, null, null, null, null, null, null, changeDriId?.Uri, changeDescription,
-                changeDateTime?.AsValuedNode().AsDateTimeOffset(), operatorIdentifier?.Uri,
-                operatorName);
+            return new DriSensitivityReview(id!.Uri, reference!, targetId!.Uri, targetType!.Uri, null,
+                [], hasSensitiveNameMissing, hasSensitiveDescriptionMissing, null, past?.Uri,
+                sensitiveName, sensitiveDescription, date?.AsValuedNode().AsDateTimeOffset(), null, null,
+                null, null, null, null, null, changeDriId?.Uri, changeDescription,
+                changeDateTime?.AsValuedNode().AsDateTimeOffset(), operatorIdentifier?.Uri, operatorName);
         }
 
         var reviewDate = graph.GetSingleLiteral(subject, Vocabulary.SensitivityReviewRestrictionReviewDate);
@@ -178,10 +180,10 @@ public class RdfExporter : IDriRdfExporter
                 .Select(t => t.Object).Cast<IUriNode>().Select(u => u.Uri));
 
         return new DriSensitivityReview(id!.Uri, reference!, targetId!.Uri, targetType!.Uri,
-            accessCode!.Uri, legislationUris, reviewDate?.AsValuedNode().AsDateTimeOffset(),
-            past?.Uri, sensitiveName, sensitiveDescription, date?.AsValuedNode().AsDateTimeOffset(),
-            startDate?.AsValuedNode().AsDateTimeOffset(), duration, description, instrumentNumber,
-            instrumentSignedDate?.AsValuedNode().AsDateTimeOffset(),
+            accessCode!.Uri, legislationUris, hasSensitiveNameMissing, hasSensitiveDescriptionMissing,
+            reviewDate?.AsValuedNode().AsDateTimeOffset(), past?.Uri, sensitiveName, sensitiveDescription,
+            date?.AsValuedNode().AsDateTimeOffset(), startDate?.AsValuedNode().AsDateTimeOffset(),
+            duration, description, instrumentNumber, instrumentSignedDate?.AsValuedNode().AsDateTimeOffset(),
             restrictionReviewDate?.AsValuedNode().AsDateTimeOffset(), groundCode?.Uri,
             changeDriId?.Uri, changeDescription, changeDateTime?.AsValuedNode().AsDateTimeOffset(),
             operatorIdentifier?.Uri, operatorName);

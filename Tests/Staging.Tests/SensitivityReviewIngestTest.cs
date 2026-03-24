@@ -17,7 +17,7 @@ public sealed class SensitivityReviewIngestTest
     private readonly DriSensitivityReview dri = new(new("http://example.com/sr1"),
         "Variation1", new("http://example.com/variation1"), new("http://example.com/type#File"),
         new("http://example.com/access-condition#ac1"), [new("http://example.com/legislation1")],
-        DateTimeOffset.UtcNow.AddDays(-1), new("http://example.com/sr-previous"),
+        false, false, DateTimeOffset.UtcNow.AddDays(-1), new("http://example.com/sr-previous"),
         "Sensitive name", "Sensitive description", DateTimeOffset.UtcNow.AddDays(-2),
         DateTimeOffset.UtcNow.AddDays(-3), 1, "Restriction description", 2,
         DateTimeOffset.UtcNow.AddDays(-4), DateTimeOffset.UtcNow.AddDays(-5),

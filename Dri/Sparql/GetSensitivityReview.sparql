@@ -1,5 +1,5 @@
 ﻿prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-prefix prov:  <http://www.w3.org/ns/prov#>
+prefix prov: <http://www.w3.org/ns/prov#>
 prefix dri: <http://nationalarchives.gov.uk/terms/dri#> 
 prefix dcterms: <http://purl.org/dc/terms/>
 prefix ex: <http://id.example.com/schema/>
@@ -12,6 +12,7 @@ construct {
         ex:sensitivityReviewDate ?exemptionAsserted;
     	ex:sensitivityReviewSensitiveName ?titleAlternative;
     	ex:sensitivityReviewSensitiveDescription ?descriptionAlternative;
+        ex:sensitivityReviewHasMissingSensitiveInformation ?missingTitle, ?missingDescription;
     	ex:sensitivityReviewHasPastSensitivityReview ?previous;
     	ex:sensitivityReviewRestrictionReviewDate ?reviewDate;
         ex:sensitivityReviewRestrictionCalculationStartDate ?startDate;
@@ -82,6 +83,10 @@ where {
     optional { ?closure dri:exemptionCode ?exemptionCode }
     optional { ?closure dri:titleAlternative ?titleAlternative }
     optional { ?closure dcterms:alternative ?descriptionAlternative }
+    optional { ?closure dri:titleStatus ?titleStatus }
+    bind(if(!bound(?titleStatus), ex:MissingSensitiveName, ex:MissingSensitiveInformation) as ?missingTitle)
+    optional { ?closure dcterms:descriptionStatus ?descriptionStatus }
+    bind(if(!bound(?descriptionStatus), ex:MissingSensitiveDescription, ex:MissingSensitiveInformation) as ?missingDescription)
     optional { ?closure prov:wasRevisionOf ?previous }
     optional {
         ?closure prov:qualifiedInfluence/prov:influencer/rdfs:label ?reasonForChange

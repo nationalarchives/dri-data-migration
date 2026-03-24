@@ -9,6 +9,7 @@ construct {
         ex:sensitivityReviewDate ?sensitivityReviewDate;
         ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName;
         ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription;
+        ex:sensitivityReviewHasMissingSensitiveInformation ?sensitivityReviewHasMissingSensitiveInformation;
         ex:sensitivityReviewHasPastSensitivityReview ?pastSensitivityReview;
         ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction;
         ex:sensitivityReviewHasChange ?change.
@@ -38,6 +39,7 @@ construct {
     optional { ?sr ex:sensitivityReviewDate ?sensitivityReviewDate }
     optional { ?sr ex:sensitivityReviewSensitiveName ?sensitivityReviewSensitiveName }
     optional { ?sr ex:sensitivityReviewSensitiveDescription ?sensitivityReviewSensitiveDescription }
+    optional { ?sr ex:sensitivityReviewHasMissingSensitiveInformation ?sensitivityReviewHasMissingSensitiveInformation }
     optional { ?sr ex:sensitivityReviewHasPastSensitivityReview ?pastSensitivityReview }
     optional { 
         ?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
