@@ -85,7 +85,7 @@ where {
     optional { ?closure dcterms:alternative ?descriptionAlternative }
     optional { ?closure dri:titleStatus ?titleStatus }
     bind(if(!bound(?titleStatus), ex:MissingSensitiveName, ex:MissingSensitiveInformation) as ?missingTitle)
-    optional { ?closure dcterms:descriptionStatus ?descriptionStatus }
+    optional { ?closure dri:descriptionStatus ?descriptionStatus }
     bind(if(!bound(?descriptionStatus), ex:MissingSensitiveDescription, ex:MissingSensitiveInformation) as ?missingDescription)
     optional { ?closure prov:wasRevisionOf ?previous }
     optional {
