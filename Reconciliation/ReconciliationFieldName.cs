@@ -21,6 +21,8 @@ public enum ReconciliationFieldName
     FoiExemptionReference,
     IsPublicName,
     IsPublicDescription,
+    MissingSensitiveNameInformation,
+    MissingSensitiveDescriptionInformation,
     SensitiveName,
     SensitiveDescription,
     HeldBy,

@@ -129,12 +129,14 @@ internal static class StagingReconciliationParser
         }
         var isPublicDescription = (bool)row.GetValueOrDefault(ReconciliationFieldName.IsPublicDescription, true);
         var isPublicName = (bool)row.GetValueOrDefault(ReconciliationFieldName.IsPublicName, true);
+        var missingSensitiveDescriptionInformation = (bool)row.GetValueOrDefault(ReconciliationFieldName.MissingSensitiveDescriptionInformation, false);
+        var missingSensitiveNameInformation = (bool)row.GetValueOrDefault(ReconciliationFieldName.MissingSensitiveNameInformation, false);
 
         // Logic follows(?) https://github.com/nationalarchives/dri-xslt-discovery-transfer2/wiki/InformationAsset_ClosureStatus_Branch_A
         return accessConditionCode switch
         {
-            "A" or "I" => "O",
-            _ => isPublicName && isPublicDescription ? "D" : "C"
+            "A" or "I" or "U" or "N" => "O",
+            _ => (!isPublicName || missingSensitiveNameInformation) && (!isPublicDescription || missingSensitiveDescriptionInformation) ? "C" : "D"
         };
     }
 }

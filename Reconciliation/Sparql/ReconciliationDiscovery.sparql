@@ -3,6 +3,7 @@
 select ?assetDriId ?reference ?redactedVariationSequence
     ?variationName
 	?retentionBodyName ?isPublicDescription ?isPublicName
+    ?missingSensitiveName ?missingSensitiveDescription
     ?startCoveringDate ?endCoveringDate ?accessConditionCode ?closureStatus
     ?sensitivityReviewRestrictionCalculationStartDate
     ?sensitivityReviewRestrictionDuration
@@ -90,8 +91,13 @@ where {
             optional { ?restriction ex:sensitivityReviewRestrictionDuration ?sensitivityReviewRestrictionDuration }
             optional { ?restriction ex:sensitivityReviewRestrictionEndYear ?sensitivityReviewRestrictionEndYear }
         }
+        optional { 
+            ?sr ex:sensitivityReviewHasMissingSensitiveInformation ?sensitivityReviewHasMissingSensitiveInformation
+        }
     }
     bind(coalesce(?sensitivityReviewSensitiveDescriptionV, ?sensitivityReviewSensitiveDescriptionA) as ?isPublicDescription)
     bind(coalesce(?sensitivityReviewSensitiveNameV, ?sensitivityReviewSensitiveNameA) as ?isPublicName)
     bind(coalesce(?sensitivityReviewSensitiveNameV, ?sensitivityReviewSensitiveNameA, ?assetName) as ?variationName)
+    bind(if(?sensitivityReviewHasMissingSensitiveInformation = ex:MissingSensitiveName, "true"^^xsd:boolean, "false"^^xsd:boolean) as ?missingSensitiveName)
+    bind(if(?sensitivityReviewHasMissingSensitiveInformation = ex:MissingSensitiveDescription, "true"^^xsd:boolean, "false"^^xsd:boolean) as ?missingSensitiveDescription)
 }

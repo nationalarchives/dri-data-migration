@@ -59,6 +59,8 @@ public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClien
         { Vocabulary.SensitivityReviewSensitiveDescription.Uri.LastSegment(), new(ReconciliationFieldName.SensitiveDescription, ToText) },
         { "isPublicName", new(ReconciliationFieldName.IsPublicName, ToRequiredBool) },
         { "isPublicDescription", new(ReconciliationFieldName.IsPublicDescription, ToRequiredBool) },
+        { "missingSensitiveName", new(ReconciliationFieldName.MissingSensitiveNameInformation, ToBool) },
+        { "missingSensitiveDescription", new(ReconciliationFieldName.MissingSensitiveDescriptionInformation, ToBool) },
         { Vocabulary.SensitivityReviewRestrictionCalculationStartDate.Uri.LastSegment(), new(ReconciliationFieldName.ClosureStartDate, ToDateTime) },
         { Vocabulary.SensitivityReviewRestrictionDuration.Uri.LastSegment(), new(ReconciliationFieldName.ClosurePeriod, ToTimeSpan) },
         { Vocabulary.SensitivityReviewRestrictionEndYear.Uri.LastSegment(), new(ReconciliationFieldName.ClosureEndYear, ToYear) },
@@ -76,6 +78,7 @@ public class StagingReconciliationClient(IReconciliationSparqlClient sparqlClien
     private static readonly Func<object?, object?> ToTimeSpan = result => result is TimeSpan ts ? ts : null;
     private static readonly Func<object?, object?> ToInt = result => result is long l ? (int)l : null;
     private static readonly Func<object?, object?> ToYear = result => result is ILiteralNode l && int.TryParse(l.Value, out var endYear) ? endYear : null;
+    private static readonly Func<object?, object?> ToBool = result => result is bool b ? b : null;
     private static readonly Func<object?, object?> ToRequiredBool = result => result is null;
 
     private static string? AdjustEndDate(string? date)
