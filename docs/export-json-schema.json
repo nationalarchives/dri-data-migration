@@ -785,6 +785,12 @@
 				"null"
 			],
 			"properties": {
+				"isRecordClosed": {
+					"type": [
+						"boolean",
+						"null"
+					]
+				},
 				"hasSensitiveMetadata": {
 					"type": "boolean"
 				},

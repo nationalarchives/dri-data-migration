@@ -129,6 +129,8 @@ public class RecordOutput
 
     public class SensitivityReview
     {
+        public bool? IsRecordClosed => AccessConditionCode is null ? null :
+            AccessConditionCode == "F" || AccessConditionCode == "S" || AccessConditionCode == "T";
         public bool HasSensitiveMetadata { get; set; }
         public DateOnly? FoiAssertedDate { get; set; }
         public string? SensitiveDescription { get; set; }

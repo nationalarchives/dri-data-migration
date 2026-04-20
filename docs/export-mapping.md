@@ -126,6 +126,7 @@ JSON schema: [file](export-json-schema.json)
 | ArchivistNote | first ex:assetHasVariation/ex:variationHasDatedNote/ex:archivistNote |
 | ArchivistNoteDate | first ex:assetHasVariation/ex:variationHasDatedNote/(ex:archivistNoteAt or ex:datedNoteHasDate (ex:year, ex:month, ex:day)) |
 | NationalRegistrationNumber | (ex:assetHasPerson\|ex:assetHasVeteran)/ex:nationalRegistrationNumber |
+| Sensitivity.IsRecordClosed | `true` when ex:assetHasSensitivityReview/ex:sensitivityReviewHasAccessCondition/ex:accessConditionCode is `F`, `S` or `T` |
 | Sensitivity.HasSensitiveMetadata | `true` when ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveName (at any level in the tree) or ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveDescription |
 | Sensitivity.FoiAssertedDate | ex:assetHasSensitivityReview/ex:sensitivityReviewDate |
 | Sensitivity.SensitiveName | ex:assetHasSensitivityReview/ex:sensitivityReviewSensitiveName |
