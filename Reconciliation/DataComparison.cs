@@ -187,10 +187,9 @@ public class DataComparison(ILogger<DataComparison> logger, IOptions<Reconciliat
             logger.DiffCount(summary.DiffDetails.Count);
             foreach (var record in summary.DiffDetails)
             {
-                logger.DiffRecord(record.Id);
                 foreach (var diff in record.Details)
                 {
-                    logger.DiffDetails(diff.Field, diff.Expected, diff.Actual);
+                    logger.DiffDetails(record.Id, diff.Field, diff.Expected, diff.Actual);
                 }
             }
         }

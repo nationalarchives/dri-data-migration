@@ -58,25 +58,22 @@ internal static partial class Log
     [LoggerMessage(EventId = 17, Level = LogLevel.Information, Message = "No difference found")]
     internal static partial void ReconciliationNoDiff(this ILogger logger);
 
-    [LoggerMessage(EventId = 18, Level = LogLevel.Information, Message = "{count} differences (field, expected value, actual value)")]
+    [LoggerMessage(EventId = 18, Level = LogLevel.Information, Message = "{count} differences (reference, field, expected value, actual value)")]
     internal static partial void DiffCount(this ILogger logger, int count);
 
-    [LoggerMessage(EventId = 19, Level = LogLevel.Information, Message = "{id}")]
-    internal static partial void DiffRecord(this ILogger logger, string Id);
+    [LoggerMessage(EventId = 19, Level = LogLevel.Information, Message = "{id}\t{field}\t{expected}\t{actual}")]
+    internal static partial void DiffDetails(this ILogger logger, string id, ReconciliationFieldName field, object expected, object actual);
 
-    [LoggerMessage(EventId = 20, Level = LogLevel.Information, Message = "\t{field}\t{expected}\t{actual}")]
-    internal static partial void DiffDetails(this ILogger logger, ReconciliationFieldName field, object expected, object actual);
-
-    [LoggerMessage(EventId = 21, Level = LogLevel.Information, Message = "{count} missing files")]
+    [LoggerMessage(EventId = 20, Level = LogLevel.Information, Message = "{count} missing files from the staging database")]
     internal static partial void MissingFilesCount(this ILogger logger, int count);
 
-    [LoggerMessage(EventId = 22, Level = LogLevel.Information, Message = "{count} missing folders")]
+    [LoggerMessage(EventId = 21, Level = LogLevel.Information, Message = "{count} missing folders from the staging database")]
     internal static partial void MissingFoldersCount(this ILogger logger, int count);
 
-    [LoggerMessage(EventId = 23, Level = LogLevel.Information, Message = "{id}")]
+    [LoggerMessage(EventId = 22, Level = LogLevel.Information, Message = "{id}")]
     internal static partial void MissingRecord(this ILogger logger, string Id);
 
-    [LoggerMessage(EventId = 24, Level = LogLevel.Information, Message = @"
+    [LoggerMessage(EventId = 23, Level = LogLevel.Information, Message = @"
 Reconciles following fields:
 Location        identifier
 Name            file_name
@@ -85,7 +82,7 @@ ModifiedAt      date_last_modified
 CoveringDateEnd end_date")]
     internal static partial void MetadataReconciliationInfo(this ILogger logger);
 
-    [LoggerMessage(EventId = 25, Level = LogLevel.Information, Message = @"
+    [LoggerMessage(EventId = 24, Level = LogLevel.Information, Message = @"
 Reconciles following fields:
 Location                identifier
 FileFolder              folder
@@ -104,7 +101,7 @@ IsPublicDescription     description_public
 SensitiveDescription    description_alternate")]
     internal static partial void ClosureReconciliationInfo(this ILogger logger);
 
-    [LoggerMessage(EventId = 26, Level = LogLevel.Information, Message = @"
+    [LoggerMessage(EventId = 25, Level = LogLevel.Information, Message = @"
 Reconciles following fields:
 Id                  Id
 Name                Title
@@ -118,12 +115,12 @@ ClosurePeriod       ClosureType & ClosureCode
 ClosureEndYear      ClosureType & ClosureCode")]
     internal static partial void DiscoveryReconciliationInfo(this ILogger logger);
 
-    [LoggerMessage(EventId = 27, Level = LogLevel.Information, Message = "{count} additional files")]
+    [LoggerMessage(EventId = 26, Level = LogLevel.Information, Message = "{count} additional files in the staging database")]
     internal static partial void AdditionalFilesCount(this ILogger logger, int count);
 
-    [LoggerMessage(EventId = 28, Level = LogLevel.Information, Message = "{count} additional folders")]
+    [LoggerMessage(EventId = 27, Level = LogLevel.Information, Message = "{count} additional folders in the staging database")]
     internal static partial void AdditionalFoldersCount(this ILogger logger, int count);
 
-    [LoggerMessage(EventId = 29, Level = LogLevel.Information, Message = "{id}")]
+    [LoggerMessage(EventId = 28, Level = LogLevel.Information, Message = "{id}")]
     internal static partial void AdditionalRecord(this ILogger logger, string Id);
 }
