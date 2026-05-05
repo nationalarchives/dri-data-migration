@@ -5,6 +5,8 @@ on:
     paths-ignore:
       - 'Ontology.ttl'
       - '**/OntologyTest.cs'
+    branches-ignore:
+      - 'main'
   pull_request:
     paths-ignore:
       - 'Ontology.ttl'
