@@ -1,10 +1,7 @@
 name: CI
 
 on:
-  push:
-    paths-ignore:
-      - 'Ontology.ttl'
-      - '**/OntologyTest.cs'
+
   pull_request:
     paths-ignore:
       - 'Ontology.ttl'
