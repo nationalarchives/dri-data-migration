@@ -206,7 +206,7 @@ internal static class RecordMapper
             ArchivistNoteDate = archivistNoteDate,
             Sensitivity = sr,
             AuditTrail = changes,
-            DigitalFileCount = variations.Count,
+            DigitalFileCount = files.Count,
             DigitalFiles = files,
             Relationships = relationships
         };
