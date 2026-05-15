@@ -24,7 +24,10 @@ internal static class VariationMapper
             var scannedVariationHasImageDeskew = graph.GetSingleUriNode(variation, Vocabulary.ScannedVariationHasImageDeskew);
             var variationSizeBytes = graph.GetSingleNumber(variation, Vocabulary.VariationSizeBytes)!.Value;
             var checksums = GetChecksums(graph, variation);
-
+            if (checksums.All(c => c.Value == "999"))
+            {
+                continue;
+            }
             variations.Add(new()
             {
                 FileId = variationDriId,
