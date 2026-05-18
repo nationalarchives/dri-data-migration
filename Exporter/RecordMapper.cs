@@ -207,7 +207,7 @@ internal static class RecordMapper
             Sensitivity = sr,
             AuditTrail = changes,
             DigitalFileCount = files.Count,
-            DigitalFiles = files,
+            DigitalFiles = files.Count == 0 ? null : files,
             Relationships = relationships
         };
     }
