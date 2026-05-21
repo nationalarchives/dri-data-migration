@@ -235,7 +235,7 @@ Accept: application/sparql-results+json
 
 prefix ex: <http://id.example.com/schema/>
 
-select ?subsetReference (max(?cv) as ?maxVariation) where {
+select ?subsetReference (max(?cv) as ?maxVariationPerAsset) where {
     select ?subsetReference (count(?v) as ?cv) where {
         ?a ex:assetHasSubset ?as;
             ex:assetHasVariation ?v.
@@ -253,7 +253,7 @@ Accept: application/sparql-results+json
 
 prefix ex: <http://id.example.com/schema/>
 
-select ?subsetReference (max(?cv) as ?maxVariation) where {
+select ?subsetReference (max(?cv) as ?maxVariationPerAssetExcludingRedactions) where {
     select ?subsetReference (count(?v) as ?cv) where {
         ?a ex:assetHasSubset ?as;
             ex:assetHasVariation ?v.
@@ -278,3 +278,91 @@ select ?subsetReference (count(distinct ?s) as ?subsetCount) where {
     filter not exists { ?bs ex:subsetHasBroaderSubset ?t}
 } group by ?subsetReference
 order by ?subsetReference
+
+
+### Total variation size by series
+POST {{endpoint}}
+Content-Type: application/sparql-query
+Accept: application/sparql-results+json
+
+prefix ex: <http://id.example.com/schema/>
+
+select ?subsetReference (sum(?b) as ?totalSizeBytes) where {
+    ?a ex:assetHasSubset ?as;
+    	ex:assetHasVariation ?v.
+    ?s ex:subsetReference ?subsetReference;
+    	ex:subsetHasNarrowerSubset* ?as.
+    ?v ex:variationSizeBytes ?b.
+    minus { ?s ex:subsetHasBroaderSubset ?bs }
+} group by ?subsetReference
+order by ?subsetReference
+
+### Asset tags (record types) by series
+POST {{endpoint}}
+Content-Type: application/sparql-query
+Accept: application/sparql-results+json
+
+prefix ex: <http://id.example.com/schema/>
+
+select ?subsetReference ?recordType where {
+    ?a ex:assetHasSubset ?as;
+    	ex:assetHasAssetTagType ?recordType.
+    ?s ex:subsetReference ?subsetReference;
+    	ex:subsetHasNarrowerSubset* ?as.
+    minus { ?s ex:subsetHasBroaderSubset ?bs }
+} group by ?subsetReference ?recordType
+order by ?subsetReference
+
+### Redacted variation count by series
+POST {{endpoint}}
+Content-Type: application/sparql-query
+Accept: application/sparql-results+json
+
+prefix ex: <http://id.example.com/schema/>
+
+select ?subsetReference (count(distinct ?v) as ?redactedVariations) where {
+    ?a ex:assetHasSubset ?as;
+    	ex:assetHasVariation ?v.
+    ?v ex:redactedVariationSequence ?r. 
+    ?s ex:subsetReference ?subsetReference;
+    	ex:subsetHasNarrowerSubset* ?as.
+    minus { ?s ex:subsetHasBroaderSubset ?bs }
+} group by ?subsetReference
+order by ?subsetReference
+
+### Closed (access condition code of `F`, `S` or `T`) assets count by series and year
+POST {{endpoint}}
+Content-Type: application/sparql-query
+Accept: application/sparql-results+json
+
+prefix ex: <http://id.example.com/schema/>
+
+select ?subsetReference (count(distinct ?a) as ?closed) ?year where {
+    ?a ex:assetHasSubset ?as;
+    	ex:assetHasVariation ?v.
+    ?s ex:subsetReference ?subsetReference;
+    	ex:subsetHasNarrowerSubset* ?as.
+    ?v ex:variationHasSensitivityReview ?sr.
+    ?sr ex:sensitivityReviewHasAccessCondition ?ac.
+    optional {
+        ?sr ex:sensitivityReviewHasSensitivityReviewRestriction ?restriction.
+        ?restriction ex:sensitivityReviewRestrictionReviewDate ?reviewDate.
+        bind(year(?reviewDate) as ?year)
+    }
+    minus { ?s ex:subsetHasBroaderSubset ?bs }
+    minus { ?futureSr ex:sensitivityReviewHasPastSensitivityReview ?sr }
+    filter exists {
+        {
+            ?ac ex:accessConditionCode "F".
+        }
+        union
+        {
+            ?ac ex:accessConditionCode "S".
+        }
+        union
+        {
+            ?ac ex:accessConditionCode "T".
+        }
+    }
+} group by ?subsetReference ?year
+order by ?subsetReference ?year
